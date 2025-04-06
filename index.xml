@@ -209,7 +209,7 @@ bash | zsh | sh | fish
 &lt;li>&lt;strong>터미널과 셸은 다르다&lt;/strong>: 터미널은 UI, 셸은 명령 해석기&lt;/li>
 &lt;li>&lt;code>set -e&lt;/code>는 파이프라인 전체가 아닌 &lt;em>첫 실패 명령어만 종료&lt;/em> → &lt;code>pipefail&lt;/code>과 병행 필수&lt;/li>
 &lt;li>비로그인 셸에서는 &lt;code>.bashrc&lt;/code>만 실행되며, &lt;code>.bash_profile&lt;/code>은 무시됨&lt;/li>
-&lt;/ul></description></item><item><title>About</title><link>https://keonhoban.github.io/mlops-journey/about/</link><pubDate>Sun, 06 Apr 2025 20:57:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/about/</guid><description>&lt;h1 id="-안녕하세요-반건호입니다">👋 안녕하세요! 반건호입니다&lt;/h1>
+&lt;/ul></description></item><item><title>About</title><link>https://keonhoban.github.io/mlops-journey/about/</link><pubDate>Sun, 06 Apr 2025 20:57:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/about/</guid><description>&lt;h1 id="-안녕하세요">👋 안녕하세요!&lt;/h1>
 &lt;p>현재 &lt;strong>MLOps 엔지니어&lt;/strong>를 목표로 꾸준히 배우고 성장하고 있습니다.&lt;br>
 &lt;strong>2년 3개월 동안 DevOps 엔지니어&lt;/strong>로 일하며 시스템 운영, 인프라 관리, 자동화의 기본기를 다졌습니다.&lt;br>
 이제는 더 깊은 통합 역량을 가진 MLOps 전문가로 나아가고자 합니다.&lt;/p>
