@@ -1,0 +1,19 @@
+baseURL = "https://keonhoban.github.io/mlops-journey/"
+languageCode = "ko"
+title = "🏔️ MLOps Journey"
+theme = "PaperMod"
+
+[params]
+  ShowReadingTime = true
+  defaultTheme = "auto"
+
+[menu]
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 1
+
+  [[menu.main]]
+    name = "Projects"
+    url = "/projects/"
+    weight = 2
