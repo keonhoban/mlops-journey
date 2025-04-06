@@ -17,4 +17,4 @@ title = 'Projects'
 
 ---
 
-📝 블로그 글로 먼저 일부 내용을 보시려면 👉 [📚 Blog](/posts/)
+📝 블로그 글로 먼저 일부 내용을 보시려면 👉 [📚 Blog](/mlops-journey/posts/)
