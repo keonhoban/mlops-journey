@@ -1,19 +1,45 @@
 baseURL = "https://keonhoban.github.io/mlops-journey/"
 languageCode = "ko"
-title = "🏔️ MLOps Journey"
+title = "🏔️  MLOps Journey"
 theme = "PaperMod"
 
 [params]
   ShowReadingTime = true
   defaultTheme = "auto"
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  categories = ["Linux", "Network", "AWS", "Python"]
+
+  [params.footer]
+    hideCopyright = true
+    customText = "© 2025 Keonho Ban | <a href=\"https://github.com/keonhoban\" target=\"_blank\">GitHub</a> | <a href=\"mailto:keonho0510@naver.com\">Email</a>"
+
 
 [menu]
-  [[menu.main]]
-    name = "About"
-    url = "/about/"
-    weight = 1
 
   [[menu.main]]
-    name = "Projects"
-    url = "/projects/"
-    weight = 2
+  name = "🏠 Home"
+  url = "/"
+  weight = 1
+
+  [[menu.main]]
+  name = "📂 Projects"
+  url = "/projects/"
+  weight = 2
+
+  [[menu.main]]
+  name = "📝 Blog"
+  url = "/posts/"
+  weight = 3
+
+  [[menu.main]]
+  name = "🧗 About"
+  url = "/about/"
+  weight = 4
+
+  [[menu.main]]
+  name = "📖 Categories"
+  url = "/categories/"
+  weight = 5
+
