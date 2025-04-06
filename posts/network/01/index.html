@@ -1,0 +1,231 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>network-01 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="✅ 1장. 컴퓨터 네트워크 개요 (실무 + MLOps 관점)
+
+🧠 결정적 지식 요약
+
+  
+      
+          항목
+          핵심 요약
+      
+  
+  
+      
+          LAN vs WAN
+          거리 기준으로 네트워크 구분 (LAN: 근거리 / WAN: 원거리)
+      
+      
+          클라이언트-서버 / P2P
+          중앙 집중 vs 분산 구조
+      
+      
+          패킷 교환
+          데이터를 쪼개서 전송, 효율적이고 유연한 전송
+      
+      
+          TCP/IP 4계층
+          애플리케이션 → 트랜스포트 → 인터넷 → 네트워크 인터페이스
+      
+      
+          주요 프로토콜
+          HTTP, DNS, TCP, UDP, IP, ICMP, MAC 등
+      
+      
+          표준화 기관
+          IETF, IEEE, W3C → 각각 다른 계층/기술에 표준 제시
+      
+  
+
+
+🔄 핵심 구조도: TCP/IP 4계층
+[송신 측]
+1. Application Layer        → 웹/메일/FTP 요청
+2. Transport Layer          → TCP/UDP로 포트 분리, 신뢰성 처리
+3. Internet Layer           → IP 주소 부여
+4. Network Interface Layer  → MAC 주소 + 물리적 전송
+
+[수신 측]
+→ 역순으로 계층마다 헤더 제거하며 처리
+
+🔧 실무 연결 예시
+
+  
+      
+          항목
+          명령어 또는 예시
+      
+  
+  
+      
+          네트워크 상태 확인
+          ping, traceroute, nslookup, curl
+      
+      
+          포트 열림 확인
+          telnet, nc, ss -tuln
+      
+      
+          네트워크 구조 시각화
+          ip addr, ip route, netstat, ifconfig
+      
+      
+          서버/클라이언트 테스트
+          Python: socket, curl ↔ flask 서버
+      
+      
+          게임/영상/모니터링
+          대부분 UDP 기반 (빠른 응답 필요)
+      
+  
+
+
+✅ 실전 체크리스트
+
+TCP/IP 4계층은 실무 네트워크 트러블슈팅의 기준
+실제 송수신 과정에서 각 계층이 어떤 정보를 추가/해석하는지 기억
+IP = 논리 주소 / MAC = 물리 주소 → 스위치 vs 라우터 역할 이해
+프로토콜 조합은 트래픽 해석(패킷 분석)과 보안 정책 설정 시 핵심
+
+
+⚠️ 오해 주의 포인트
+
+  
+      
+          실수
+          바로잡기
+      
+  
+  
+      
+          TCP가 항상 더 좋은 프로토콜
+          UDP가 필요한 경우도 많음 (영상 스트리밍 등)
+      
+      
+          MAC 주소는 인터넷 전체에서 고유함
+          아니고, 로컬 네트워크 내에서만 유효
+      
+      
+          DNS는 IP 주소를 관리한다
+          ❌ 도메인 ↔ IP 변환만 함 (위치 관리 X)
+      
+  
+"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/network/01/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/network/01/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/network/01/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="network-01"><meta property="og:description" content="✅ 1장. 컴퓨터 네트워크 개요 (실무 + MLOps 관점) 🧠 결정적 지식 요약 항목 핵심 요약 LAN vs WAN 거리 기준으로 네트워크 구분 (LAN: 근거리 / WAN: 원거리) 클라이언트-서버 / P2P 중앙 집중 vs 분산 구조 패킷 교환 데이터를 쪼개서 전송, 효율적이고 유연한 전송 TCP/IP 4계층 애플리케이션 → 트랜스포트 → 인터넷 → 네트워크 인터페이스 주요 프로토콜 HTTP, DNS, TCP, UDP, IP, ICMP, MAC 등 표준화 기관 IETF, IEEE, W3C → 각각 다른 계층/기술에 표준 제시 🔄 핵심 구조도: TCP/IP 4계층 [송신 측] 1. Application Layer → 웹/메일/FTP 요청 2. Transport Layer → TCP/UDP로 포트 분리, 신뢰성 처리 3. Internet Layer → IP 주소 부여 4. Network Interface Layer → MAC 주소 + 물리적 전송 [수신 측] → 역순으로 계층마다 헤더 제거하며 처리 🔧 실무 연결 예시 항목 명령어 또는 예시 네트워크 상태 확인 ping, traceroute, nslookup, curl 포트 열림 확인 telnet, nc, ss -tuln 네트워크 구조 시각화 ip addr, ip route, netstat, ifconfig 서버/클라이언트 테스트 Python: socket, curl ↔ flask 서버 게임/영상/모니터링 대부분 UDP 기반 (빠른 응답 필요) ✅ 실전 체크리스트 TCP/IP 4계층은 실무 네트워크 트러블슈팅의 기준 실제 송수신 과정에서 각 계층이 어떤 정보를 추가/해석하는지 기억 IP = 논리 주소 / MAC = 물리 주소 → 스위치 vs 라우터 역할 이해 프로토콜 조합은 트래픽 해석(패킷 분석)과 보안 정책 설정 시 핵심 ⚠️ 오해 주의 포인트 실수 바로잡기 TCP가 항상 더 좋은 프로토콜 UDP가 필요한 경우도 많음 (영상 스트리밍 등) MAC 주소는 인터넷 전체에서 고유함 아니고, 로컬 네트워크 내에서만 유효 DNS는 IP 주소를 관리한다 ❌ 도메인 ↔ IP 변환만 함 (위치 관리 X) "><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-06T21:52:45+09:00"><meta property="article:modified_time" content="2025-04-06T21:52:45+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="network-01"><meta name=twitter:description content="✅ 1장. 컴퓨터 네트워크 개요 (실무 + MLOps 관점)
+
+🧠 결정적 지식 요약
+
+  
+      
+          항목
+          핵심 요약
+      
+  
+  
+      
+          LAN vs WAN
+          거리 기준으로 네트워크 구분 (LAN: 근거리 / WAN: 원거리)
+      
+      
+          클라이언트-서버 / P2P
+          중앙 집중 vs 분산 구조
+      
+      
+          패킷 교환
+          데이터를 쪼개서 전송, 효율적이고 유연한 전송
+      
+      
+          TCP/IP 4계층
+          애플리케이션 → 트랜스포트 → 인터넷 → 네트워크 인터페이스
+      
+      
+          주요 프로토콜
+          HTTP, DNS, TCP, UDP, IP, ICMP, MAC 등
+      
+      
+          표준화 기관
+          IETF, IEEE, W3C → 각각 다른 계층/기술에 표준 제시
+      
+  
+
+
+🔄 핵심 구조도: TCP/IP 4계층
+[송신 측]
+1. Application Layer        → 웹/메일/FTP 요청
+2. Transport Layer          → TCP/UDP로 포트 분리, 신뢰성 처리
+3. Internet Layer           → IP 주소 부여
+4. Network Interface Layer  → MAC 주소 + 물리적 전송
+
+[수신 측]
+→ 역순으로 계층마다 헤더 제거하며 처리
+
+🔧 실무 연결 예시
+
+  
+      
+          항목
+          명령어 또는 예시
+      
+  
+  
+      
+          네트워크 상태 확인
+          ping, traceroute, nslookup, curl
+      
+      
+          포트 열림 확인
+          telnet, nc, ss -tuln
+      
+      
+          네트워크 구조 시각화
+          ip addr, ip route, netstat, ifconfig
+      
+      
+          서버/클라이언트 테스트
+          Python: socket, curl ↔ flask 서버
+      
+      
+          게임/영상/모니터링
+          대부분 UDP 기반 (빠른 응답 필요)
+      
+  
+
+
+✅ 실전 체크리스트
+
+TCP/IP 4계층은 실무 네트워크 트러블슈팅의 기준
+실제 송수신 과정에서 각 계층이 어떤 정보를 추가/해석하는지 기억
+IP = 논리 주소 / MAC = 물리 주소 → 스위치 vs 라우터 역할 이해
+프로토콜 조합은 트래픽 해석(패킷 분석)과 보안 정책 설정 시 핵심
+
+
+⚠️ 오해 주의 포인트
+
+  
+      
+          실수
+          바로잡기
+      
+  
+  
+      
+          TCP가 항상 더 좋은 프로토콜
+          UDP가 필요한 경우도 많음 (영상 스트리밍 등)
+      
+      
+          MAC 주소는 인터넷 전체에서 고유함
+          아니고, 로컬 네트워크 내에서만 유효
+      
+      
+          DNS는 IP 주소를 관리한다
+          ❌ 도메인 ↔ IP 변환만 함 (위치 관리 X)
+      
+  
+"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"network-01","item":"https://keonhoban.github.io/mlops-journey/posts/network/01/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"network-01","name":"network-01","description":"✅ 1장. 컴퓨터 네트워크 개요 (실무 + MLOps 관점) 🧠 결정적 지식 요약 항목 핵심 요약 LAN vs WAN 거리 기준으로 네트워크 구분 (LAN: 근거리 / WAN: 원거리) 클라이언트-서버 / P2P 중앙 집중 vs 분산 구조 패킷 교환 데이터를 쪼개서 전송, 효율적이고 유연한 전송 TCP/IP 4계층 애플리케이션 → 트랜스포트 → 인터넷 → 네트워크 인터페이스 주요 프로토콜 HTTP, DNS, TCP, UDP, IP, ICMP, MAC 등 표준화 기관 IETF, IEEE, W3C → 각각 다른 계층/기술에 표준 제시 🔄 핵심 구조도: TCP/IP 4계층 [송신 측] 1. Application Layer → 웹/메일/FTP 요청 2. Transport Layer → TCP/UDP로 포트 분리, 신뢰성 처리 3. Internet Layer → IP 주소 부여 4. Network Interface Layer → MAC 주소 + 물리적 전송 [수신 측] → 역순으로 계층마다 헤더 제거하며 처리 🔧 실무 연결 예시 항목 명령어 또는 예시 네트워크 상태 확인 ping, traceroute, nslookup, curl 포트 열림 확인 telnet, nc, ss -tuln 네트워크 구조 시각화 ip addr, ip route, netstat, ifconfig 서버/클라이언트 테스트 Python: socket, curl ↔ flask 서버 게임/영상/모니터링 대부분 UDP 기반 (빠른 응답 필요) ✅ 실전 체크리스트 TCP/IP 4계층은 실무 네트워크 트러블슈팅의 기준 실제 송수신 과정에서 각 계층이 어떤 정보를 추가/해석하는지 기억 IP = 논리 주소 / MAC = 물리 주소 → 스위치 vs 라우터 역할 이해 프로토콜 조합은 트래픽 해석(패킷 분석)과 보안 정책 설정 시 핵심 ⚠️ 오해 주의 포인트 실수 바로잡기 TCP가 항상 더 좋은 프로토콜 UDP가 필요한 경우도 많음 (영상 스트리밍 등) MAC 주소는 인터넷 전체에서 고유함 아니고, 로컬 네트워크 내에서만 유효 DNS는 IP 주소를 관리한다 ❌ 도메인 ↔ IP 변환만 함 (위치 관리 X) ","keywords":[],"articleBody":"✅ 1장. 컴퓨터 네트워크 개요 (실무 + MLOps 관점) 🧠 결정적 지식 요약 항목 핵심 요약 LAN vs WAN 거리 기준으로 네트워크 구분 (LAN: 근거리 / WAN: 원거리) 클라이언트-서버 / P2P 중앙 집중 vs 분산 구조 패킷 교환 데이터를 쪼개서 전송, 효율적이고 유연한 전송 TCP/IP 4계층 애플리케이션 → 트랜스포트 → 인터넷 → 네트워크 인터페이스 주요 프로토콜 HTTP, DNS, TCP, UDP, IP, ICMP, MAC 등 표준화 기관 IETF, IEEE, W3C → 각각 다른 계층/기술에 표준 제시 🔄 핵심 구조도: TCP/IP 4계층 [송신 측] 1. Application Layer → 웹/메일/FTP 요청 2. Transport Layer → TCP/UDP로 포트 분리, 신뢰성 처리 3. Internet Layer → IP 주소 부여 4. Network Interface Layer → MAC 주소 + 물리적 전송 [수신 측] → 역순으로 계층마다 헤더 제거하며 처리 🔧 실무 연결 예시 항목 명령어 또는 예시 네트워크 상태 확인 ping, traceroute, nslookup, curl 포트 열림 확인 telnet, nc, ss -tuln 네트워크 구조 시각화 ip addr, ip route, netstat, ifconfig 서버/클라이언트 테스트 Python: socket, curl ↔ flask 서버 게임/영상/모니터링 대부분 UDP 기반 (빠른 응답 필요) ✅ 실전 체크리스트 TCP/IP 4계층은 실무 네트워크 트러블슈팅의 기준 실제 송수신 과정에서 각 계층이 어떤 정보를 추가/해석하는지 기억 IP = 논리 주소 / MAC = 물리 주소 → 스위치 vs 라우터 역할 이해 프로토콜 조합은 트래픽 해석(패킷 분석)과 보안 정책 설정 시 핵심 ⚠️ 오해 주의 포인트 실수 바로잡기 TCP가 항상 더 좋은 프로토콜 UDP가 필요한 경우도 많음 (영상 스트리밍 등) MAC 주소는 인터넷 전체에서 고유함 아니고, 로컬 네트워크 내에서만 유효 DNS는 IP 주소를 관리한다 ❌ 도메인 ↔ IP 변환만 함 (위치 관리 X) ","wordCount":"252","inLanguage":"en","datePublished":"2025-04-06T21:52:45+09:00","dateModified":"2025-04-06T21:52:45+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/network/01/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">network-01</h1><div class=post-meta><span title='2025-04-06 21:52:45 +0900 +0900'>April 6, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h1 id=-1장-컴퓨터-네트워크-개요-실무--mlops-관점>✅ 1장. 컴퓨터 네트워크 개요 (실무 + MLOps 관점)<a hidden class=anchor aria-hidden=true href=#-1장-컴퓨터-네트워크-개요-실무--mlops-관점>#</a></h1><hr><h2 id=-결정적-지식-요약>🧠 결정적 지식 요약<a hidden class=anchor aria-hidden=true href=#-결정적-지식-요약>#</a></h2><table><thead><tr><th>항목</th><th>핵심 요약</th></tr></thead><tbody><tr><td><strong>LAN vs WAN</strong></td><td>거리 기준으로 네트워크 구분 (LAN: 근거리 / WAN: 원거리)</td></tr><tr><td><strong>클라이언트-서버 / P2P</strong></td><td>중앙 집중 vs 분산 구조</td></tr><tr><td><strong>패킷 교환</strong></td><td>데이터를 쪼개서 전송, 효율적이고 유연한 전송</td></tr><tr><td><strong>TCP/IP 4계층</strong></td><td>애플리케이션 → 트랜스포트 → 인터넷 → 네트워크 인터페이스</td></tr><tr><td><strong>주요 프로토콜</strong></td><td>HTTP, DNS, TCP, UDP, IP, ICMP, MAC 등</td></tr><tr><td><strong>표준화 기관</strong></td><td>IETF, IEEE, W3C → 각각 다른 계층/기술에 표준 제시</td></tr></tbody></table><hr><h2 id=-핵심-구조도-tcpip-4계층>🔄 핵심 구조도: TCP/IP 4계층<a hidden class=anchor aria-hidden=true href=#-핵심-구조도-tcpip-4계층>#</a></h2><pre tabindex=0><code>[송신 측]
+1. Application Layer        → 웹/메일/FTP 요청
+2. Transport Layer          → TCP/UDP로 포트 분리, 신뢰성 처리
+3. Internet Layer           → IP 주소 부여
+4. Network Interface Layer  → MAC 주소 + 물리적 전송
+
+[수신 측]
+→ 역순으로 계층마다 헤더 제거하며 처리
+</code></pre><hr><h2 id=-실무-연결-예시>🔧 실무 연결 예시<a hidden class=anchor aria-hidden=true href=#-실무-연결-예시>#</a></h2><table><thead><tr><th>항목</th><th>명령어 또는 예시</th></tr></thead><tbody><tr><td>네트워크 상태 확인</td><td><code>ping</code>, <code>traceroute</code>, <code>nslookup</code>, <code>curl</code></td></tr><tr><td>포트 열림 확인</td><td><code>telnet</code>, <code>nc</code>, <code>ss -tuln</code></td></tr><tr><td>네트워크 구조 시각화</td><td><code>ip addr</code>, <code>ip route</code>, <code>netstat</code>, <code>ifconfig</code></td></tr><tr><td>서버/클라이언트 테스트</td><td>Python: <code>socket</code>, <code>curl</code> ↔ <code>flask</code> 서버</td></tr><tr><td>게임/영상/모니터링</td><td>대부분 <code>UDP</code> 기반 (빠른 응답 필요)</td></tr></tbody></table><hr><h2 id=-실전-체크리스트>✅ 실전 체크리스트<a hidden class=anchor aria-hidden=true href=#-실전-체크리스트>#</a></h2><ul><li>TCP/IP 4계층은 <strong>실무 네트워크 트러블슈팅의 기준</strong></li><li>실제 송수신 과정에서 각 계층이 어떤 정보를 추가/해석하는지 기억</li><li><strong>IP = 논리 주소 / MAC = 물리 주소</strong> → 스위치 vs 라우터 역할 이해</li><li><strong>프로토콜 조합</strong>은 트래픽 해석(패킷 분석)과 보안 정책 설정 시 핵심</li></ul><hr><h2 id=-오해-주의-포인트>⚠️ 오해 주의 포인트<a hidden class=anchor aria-hidden=true href=#-오해-주의-포인트>#</a></h2><table><thead><tr><th>실수</th><th>바로잡기</th></tr></thead><tbody><tr><td>TCP가 항상 더 좋은 프로토콜</td><td>UDP가 필요한 경우도 많음 (영상 스트리밍 등)</td></tr><tr><td>MAC 주소는 인터넷 전체에서 고유함</td><td>아니고, <strong>로컬 네트워크 내에서만 유효</strong></td></tr><tr><td>DNS는 IP 주소를 관리한다</td><td>❌ 도메인 ↔ IP 변환만 함 (위치 관리 X)</td></tr></tbody></table></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/linux/01/><span class=title>Next »</span><br><span>linux-01</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

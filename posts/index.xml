@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 06 Apr 2025 21:52:45 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>network-01</title><link>https://keonhoban.github.io/mlops-journey/posts/network/01/</link><pubDate>Sun, 06 Apr 2025 21:52:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/01/</guid><description>&lt;h1 id="-1장-컴퓨터-네트워크-개요-실무--mlops-관점">✅ 1장. 컴퓨터 네트워크 개요 (실무 + MLOps 관점)&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 06 Apr 2025 21:52:45 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>network-01</title><link>https://keonhoban.github.io/mlops-journey/posts/network/01/</link><pubDate>Sun, 06 Apr 2025 21:52:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/01/</guid><description>&lt;h1 id="-1장-컴퓨터-네트워크-개요-실무--mlops-관점">✅ 1장. 컴퓨터 네트워크 개요 (실무 + MLOps 관점)&lt;/h1>
 &lt;hr>
 &lt;h2 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h2>
 &lt;table>
@@ -209,52 +209,4 @@ bash | zsh | sh | fish
 &lt;li>&lt;strong>터미널과 셸은 다르다&lt;/strong>: 터미널은 UI, 셸은 명령 해석기&lt;/li>
 &lt;li>&lt;code>set -e&lt;/code>는 파이프라인 전체가 아닌 &lt;em>첫 실패 명령어만 종료&lt;/em> → &lt;code>pipefail&lt;/code>과 병행 필수&lt;/li>
 &lt;li>비로그인 셸에서는 &lt;code>.bashrc&lt;/code>만 실행되며, &lt;code>.bash_profile&lt;/code>은 무시됨&lt;/li>
-&lt;/ul></description></item><item><title>About</title><link>https://keonhoban.github.io/mlops-journey/about/</link><pubDate>Sun, 06 Apr 2025 20:57:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/about/</guid><description>&lt;h1 id="-안녕하세요-반건호입니다">👋 안녕하세요! 반건호입니다&lt;/h1>
-&lt;p>현재 &lt;strong>MLOps 엔지니어&lt;/strong>를 목표로 꾸준히 배우고 성장하고 있습니다.&lt;br>
-&lt;strong>2년 3개월 동안 DevOps 엔지니어&lt;/strong>로 일하며 시스템 운영, 인프라 관리, 자동화의 기본기를 다졌습니다.&lt;br>
-이제는 더 깊은 통합 역량을 가진 MLOps 전문가로 나아가고자 합니다.&lt;/p>
-&lt;p>제 목표는 &lt;strong>기업에서 신뢰할 수 있는 실전형 MLOps 엔지니어&lt;/strong>가 되는 것입니다.&lt;br>
-이 블로그는 그 여정을 기록하는 공간이자, 기술과 성장의 아카이브입니다.&lt;/p>
-&lt;hr>
-&lt;h2 id="-현재-주요-관심-분야-및-학습-중인-기술">🛠️ 현재 주요 관심 분야 및 학습 중인 기술&lt;/h2>
-&lt;ul>
-&lt;li>&lt;strong>MLOps&lt;/strong>: MLflow, Kubeflow, Airflow&lt;/li>
-&lt;li>&lt;strong>인프라 자동화&lt;/strong>: AWS, Kubernetes, Terraform&lt;/li>
-&lt;li>&lt;strong>프로그래밍 언어&lt;/strong>: Python, Java, Bash&lt;/li>
-&lt;li>&lt;strong>데이터 엔지니어링&lt;/strong>: 데이터 파이프라인 설계 및 구축&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="-경력-및-자격증">🚀 경력 및 자격증&lt;/h2>
-&lt;ul>
-&lt;li>&lt;strong>DevOps 엔지니어&lt;/strong> (2년 3개월 경험)&lt;/li>
-&lt;li>&lt;strong>보유 자격증&lt;/strong>
-&lt;ul>
-&lt;li>AWS SAA (Solutions Architect – Associate)&lt;/li>
-&lt;li>정보처리기사&lt;/li>
-&lt;li>리눅스 마스터 2급&lt;/li>
-&lt;li>네트워크 관리사&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="-이-블로그에서-다루는-내용">📌 이 블로그에서 다루는 내용&lt;/h2>
-&lt;ul>
-&lt;li>MLOps 실무 기술 및 학습 노트&lt;/li>
-&lt;li>프로젝트/실습 기록 및 코드 공유&lt;/li>
-&lt;li>인프라 운영 및 자동화 노하우&lt;/li>
-&lt;li>기술 면접 및 자격증 준비 과정&lt;/li>
-&lt;li>실전에서 부딪히며 얻은 &lt;strong>결정적 지식&lt;/strong>과 실무 팁&lt;/li>
-&lt;li>DevOps → MLOps로의 &lt;strong>전환 여정&lt;/strong>과 개인적인 성장 이야기&lt;/li>
-&lt;/ul>
-&lt;p>이 블로그가 같은 길을 걷는 분들에게도&lt;br>
-작은 인사이트와 응원이 되길 바랍니다 😊&lt;/p></description></item><item><title>Projects</title><link>https://keonhoban.github.io/mlops-journey/projects/</link><pubDate>Sun, 06 Apr 2025 19:02:16 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/</guid><description>&lt;h1 id="-프로젝트-준비-중입니다">🛠️ 프로젝트 준비 중입니다!&lt;/h1>
-&lt;p>현재 진행 중인 MLOps, DevOps, 데이터 엔지니어링 프로젝트를&lt;br>
-정리하여 이 공간에 업로드할 예정입니다. 😊&lt;/p>
-&lt;ul>
-&lt;li>Terraform, Kubernetes, MLflow, Airflow 실습 프로젝트&lt;/li>
-&lt;li>AWS 기반 인프라 자동화 예제&lt;/li>
-&lt;li>Kubeflow 파이프라인 구성 실전 사례&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>곧 다양한 실전 경험을 담아 멋진 포트폴리오로 채워갈게요!&lt;/strong>&lt;/p>
-&lt;hr>
-&lt;p>📝 블로그 글로 먼저 일부 내용을 보시려면 👉 &lt;a href="https://keonhoban.github.io/mlops-journey/posts/">📚 Blog&lt;/a>&lt;/p></description></item></channel></rss>
+&lt;/ul></description></item></channel></rss>

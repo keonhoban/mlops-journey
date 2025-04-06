@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Linux on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/linux/</link><description>Recent content in Linux on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 06 Apr 2025 21:26:55 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>linux-01</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/01/</link><pubDate>Sun, 06 Apr 2025 21:26:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/01/</guid><description>&lt;h1 id="-1장-셸이란">✅ 1장. 셸이란?&lt;/h1>
+&lt;hr>
+&lt;h2 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>핵심 내용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>커널&lt;/strong>&lt;/td>
+&lt;td>OS의 핵심: 하드웨어 제어, 프로세스/파일/네트워크 관리 담당. 셸을 통해 간접 제어&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>셸&lt;/strong>&lt;/td>
+&lt;td>커널과 사용자 사이의 인터페이스. 명령어를 해석하여 커널 호출. bash, zsh 등 다양한 종류&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>프롬프트&lt;/strong>&lt;/td>
+&lt;td>셸이 입력을 기다리는 상태 표시. 사용자 구분 (&lt;code>$&lt;/code>, &lt;code>#&lt;/code>) 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>셸 스크립트&lt;/strong>&lt;/td>
+&lt;td>반복 작업 자동화. 조건문/반복문/함수 등 프로그래밍 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>로그인/비로그인 셸&lt;/strong>&lt;/td>
+&lt;td>로그인 시 환경 설정(&lt;code>/etc/profile&lt;/code>), 서브 셸은 &lt;code>.bashrc&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>터미널&lt;/strong>&lt;/td>
+&lt;td>입출력 UI 제공 인터페이스. 셸은 그 안에서 명령어 처리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>셸 ≠ 터미널&lt;/strong>&lt;/td>
+&lt;td>터미널은 인터페이스, 셸은 해석기. 기능 분리됨&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-핵심-도식화--구조도-포맷">🔄 핵심 도식화 / 구조도 포맷&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[User 입력]
+↓
+[터미널 (입출력 인터페이스)]
+↓
+[셸 (명령어 해석기)]
+↓
+[커널 (시스템 자원 제어)]
+↓
+[하드웨어: CPU, 메모리, I/O 등]
+&lt;/code>&lt;/pre>&lt;pre tabindex="0">&lt;code>[셸 종류 예시]
+bash | zsh | sh | fish
+↓ ↓ ↓
+문법/기능 차이 → 스크립트 이식성 주의
+&lt;/code>&lt;/pre>&lt;pre tabindex="0">&lt;code>[셸 초기화 파일 흐름도]
+로그인 셸: /etc/profile → ~/.bash_profile
+비로그인 셸: ~/.bashrc
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실무-연결-예시">🔧 실무 연결 예시&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>셸 활용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>로그 정리 자동화&lt;/strong>&lt;/td>
+&lt;td>모델 서버 로그를 특정 디렉토리로 이동, 압축&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>에러 핸들링&lt;/strong>&lt;/td>
+&lt;td>셸 스크립트에 &lt;code>set -euo pipefail&lt;/code> 적용해 실패 즉시 종료&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 배포&lt;/strong>&lt;/td>
+&lt;td>셸에서 &lt;code>curl&lt;/code> + &lt;code>jq&lt;/code> 조합으로 MLflow REST API 호출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>환경별 설정 관리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>.bashrc&lt;/code>/&lt;code>.bash_profile&lt;/code>에서 PATH, 프롬프트 다르게 설정&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-실전-체크리스트">✅ 실전 체크리스트&lt;/h2>
+&lt;ul>
+&lt;li>&lt;code>#!/usr/bin/env bash&lt;/code> → 이식성 확보&lt;/li>
+&lt;li>&lt;code>set -euo pipefail&lt;/code> → 안정성 강화&lt;/li>
+&lt;li>실행 권한은 &lt;code>chmod +x&lt;/code> 또는 &lt;code>chmod 700&lt;/code>&lt;/li>
+&lt;li>원격 서버/컨테이너 환경 → &lt;code>.bashrc&lt;/code> 실행 여부 확인&lt;/li>
+&lt;li>&lt;code>$SHELL&lt;/code>, &lt;code>ps -p $$&lt;/code> → 현재 셸 상태 점검&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-오해-주의-포인트">⚠️ 오해 주의 포인트&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>터미널과 셸은 다르다&lt;/strong>: 터미널은 UI, 셸은 명령 해석기&lt;/li>
+&lt;li>&lt;code>set -e&lt;/code>는 파이프라인 전체가 아닌 &lt;em>첫 실패 명령어만 종료&lt;/em> → &lt;code>pipefail&lt;/code>과 병행 필수&lt;/li>
+&lt;li>비로그인 셸에서는 &lt;code>.bashrc&lt;/code>만 실행되며, &lt;code>.bash_profile&lt;/code>은 무시됨&lt;/li>
+&lt;/ul></description></item></channel></rss>
