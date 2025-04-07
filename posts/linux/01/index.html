@@ -1,223 +1,168 @@
-<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>linux-01 | 🏔️ MLOps Journey</title>
-<meta name=keywords content><meta name=description content="✅ 1장. 셸이란?
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>셸이란? | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='📌 셸의 본질
 
-🧠 결정적 지식 요약
+셸은 사용자 ↔ 커널 사이를 연결하는 명령어 해석기
+
+🧠 결정적 핵심 요약
 
   
       
           개념
-          핵심 내용
+          설명
       
   
   
       
           커널
-          OS의 핵심: 하드웨어 제어, 프로세스/파일/네트워크 관리 담당. 셸을 통해 간접 제어
+          시스템 자원(CPU, 메모리, 파일 등) 제어 담당
       
       
           셸
-          커널과 사용자 사이의 인터페이스. 명령어를 해석하여 커널 호출. bash, zsh 등 다양한 종류
-      
-      
-          프롬프트
-          셸이 입력을 기다리는 상태 표시. 사용자 구분 ($, #) 가능
-      
-      
-          셸 스크립트
-          반복 작업 자동화. 조건문/반복문/함수 등 프로그래밍 가능
-      
-      
-          로그인/비로그인 셸
-          로그인 시 환경 설정(/etc/profile), 서브 셸은 .bashrc
+          명령어 해석기. 사용자 입력을 커널로 전달
       
       
           터미널
-          입출력 UI 제공 인터페이스. 셸은 그 안에서 명령어 처리
+          셸과 사용자의 입출력 인터페이스
       
       
-          셸 ≠ 터미널
-          터미널은 인터페이스, 셸은 해석기. 기능 분리됨
-      
-  
-
-
-🔄 핵심 도식화 / 구조도 포맷
-[User 입력]
-    ↓
-[터미널 (입출력 인터페이스)]
-    ↓
-[셸 (명령어 해석기)]
-    ↓
-[커널 (시스템 자원 제어)]
-    ↓
-[하드웨어: CPU, 메모리, I/O 등]
-[셸 종류 예시]
-bash | zsh | sh | fish
- ↓      ↓      ↓
-문법/기능 차이 → 스크립트 이식성 주의
-[셸 초기화 파일 흐름도]
-로그인 셸: /etc/profile → ~/.bash_profile
-비로그인 셸: ~/.bashrc
-
-🔧 실무 연결 예시
-
-  
-      
-          상황
-          셸 활용 예시
-      
-  
-  
-      
-          로그 정리 자동화
-          모델 서버 로그를 특정 디렉토리로 이동, 압축
+          셸 스크립트
+          반복 작업 자동화. 조건문/반복문 가능
       
       
-          에러 핸들링
-          셸 스크립트에 set -euo pipefail 적용해 실패 즉시 종료
-      
-      
-          모델 배포
-          셸에서 curl + jq 조합으로 MLflow REST API 호출
-      
-      
-          환경별 설정 관리
-          .bashrc/.bash_profile에서 PATH, 프롬프트 다르게 설정
+          초기화 파일
+          셸 시작 시 실행. 환경 변수/프롬프트 설정
       
   
 
 
-✅ 실전 체크리스트
+🖼️ 셸 동작 흐름 (도식화)
+[ 사용자 입력 ]
+       ↓
+[ 터미널: 입출력 UI ]
+       ↓
+[ 셸: 명령어 해석기 ]
+       ↓
+[ 커널: 자원 제어 ]
+       ↓
+[ 하드웨어 ]
 
-#!/usr/bin/env bash → 이식성 확보
-set -euo pipefail → 안정성 강화
-실행 권한은 chmod +x 또는 chmod 700
-원격 서버/컨테이너 환경 → .bashrc 실행 여부 확인
-$SHELL, ps -p $$ → 현재 셸 상태 점검
+🔍 실무 시나리오 연결
+
+  
+      
+          업무 상황
+          셸 사용 방식
+      
+  
+  
+      
+          ✅ 모델 로그 정리
+          매일 bash로 로그 백업 & 압축 (tar, mv)
+      
+      
+          ✅ 배포 자동화
+          curl + jq로 MLflow API 호출, 모델 등록
+      
+      
+          ✅ 서버 초기 설정
+          bash로 디렉터리 생성, 권한 변경, 변수 설정
+      
+      
+          ✅ 디버깅
+          .bashrc, $PATH, echo $VAR로 환경 확인
+      
+  
 
 
-⚠️ 오해 주의 포인트
+실무에서 셸은 &ldquo;빠르고 가벼운 자동화 도구"로'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/01/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/01/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/01/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="셸이란?"><meta property="og:description" content='📌 셸의 본질 셸은 사용자 ↔ 커널 사이를 연결하는 명령어 해석기
+🧠 결정적 핵심 요약 개념 설명 커널 시스템 자원(CPU, 메모리, 파일 등) 제어 담당 셸 명령어 해석기. 사용자 입력을 커널로 전달 터미널 셸과 사용자의 입출력 인터페이스 셸 스크립트 반복 작업 자동화. 조건문/반복문 가능 초기화 파일 셸 시작 시 실행. 환경 변수/프롬프트 설정 🖼️ 셸 동작 흐름 (도식화) [ 사용자 입력 ] ↓ [ 터미널: 입출력 UI ] ↓ [ 셸: 명령어 해석기 ] ↓ [ 커널: 자원 제어 ] ↓ [ 하드웨어 ] 🔍 실무 시나리오 연결 업무 상황 셸 사용 방식 ✅ 모델 로그 정리 매일 bash로 로그 백업 & 압축 (tar, mv) ✅ 배포 자동화 curl + jq로 MLflow API 호출, 모델 등록 ✅ 서버 초기 설정 bash로 디렉터리 생성, 권한 변경, 변수 설정 ✅ 디버깅 .bashrc, $PATH, echo $VAR로 환경 확인 실무에서 셸은 “빠르고 가벼운 자동화 도구"로'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-06T21:26:55+09:00"><meta property="article:modified_time" content="2025-04-06T21:26:55+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="셸이란?"><meta name=twitter:description content='📌 셸의 본질
 
-터미널과 셸은 다르다: 터미널은 UI, 셸은 명령 해석기
-set -e는 파이프라인 전체가 아닌 첫 실패 명령어만 종료 → pipefail과 병행 필수
-비로그인 셸에서는 .bashrc만 실행되며, .bash_profile은 무시됨
-"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/01/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/01/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/01/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="linux-01"><meta property="og:description" content="✅ 1장. 셸이란? 🧠 결정적 지식 요약 개념 핵심 내용 커널 OS의 핵심: 하드웨어 제어, 프로세스/파일/네트워크 관리 담당. 셸을 통해 간접 제어 셸 커널과 사용자 사이의 인터페이스. 명령어를 해석하여 커널 호출. bash, zsh 등 다양한 종류 프롬프트 셸이 입력을 기다리는 상태 표시. 사용자 구분 ($, #) 가능 셸 스크립트 반복 작업 자동화. 조건문/반복문/함수 등 프로그래밍 가능 로그인/비로그인 셸 로그인 시 환경 설정(/etc/profile), 서브 셸은 .bashrc 터미널 입출력 UI 제공 인터페이스. 셸은 그 안에서 명령어 처리 셸 ≠ 터미널 터미널은 인터페이스, 셸은 해석기. 기능 분리됨 🔄 핵심 도식화 / 구조도 포맷 [User 입력] ↓ [터미널 (입출력 인터페이스)] ↓ [셸 (명령어 해석기)] ↓ [커널 (시스템 자원 제어)] ↓ [하드웨어: CPU, 메모리, I/O 등] [셸 종류 예시] bash | zsh | sh | fish ↓ ↓ ↓ 문법/기능 차이 → 스크립트 이식성 주의 [셸 초기화 파일 흐름도] 로그인 셸: /etc/profile → ~/.bash_profile 비로그인 셸: ~/.bashrc 🔧 실무 연결 예시 상황 셸 활용 예시 로그 정리 자동화 모델 서버 로그를 특정 디렉토리로 이동, 압축 에러 핸들링 셸 스크립트에 set -euo pipefail 적용해 실패 즉시 종료 모델 배포 셸에서 curl + jq 조합으로 MLflow REST API 호출 환경별 설정 관리 .bashrc/.bash_profile에서 PATH, 프롬프트 다르게 설정 ✅ 실전 체크리스트 #!/usr/bin/env bash → 이식성 확보 set -euo pipefail → 안정성 강화 실행 권한은 chmod +x 또는 chmod 700 원격 서버/컨테이너 환경 → .bashrc 실행 여부 확인 $SHELL, ps -p $$ → 현재 셸 상태 점검 ⚠️ 오해 주의 포인트 터미널과 셸은 다르다: 터미널은 UI, 셸은 명령 해석기 set -e는 파이프라인 전체가 아닌 첫 실패 명령어만 종료 → pipefail과 병행 필수 비로그인 셸에서는 .bashrc만 실행되며, .bash_profile은 무시됨 "><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-06T21:26:55+09:00"><meta property="article:modified_time" content="2025-04-06T21:26:55+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="linux-01"><meta name=twitter:description content="✅ 1장. 셸이란?
+셸은 사용자 ↔ 커널 사이를 연결하는 명령어 해석기
 
-🧠 결정적 지식 요약
+🧠 결정적 핵심 요약
 
   
       
           개념
-          핵심 내용
+          설명
       
   
   
       
           커널
-          OS의 핵심: 하드웨어 제어, 프로세스/파일/네트워크 관리 담당. 셸을 통해 간접 제어
+          시스템 자원(CPU, 메모리, 파일 등) 제어 담당
       
       
           셸
-          커널과 사용자 사이의 인터페이스. 명령어를 해석하여 커널 호출. bash, zsh 등 다양한 종류
-      
-      
-          프롬프트
-          셸이 입력을 기다리는 상태 표시. 사용자 구분 ($, #) 가능
-      
-      
-          셸 스크립트
-          반복 작업 자동화. 조건문/반복문/함수 등 프로그래밍 가능
-      
-      
-          로그인/비로그인 셸
-          로그인 시 환경 설정(/etc/profile), 서브 셸은 .bashrc
+          명령어 해석기. 사용자 입력을 커널로 전달
       
       
           터미널
-          입출력 UI 제공 인터페이스. 셸은 그 안에서 명령어 처리
+          셸과 사용자의 입출력 인터페이스
       
       
-          셸 ≠ 터미널
-          터미널은 인터페이스, 셸은 해석기. 기능 분리됨
-      
-  
-
-
-🔄 핵심 도식화 / 구조도 포맷
-[User 입력]
-    ↓
-[터미널 (입출력 인터페이스)]
-    ↓
-[셸 (명령어 해석기)]
-    ↓
-[커널 (시스템 자원 제어)]
-    ↓
-[하드웨어: CPU, 메모리, I/O 등]
-[셸 종류 예시]
-bash | zsh | sh | fish
- ↓      ↓      ↓
-문법/기능 차이 → 스크립트 이식성 주의
-[셸 초기화 파일 흐름도]
-로그인 셸: /etc/profile → ~/.bash_profile
-비로그인 셸: ~/.bashrc
-
-🔧 실무 연결 예시
-
-  
-      
-          상황
-          셸 활용 예시
-      
-  
-  
-      
-          로그 정리 자동화
-          모델 서버 로그를 특정 디렉토리로 이동, 압축
+          셸 스크립트
+          반복 작업 자동화. 조건문/반복문 가능
       
       
-          에러 핸들링
-          셸 스크립트에 set -euo pipefail 적용해 실패 즉시 종료
-      
-      
-          모델 배포
-          셸에서 curl + jq 조합으로 MLflow REST API 호출
-      
-      
-          환경별 설정 관리
-          .bashrc/.bash_profile에서 PATH, 프롬프트 다르게 설정
+          초기화 파일
+          셸 시작 시 실행. 환경 변수/프롬프트 설정
       
   
 
 
-✅ 실전 체크리스트
+🖼️ 셸 동작 흐름 (도식화)
+[ 사용자 입력 ]
+       ↓
+[ 터미널: 입출력 UI ]
+       ↓
+[ 셸: 명령어 해석기 ]
+       ↓
+[ 커널: 자원 제어 ]
+       ↓
+[ 하드웨어 ]
 
-#!/usr/bin/env bash → 이식성 확보
-set -euo pipefail → 안정성 강화
-실행 권한은 chmod +x 또는 chmod 700
-원격 서버/컨테이너 환경 → .bashrc 실행 여부 확인
-$SHELL, ps -p $$ → 현재 셸 상태 점검
+🔍 실무 시나리오 연결
+
+  
+      
+          업무 상황
+          셸 사용 방식
+      
+  
+  
+      
+          ✅ 모델 로그 정리
+          매일 bash로 로그 백업 & 압축 (tar, mv)
+      
+      
+          ✅ 배포 자동화
+          curl + jq로 MLflow API 호출, 모델 등록
+      
+      
+          ✅ 서버 초기 설정
+          bash로 디렉터리 생성, 권한 변경, 변수 설정
+      
+      
+          ✅ 디버깅
+          .bashrc, $PATH, echo $VAR로 환경 확인
+      
+  
 
 
-⚠️ 오해 주의 포인트
-
-터미널과 셸은 다르다: 터미널은 UI, 셸은 명령 해석기
-set -e는 파이프라인 전체가 아닌 첫 실패 명령어만 종료 → pipefail과 병행 필수
-비로그인 셸에서는 .bashrc만 실행되며, .bash_profile은 무시됨
-"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"linux-01","item":"https://keonhoban.github.io/mlops-journey/posts/linux/01/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"linux-01","name":"linux-01","description":"✅ 1장. 셸이란? 🧠 결정적 지식 요약 개념 핵심 내용 커널 OS의 핵심: 하드웨어 제어, 프로세스/파일/네트워크 관리 담당. 셸을 통해 간접 제어 셸 커널과 사용자 사이의 인터페이스. 명령어를 해석하여 커널 호출. bash, zsh 등 다양한 종류 프롬프트 셸이 입력을 기다리는 상태 표시. 사용자 구분 ($, #) 가능 셸 스크립트 반복 작업 자동화. 조건문/반복문/함수 등 프로그래밍 가능 로그인/비로그인 셸 로그인 시 환경 설정(/etc/profile), 서브 셸은 .bashrc 터미널 입출력 UI 제공 인터페이스. 셸은 그 안에서 명령어 처리 셸 ≠ 터미널 터미널은 인터페이스, 셸은 해석기. 기능 분리됨 🔄 핵심 도식화 / 구조도 포맷 [User 입력] ↓ [터미널 (입출력 인터페이스)] ↓ [셸 (명령어 해석기)] ↓ [커널 (시스템 자원 제어)] ↓ [하드웨어: CPU, 메모리, I/O 등] [셸 종류 예시] bash | zsh | sh | fish ↓ ↓ ↓ 문법/기능 차이 → 스크립트 이식성 주의 [셸 초기화 파일 흐름도] 로그인 셸: /etc/profile → ~/.bash_profile 비로그인 셸: ~/.bashrc 🔧 실무 연결 예시 상황 셸 활용 예시 로그 정리 자동화 모델 서버 로그를 특정 디렉토리로 이동, 압축 에러 핸들링 셸 스크립트에 set -euo pipefail 적용해 실패 즉시 종료 모델 배포 셸에서 curl + jq 조합으로 MLflow REST API 호출 환경별 설정 관리 .bashrc/.bash_profile에서 PATH, 프롬프트 다르게 설정 ✅ 실전 체크리스트 #!/usr/bin/env bash → 이식성 확보 set -euo pipefail → 안정성 강화 실행 권한은 chmod +x 또는 chmod 700 원격 서버/컨테이너 환경 → .bashrc 실행 여부 확인 $SHELL, ps -p $$ → 현재 셸 상태 점검 ⚠️ 오해 주의 포인트 터미널과 셸은 다르다: 터미널은 UI, 셸은 명령 해석기 set -e는 파이프라인 전체가 아닌 첫 실패 명령어만 종료 → pipefail과 병행 필수 비로그인 셸에서는 .bashrc만 실행되며, .bash_profile은 무시됨 ","keywords":[],"articleBody":"✅ 1장. 셸이란? 🧠 결정적 지식 요약 개념 핵심 내용 커널 OS의 핵심: 하드웨어 제어, 프로세스/파일/네트워크 관리 담당. 셸을 통해 간접 제어 셸 커널과 사용자 사이의 인터페이스. 명령어를 해석하여 커널 호출. bash, zsh 등 다양한 종류 프롬프트 셸이 입력을 기다리는 상태 표시. 사용자 구분 ($, #) 가능 셸 스크립트 반복 작업 자동화. 조건문/반복문/함수 등 프로그래밍 가능 로그인/비로그인 셸 로그인 시 환경 설정(/etc/profile), 서브 셸은 .bashrc 터미널 입출력 UI 제공 인터페이스. 셸은 그 안에서 명령어 처리 셸 ≠ 터미널 터미널은 인터페이스, 셸은 해석기. 기능 분리됨 🔄 핵심 도식화 / 구조도 포맷 [User 입력] ↓ [터미널 (입출력 인터페이스)] ↓ [셸 (명령어 해석기)] ↓ [커널 (시스템 자원 제어)] ↓ [하드웨어: CPU, 메모리, I/O 등] [셸 종류 예시] bash | zsh | sh | fish ↓ ↓ ↓ 문법/기능 차이 → 스크립트 이식성 주의 [셸 초기화 파일 흐름도] 로그인 셸: /etc/profile → ~/.bash_profile 비로그인 셸: ~/.bashrc 🔧 실무 연결 예시 상황 셸 활용 예시 로그 정리 자동화 모델 서버 로그를 특정 디렉토리로 이동, 압축 에러 핸들링 셸 스크립트에 set -euo pipefail 적용해 실패 즉시 종료 모델 배포 셸에서 curl + jq 조합으로 MLflow REST API 호출 환경별 설정 관리 .bashrc/.bash_profile에서 PATH, 프롬프트 다르게 설정 ✅ 실전 체크리스트 #!/usr/bin/env bash → 이식성 확보 set -euo pipefail → 안정성 강화 실행 권한은 chmod +x 또는 chmod 700 원격 서버/컨테이너 환경 → .bashrc 실행 여부 확인 $SHELL, ps -p $$ → 현재 셸 상태 점검 ⚠️ 오해 주의 포인트 터미널과 셸은 다르다: 터미널은 UI, 셸은 명령 해석기 set -e는 파이프라인 전체가 아닌 첫 실패 명령어만 종료 → pipefail과 병행 필수 비로그인 셸에서는 .bashrc만 실행되며, .bash_profile은 무시됨 ","wordCount":"259","inLanguage":"en","datePublished":"2025-04-06T21:26:55+09:00","dateModified":"2025-04-06T21:26:55+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/01/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">linux-01</h1><div class=post-meta><span title='2025-04-06 21:26:55 +0900 +0900'>April 6, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h1 id=-1장-셸이란>✅ 1장. 셸이란?<a hidden class=anchor aria-hidden=true href=#-1장-셸이란>#</a></h1><hr><h2 id=-결정적-지식-요약>🧠 결정적 지식 요약<a hidden class=anchor aria-hidden=true href=#-결정적-지식-요약>#</a></h2><table><thead><tr><th>개념</th><th>핵심 내용</th></tr></thead><tbody><tr><td><strong>커널</strong></td><td>OS의 핵심: 하드웨어 제어, 프로세스/파일/네트워크 관리 담당. 셸을 통해 간접 제어</td></tr><tr><td><strong>셸</strong></td><td>커널과 사용자 사이의 인터페이스. 명령어를 해석하여 커널 호출. bash, zsh 등 다양한 종류</td></tr><tr><td><strong>프롬프트</strong></td><td>셸이 입력을 기다리는 상태 표시. 사용자 구분 (<code>$</code>, <code>#</code>) 가능</td></tr><tr><td><strong>셸 스크립트</strong></td><td>반복 작업 자동화. 조건문/반복문/함수 등 프로그래밍 가능</td></tr><tr><td><strong>로그인/비로그인 셸</strong></td><td>로그인 시 환경 설정(<code>/etc/profile</code>), 서브 셸은 <code>.bashrc</code></td></tr><tr><td><strong>터미널</strong></td><td>입출력 UI 제공 인터페이스. 셸은 그 안에서 명령어 처리</td></tr><tr><td><strong>셸 ≠ 터미널</strong></td><td>터미널은 인터페이스, 셸은 해석기. 기능 분리됨</td></tr></tbody></table><hr><h2 id=-핵심-도식화--구조도-포맷>🔄 핵심 도식화 / 구조도 포맷<a hidden class=anchor aria-hidden=true href=#-핵심-도식화--구조도-포맷>#</a></h2><pre tabindex=0><code>[User 입력]
-    ↓
-[터미널 (입출력 인터페이스)]
-    ↓
-[셸 (명령어 해석기)]
-    ↓
-[커널 (시스템 자원 제어)]
-    ↓
-[하드웨어: CPU, 메모리, I/O 등]
-</code></pre><pre tabindex=0><code>[셸 종류 예시]
-bash | zsh | sh | fish
- ↓      ↓      ↓
-문법/기능 차이 → 스크립트 이식성 주의
-</code></pre><pre tabindex=0><code>[셸 초기화 파일 흐름도]
-로그인 셸: /etc/profile → ~/.bash_profile
-비로그인 셸: ~/.bashrc
-</code></pre><hr><h2 id=-실무-연결-예시>🔧 실무 연결 예시<a hidden class=anchor aria-hidden=true href=#-실무-연결-예시>#</a></h2><table><thead><tr><th>상황</th><th>셸 활용 예시</th></tr></thead><tbody><tr><td><strong>로그 정리 자동화</strong></td><td>모델 서버 로그를 특정 디렉토리로 이동, 압축</td></tr><tr><td><strong>에러 핸들링</strong></td><td>셸 스크립트에 <code>set -euo pipefail</code> 적용해 실패 즉시 종료</td></tr><tr><td><strong>모델 배포</strong></td><td>셸에서 <code>curl</code> + <code>jq</code> 조합으로 MLflow REST API 호출</td></tr><tr><td><strong>환경별 설정 관리</strong></td><td><code>.bashrc</code>/<code>.bash_profile</code>에서 PATH, 프롬프트 다르게 설정</td></tr></tbody></table><hr><h2 id=-실전-체크리스트>✅ 실전 체크리스트<a hidden class=anchor aria-hidden=true href=#-실전-체크리스트>#</a></h2><ul><li><code>#!/usr/bin/env bash</code> → 이식성 확보</li><li><code>set -euo pipefail</code> → 안정성 강화</li><li>실행 권한은 <code>chmod +x</code> 또는 <code>chmod 700</code></li><li>원격 서버/컨테이너 환경 → <code>.bashrc</code> 실행 여부 확인</li><li><code>$SHELL</code>, <code>ps -p $$</code> → 현재 셸 상태 점검</li></ul><hr><h2 id=-오해-주의-포인트>⚠️ 오해 주의 포인트<a hidden class=anchor aria-hidden=true href=#-오해-주의-포인트>#</a></h2><ul><li><strong>터미널과 셸은 다르다</strong>: 터미널은 UI, 셸은 명령 해석기</li><li><code>set -e</code>는 파이프라인 전체가 아닌 <em>첫 실패 명령어만 종료</em> → <code>pipefail</code>과 병행 필수</li><li>비로그인 셸에서는 <code>.bashrc</code>만 실행되며, <code>.bash_profile</code>은 무시됨</li></ul></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/network/01/><span class=title>« Prev</span><br><span>network-01</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+실무에서 셸은 &ldquo;빠르고 가벼운 자동화 도구"로'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"셸이란?","item":"https://keonhoban.github.io/mlops-journey/posts/linux/01/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"셸이란?","name":"셸이란?","description":"📌 셸의 본질 셸은 사용자 ↔ 커널 사이를 연결하는 명령어 해석기\n🧠 결정적 핵심 요약 개념 설명 커널 시스템 자원(CPU, 메모리, 파일 등) 제어 담당 셸 명령어 해석기. 사용자 입력을 커널로 전달 터미널 셸과 사용자의 입출력 인터페이스 셸 스크립트 반복 작업 자동화. 조건문/반복문 가능 초기화 파일 셸 시작 시 실행. 환경 변수/프롬프트 설정 🖼️ 셸 동작 흐름 (도식화) [ 사용자 입력 ] ↓ [ 터미널: 입출력 UI ] ↓ [ 셸: 명령어 해석기 ] ↓ [ 커널: 자원 제어 ] ↓ [ 하드웨어 ] 🔍 실무 시나리오 연결 업무 상황 셸 사용 방식 ✅ 모델 로그 정리 매일 bash로 로그 백업 \u0026amp; 압축 (tar, mv) ✅ 배포 자동화 curl + jq로 MLflow API 호출, 모델 등록 ✅ 서버 초기 설정 bash로 디렉터리 생성, 권한 변경, 변수 설정 ✅ 디버깅 .bashrc, $PATH, echo $VAR로 환경 확인 실무에서 셸은 \u0026ldquo;빠르고 가벼운 자동화 도구\u0026quot;로\n","keywords":[],"articleBody":"📌 셸의 본질 셸은 사용자 ↔ 커널 사이를 연결하는 명령어 해석기\n🧠 결정적 핵심 요약 개념 설명 커널 시스템 자원(CPU, 메모리, 파일 등) 제어 담당 셸 명령어 해석기. 사용자 입력을 커널로 전달 터미널 셸과 사용자의 입출력 인터페이스 셸 스크립트 반복 작업 자동화. 조건문/반복문 가능 초기화 파일 셸 시작 시 실행. 환경 변수/프롬프트 설정 🖼️ 셸 동작 흐름 (도식화) [ 사용자 입력 ] ↓ [ 터미널: 입출력 UI ] ↓ [ 셸: 명령어 해석기 ] ↓ [ 커널: 자원 제어 ] ↓ [ 하드웨어 ] 🔍 실무 시나리오 연결 업무 상황 셸 사용 방식 ✅ 모델 로그 정리 매일 bash로 로그 백업 \u0026 압축 (tar, mv) ✅ 배포 자동화 curl + jq로 MLflow API 호출, 모델 등록 ✅ 서버 초기 설정 bash로 디렉터리 생성, 권한 변경, 변수 설정 ✅ 디버깅 .bashrc, $PATH, echo $VAR로 환경 확인 실무에서 셸은 “빠르고 가벼운 자동화 도구\"로\nMLOps 파이프라인의 준비 작업에 자주 활용됨\n💡 실전 팁 모음 #!/usr/bin/env bash → 환경 독립적 실행 set -euo pipefail → 스크립트 중단 조건 강화 ps -p $$, echo $SHELL → 현재 셸 확인 chmod +x로 실행 권한 부여 .bashrc만 실행되는 환경(비로그인 셸) 주의 🛠️ MLOps 실전 연결 셸은 MLOps 자동화의 출발점\n데이터 수집: scp, rsync로 원천데이터 이동 디렉터리 구성: 모델/로그 디렉토리 셸로 생성 MLflow 연동: bash에서 REST API 호출 경량 스케줄링: cron + bash 조합으로 간단한 워크플로우 운영 [ cron ] ↓ [ bash 스크립트 ] ↓ [ 데이터 정리 + API 호출 + 로그 압축 ] ❗ 오해 방지 포인트 셸 ≠ 터미널: UI와 해석기는 다름 set -e는 파이프라인 오류 잡지 못함 → pipefail과 같이 써야 함 .bashrc는 로그인 셸에서는 직접 실행되지 않음 🏁 마무리 요약 셸은 단순 명령어 도구가 아니라\n자동화와 실무 흐름의 첫 단추\n","wordCount":"278","inLanguage":"en","datePublished":"2025-04-06T21:26:55+09:00","dateModified":"2025-04-06T21:26:55+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/01/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">셸이란?</h1><div class=post-meta><span title='2025-04-06 21:26:55 +0900 +0900'>April 6, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h3 id=-셸의-본질>📌 셸의 본질<a hidden class=anchor aria-hidden=true href=#-셸의-본질>#</a></h3><blockquote><p>셸은 사용자 ↔ 커널 사이를 연결하는 명령어 해석기</p></blockquote><hr><h3 id=-결정적-핵심-요약>🧠 결정적 핵심 요약<a hidden class=anchor aria-hidden=true href=#-결정적-핵심-요약>#</a></h3><table><thead><tr><th>개념</th><th>설명</th></tr></thead><tbody><tr><td><strong>커널</strong></td><td>시스템 자원(CPU, 메모리, 파일 등) 제어 담당</td></tr><tr><td><strong>셸</strong></td><td>명령어 해석기. 사용자 입력을 커널로 전달</td></tr><tr><td><strong>터미널</strong></td><td>셸과 사용자의 입출력 인터페이스</td></tr><tr><td><strong>셸 스크립트</strong></td><td>반복 작업 자동화. 조건문/반복문 가능</td></tr><tr><td><strong>초기화 파일</strong></td><td>셸 시작 시 실행. 환경 변수/프롬프트 설정</td></tr></tbody></table><hr><h3 id=-셸-동작-흐름-도식화>🖼️ 셸 동작 흐름 (도식화)<a hidden class=anchor aria-hidden=true href=#-셸-동작-흐름-도식화>#</a></h3><pre tabindex=0><code>[ 사용자 입력 ]
+       ↓
+[ 터미널: 입출력 UI ]
+       ↓
+[ 셸: 명령어 해석기 ]
+       ↓
+[ 커널: 자원 제어 ]
+       ↓
+[ 하드웨어 ]
+</code></pre><hr><h3 id=-실무-시나리오-연결>🔍 실무 시나리오 연결<a hidden class=anchor aria-hidden=true href=#-실무-시나리오-연결>#</a></h3><table><thead><tr><th>업무 상황</th><th>셸 사용 방식</th></tr></thead><tbody><tr><td>✅ 모델 로그 정리</td><td>매일 <code>bash</code>로 로그 백업 & 압축 (<code>tar</code>, <code>mv</code>)</td></tr><tr><td>✅ 배포 자동화</td><td><code>curl + jq</code>로 MLflow API 호출, 모델 등록</td></tr><tr><td>✅ 서버 초기 설정</td><td><code>bash</code>로 디렉터리 생성, 권한 변경, 변수 설정</td></tr><tr><td>✅ 디버깅</td><td><code>.bashrc</code>, <code>$PATH</code>, <code>echo $VAR</code>로 환경 확인</td></tr></tbody></table><blockquote><p>실무에서 셸은 &ldquo;빠르고 가벼운 자동화 도구"로</p><p>MLOps 파이프라인의 준비 작업에 자주 활용됨</p></blockquote><hr><h3 id=-실전-팁-모음>💡 실전 팁 모음<a hidden class=anchor aria-hidden=true href=#-실전-팁-모음>#</a></h3><ul><li><code>#!/usr/bin/env bash</code> → 환경 독립적 실행</li><li><code>set -euo pipefail</code> → 스크립트 중단 조건 강화</li><li><code>ps -p $$</code>, <code>echo $SHELL</code> → 현재 셸 확인</li><li><code>chmod +x</code>로 실행 권한 부여</li><li><code>.bashrc</code>만 실행되는 환경(비로그인 셸) 주의</li></ul><hr><h3 id=-mlops-실전-연결>🛠️ MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#-mlops-실전-연결>#</a></h3><blockquote><p>셸은 MLOps 자동화의 출발점</p></blockquote><ul><li><strong>데이터 수집</strong>: <code>scp</code>, <code>rsync</code>로 원천데이터 이동</li><li><strong>디렉터리 구성</strong>: 모델/로그 디렉토리 셸로 생성</li><li><strong>MLflow 연동</strong>: <code>bash</code>에서 REST API 호출</li><li><strong>경량 스케줄링</strong>: cron + bash 조합으로 간단한 워크플로우 운영</li></ul><pre tabindex=0><code>[ cron ]
+   ↓
+[ bash 스크립트 ]
+   ↓
+[ 데이터 정리 + API 호출 + 로그 압축 ]
+</code></pre><hr><h3 id=-오해-방지-포인트>❗ 오해 방지 포인트<a hidden class=anchor aria-hidden=true href=#-오해-방지-포인트>#</a></h3><ul><li><code>셸 ≠ 터미널</code>: UI와 해석기는 다름</li><li><code>set -e</code>는 파이프라인 오류 잡지 못함 → <code>pipefail</code>과 같이 써야 함</li><li><code>.bashrc</code>는 로그인 셸에서는 직접 실행되지 않음</li></ul><hr><h3 id=-마무리-요약>🏁 마무리 요약<a hidden class=anchor aria-hidden=true href=#-마무리-요약>#</a></h3><blockquote><p>셸은 단순 명령어 도구가 아니라</p><p><strong>자동화와 실무 흐름의 첫 단추</strong></p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/network/01/><span class=title>« Prev</span><br><span>컴퓨터 네트워크 개요</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
 </a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

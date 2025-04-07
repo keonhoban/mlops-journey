@@ -1,110 +1,50 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Network on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/network/</link><description>Recent content in Network on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 06 Apr 2025 21:52:45 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>network-01</title><link>https://keonhoban.github.io/mlops-journey/posts/network/01/</link><pubDate>Sun, 06 Apr 2025 21:52:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/01/</guid><description>&lt;h1 id="-1장-컴퓨터-네트워크-개요-실무--mlops-관점">✅ 1장. 컴퓨터 네트워크 개요 (실무 + MLOps 관점)&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Network on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/network/</link><description>Recent content in Network on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 06 Apr 2025 21:52:45 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>컴퓨터 네트워크 개요</title><link>https://keonhoban.github.io/mlops-journey/posts/network/01/</link><pubDate>Sun, 06 Apr 2025 21:52:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/01/</guid><description>&lt;h3 id="-네트워크란">📌 네트워크란?&lt;/h3>
+&lt;blockquote>
+&lt;p>데이터를 여러 기기 사이에서 효율적이고 안전하게 전달하기 위한 구조&lt;/p>&lt;/blockquote>
 &lt;hr>
-&lt;h2 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h2>
+&lt;h3 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h3>
 &lt;table>
 &lt;thead>
 &lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>핵심 요약&lt;/th>
+&lt;th>개념&lt;/th>
+&lt;th>설명&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
 &lt;tr>
-&lt;td>&lt;strong>LAN vs WAN&lt;/strong>&lt;/td>
-&lt;td>거리 기준으로 네트워크 구분 (LAN: 근거리 / WAN: 원거리)&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;strong>클라이언트-서버 / P2P&lt;/strong>&lt;/td>
-&lt;td>중앙 집중 vs 분산 구조&lt;/td>
+&lt;td>&lt;strong>LAN / WAN&lt;/strong>&lt;/td>
+&lt;td>거리 기반 구분: LAN은 근거리(회사/집), WAN은 광역(인터넷)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;strong>패킷 교환&lt;/strong>&lt;/td>
-&lt;td>데이터를 쪼개서 전송, 효율적이고 유연한 전송&lt;/td>
+&lt;td>데이터를 쪼개 전송 → 효율성 + 경로 유연성 확보&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;strong>TCP/IP 4계층&lt;/strong>&lt;/td>
-&lt;td>애플리케이션 → 트랜스포트 → 인터넷 → 네트워크 인터페이스&lt;/td>
+&lt;td>데이터 전달을 위한 표준 구조. 실무 문제 분석 기준&lt;/td>
 &lt;/tr>
 &lt;tr>
-&lt;td>&lt;strong>주요 프로토콜&lt;/strong>&lt;/td>
-&lt;td>HTTP, DNS, TCP, UDP, IP, ICMP, MAC 등&lt;/td>
+&lt;td>&lt;strong>중앙 vs 분산 구조&lt;/strong>&lt;/td>
+&lt;td>서버-클라이언트 vs P2P&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>대표 프로토콜&lt;/strong>&lt;/td>
+&lt;td>TCP/UDP/IP, HTTP, DNS, ICMP, MAC&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;strong>표준화 기관&lt;/strong>&lt;/td>
-&lt;td>IETF, IEEE, W3C → 각각 다른 계층/기술에 표준 제시&lt;/td>
+&lt;td>IETF (인터넷), IEEE (하드웨어), W3C (웹)&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
-&lt;h2 id="-핵심-구조도-tcpip-4계층">🔄 핵심 구조도: TCP/IP 4계층&lt;/h2>
-&lt;pre tabindex="0">&lt;code>[송신 측]
-1. Application Layer → 웹/메일/FTP 요청
-2. Transport Layer → TCP/UDP로 포트 분리, 신뢰성 처리
-3. Internet Layer → IP 주소 부여
-4. Network Interface Layer → MAC 주소 + 물리적 전송
-[수신 측]
-→ 역순으로 계층마다 헤더 제거하며 처리
-&lt;/code>&lt;/pre>&lt;hr>
-&lt;h2 id="-실무-연결-예시">🔧 실무 연결 예시&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>명령어 또는 예시&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>네트워크 상태 확인&lt;/td>
-&lt;td>&lt;code>ping&lt;/code>, &lt;code>traceroute&lt;/code>, &lt;code>nslookup&lt;/code>, &lt;code>curl&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>포트 열림 확인&lt;/td>
-&lt;td>&lt;code>telnet&lt;/code>, &lt;code>nc&lt;/code>, &lt;code>ss -tuln&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>네트워크 구조 시각화&lt;/td>
-&lt;td>&lt;code>ip addr&lt;/code>, &lt;code>ip route&lt;/code>, &lt;code>netstat&lt;/code>, &lt;code>ifconfig&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>서버/클라이언트 테스트&lt;/td>
-&lt;td>Python: &lt;code>socket&lt;/code>, &lt;code>curl&lt;/code> ↔ &lt;code>flask&lt;/code> 서버&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>게임/영상/모니터링&lt;/td>
-&lt;td>대부분 &lt;code>UDP&lt;/code> 기반 (빠른 응답 필요)&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-실전-체크리스트">✅ 실전 체크리스트&lt;/h2>
-&lt;ul>
-&lt;li>TCP/IP 4계층은 &lt;strong>실무 네트워크 트러블슈팅의 기준&lt;/strong>&lt;/li>
-&lt;li>실제 송수신 과정에서 각 계층이 어떤 정보를 추가/해석하는지 기억&lt;/li>
-&lt;li>&lt;strong>IP = 논리 주소 / MAC = 물리 주소&lt;/strong> → 스위치 vs 라우터 역할 이해&lt;/li>
-&lt;li>&lt;strong>프로토콜 조합&lt;/strong>은 트래픽 해석(패킷 분석)과 보안 정책 설정 시 핵심&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="-오해-주의-포인트">⚠️ 오해 주의 포인트&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>실수&lt;/th>
-&lt;th>바로잡기&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>TCP가 항상 더 좋은 프로토콜&lt;/td>
-&lt;td>UDP가 필요한 경우도 많음 (영상 스트리밍 등)&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>MAC 주소는 인터넷 전체에서 고유함&lt;/td>
-&lt;td>아니고, &lt;strong>로컬 네트워크 내에서만 유효&lt;/strong>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>DNS는 IP 주소를 관리한다&lt;/td>
-&lt;td>❌ 도메인 ↔ IP 변환만 함 (위치 관리 X)&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table></description></item></channel></rss>
+&lt;h3 id="-핵심-도식-tcpip-4계층-구조">🖼️ 핵심 도식: TCP/IP 4계층 구조&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[ Application ] ← 사용자 요청 (HTTP, FTP, SMTP)
+↓
+[ Transport ] ← TCP/UDP, 포트 기반 통신, 신뢰성
+↓
+[ Internet ] ← IP 주소 기반 경로 설정
+↓
+[ Network Interface ] ← MAC 주소 기반 물리 전송
+&lt;/code>&lt;/pre>&lt;blockquote>
+&lt;p>수신 측에서는 역순으로 계층별로 처리하며 원래 데이터 복원&lt;/p></description></item></channel></rss>
