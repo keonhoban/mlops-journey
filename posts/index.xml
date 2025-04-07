@@ -130,7 +130,7 @@ Client → SMTP → Mail Server → POP3 or IMAP → Client
 &lt;li>FTP 기본 모드는 &lt;strong>액티브&lt;/strong>, &lt;strong>방화벽 환경에서는 패시브&lt;/strong>&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="-마무리-요약">🏁 마무리 요약&lt;/h2>
+&lt;h3 id="-마무리-요약">🏁 마무리 요약&lt;/h3>
 &lt;blockquote>
 &lt;p>애플리케이션 계층은 &amp;ldquo;사용자에게 보이는 모든 네트워크 서비스의 출발점&amp;rdquo;&lt;/p></description></item><item><title>셸 단축키 &amp; 편집 기능</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/02/</link><pubDate>Mon, 07 Apr 2025 22:34:49 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/02/</guid><description>&lt;h3 id="-핵심-한줄-요약">📌 핵심 한줄 요약&lt;/h3>
 &lt;blockquote>
