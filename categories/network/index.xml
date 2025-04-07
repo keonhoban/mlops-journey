@@ -1,4 +1,138 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Network on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/network/</link><description>Recent content in Network on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 06 Apr 2025 21:52:45 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>컴퓨터 네트워크 개요</title><link>https://keonhoban.github.io/mlops-journey/posts/network/01/</link><pubDate>Sun, 06 Apr 2025 21:52:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/01/</guid><description>&lt;h3 id="-네트워크란">📌 네트워크란?&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Network on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/network/</link><description>Recent content in Network on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 07 Apr 2025 22:38:55 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>애플리케이션 계층 &amp; 주요 네트워크 서비스</title><link>https://keonhoban.github.io/mlops-journey/posts/network/02/</link><pubDate>Mon, 07 Apr 2025 22:38:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/02/</guid><description>&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>애플리케이션 계층은 &amp;ldquo;사용자에 가장 가까운 계층&amp;rdquo;&lt;/p>
+&lt;p>웹, 이메일, 파일 전송 같은 &lt;strong>직접 체감 가능한 서비스&lt;/strong>가 여기에 위치한다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>핵심 요약&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>애플리케이션 계층&lt;/strong>&lt;/td>
+&lt;td>사용자 인터페이스를 담당하는 계층 (HTTP, FTP, SMTP 등)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>HTTP&lt;/strong>&lt;/td>
+&lt;td>웹 통신 핵심 프로토콜. &lt;strong>Stateless&lt;/strong> 구조로, 쿠키/세션 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>쿠키/세션&lt;/strong>&lt;/td>
+&lt;td>사용자의 로그인 상태 등 &lt;strong>정보 지속 유지&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>SMTP/POP/IMAP&lt;/strong>&lt;/td>
+&lt;td>이메일 송수신 구조 구성 (SMTP = 전송, POP/IMAP = 수신)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>SSH/FTP&lt;/strong>&lt;/td>
+&lt;td>원격 접속과 파일 전송에 필수. SSH는 &lt;strong>암호화 보안 채널&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>AJAX&lt;/strong>&lt;/td>
+&lt;td>&lt;strong>페이지 새로고침 없이&lt;/strong> 서버와 비동기 통신 가능 (UX 개선)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-흐름도-정리">🖼️ 흐름도 정리&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[HTTP 요청 흐름]
+Client Server
+↓ GET /index.html
+↑ 200 OK + HTML
+[이메일 구조 흐름]
+Client → SMTP → Mail Server → POP3 or IMAP → Client
+[쿠키/세션 유지 흐름]
+서버: Set-Cookie → 클라이언트: Cookie 저장 → 서버가 세션 연결
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실전-시나리오-연결">🔍 실전 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>핵심 동작&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>API 응답 확인&lt;/strong>&lt;/td>
+&lt;td>&lt;code>curl -I http://example.com&lt;/code> → &lt;code>200&lt;/code>, &lt;code>404&lt;/code>, &lt;code>500&lt;/code> 등 상태 확인&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 서버 자동화 배포&lt;/strong>&lt;/td>
+&lt;td>&lt;code>ssh&lt;/code>, &lt;code>scp&lt;/code>, &lt;code>autossh&lt;/code>로 원격 제어 및 파일 배포&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>알림 메일 발송&lt;/strong>&lt;/td>
+&lt;td>SMTP 설정 후 MLflow/Airflow에서 이메일 전송 자동화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>AJAX 응답 분석&lt;/strong>&lt;/td>
+&lt;td>NGINX 로그 기반으로 비정상 응답(&lt;code>500&lt;/code>, &lt;code>404&lt;/code>) 탐지&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>보안 설정&lt;/strong>&lt;/td>
+&lt;td>Telnet 대신 SSH + 공개키 로그인 필수 구성&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실무-팁-모음">💡 실무 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>HTTP는 Stateless → &lt;strong>상태 유지 직접 구현 필수&lt;/strong>&lt;/li>
+&lt;li>FTP는 &lt;strong>방화벽 환경&lt;/strong>에서 Passive 모드 사용&lt;/li>
+&lt;li>SMTP는 &lt;strong>메일 전송 전용&lt;/strong>, 수신은 POP3/IMAP&lt;/li>
+&lt;li>SSH는 반드시 공개키 로그인 + 포트 변경 적용&lt;/li>
+&lt;li>AJAX는 &amp;ldquo;기술&amp;quot;이 아닌 &lt;strong>통신 방식&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🛠️ MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>요소&lt;/th>
+&lt;th>MLOps 활용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>HTTP 상태 체크&lt;/strong>&lt;/td>
+&lt;td>&lt;code>curl -s -o /dev/null -w &amp;quot;%{http_code}&amp;quot;&lt;/code> → 서비스 헬스체크&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>SMTP 자동화&lt;/strong>&lt;/td>
+&lt;td>Airflow/MLflow 알림 메일 설정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>SSH 자동 접속&lt;/strong>&lt;/td>
+&lt;td>&lt;code>~/.ssh/config&lt;/code> + 배포 스크립트 자동화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>AJAX 응답 로깅&lt;/strong>&lt;/td>
+&lt;td>모델 서빙 장애 감지, 응답 지연 분석&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>세션 유지 설계&lt;/strong>&lt;/td>
+&lt;td>사용자 인증 기반 서빙 환경 구축 시 필요&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-자주-헷갈리는-부분">❗ 자주 헷갈리는 부분&lt;/h3>
+&lt;ul>
+&lt;li>HTTP = &lt;strong>Stateless&lt;/strong> → 세션은 별도 구현&lt;/li>
+&lt;li>Telnet은 암호화 없음 → &lt;strong>실무에서는 사용 금지&lt;/strong>&lt;/li>
+&lt;li>AJAX = 비동기 방식 (XML/JSON 기반 통신), 기술명 아님&lt;/li>
+&lt;li>FTP 기본 모드는 &lt;strong>액티브&lt;/strong>, &lt;strong>방화벽 환경에서는 패시브&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-마무리-요약">🏁 마무리 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>애플리케이션 계층은 &amp;ldquo;사용자에게 보이는 모든 네트워크 서비스의 출발점&amp;rdquo;&lt;/p></description></item><item><title>컴퓨터 네트워크 개요</title><link>https://keonhoban.github.io/mlops-journey/posts/network/01/</link><pubDate>Sun, 06 Apr 2025 21:52:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/01/</guid><description>&lt;h3 id="-네트워크란">📌 네트워크란?&lt;/h3>
 &lt;blockquote>
 &lt;p>데이터를 여러 기기 사이에서 효율적이고 안전하게 전달하기 위한 구조&lt;/p>&lt;/blockquote>
 &lt;hr>
