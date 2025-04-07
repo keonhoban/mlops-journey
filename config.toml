@@ -11,6 +11,9 @@ theme = "PaperMod"
   ShowCodeCopyButtons = true
   categories = ["Linux", "Network", "AWS", "Python"]
 
+  [params.assets]
+    customCSS = ["css/custom.css"]
+
   [params.footer]
     hideCopyright = true
     customText = "© 2025 Keonho Ban | <a href=\"https://github.com/keonhoban\" target=\"_blank\">GitHub</a> | <a href=\"mailto:keonho0510@naver.com\">Email</a>"
