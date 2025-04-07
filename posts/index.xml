@@ -42,8 +42,8 @@
 &lt;h3 id="-흐름도-정리">🖼️ 흐름도 정리&lt;/h3>
 &lt;pre tabindex="0">&lt;code>[HTTP 요청 흐름]
 Client Server
-↓ GET /index.html
-↑ 200 OK + HTML
+───────── GET /index.html ───────▶
+◀─────── 200 OK + HTML ─────────
 [이메일 구조 흐름]
 Client → SMTP → Mail Server → POP3 or IMAP → Client
 [쿠키/세션 유지 흐름]
