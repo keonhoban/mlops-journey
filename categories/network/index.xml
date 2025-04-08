@@ -1,4 +1,146 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Network on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/network/</link><description>Recent content in Network on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 07 Apr 2025 22:38:55 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>[네트워크] 2장. 애플리케이션 계층 &amp; 주요 네트워크 서비스</title><link>https://keonhoban.github.io/mlops-journey/posts/network/02/</link><pubDate>Mon, 07 Apr 2025 22:38:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/02/</guid><description>&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Network on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/network/</link><description>Recent content in Network on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 08 Apr 2025 21:04:41 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>[네트워크] 3장. 트랜스포트 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/03/</link><pubDate>Tue, 08 Apr 2025 21:04:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/03/</guid><description>&lt;h3 id="-핵심-정의">📌 핵심 정의&lt;/h3>
+&lt;blockquote>
+&lt;p>트랜스포트 계층은&lt;/p>
+&lt;p>&lt;strong>&amp;ldquo;데이터가 목적지 애플리케이션까지 정확히 도달하게 해주는 계층&amp;rdquo;&lt;/strong>&lt;/p>
+&lt;p>주인공은 &lt;strong>TCP(신뢰성)&lt;/strong>, &lt;strong>UDP(속도)&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>핵심 요약&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>트랜스포트 계층&lt;/strong>&lt;/td>
+&lt;td>애플리케이션 간 데이터 송수신 담당 (TCP/UDP)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>TCP&lt;/strong>&lt;/td>
+&lt;td>연결 기반, 순서 보장, 재전송, 흐름/혼잡 제어 → 안정성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>UDP&lt;/strong>&lt;/td>
+&lt;td>비연결, 빠름, 손실 감수 → 실시간/속도 우선&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>포트 번호&lt;/strong>&lt;/td>
+&lt;td>프로세스 식별자 (IP가 주소라면, 포트는 방 번호)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>흐름 제어&lt;/strong>&lt;/td>
+&lt;td>수신 버퍼 상태에 맞게 송신 속도 조절 (송신자 중심)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>혼잡 제어&lt;/strong>&lt;/td>
+&lt;td>네트워크 전체 혼잡 상황에 대응 (네트워크 중심)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-도식으로-보는-핵심-흐름">🖼️ 도식으로 보는 핵심 흐름&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[TCP 연결 과정 - 3 Way Handshake]
+Client → SYN
+Server → SYN+ACK
+Client → ACK
+[TCP 종료 과정 - 4 Way Handshake]
+Client → FIN
+Server → ACK → FIN
+Client → ACK
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-연결">🔍 실무 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>실무 동작&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 API 확인&lt;/td>
+&lt;td>&lt;code>curl localhost:5000&lt;/code> 또는 &lt;code>ss -tulpn&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>컨테이너 포트 확인&lt;/td>
+&lt;td>&lt;code>docker inspect&lt;/code>, &lt;code>lsof -i :PORT&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>포트 충돌 방지&lt;/td>
+&lt;td>&lt;code>49152~65535&lt;/code> 동적 포트 사용 or 명시적 지정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>TCP 상태 분석&lt;/td>
+&lt;td>&lt;code>netstat&lt;/code>, &lt;code>ss&lt;/code>, &lt;code>Wireshark&lt;/code>로 연결 및 재전송 확인&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>ss -tulpn&lt;/code> → 현재 열려 있는 포트/서비스 확인&lt;/li>
+&lt;li>&lt;code>lsof -i :포트번호&lt;/code> → 해당 포트를 쓰는 프로세스 추적&lt;/li>
+&lt;li>Wireshark → &lt;code>tcp.analysis.flags&lt;/code> 필터로 재전송·지연 확인&lt;/li>
+&lt;li>포트 = 앱 식별 / IP = 장비 식별 → 두 개 함께 사용됨&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-실전-연결-요약">🛠️ MLOps 실전 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>요소&lt;/th>
+&lt;th>활용 사례&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>모델 서버 점검&lt;/strong>&lt;/td>
+&lt;td>포트 열려 있는지 확인, 외부 요청 도달 여부 확인&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>배포 시 포트 충돌 방지&lt;/strong>&lt;/td>
+&lt;td>컨테이너마다 다른 포트 할당, NGINX 리버스 프록시 연결&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>로깅 시스템 연결&lt;/strong>&lt;/td>
+&lt;td>로그 수집기(Fluentd 등) TCP 연결 실패 디버깅&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>클러스터 내 통신 장애 대응&lt;/strong>&lt;/td>
+&lt;td>UDP 기반 서비스는 재전송 로직 직접 구현 필요&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-헷갈리기-쉬운-개념">⚠️ 헷갈리기 쉬운 개념&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>오해&lt;/th>
+&lt;th>정답&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>포트는 애플리케이션 ID다?&lt;/td>
+&lt;td>❌ 포트는 &lt;strong>트랜스포트 계층의 식별자&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>TCP는 느리다?&lt;/td>
+&lt;td>❌ 현대 TCP는 고속 옵션 다수 → 고성능 사용 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>UDP는 신뢰성이 없다?&lt;/td>
+&lt;td>✅ 하지만 앱에서 직접 보완 가능 (ex. QUIC)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-한줄-정리">🏁 한줄 정리&lt;/h3>
+&lt;blockquote>
+&lt;p>TCP는 정확히, UDP는 빠르게.&lt;/p></description></item><item><title>[네트워크] 2장. 애플리케이션 계층 &amp; 주요 네트워크 서비스</title><link>https://keonhoban.github.io/mlops-journey/posts/network/02/</link><pubDate>Mon, 07 Apr 2025 22:38:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/02/</guid><description>&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
 &lt;blockquote>
 &lt;p>애플리케이션 계층은 &amp;ldquo;사용자에 가장 가까운 계층&amp;rdquo;&lt;/p>
 &lt;p>웹, 이메일, 파일 전송 같은 &lt;strong>직접 체감 가능한 서비스&lt;/strong>가 여기에 위치한다.&lt;/p>&lt;/blockquote>

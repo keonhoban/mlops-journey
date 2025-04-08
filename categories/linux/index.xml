@@ -1,4 +1,141 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Linux on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/linux/</link><description>Recent content in Linux on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 07 Apr 2025 22:34:49 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 2장. 셸 단축키 &amp; 편집 기능</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/02/</link><pubDate>Mon, 07 Apr 2025 22:34:49 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/02/</guid><description>&lt;h3 id="-핵심-한줄-요약">📌 핵심 한줄 요약&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Linux on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/linux/</link><description>Recent content in Linux on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 08 Apr 2025 21:00:13 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 3장. 파일과 디렉터리</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/03/</link><pubDate>Tue, 08 Apr 2025 21:00:13 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/03/</guid><description>&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>리눅스는 단일 루트(/) 트리 구조로 파일/디렉터리를 구성하고,&lt;/p>
+&lt;p>각 디렉터리는 &lt;strong>역할에 따라 위치가 정해져 있다&lt;/strong>.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>핵심 설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>디렉터리 구조&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/&lt;/code>부터 시작하는 &lt;strong>계층적 트리 구조&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>절대 vs 상대경로&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/etc/nginx&lt;/code>(절대) vs &lt;code>../config&lt;/code>(상대)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>FHS&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/etc&lt;/code>, &lt;code>/var&lt;/code>, &lt;code>/opt&lt;/code>, &lt;code>/usr&lt;/code> 등은 &lt;strong>기능에 따른 구분&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>와일드카드&lt;/strong>&lt;/td>
+&lt;td>&lt;code>*&lt;/code>, &lt;code>?&lt;/code>로 패턴 매칭. 파일 정리에 자주 사용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>ls -F&lt;/strong>&lt;/td>
+&lt;td>파일 유형을 &lt;code>/&lt;/code>, &lt;code>*&lt;/code>, &lt;code>@&lt;/code> 등으로 시각 표시&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-구조도-시각화">🖼️ 구조도 시각화&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[리눅스 주요 디렉터리]
+/ (루트)
+├── etc/ # 설정
+├── var/ # 로그/큐
+├── usr/ # 앱/라이브러리
+├── opt/ # 외부 패키지
+├── home/ # 사용자 디렉터리
+├── tmp/ # 임시 파일
+&lt;/code>&lt;/pre>&lt;pre tabindex="0">&lt;code>[경로 구분]
+절대: /etc/nginx/nginx.conf
+상대: ./config/, ../ → 현재 위치 기준
+&lt;/code>&lt;/pre>&lt;pre tabindex="0">&lt;code>[ls -F 출력 예시]
+run.sh* # 실행 파일
+config/ # 디렉터리
+data@ # 심볼릭 링크
+README.md # 일반 파일
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-연결">🔍 실무 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>실무 활용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>모델 로그 확인&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/var/log/mlflow.log&lt;/code> → &lt;code>tail -f&lt;/code>로 실시간 확인&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 설정 편집&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/etc/mlflow.conf&lt;/code> 또는 NGINX 설정 변경&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 저장 경로 지정&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/opt/ml/&lt;/code> 또는 &lt;code>/home/ubuntu/model/&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>파일 일괄 삭제&lt;/strong>&lt;/td>
+&lt;td>&lt;code>rm -f *.tmp&lt;/code>로 임시 파일 정리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>실행 스크립트 확인&lt;/strong>&lt;/td>
+&lt;td>&lt;code>ls -F&lt;/code>로 &lt;code>*&lt;/code> 붙은 파일 식별&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>설정 파일 찾을 땐 &lt;code>find&lt;/code>, &lt;code>locate&lt;/code> 활용&lt;/li>
+&lt;li>로그는 &lt;code>/var/log/&lt;/code> 하위에 존재 (nginx, mlflow 등)&lt;/li>
+&lt;li>배포 스크립트는 &lt;code>/usr/local/bin/&lt;/code> 또는 &lt;code>/opt/&lt;/code> 사용&lt;/li>
+&lt;li>컨테이너 설계 시 디렉터리 구조 표준화 필요&lt;/li>
+&lt;li>&lt;code>ls -F&lt;/code>는 실무에서 &lt;strong>파일 상태 빠른 확인&lt;/strong>에 유용&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🛠️ MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>요소&lt;/th>
+&lt;th>적용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>로그 저장 위치&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/var/log/&lt;/code>에 &lt;code>mlflow.log&lt;/code>, &lt;code>gunicorn.log&lt;/code> 등 저장&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>설정 관리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/etc/mlflow.conf&lt;/code>, &lt;code>/etc/supervisor/conf.d/&lt;/code> 설정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 저장소&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/opt/ml/&lt;/code>은 SageMaker, Docker 이미지 내 기본 경로&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>파일 정리 자동화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>*.log&lt;/code>, &lt;code>*.tmp&lt;/code> 패턴으로 주기적 삭제&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>디렉터리 설계&lt;/strong>&lt;/td>
+&lt;td>컨테이너 배포 시 디렉터리 구조 미리 정의&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-자주-헷갈리는-포인트">❗ 자주 헷갈리는 포인트&lt;/h3>
+&lt;ul>
+&lt;li>리눅스는 &lt;strong>루트 &lt;code>/&lt;/code> 하나&lt;/strong>로 모든 경로 통합&lt;/li>
+&lt;li>&lt;code>/tmp&lt;/code>는 &lt;strong>재부팅 시 초기화&lt;/strong> → 장기 보관 X&lt;/li>
+&lt;li>설정은 &lt;code>/etc&lt;/code>, 사용자 데이터는 &lt;code>/home&lt;/code>, 앱은 &lt;code>/opt&lt;/code>, &lt;code>/usr&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-마무리-한줄-요약">🏁 마무리 한줄 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>리눅스의 디렉터리 구조를 알면&lt;/p></description></item><item><title>[리눅스] 2장. 셸 단축키 &amp; 편집 기능</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/02/</link><pubDate>Mon, 07 Apr 2025 22:34:49 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/02/</guid><description>&lt;h3 id="-핵심-한줄-요약">📌 핵심 한줄 요약&lt;/h3>
 &lt;blockquote>
 &lt;p>셸은 단순한 명령어 입력 도구가 아니라&lt;/p>
 &lt;p>&lt;strong>효율적인 편집 + 빠른 복구 + 과거 재사용&lt;/strong>까지 가능한 작업 도구이다.&lt;/p>&lt;/blockquote>
