@@ -1,4 +1,103 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Network on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/network/</link><description>Recent content in Network on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 08 Apr 2025 21:04:41 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>[네트워크] 3장. 트랜스포트 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/03/</link><pubDate>Tue, 08 Apr 2025 21:04:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/03/</guid><description>&lt;h3 id="-핵심-정의">📌 핵심 정의&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Network on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/network/</link><description>Recent content in Network on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 09 Apr 2025 21:29:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/network/index.xml" rel="self" type="application/rss+xml"/><item><title>[네트워크] 4장. 라우팅과 인터넷 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/04/</link><pubDate>Wed, 09 Apr 2025 21:29:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/04/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>인터넷 계층은 IP 기반 통신의 중심&lt;/p>
+&lt;p>패킷이 목적지까지 &lt;strong>“어떻게” 도달하는가&lt;/strong>를 책임진다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>핵심 내용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>IP 주소&lt;/strong>&lt;/td>
+&lt;td>논리적 장비 식별자 (위치가 아님) → 라우팅에 사용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>라우팅&lt;/strong>&lt;/td>
+&lt;td>IP 기반 목적지 경로 탐색 (정적/동적/인터넷 전역 경로)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>인터넷 계층 (L3)&lt;/strong>&lt;/td>
+&lt;td>IP 패킷 분할, 재조립, 전달 → TCP/UDP 상위 계층 지원&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>서브넷 마스크&lt;/strong>&lt;/td>
+&lt;td>IP 주소의 네트워크/호스트 영역 구분 → CIDR 활용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>프라이빗 IP&lt;/strong>&lt;/td>
+&lt;td>외부 통신 불가한 내부 주소 → NAT로 변환 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>라우팅 프로토콜&lt;/strong>&lt;/td>
+&lt;td>RIP, OSPF (내부), BGP (인터넷 간)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>ICMP&lt;/strong>&lt;/td>
+&lt;td>상태 체크 및 오류 전달 (&lt;code>ping&lt;/code>, &lt;code>traceroute&lt;/code>)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>DNS&lt;/strong>&lt;/td>
+&lt;td>도메인 ↔ IP 변환 (서비스 식별)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>DHCP&lt;/strong>&lt;/td>
+&lt;td>IP 자동 할당 (MAC 기반), 서브넷/게이트웨이 설정 포함&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-핵심-흐름도">🖼️ 핵심 흐름도&lt;/h3>
+&lt;pre tabindex="0">&lt;code>사용자 → 도메인 입력 (ex. mlops.dev)
+↓
+DNS → IP 주소 변환
+↓
+라우터들 → 목적지까지 경로 탐색 (라우팅)
+↓
+패킷 전송 (인터넷 계층, IP 기반)
+↓
+NAT or 포트포워딩 → 내부 서버 도달
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-요약">🔧 실무 시나리오 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>시나리오&lt;/th>
+&lt;th>핵심 동작&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>모델 API 외부 노출&lt;/strong>&lt;/td>
+&lt;td>프라이빗 IP ↔ 퍼블릭 IP 매핑 (NAT or 포트포워딩)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>서버 상태 체크&lt;/strong>&lt;/td>
+&lt;td>&lt;code>ping&lt;/code>, &lt;code>curl&lt;/code> 활용한 자동 헬스체크&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>도메인 연결&lt;/strong>&lt;/td>
+&lt;td>DNS 설정 (ex. Route53)로 서비스 접근 간소화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>컨테이너 통신 설정&lt;/strong>&lt;/td>
+&lt;td>Docker 내 DHCP, 서브넷 설정으로 IP 충돌 방지&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>VPN 구성&lt;/strong>&lt;/td>
+&lt;td>라우팅 테이블 직접 설정 필요 (CIDR, 게이트웨이 지정)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-정리">💡 실전 팁 정리&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>프라이빗 IP 대역&lt;/strong>&lt;/p></description></item><item><title>[네트워크] 3장. 트랜스포트 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/03/</link><pubDate>Tue, 08 Apr 2025 21:04:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/03/</guid><description>&lt;h3 id="-핵심-정의">📌 핵심 정의&lt;/h3>
 &lt;blockquote>
 &lt;p>트랜스포트 계층은&lt;/p>
 &lt;p>&lt;strong>&amp;ldquo;데이터가 목적지 애플리케이션까지 정확히 도달하게 해주는 계층&amp;rdquo;&lt;/strong>&lt;/p>
