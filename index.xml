@@ -100,7 +100,7 @@ NAT or 포트포워딩 → 내부 서버 도달
 &lt;p>&lt;strong>프라이빗 IP 대역&lt;/strong>&lt;/p></description></item><item><title>[리눅스] 4장. 파일 조작 기본</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/04/</link><pubDate>Wed, 09 Apr 2025 21:19:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/04/</guid><description>&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
 &lt;blockquote>
 &lt;p>텍스트 탐색(less)과 링크 생성(ln)은&lt;/p>
-&lt;p>&lt;strong>운영 자동화, 로그 분석, 버전 관리의 핵심 기초&lt;/strong>다.&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>운영 자동화, 로그 분석, 버전 관리의 핵심 기초&lt;/strong>&lt;/p>&lt;/blockquote>
 &lt;hr>
 &lt;h3 id="-결정적-핵심">🧠 결정적 핵심&lt;/h3>
 &lt;table>
