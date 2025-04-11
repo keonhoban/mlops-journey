@@ -1,4 +1,112 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Linux on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/linux/</link><description>Recent content in Linux on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 10 Apr 2025 20:38:01 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 5장. 파일 검색</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/05/</link><pubDate>Thu, 10 Apr 2025 20:38:01 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/05/</guid><description>&lt;h3 id="-핵심-개념-한줄-요약">📌 핵심 개념 한줄 요약&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Linux on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/linux/</link><description>Recent content in Linux on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 11 Apr 2025 20:17:17 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 6장. Vim</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/06/</link><pubDate>Fri, 11 Apr 2025 20:17:17 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/06/</guid><description>&lt;h3 id="-개념-한-줄-요약">📌 개념 한 줄 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>텍스트 파일&lt;/strong>&lt;/td>
+&lt;td>&lt;code>.sh&lt;/code>, &lt;code>.csv&lt;/code>, &lt;code>.log&lt;/code> 등 → Vim으로 직접 편집 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>Vim 검색&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/&lt;/code> (아래), &lt;code>?&lt;/code> (위), &lt;code>n&lt;/code>/&lt;code>N&lt;/code> (다음/이전) → 로그 분석 핵심&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>비주얼 블록 모드&lt;/strong>&lt;/td>
+&lt;td>&lt;code>Ctrl + v&lt;/code> → 여러 줄에 동시에 삽입/편집&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>매크로&lt;/strong>&lt;/td>
+&lt;td>반복 작업 자동화 (&lt;code>qa&lt;/code>, &lt;code>q&lt;/code>, &lt;code>@a&lt;/code>) → 스크립트급 효율&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-흐름도-실전-사용-패턴">🖼️ 흐름도: 실전 사용 패턴&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[로그 검색 흐름]
+vim log.txt
+↓
+/error → n → n → N
+[비주얼 블록 편집]
+Ctrl + v → 방향키 → Shift + i → 삽입 → ESC
+[매크로 실행]
+qa → 편집 수행 → q → @a 또는 5@a
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-요약">🛠️ 실무 시나리오 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>Vim 활용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 에러 탐색&lt;/td>
+&lt;td>&lt;code>/loss&lt;/code>, &lt;code>/error&lt;/code>, &lt;code>n&lt;/code> 반복 이동&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>대량 주석 처리&lt;/td>
+&lt;td>&lt;code>Ctrl + v&lt;/code> → &lt;code>#&lt;/code> 삽입 → 여러 줄 자동 편집&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>config 다중 수정&lt;/td>
+&lt;td>&lt;code>qa&lt;/code>로 수정 녹화 → &lt;code>@a&lt;/code>로 반복 실행&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>.csv&lt;/code> 구조 정리&lt;/td>
+&lt;td>&lt;code>:%s&lt;/code> or 비주얼 모드로 컬럼 이름 등 일괄 편집&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁">💡 실전 팁&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>:%s/old/new/gc&lt;/code> → 치환 전 &lt;strong>확인하며 진행&lt;/strong>&lt;/li>
+&lt;li>매크로는 &amp;ldquo;녹화&amp;quot;임 → &lt;strong>스크립트와 다름&lt;/strong>&lt;/li>
+&lt;li>&lt;code>ggVG&lt;/code>는 전체 선택 (삭제 아님)&lt;/li>
+&lt;li>&lt;code>vim +&amp;lt;줄번호&amp;gt; &amp;lt;파일&amp;gt;&lt;/code> → 특정 위치에서 바로 시작&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🧩 MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>분야&lt;/th>
+&lt;th>활용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>로그 분석&lt;/strong>&lt;/td>
+&lt;td>서빙 로그에서 오류 메시지 빠르게 탐색&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>배포 설정&lt;/strong>&lt;/td>
+&lt;td>설정 파일 대량 수정 시 매크로로 일괄 편집&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>데이터 전처리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>.csv&lt;/code> 헤더/라벨 텍스트 일괄 수정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>스크립트 정비&lt;/strong>&lt;/td>
+&lt;td>다수 셸 스크립트에 공통 수정 자동 반영&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-한줄-요약">🏁 한줄 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화&lt;/p></description></item><item><title>[리눅스] 5장. 파일 검색</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/05/</link><pubDate>Thu, 10 Apr 2025 20:38:01 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/05/</guid><description>&lt;h3 id="-핵심-개념-한줄-요약">📌 핵심 개념 한줄 요약&lt;/h3>
 &lt;blockquote>
 &lt;p>파일이 어디 있는지, 명령어가 뭘 하는지, 시스템에서 어떻게 찾는지를 아는 것&lt;/p>&lt;/blockquote>
 &lt;hr>

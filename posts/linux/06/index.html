@@ -1,0 +1,235 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[리눅스] 6장. Vim | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='📌 개념 한 줄 요약
+
+Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구
+
+🧠 결정적 핵심 요약
+
+  
+      
+          개념
+          설명
+      
+  
+  
+      
+          텍스트 파일
+          .sh, .csv, .log 등 → Vim으로 직접 편집 가능
+      
+      
+          Vim 검색
+          / (아래), ? (위), n/N (다음/이전) → 로그 분석 핵심
+      
+      
+          비주얼 블록 모드
+          Ctrl + v → 여러 줄에 동시에 삽입/편집
+      
+      
+          매크로
+          반복 작업 자동화 (qa, q, @a) → 스크립트급 효율
+      
+  
+
+
+🖼️ 흐름도: 실전 사용 패턴
+[로그 검색 흐름]
+vim log.txt
+   ↓
+/error → n → n → N
+
+[비주얼 블록 편집]
+Ctrl + v → 방향키 → Shift + i → 삽입 → ESC
+
+[매크로 실행]
+qa → 편집 수행 → q → @a 또는 5@a
+
+🛠️ 실무 시나리오 요약
+
+  
+      
+          상황
+          Vim 활용
+      
+  
+  
+      
+          모델 에러 탐색
+          /loss, /error, n 반복 이동
+      
+      
+          대량 주석 처리
+          Ctrl + v → # 삽입 → 여러 줄 자동 편집
+      
+      
+          config 다중 수정
+          qa로 수정 녹화 → @a로 반복 실행
+      
+      
+          .csv 구조 정리
+          :%s or 비주얼 모드로 컬럼 이름 등 일괄 편집
+      
+  
+
+
+💡 실전 팁
+
+:%s/old/new/gc → 치환 전 확인하며 진행
+매크로는 &ldquo;녹화"임 → 스크립트와 다름
+ggVG는 전체 선택 (삭제 아님)
+vim +<줄번호> <파일> → 특정 위치에서 바로 시작
+
+
+🧩 MLOps 연결 요약
+
+  
+      
+          분야
+          활용
+      
+  
+  
+      
+          로그 분석
+          서빙 로그에서 오류 메시지 빠르게 탐색
+      
+      
+          배포 설정
+          설정 파일 대량 수정 시 매크로로 일괄 편집
+      
+      
+          데이터 전처리
+          .csv 헤더/라벨 텍스트 일괄 수정
+      
+      
+          스크립트 정비
+          다수 셸 스크립트에 공통 수정 자동 반영
+      
+  
+
+
+🏁 한줄 요약
+
+Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/06/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/06/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/06/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[리눅스] 6장. Vim"><meta property="og:description" content='📌 개념 한 줄 요약 Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구
+🧠 결정적 핵심 요약 개념 설명 텍스트 파일 .sh, .csv, .log 등 → Vim으로 직접 편집 가능 Vim 검색 / (아래), ? (위), n/N (다음/이전) → 로그 분석 핵심 비주얼 블록 모드 Ctrl + v → 여러 줄에 동시에 삽입/편집 매크로 반복 작업 자동화 (qa, q, @a) → 스크립트급 효율 🖼️ 흐름도: 실전 사용 패턴 [로그 검색 흐름] vim log.txt ↓ /error → n → n → N [비주얼 블록 편집] Ctrl + v → 방향키 → Shift + i → 삽입 → ESC [매크로 실행] qa → 편집 수행 → q → @a 또는 5@a 🛠️ 실무 시나리오 요약 상황 Vim 활용 모델 에러 탐색 /loss, /error, n 반복 이동 대량 주석 처리 Ctrl + v → # 삽입 → 여러 줄 자동 편집 config 다중 수정 qa로 수정 녹화 → @a로 반복 실행 .csv 구조 정리 :%s or 비주얼 모드로 컬럼 이름 등 일괄 편집 💡 실전 팁 :%s/old/new/gc → 치환 전 확인하며 진행 매크로는 “녹화"임 → 스크립트와 다름 ggVG는 전체 선택 (삭제 아님) vim +<줄번호> <파일> → 특정 위치에서 바로 시작 🧩 MLOps 연결 요약 분야 활용 로그 분석 서빙 로그에서 오류 메시지 빠르게 탐색 배포 설정 설정 파일 대량 수정 시 매크로로 일괄 편집 데이터 전처리 .csv 헤더/라벨 텍스트 일괄 수정 스크립트 정비 다수 셸 스크립트에 공통 수정 자동 반영 🏁 한줄 요약 Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-11T20:17:17+09:00"><meta property="article:modified_time" content="2025-04-11T20:17:17+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[리눅스] 6장. Vim"><meta name=twitter:description content='📌 개념 한 줄 요약
+
+Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구
+
+🧠 결정적 핵심 요약
+
+  
+      
+          개념
+          설명
+      
+  
+  
+      
+          텍스트 파일
+          .sh, .csv, .log 등 → Vim으로 직접 편집 가능
+      
+      
+          Vim 검색
+          / (아래), ? (위), n/N (다음/이전) → 로그 분석 핵심
+      
+      
+          비주얼 블록 모드
+          Ctrl + v → 여러 줄에 동시에 삽입/편집
+      
+      
+          매크로
+          반복 작업 자동화 (qa, q, @a) → 스크립트급 효율
+      
+  
+
+
+🖼️ 흐름도: 실전 사용 패턴
+[로그 검색 흐름]
+vim log.txt
+   ↓
+/error → n → n → N
+
+[비주얼 블록 편집]
+Ctrl + v → 방향키 → Shift + i → 삽입 → ESC
+
+[매크로 실행]
+qa → 편집 수행 → q → @a 또는 5@a
+
+🛠️ 실무 시나리오 요약
+
+  
+      
+          상황
+          Vim 활용
+      
+  
+  
+      
+          모델 에러 탐색
+          /loss, /error, n 반복 이동
+      
+      
+          대량 주석 처리
+          Ctrl + v → # 삽입 → 여러 줄 자동 편집
+      
+      
+          config 다중 수정
+          qa로 수정 녹화 → @a로 반복 실행
+      
+      
+          .csv 구조 정리
+          :%s or 비주얼 모드로 컬럼 이름 등 일괄 편집
+      
+  
+
+
+💡 실전 팁
+
+:%s/old/new/gc → 치환 전 확인하며 진행
+매크로는 &ldquo;녹화"임 → 스크립트와 다름
+ggVG는 전체 선택 (삭제 아님)
+vim +<줄번호> <파일> → 특정 위치에서 바로 시작
+
+
+🧩 MLOps 연결 요약
+
+  
+      
+          분야
+          활용
+      
+  
+  
+      
+          로그 분석
+          서빙 로그에서 오류 메시지 빠르게 탐색
+      
+      
+          배포 설정
+          설정 파일 대량 수정 시 매크로로 일괄 편집
+      
+      
+          데이터 전처리
+          .csv 헤더/라벨 텍스트 일괄 수정
+      
+      
+          스크립트 정비
+          다수 셸 스크립트에 공통 수정 자동 반영
+      
+  
+
+
+🏁 한줄 요약
+
+Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[리눅스] 6장. Vim","item":"https://keonhoban.github.io/mlops-journey/posts/linux/06/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[리눅스] 6장. Vim","name":"[리눅스] 6장. Vim","description":"📌 개념 한 줄 요약 Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구\n🧠 결정적 핵심 요약 개념 설명 텍스트 파일 .sh, .csv, .log 등 → Vim으로 직접 편집 가능 Vim 검색 / (아래), ? (위), n/N (다음/이전) → 로그 분석 핵심 비주얼 블록 모드 Ctrl + v → 여러 줄에 동시에 삽입/편집 매크로 반복 작업 자동화 (qa, q, @a) → 스크립트급 효율 🖼️ 흐름도: 실전 사용 패턴 [로그 검색 흐름] vim log.txt ↓ /error → n → n → N [비주얼 블록 편집] Ctrl + v → 방향키 → Shift + i → 삽입 → ESC [매크로 실행] qa → 편집 수행 → q → @a 또는 5@a 🛠️ 실무 시나리오 요약 상황 Vim 활용 모델 에러 탐색 /loss, /error, n 반복 이동 대량 주석 처리 Ctrl + v → # 삽입 → 여러 줄 자동 편집 config 다중 수정 qa로 수정 녹화 → @a로 반복 실행 .csv 구조 정리 :%s or 비주얼 모드로 컬럼 이름 등 일괄 편집 💡 실전 팁 :%s/old/new/gc → 치환 전 확인하며 진행 매크로는 \u0026ldquo;녹화\u0026quot;임 → 스크립트와 다름 ggVG는 전체 선택 (삭제 아님) vim +\u0026lt;줄번호\u0026gt; \u0026lt;파일\u0026gt; → 특정 위치에서 바로 시작 🧩 MLOps 연결 요약 분야 활용 로그 분석 서빙 로그에서 오류 메시지 빠르게 탐색 배포 설정 설정 파일 대량 수정 시 매크로로 일괄 편집 데이터 전처리 .csv 헤더/라벨 텍스트 일괄 수정 스크립트 정비 다수 셸 스크립트에 공통 수정 자동 반영 🏁 한줄 요약 Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화\n","keywords":[],"articleBody":"📌 개념 한 줄 요약 Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구\n🧠 결정적 핵심 요약 개념 설명 텍스트 파일 .sh, .csv, .log 등 → Vim으로 직접 편집 가능 Vim 검색 / (아래), ? (위), n/N (다음/이전) → 로그 분석 핵심 비주얼 블록 모드 Ctrl + v → 여러 줄에 동시에 삽입/편집 매크로 반복 작업 자동화 (qa, q, @a) → 스크립트급 효율 🖼️ 흐름도: 실전 사용 패턴 [로그 검색 흐름] vim log.txt ↓ /error → n → n → N [비주얼 블록 편집] Ctrl + v → 방향키 → Shift + i → 삽입 → ESC [매크로 실행] qa → 편집 수행 → q → @a 또는 5@a 🛠️ 실무 시나리오 요약 상황 Vim 활용 모델 에러 탐색 /loss, /error, n 반복 이동 대량 주석 처리 Ctrl + v → # 삽입 → 여러 줄 자동 편집 config 다중 수정 qa로 수정 녹화 → @a로 반복 실행 .csv 구조 정리 :%s or 비주얼 모드로 컬럼 이름 등 일괄 편집 💡 실전 팁 :%s/old/new/gc → 치환 전 확인하며 진행 매크로는 “녹화\"임 → 스크립트와 다름 ggVG는 전체 선택 (삭제 아님) vim +\u003c줄번호\u003e \u003c파일\u003e → 특정 위치에서 바로 시작 🧩 MLOps 연결 요약 분야 활용 로그 분석 서빙 로그에서 오류 메시지 빠르게 탐색 배포 설정 설정 파일 대량 수정 시 매크로로 일괄 편집 데이터 전처리 .csv 헤더/라벨 텍스트 일괄 수정 스크립트 정비 다수 셸 스크립트에 공통 수정 자동 반영 🏁 한줄 요약 Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화\n","wordCount":"240","inLanguage":"en","datePublished":"2025-04-11T20:17:17+09:00","dateModified":"2025-04-11T20:17:17+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/06/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[리눅스] 6장. Vim</h1><div class=post-meta><span title='2025-04-11 20:17:17 +0900 +0900'>April 11, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h3 id=-개념-한-줄-요약>📌 개념 한 줄 요약<a hidden class=anchor aria-hidden=true href=#-개념-한-줄-요약>#</a></h3><blockquote><p>Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구</p></blockquote><hr><h3 id=-결정적-핵심-요약>🧠 결정적 핵심 요약<a hidden class=anchor aria-hidden=true href=#-결정적-핵심-요약>#</a></h3><table><thead><tr><th>개념</th><th>설명</th></tr></thead><tbody><tr><td><strong>텍스트 파일</strong></td><td><code>.sh</code>, <code>.csv</code>, <code>.log</code> 등 → Vim으로 직접 편집 가능</td></tr><tr><td><strong>Vim 검색</strong></td><td><code>/</code> (아래), <code>?</code> (위), <code>n</code>/<code>N</code> (다음/이전) → 로그 분석 핵심</td></tr><tr><td><strong>비주얼 블록 모드</strong></td><td><code>Ctrl + v</code> → 여러 줄에 동시에 삽입/편집</td></tr><tr><td><strong>매크로</strong></td><td>반복 작업 자동화 (<code>qa</code>, <code>q</code>, <code>@a</code>) → 스크립트급 효율</td></tr></tbody></table><hr><h3 id=-흐름도-실전-사용-패턴>🖼️ 흐름도: 실전 사용 패턴<a hidden class=anchor aria-hidden=true href=#-흐름도-실전-사용-패턴>#</a></h3><pre tabindex=0><code>[로그 검색 흐름]
+vim log.txt
+   ↓
+/error → n → n → N
+
+[비주얼 블록 편집]
+Ctrl + v → 방향키 → Shift + i → 삽입 → ESC
+
+[매크로 실행]
+qa → 편집 수행 → q → @a 또는 5@a
+</code></pre><hr><h3 id=-실무-시나리오-요약>🛠️ 실무 시나리오 요약<a hidden class=anchor aria-hidden=true href=#-실무-시나리오-요약>#</a></h3><table><thead><tr><th>상황</th><th>Vim 활용</th></tr></thead><tbody><tr><td>모델 에러 탐색</td><td><code>/loss</code>, <code>/error</code>, <code>n</code> 반복 이동</td></tr><tr><td>대량 주석 처리</td><td><code>Ctrl + v</code> → <code>#</code> 삽입 → 여러 줄 자동 편집</td></tr><tr><td>config 다중 수정</td><td><code>qa</code>로 수정 녹화 → <code>@a</code>로 반복 실행</td></tr><tr><td><code>.csv</code> 구조 정리</td><td><code>:%s</code> or 비주얼 모드로 컬럼 이름 등 일괄 편집</td></tr></tbody></table><hr><h3 id=-실전-팁>💡 실전 팁<a hidden class=anchor aria-hidden=true href=#-실전-팁>#</a></h3><ul><li><code>:%s/old/new/gc</code> → 치환 전 <strong>확인하며 진행</strong></li><li>매크로는 &ldquo;녹화"임 → <strong>스크립트와 다름</strong></li><li><code>ggVG</code>는 전체 선택 (삭제 아님)</li><li><code>vim +&lt;줄번호> &lt;파일></code> → 특정 위치에서 바로 시작</li></ul><hr><h3 id=-mlops-연결-요약>🧩 MLOps 연결 요약<a hidden class=anchor aria-hidden=true href=#-mlops-연결-요약>#</a></h3><table><thead><tr><th>분야</th><th>활용</th></tr></thead><tbody><tr><td><strong>로그 분석</strong></td><td>서빙 로그에서 오류 메시지 빠르게 탐색</td></tr><tr><td><strong>배포 설정</strong></td><td>설정 파일 대량 수정 시 매크로로 일괄 편집</td></tr><tr><td><strong>데이터 전처리</strong></td><td><code>.csv</code> 헤더/라벨 텍스트 일괄 수정</td></tr><tr><td><strong>스크립트 정비</strong></td><td>다수 셸 스크립트에 공통 수정 자동 반영</td></tr></tbody></table><hr><h3 id=-한줄-요약>🏁 한줄 요약<a hidden class=anchor aria-hidden=true href=#-한줄-요약>#</a></h3><blockquote><p>Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/network/06/><span class=title>« Prev</span><br><span>[네트워크] 6장. 네트워크와 보안</span>
+</a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/network/05/><span class=title>Next »</span><br><span>[네트워크] 5장. 네트워크 인터페이스 계층</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

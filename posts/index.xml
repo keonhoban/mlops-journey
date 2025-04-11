@@ -1,4 +1,253 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 10 Apr 2025 20:38:05 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[네트워크] 5장. 네트워크 인터페이스 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/05/</link><pubDate>Thu, 10 Apr 2025 20:38:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/05/</guid><description>&lt;h3 id="-핵심-정의">📌 핵심 정의&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 11 Apr 2025 20:17:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[네트워크] 6장. 네트워크와 보안</title><link>https://keonhoban.github.io/mlops-journey/posts/network/06/</link><pubDate>Fri, 11 Apr 2025 20:17:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/06/</guid><description>&lt;h3 id="-결정적-개념-요약">📌 결정적 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>보안은 인증 → 암호화 → 무결성 → 접근 통제 순서로 작동하며,&lt;/p>
+&lt;p>MLOps에서 &lt;strong>API 보호, 데이터 유출 방지, 접근 제어&lt;/strong>에 반드시 필요하다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-정리">🧠 핵심 정리&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>핵심 설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>암호화&lt;/strong>&lt;/td>
+&lt;td>데이터 노출 방지 (대칭/공개키)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>인증서&lt;/strong>&lt;/td>
+&lt;td>신원 확인 (X.509, CA 발급)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>전자 서명&lt;/strong>&lt;/td>
+&lt;td>위변조 방지 (Hash + 개인키)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>보안 프로토콜&lt;/strong>&lt;/td>
+&lt;td>안전한 통신 수단 (SSL/TLS, SSH 등)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>방화벽&lt;/strong>&lt;/td>
+&lt;td>접근 제한 (UFW, 보안 그룹)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>VPN&lt;/strong>&lt;/td>
+&lt;td>외부에서 내부망 안전 연결 (IPSec, OpenVPN 등)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-흐름도-요약">🖼️ 흐름도 요약&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[ 보안 흐름 구조 ]
+1. 인증서(CA) → 신원 확인
+2. 암호화(SSL/SSH) → 데이터 보호
+3. 전자 서명 → 무결성 검증
+4. 방화벽/VPN → 접근 제어
+↓ 모든 보안의 궁극적 목적
+→ 기밀성 / 무결성 / 가용성 (CIA 3요소)
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실전-적용-포인트">🛠️ 실전 적용 포인트&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>한 줄 요약 실무 팁&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>SSH 접속&lt;/strong>&lt;/td>
+&lt;td>&lt;code>ssh-keygen&lt;/code> + &lt;code>ssh-copy-id&lt;/code> → 비밀번호 없는 보안 접속&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>API 보안&lt;/strong>&lt;/td>
+&lt;td>&lt;code>https://&lt;/code> + TLS 인증서 (Let&amp;rsquo;s Encrypt 추천)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>VPN 구성&lt;/strong>&lt;/td>
+&lt;td>개발망 접속용 L2TP/IPSec 설정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>방화벽 설정&lt;/strong>&lt;/td>
+&lt;td>&lt;code>ufw allow 22,443&lt;/code> → 최소 포트만 열기&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>보고서 발송&lt;/strong>&lt;/td>
+&lt;td>S/MIME 전자서명으로 이메일 위변조 방지&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>인증서 관리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>certbot&lt;/code>으로 HTTPS 자동 갱신 구성&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-체크리스트">✅ 실전 체크리스트&lt;/h3>
+&lt;ul>
+&lt;li>SSH는 &lt;strong>공개키 로그인&lt;/strong>, 비밀번호는 사용 지양&lt;/li>
+&lt;li>HTTPS는 &lt;strong>모든 웹 기반 API에 필수&lt;/strong>&lt;/li>
+&lt;li>방화벽은 &lt;strong>항상 22번 먼저 열고 설정할 것&lt;/strong>&lt;/li>
+&lt;li>VPN은 &lt;strong>내부 자원 접근 시 로그 관리도 함께&lt;/strong>&lt;/li>
+&lt;li>인증서 유효 기간 &amp;amp; 자동 갱신 체크!&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-자주-하는-실수">⚠️ 자주 하는 실수&lt;/h3>
+&lt;ul>
+&lt;li>비밀키 공유 ❌ (&lt;code>id_rsa&lt;/code> 노출 금지!)&lt;/li>
+&lt;li>방화벽 설정 후 서버 접속 안 됨 → &lt;strong>22번 포트 미리 허용&lt;/strong>&lt;/li>
+&lt;li>TLS 인증서 수동 갱신 누락 → &lt;strong>자동화 필수!&lt;/strong>&lt;/li>
+&lt;li>VPN 설정만 하고 로그/모니터링 미구성 😥&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🔧 MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>보안 요소&lt;/th>
+&lt;th>MLOps 실전 활용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>SSH&lt;/strong>&lt;/td>
+&lt;td>모델 파일 &lt;code>scp&lt;/code> 전송 자동화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>TLS&lt;/strong>&lt;/td>
+&lt;td>FastAPI/MLflow 대시보드 보안&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>인증서&lt;/strong>&lt;/td>
+&lt;td>사용자별 API 접근 제어&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>VPN&lt;/strong>&lt;/td>
+&lt;td>클라우드 내 K8s 접근 보안&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>전자서명&lt;/strong>&lt;/td>
+&lt;td>보고서/로그 신뢰성 확보&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>방화벽&lt;/strong>&lt;/td>
+&lt;td>포트 제한 → 무단 접근 차단&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-마무리-한줄-요약">🏁 마무리 한줄 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>실전에서는 인증서, SSH, TLS, 방화벽 구성부터 먼저 챙겨야&lt;/p></description></item><item><title>[리눅스] 6장. Vim</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/06/</link><pubDate>Fri, 11 Apr 2025 20:17:17 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/06/</guid><description>&lt;h3 id="-개념-한-줄-요약">📌 개념 한 줄 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>텍스트 파일&lt;/strong>&lt;/td>
+&lt;td>&lt;code>.sh&lt;/code>, &lt;code>.csv&lt;/code>, &lt;code>.log&lt;/code> 등 → Vim으로 직접 편집 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>Vim 검색&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/&lt;/code> (아래), &lt;code>?&lt;/code> (위), &lt;code>n&lt;/code>/&lt;code>N&lt;/code> (다음/이전) → 로그 분석 핵심&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>비주얼 블록 모드&lt;/strong>&lt;/td>
+&lt;td>&lt;code>Ctrl + v&lt;/code> → 여러 줄에 동시에 삽입/편집&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>매크로&lt;/strong>&lt;/td>
+&lt;td>반복 작업 자동화 (&lt;code>qa&lt;/code>, &lt;code>q&lt;/code>, &lt;code>@a&lt;/code>) → 스크립트급 효율&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-흐름도-실전-사용-패턴">🖼️ 흐름도: 실전 사용 패턴&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[로그 검색 흐름]
+vim log.txt
+↓
+/error → n → n → N
+[비주얼 블록 편집]
+Ctrl + v → 방향키 → Shift + i → 삽입 → ESC
+[매크로 실행]
+qa → 편집 수행 → q → @a 또는 5@a
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-요약">🛠️ 실무 시나리오 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>Vim 활용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 에러 탐색&lt;/td>
+&lt;td>&lt;code>/loss&lt;/code>, &lt;code>/error&lt;/code>, &lt;code>n&lt;/code> 반복 이동&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>대량 주석 처리&lt;/td>
+&lt;td>&lt;code>Ctrl + v&lt;/code> → &lt;code>#&lt;/code> 삽입 → 여러 줄 자동 편집&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>config 다중 수정&lt;/td>
+&lt;td>&lt;code>qa&lt;/code>로 수정 녹화 → &lt;code>@a&lt;/code>로 반복 실행&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>.csv&lt;/code> 구조 정리&lt;/td>
+&lt;td>&lt;code>:%s&lt;/code> or 비주얼 모드로 컬럼 이름 등 일괄 편집&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁">💡 실전 팁&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>:%s/old/new/gc&lt;/code> → 치환 전 &lt;strong>확인하며 진행&lt;/strong>&lt;/li>
+&lt;li>매크로는 &amp;ldquo;녹화&amp;quot;임 → &lt;strong>스크립트와 다름&lt;/strong>&lt;/li>
+&lt;li>&lt;code>ggVG&lt;/code>는 전체 선택 (삭제 아님)&lt;/li>
+&lt;li>&lt;code>vim +&amp;lt;줄번호&amp;gt; &amp;lt;파일&amp;gt;&lt;/code> → 특정 위치에서 바로 시작&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🧩 MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>분야&lt;/th>
+&lt;th>활용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>로그 분석&lt;/strong>&lt;/td>
+&lt;td>서빙 로그에서 오류 메시지 빠르게 탐색&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>배포 설정&lt;/strong>&lt;/td>
+&lt;td>설정 파일 대량 수정 시 매크로로 일괄 편집&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>데이터 전처리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>.csv&lt;/code> 헤더/라벨 텍스트 일괄 수정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>스크립트 정비&lt;/strong>&lt;/td>
+&lt;td>다수 셸 스크립트에 공통 수정 자동 반영&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-한줄-요약">🏁 한줄 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화&lt;/p></description></item><item><title>[네트워크] 5장. 네트워크 인터페이스 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/05/</link><pubDate>Thu, 10 Apr 2025 20:38:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/05/</guid><description>&lt;h3 id="-핵심-정의">📌 핵심 정의&lt;/h3>
 &lt;blockquote>
 &lt;p>TCP/IP의 가장 하단.&lt;/p>
 &lt;p>실제 장비(MAC 주소)를 통해 &lt;strong>프레임 단위로 데이터 전송&lt;/strong>을 담당한다.&lt;/p>&lt;/blockquote>
