@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 11 Apr 2025 20:17:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[네트워크] 6장. 네트워크와 보안</title><link>https://keonhoban.github.io/mlops-journey/posts/network/06/</link><pubDate>Fri, 11 Apr 2025 20:17:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/06/</guid><description>&lt;h3 id="-결정적-개념-요약">📌 결정적 개념 요약&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 11 Apr 2025 20:17:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[네트워크] 6장. 네트워크와 보안</title><link>https://keonhoban.github.io/mlops-journey/posts/network/06/</link><pubDate>Fri, 11 Apr 2025 20:17:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/06/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>보안은 인증 → 암호화 → 무결성 → 접근 통제 순서로 작동하며,&lt;/p>
 &lt;p>MLOps에서 &lt;strong>API 보호, 데이터 유출 방지, 접근 제어&lt;/strong>에 반드시 필요하다.&lt;/p>&lt;/blockquote>
 &lt;hr>
-&lt;h3 id="-핵심-정리">🧠 핵심 정리&lt;/h3>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -137,9 +137,9 @@
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
-&lt;h3 id="-마무리-한줄-요약">🏁 마무리 한줄 요약&lt;/h3>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
 &lt;blockquote>
-&lt;p>실전에서는 인증서, SSH, TLS, 방화벽 구성부터 먼저 챙겨야&lt;/p></description></item><item><title>[리눅스] 6장. Vim</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/06/</link><pubDate>Fri, 11 Apr 2025 20:17:17 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/06/</guid><description>&lt;h3 id="-개념-한-줄-요약">📌 개념 한 줄 요약&lt;/h3>
+&lt;p>실전에서는 인증서, SSH, TLS, 방화벽 구성부터 먼저 챙겨야&lt;/p></description></item><item><title>[리눅스] 6장. Vim</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/06/</link><pubDate>Fri, 11 Apr 2025 20:17:17 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/06/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구&lt;/p>&lt;/blockquote>
 &lt;hr>
@@ -245,9 +245,9 @@ qa → 편집 수행 → q → @a 또는 5@a
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
-&lt;h3 id="-한줄-요약">🏁 한줄 요약&lt;/h3>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
 &lt;blockquote>
-&lt;p>Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화&lt;/p></description></item><item><title>[네트워크] 5장. 네트워크 인터페이스 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/05/</link><pubDate>Thu, 10 Apr 2025 20:38:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/05/</guid><description>&lt;h3 id="-핵심-정의">📌 핵심 정의&lt;/h3>
+&lt;p>Vim은 키보드 하나로 빠르고 반복적인 편집을 자동화&lt;/p></description></item><item><title>[네트워크] 5장. 네트워크 인터페이스 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/05/</link><pubDate>Thu, 10 Apr 2025 20:38:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/05/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>TCP/IP의 가장 하단.&lt;/p>
 &lt;p>실제 장비(MAC 주소)를 통해 &lt;strong>프레임 단위로 데이터 전송&lt;/strong>을 담당한다.&lt;/p>&lt;/blockquote>
@@ -366,9 +366,9 @@ Owner → &amp;#34;192.168.0.10 is at 00:11:22:33:44:55&amp;#34;
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
-&lt;h3 id="-마무리-한줄-요약">🏁 마무리 한줄 요약&lt;/h3>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
 &lt;blockquote>
-&lt;p>네트워크 인터페이스 계층은&lt;/p></description></item><item><title>[리눅스] 5장. 파일 검색</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/05/</link><pubDate>Thu, 10 Apr 2025 20:38:01 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/05/</guid><description>&lt;h3 id="-핵심-개념-한줄-요약">📌 핵심 개념 한줄 요약&lt;/h3>
+&lt;p>네트워크 인터페이스 계층은&lt;/p></description></item><item><title>[리눅스] 5장. 파일 검색</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/05/</link><pubDate>Thu, 10 Apr 2025 20:38:01 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/05/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>파일이 어디 있는지, 명령어가 뭘 하는지, 시스템에서 어떻게 찾는지를 아는 것&lt;/p>&lt;/blockquote>
 &lt;hr>
@@ -482,7 +482,7 @@ man 명령어 → 자세한 설명
 &lt;h3 id="-오해-주의">⚠️ 오해 주의&lt;/h3>
 &lt;ul>
 &lt;li>
-&lt;p>&lt;code>find . -name *.txt&lt;/code> → 쉘이 먼저 확장 → ❌ 오류&lt;/p></description></item><item><title>[네트워크] 4장. 라우팅과 인터넷 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/04/</link><pubDate>Wed, 09 Apr 2025 21:29:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/04/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;p>&lt;code>find . -name *.txt&lt;/code> → 쉘이 먼저 확장 → ❌ 오류&lt;/p></description></item><item><title>[네트워크] 4장. 라우팅과 인터넷 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/04/</link><pubDate>Wed, 09 Apr 2025 21:29:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/04/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>인터넷 계층은 IP 기반 통신의 중심&lt;/p>
 &lt;p>패킷이 목적지까지 &lt;strong>“어떻게” 도달하는가&lt;/strong>를 책임진다.&lt;/p>&lt;/blockquote>
@@ -581,7 +581,7 @@ NAT or 포트포워딩 → 내부 서버 도달
 &lt;h3 id="-실전-팁-정리">💡 실전 팁 정리&lt;/h3>
 &lt;ul>
 &lt;li>
-&lt;p>&lt;strong>프라이빗 IP 대역&lt;/strong>&lt;/p></description></item><item><title>[리눅스] 4장. 파일 조작 기본</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/04/</link><pubDate>Wed, 09 Apr 2025 21:19:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/04/</guid><description>&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
+&lt;p>&lt;strong>프라이빗 IP 대역&lt;/strong>&lt;/p></description></item><item><title>[리눅스] 4장. 파일 조작 기본</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/04/</link><pubDate>Wed, 09 Apr 2025 21:19:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/04/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>텍스트 탐색(less)과 링크 생성(ln)은&lt;/p>
 &lt;p>&lt;strong>운영 자동화, 로그 분석, 버전 관리의 핵심 기초&lt;/strong>&lt;/p>&lt;/blockquote>
@@ -698,9 +698,9 @@ ln ln -s
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
-&lt;h3 id="-한줄-요약">🏁 한줄 요약&lt;/h3>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
 &lt;blockquote>
-&lt;p>less와 ln은 단순 조회/링크 명령어가 아니라,&lt;/p></description></item><item><title>[네트워크] 3장. 트랜스포트 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/03/</link><pubDate>Tue, 08 Apr 2025 21:04:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/03/</guid><description>&lt;h3 id="-핵심-정의">📌 핵심 정의&lt;/h3>
+&lt;p>less와 ln은 단순 조회/링크 명령어가 아니라,&lt;/p></description></item><item><title>[네트워크] 3장. 트랜스포트 계층</title><link>https://keonhoban.github.io/mlops-journey/posts/network/03/</link><pubDate>Tue, 08 Apr 2025 21:04:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/03/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>트랜스포트 계층은&lt;/p>
 &lt;p>&lt;strong>&amp;ldquo;데이터가 목적지 애플리케이션까지 정확히 도달하게 해주는 계층&amp;rdquo;&lt;/strong>&lt;/p>
@@ -840,9 +840,9 @@ Client → ACK
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
-&lt;h3 id="-한줄-정리">🏁 한줄 정리&lt;/h3>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
 &lt;blockquote>
-&lt;p>TCP는 정확히, UDP는 빠르게.&lt;/p></description></item><item><title>[리눅스] 3장. 파일과 디렉터리</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/03/</link><pubDate>Tue, 08 Apr 2025 21:00:13 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/03/</guid><description>&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
+&lt;p>TCP는 정확히, UDP는 빠르게.&lt;/p></description></item><item><title>[리눅스] 3장. 파일과 디렉터리</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/03/</link><pubDate>Tue, 08 Apr 2025 21:00:13 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/03/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>리눅스는 단일 루트(/) 트리 구조로 파일/디렉터리를 구성하고,&lt;/p>
 &lt;p>각 디렉터리는 &lt;strong>역할에 따라 위치가 정해져 있다&lt;/strong>.&lt;/p>&lt;/blockquote>
@@ -977,9 +977,9 @@ README.md # 일반 파일
 &lt;li>설정은 &lt;code>/etc&lt;/code>, 사용자 데이터는 &lt;code>/home&lt;/code>, 앱은 &lt;code>/opt&lt;/code>, &lt;code>/usr&lt;/code>&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h3 id="-마무리-한줄-요약">🏁 마무리 한줄 요약&lt;/h3>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
 &lt;blockquote>
-&lt;p>리눅스의 디렉터리 구조를 알면&lt;/p></description></item><item><title>[네트워크] 2장. 애플리케이션 계층 &amp; 주요 네트워크 서비스</title><link>https://keonhoban.github.io/mlops-journey/posts/network/02/</link><pubDate>Mon, 07 Apr 2025 22:38:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/02/</guid><description>&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
+&lt;p>리눅스의 디렉터리 구조를 알면&lt;/p></description></item><item><title>[네트워크] 2장. 애플리케이션 계층 &amp; 주요 네트워크 서비스</title><link>https://keonhoban.github.io/mlops-journey/posts/network/02/</link><pubDate>Mon, 07 Apr 2025 22:38:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/02/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>애플리케이션 계층은 &amp;ldquo;사용자에 가장 가까운 계층&amp;rdquo;&lt;/p>
 &lt;p>웹, 이메일, 파일 전송 같은 &lt;strong>직접 체감 가능한 서비스&lt;/strong>가 여기에 위치한다.&lt;/p>&lt;/blockquote>
@@ -1111,9 +1111,9 @@ Client → SMTP → Mail Server → POP3 or IMAP → Client
 &lt;li>FTP 기본 모드는 &lt;strong>액티브&lt;/strong>, &lt;strong>방화벽 환경에서는 패시브&lt;/strong>&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h3 id="-마무리-요약">🏁 마무리 요약&lt;/h3>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
 &lt;blockquote>
-&lt;p>애플리케이션 계층은 &amp;ldquo;사용자에게 보이는 모든 네트워크 서비스의 출발점&amp;rdquo;&lt;/p></description></item><item><title>[리눅스] 2장. 셸 단축키 &amp; 편집 기능</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/02/</link><pubDate>Mon, 07 Apr 2025 22:34:49 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/02/</guid><description>&lt;h3 id="-핵심-한줄-요약">📌 핵심 한줄 요약&lt;/h3>
+&lt;p>애플리케이션 계층은 &amp;ldquo;사용자에게 보이는 모든 네트워크 서비스의 출발점&amp;rdquo;&lt;/p></description></item><item><title>[리눅스] 2장. 셸 단축키 &amp; 편집 기능</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/02/</link><pubDate>Mon, 07 Apr 2025 22:34:49 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/02/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>셸은 단순한 명령어 입력 도구가 아니라&lt;/p>
 &lt;p>&lt;strong>효율적인 편집 + 빠른 복구 + 과거 재사용&lt;/strong>까지 가능한 작업 도구이다.&lt;/p>&lt;/blockquote>
@@ -1295,9 +1295,9 @@ Client → SMTP → Mail Server → POP3 or IMAP → Client
 &lt;li>&lt;strong>데이터 핸들링 전처리&lt;/strong>: 로그/CSV가 다른 인코딩일 경우 &lt;code>iconv&lt;/code>로 사전 처리 → API 오류 방지&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h3 id="-마무리-요약">🏁 마무리 요약&lt;/h3>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
 &lt;blockquote>
-&lt;p>셸 단축키는 명령어 생산성과 디버깅 속도를 높인다.&lt;/p></description></item><item><title>[네트워크] 1장. 컴퓨터 네트워크 개요</title><link>https://keonhoban.github.io/mlops-journey/posts/network/01/</link><pubDate>Sun, 06 Apr 2025 21:52:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/01/</guid><description>&lt;h3 id="-네트워크란">📌 네트워크란?&lt;/h3>
+&lt;p>셸 단축키는 명령어 생산성과 디버깅 속도를 높인다.&lt;/p></description></item><item><title>[네트워크] 1장. 컴퓨터 네트워크 개요</title><link>https://keonhoban.github.io/mlops-journey/posts/network/01/</link><pubDate>Sun, 06 Apr 2025 21:52:45 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/network/01/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>데이터를 여러 기기 사이에서 효율적이고 안전하게 전달하기 위한 구조&lt;/p>&lt;/blockquote>
 &lt;hr>
@@ -1346,7 +1346,7 @@ Client → SMTP → Mail Server → POP3 or IMAP → Client
 ↓
 [ Network Interface ] ← MAC 주소 기반 물리 전송
 &lt;/code>&lt;/pre>&lt;blockquote>
-&lt;p>수신 측에서는 역순으로 계층별로 처리하며 원래 데이터 복원&lt;/p></description></item><item><title>[리눅스] 01장. 셸이란?</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/01/</link><pubDate>Sun, 06 Apr 2025 21:26:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/01/</guid><description>&lt;h3 id="-셸의-본질">📌 셸의 본질&lt;/h3>
+&lt;p>수신 측에서는 역순으로 계층별로 처리하며 원래 데이터 복원&lt;/p></description></item><item><title>[리눅스] 01장. 셸이란?</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/01/</link><pubDate>Sun, 06 Apr 2025 21:26:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/01/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>셸은 사용자 ↔ 커널 사이를 연결하는 명령어 해석기&lt;/p>&lt;/blockquote>
 &lt;hr>
