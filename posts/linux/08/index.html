@@ -1,0 +1,283 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[리눅스] 7장. 퍼미션 & 슈퍼유저 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="✅ 리팩토링된 8장. 퍼미션 & 슈퍼유저 (chmod, sudo, tmux)
+
+📌 개념 핵심 요약
+
+리눅스는 파일과 디렉터리에 명확한 권한(rwx) 구조가 있으며,
+권한 상승(sudo) 과 세션 유지(tmux) 는 실무의 기본 도구
+
+🧠 결정적 지식 요약
+
+  
+      
+          개념
+          핵심 요약
+      
+  
+  
+      
+          rwx
+          r: 읽기, w: 쓰기, x: 실행/디렉터리 접근
+      
+      
+          chmod
+          권한 설정 도구 (755, 644, 2775 등)
+      
+      
+          삭제 권한
+          디렉터리의 쓰기 권한이 있어야 파일 삭제 가능
+      
+      
+          su vs sudo
+          su: 전체 전환 / sudo: 명령어 단위
+      
+      
+          tmux
+          SSH 끊겨도 세션 유지, 실험·학습 환경에 필수
+      
+  
+
+
+🖼️ 흐름 정리
+[권한 표현]
+r (4) + w (2) + x (1) → 합산해 사용
+예: 755 = rwxr-xr-x
+
+[chmod 예시]
+chmod 644  → 일반 파일
+chmod 755  → 실행 스크립트
+chmod 2775 → SetGID + 그룹 협업
+
+[tmux 기본 흐름]
+tmux new -s mlflow
+→ 세션 작업
+→ tmux detach
+→ tmux attach -t mlflow
+
+🔍 실무 시나리오 연결
+
+  
+      
+          상황
+          활용 예시
+      
+  
+  
+      
+          공유 디렉터리 설정
+          chmod 2775 + 그룹 지정 → 협업 환경 구성
+      
+      
+          서비스 제어
+          sudo systemctl restart mlflow
+      
+      
+          실험 유지
+          tmux new -s train1 → SSH 끊겨도 학습 계속
+      
+      
+          로그 모니터링
+          tmux + tail -f 병렬 실행으로 디버깅
+      
+  
+
+
+💡 실전 팁 모음
+
+파일 삭제는 디렉터리 권한으로 결정됨
+sudo visudo로만 sudo 설정 → 문법 오류 방지
+chmod 2775는 그룹 내 쓰기 + 소유권 유지에 유용
+tmux 세션에는 명시적 이름(-s) 필수
+
+
+🛠️ MLOps 연결 요약
+
+  
+      
+          항목
+          적용 예시
+      
+  
+  
+      
+          모델 디렉터리 협업
+          /opt/ml/에 chmod 2775 → 팀원과 공유 가능
+      
+      
+          서비스 재시작 자동화
+          sudo systemctl restart mlflow
+      
+      
+          학습 환경 유지
+          tmux new -s lr0.01 → SSH 끊겨도 학습 지속
+      
+      
+          실시간 로그 확인
+          tmux + tail -f /var/log/mlflow.log
+      
+      
+          권한 제한 사용자 구성
+          sudoers.d에서 tmux만 허용 가능
+      
+  
+
+
+❗ 오해 방지 포인트
+
+rm 허용 여부는 디렉터리 w 권한에 달림
+su는 전체 세션 전환 → 실무에서는 보안상 위험
+tmux는 백그라운드 실행이 아니라 세션 유지 도구
+
+
+🏁 마무리
+
+권한을 제대로 이해하고 다루는 건"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/08/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/08/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/08/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[리눅스] 7장. 퍼미션 & 슈퍼유저"><meta property="og:description" content="✅ 리팩토링된 8장. 퍼미션 & 슈퍼유저 (chmod, sudo, tmux) 📌 개념 핵심 요약 리눅스는 파일과 디렉터리에 명확한 권한(rwx) 구조가 있으며,
+권한 상승(sudo) 과 세션 유지(tmux) 는 실무의 기본 도구
+🧠 결정적 지식 요약 개념 핵심 요약 rwx r: 읽기, w: 쓰기, x: 실행/디렉터리 접근 chmod 권한 설정 도구 (755, 644, 2775 등) 삭제 권한 디렉터리의 쓰기 권한이 있어야 파일 삭제 가능 su vs sudo su: 전체 전환 / sudo: 명령어 단위 tmux SSH 끊겨도 세션 유지, 실험·학습 환경에 필수 🖼️ 흐름 정리 [권한 표현] r (4) + w (2) + x (1) → 합산해 사용 예: 755 = rwxr-xr-x [chmod 예시] chmod 644 → 일반 파일 chmod 755 → 실행 스크립트 chmod 2775 → SetGID + 그룹 협업 [tmux 기본 흐름] tmux new -s mlflow → 세션 작업 → tmux detach → tmux attach -t mlflow 🔍 실무 시나리오 연결 상황 활용 예시 공유 디렉터리 설정 chmod 2775 + 그룹 지정 → 협업 환경 구성 서비스 제어 sudo systemctl restart mlflow 실험 유지 tmux new -s train1 → SSH 끊겨도 학습 계속 로그 모니터링 tmux + tail -f 병렬 실행으로 디버깅 💡 실전 팁 모음 파일 삭제는 디렉터리 권한으로 결정됨 sudo visudo로만 sudo 설정 → 문법 오류 방지 chmod 2775는 그룹 내 쓰기 + 소유권 유지에 유용 tmux 세션에는 명시적 이름(-s) 필수 🛠️ MLOps 연결 요약 항목 적용 예시 모델 디렉터리 협업 /opt/ml/에 chmod 2775 → 팀원과 공유 가능 서비스 재시작 자동화 sudo systemctl restart mlflow 학습 환경 유지 tmux new -s lr0.01 → SSH 끊겨도 학습 지속 실시간 로그 확인 tmux + tail -f /var/log/mlflow.log 권한 제한 사용자 구성 sudoers.d에서 tmux만 허용 가능 ❗ 오해 방지 포인트 rm 허용 여부는 디렉터리 w 권한에 달림 su는 전체 세션 전환 → 실무에서는 보안상 위험 tmux는 백그라운드 실행이 아니라 세션 유지 도구 🏁 마무리 권한을 제대로 이해하고 다루는 건"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-14T21:18:35+09:00"><meta property="article:modified_time" content="2025-04-14T21:18:35+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[리눅스] 7장. 퍼미션 & 슈퍼유저"><meta name=twitter:description content="✅ 리팩토링된 8장. 퍼미션 & 슈퍼유저 (chmod, sudo, tmux)
+
+📌 개념 핵심 요약
+
+리눅스는 파일과 디렉터리에 명확한 권한(rwx) 구조가 있으며,
+권한 상승(sudo) 과 세션 유지(tmux) 는 실무의 기본 도구
+
+🧠 결정적 지식 요약
+
+  
+      
+          개념
+          핵심 요약
+      
+  
+  
+      
+          rwx
+          r: 읽기, w: 쓰기, x: 실행/디렉터리 접근
+      
+      
+          chmod
+          권한 설정 도구 (755, 644, 2775 등)
+      
+      
+          삭제 권한
+          디렉터리의 쓰기 권한이 있어야 파일 삭제 가능
+      
+      
+          su vs sudo
+          su: 전체 전환 / sudo: 명령어 단위
+      
+      
+          tmux
+          SSH 끊겨도 세션 유지, 실험·학습 환경에 필수
+      
+  
+
+
+🖼️ 흐름 정리
+[권한 표현]
+r (4) + w (2) + x (1) → 합산해 사용
+예: 755 = rwxr-xr-x
+
+[chmod 예시]
+chmod 644  → 일반 파일
+chmod 755  → 실행 스크립트
+chmod 2775 → SetGID + 그룹 협업
+
+[tmux 기본 흐름]
+tmux new -s mlflow
+→ 세션 작업
+→ tmux detach
+→ tmux attach -t mlflow
+
+🔍 실무 시나리오 연결
+
+  
+      
+          상황
+          활용 예시
+      
+  
+  
+      
+          공유 디렉터리 설정
+          chmod 2775 + 그룹 지정 → 협업 환경 구성
+      
+      
+          서비스 제어
+          sudo systemctl restart mlflow
+      
+      
+          실험 유지
+          tmux new -s train1 → SSH 끊겨도 학습 계속
+      
+      
+          로그 모니터링
+          tmux + tail -f 병렬 실행으로 디버깅
+      
+  
+
+
+💡 실전 팁 모음
+
+파일 삭제는 디렉터리 권한으로 결정됨
+sudo visudo로만 sudo 설정 → 문법 오류 방지
+chmod 2775는 그룹 내 쓰기 + 소유권 유지에 유용
+tmux 세션에는 명시적 이름(-s) 필수
+
+
+🛠️ MLOps 연결 요약
+
+  
+      
+          항목
+          적용 예시
+      
+  
+  
+      
+          모델 디렉터리 협업
+          /opt/ml/에 chmod 2775 → 팀원과 공유 가능
+      
+      
+          서비스 재시작 자동화
+          sudo systemctl restart mlflow
+      
+      
+          학습 환경 유지
+          tmux new -s lr0.01 → SSH 끊겨도 학습 지속
+      
+      
+          실시간 로그 확인
+          tmux + tail -f /var/log/mlflow.log
+      
+      
+          권한 제한 사용자 구성
+          sudoers.d에서 tmux만 허용 가능
+      
+  
+
+
+❗ 오해 방지 포인트
+
+rm 허용 여부는 디렉터리 w 권한에 달림
+su는 전체 세션 전환 → 실무에서는 보안상 위험
+tmux는 백그라운드 실행이 아니라 세션 유지 도구
+
+
+🏁 마무리
+
+권한을 제대로 이해하고 다루는 건"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[리눅스] 7장. 퍼미션 \u0026 슈퍼유저","item":"https://keonhoban.github.io/mlops-journey/posts/linux/08/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[리눅스] 7장. 퍼미션 \u0026 슈퍼유저","name":"[리눅스] 7장. 퍼미션 \u0026 슈퍼유저","description":"✅ 리팩토링된 8장. 퍼미션 \u0026amp; 슈퍼유저 (chmod, sudo, tmux) 📌 개념 핵심 요약 리눅스는 파일과 디렉터리에 명확한 권한(rwx) 구조가 있으며,\n권한 상승(sudo) 과 세션 유지(tmux) 는 실무의 기본 도구\n🧠 결정적 지식 요약 개념 핵심 요약 rwx r: 읽기, w: 쓰기, x: 실행/디렉터리 접근 chmod 권한 설정 도구 (755, 644, 2775 등) 삭제 권한 디렉터리의 쓰기 권한이 있어야 파일 삭제 가능 su vs sudo su: 전체 전환 / sudo: 명령어 단위 tmux SSH 끊겨도 세션 유지, 실험·학습 환경에 필수 🖼️ 흐름 정리 [권한 표현] r (4) + w (2) + x (1) → 합산해 사용 예: 755 = rwxr-xr-x [chmod 예시] chmod 644 → 일반 파일 chmod 755 → 실행 스크립트 chmod 2775 → SetGID + 그룹 협업 [tmux 기본 흐름] tmux new -s mlflow → 세션 작업 → tmux detach → tmux attach -t mlflow 🔍 실무 시나리오 연결 상황 활용 예시 공유 디렉터리 설정 chmod 2775 + 그룹 지정 → 협업 환경 구성 서비스 제어 sudo systemctl restart mlflow 실험 유지 tmux new -s train1 → SSH 끊겨도 학습 계속 로그 모니터링 tmux + tail -f 병렬 실행으로 디버깅 💡 실전 팁 모음 파일 삭제는 디렉터리 권한으로 결정됨 sudo visudo로만 sudo 설정 → 문법 오류 방지 chmod 2775는 그룹 내 쓰기 + 소유권 유지에 유용 tmux 세션에는 명시적 이름(-s) 필수 🛠️ MLOps 연결 요약 항목 적용 예시 모델 디렉터리 협업 /opt/ml/에 chmod 2775 → 팀원과 공유 가능 서비스 재시작 자동화 sudo systemctl restart mlflow 학습 환경 유지 tmux new -s lr0.01 → SSH 끊겨도 학습 지속 실시간 로그 확인 tmux + tail -f /var/log/mlflow.log 권한 제한 사용자 구성 sudoers.d에서 tmux만 허용 가능 ❗ 오해 방지 포인트 rm 허용 여부는 디렉터리 w 권한에 달림 su는 전체 세션 전환 → 실무에서는 보안상 위험 tmux는 백그라운드 실행이 아니라 세션 유지 도구 🏁 마무리 권한을 제대로 이해하고 다루는 건\n","keywords":[],"articleBody":"✅ 리팩토링된 8장. 퍼미션 \u0026 슈퍼유저 (chmod, sudo, tmux) 📌 개념 핵심 요약 리눅스는 파일과 디렉터리에 명확한 권한(rwx) 구조가 있으며,\n권한 상승(sudo) 과 세션 유지(tmux) 는 실무의 기본 도구\n🧠 결정적 지식 요약 개념 핵심 요약 rwx r: 읽기, w: 쓰기, x: 실행/디렉터리 접근 chmod 권한 설정 도구 (755, 644, 2775 등) 삭제 권한 디렉터리의 쓰기 권한이 있어야 파일 삭제 가능 su vs sudo su: 전체 전환 / sudo: 명령어 단위 tmux SSH 끊겨도 세션 유지, 실험·학습 환경에 필수 🖼️ 흐름 정리 [권한 표현] r (4) + w (2) + x (1) → 합산해 사용 예: 755 = rwxr-xr-x [chmod 예시] chmod 644 → 일반 파일 chmod 755 → 실행 스크립트 chmod 2775 → SetGID + 그룹 협업 [tmux 기본 흐름] tmux new -s mlflow → 세션 작업 → tmux detach → tmux attach -t mlflow 🔍 실무 시나리오 연결 상황 활용 예시 공유 디렉터리 설정 chmod 2775 + 그룹 지정 → 협업 환경 구성 서비스 제어 sudo systemctl restart mlflow 실험 유지 tmux new -s train1 → SSH 끊겨도 학습 계속 로그 모니터링 tmux + tail -f 병렬 실행으로 디버깅 💡 실전 팁 모음 파일 삭제는 디렉터리 권한으로 결정됨 sudo visudo로만 sudo 설정 → 문법 오류 방지 chmod 2775는 그룹 내 쓰기 + 소유권 유지에 유용 tmux 세션에는 명시적 이름(-s) 필수 🛠️ MLOps 연결 요약 항목 적용 예시 모델 디렉터리 협업 /opt/ml/에 chmod 2775 → 팀원과 공유 가능 서비스 재시작 자동화 sudo systemctl restart mlflow 학습 환경 유지 tmux new -s lr0.01 → SSH 끊겨도 학습 지속 실시간 로그 확인 tmux + tail -f /var/log/mlflow.log 권한 제한 사용자 구성 sudoers.d에서 tmux만 허용 가능 ❗ 오해 방지 포인트 rm 허용 여부는 디렉터리 w 권한에 달림 su는 전체 세션 전환 → 실무에서는 보안상 위험 tmux는 백그라운드 실행이 아니라 세션 유지 도구 🏁 마무리 권한을 제대로 이해하고 다루는 건\n협업, 보안, 자동화의 기본기다.\nchmod, sudo, tmux는 실무에서 반드시 손에 익혀야 할 3종 세트\n","wordCount":"311","inLanguage":"en","datePublished":"2025-04-14T21:18:35+09:00","dateModified":"2025-04-14T21:18:35+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/08/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[리눅스] 7장. 퍼미션 & 슈퍼유저</h1><div class=post-meta><span title='2025-04-14 21:18:35 +0900 +0900'>April 14, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h2 id=-리팩토링된-8장-퍼미션--슈퍼유저-chmod-sudo-tmux>✅ 리팩토링된 8장. 퍼미션 & 슈퍼유저 (chmod, sudo, tmux)<a hidden class=anchor aria-hidden=true href=#-리팩토링된-8장-퍼미션--슈퍼유저-chmod-sudo-tmux>#</a></h2><hr><h3 id=-개념-핵심-요약>📌 개념 핵심 요약<a hidden class=anchor aria-hidden=true href=#-개념-핵심-요약>#</a></h3><blockquote><p>리눅스는 파일과 디렉터리에 명확한 권한(rwx) 구조가 있으며,</p><p><strong>권한 상승(sudo)</strong> 과 <strong>세션 유지(tmux)</strong> 는 실무의 기본 도구</p></blockquote><hr><h3 id=-결정적-지식-요약>🧠 결정적 지식 요약<a hidden class=anchor aria-hidden=true href=#-결정적-지식-요약>#</a></h3><table><thead><tr><th>개념</th><th>핵심 요약</th></tr></thead><tbody><tr><td><strong>rwx</strong></td><td><code>r</code>: 읽기, <code>w</code>: 쓰기, <code>x</code>: 실행/디렉터리 접근</td></tr><tr><td><strong>chmod</strong></td><td>권한 설정 도구 (<code>755</code>, <code>644</code>, <code>2775</code> 등)</td></tr><tr><td><strong>삭제 권한</strong></td><td><strong>디렉터리의 쓰기 권한</strong>이 있어야 파일 삭제 가능</td></tr><tr><td><strong>su vs sudo</strong></td><td><code>su</code>: 전체 전환 / <code>sudo</code>: 명령어 단위</td></tr><tr><td><strong>tmux</strong></td><td>SSH 끊겨도 세션 유지, 실험·학습 환경에 필수</td></tr></tbody></table><hr><h3 id=-흐름-정리>🖼️ 흐름 정리<a hidden class=anchor aria-hidden=true href=#-흐름-정리>#</a></h3><pre tabindex=0><code>[권한 표현]
+r (4) + w (2) + x (1) → 합산해 사용
+예: 755 = rwxr-xr-x
+
+[chmod 예시]
+chmod 644  → 일반 파일
+chmod 755  → 실행 스크립트
+chmod 2775 → SetGID + 그룹 협업
+
+[tmux 기본 흐름]
+tmux new -s mlflow
+→ 세션 작업
+→ tmux detach
+→ tmux attach -t mlflow
+</code></pre><hr><h3 id=-실무-시나리오-연결>🔍 실무 시나리오 연결<a hidden class=anchor aria-hidden=true href=#-실무-시나리오-연결>#</a></h3><table><thead><tr><th>상황</th><th>활용 예시</th></tr></thead><tbody><tr><td><strong>공유 디렉터리 설정</strong></td><td><code>chmod 2775</code> + 그룹 지정 → 협업 환경 구성</td></tr><tr><td><strong>서비스 제어</strong></td><td><code>sudo systemctl restart mlflow</code></td></tr><tr><td><strong>실험 유지</strong></td><td><code>tmux new -s train1</code> → SSH 끊겨도 학습 계속</td></tr><tr><td><strong>로그 모니터링</strong></td><td><code>tmux</code> + <code>tail -f</code> 병렬 실행으로 디버깅</td></tr></tbody></table><hr><h3 id=-실전-팁-모음>💡 실전 팁 모음<a hidden class=anchor aria-hidden=true href=#-실전-팁-모음>#</a></h3><ul><li><strong>파일 삭제는 디렉터리 권한으로 결정</strong>됨</li><li><code>sudo visudo</code>로만 sudo 설정 → 문법 오류 방지</li><li><code>chmod 2775</code>는 <strong>그룹 내 쓰기 + 소유권 유지</strong>에 유용</li><li><code>tmux</code> 세션에는 <strong>명시적 이름(-s)</strong> 필수</li></ul><hr><h3 id=-mlops-연결-요약>🛠️ MLOps 연결 요약<a hidden class=anchor aria-hidden=true href=#-mlops-연결-요약>#</a></h3><table><thead><tr><th>항목</th><th>적용 예시</th></tr></thead><tbody><tr><td><strong>모델 디렉터리 협업</strong></td><td><code>/opt/ml/</code>에 <code>chmod 2775</code> → 팀원과 공유 가능</td></tr><tr><td><strong>서비스 재시작 자동화</strong></td><td><code>sudo systemctl restart mlflow</code></td></tr><tr><td><strong>학습 환경 유지</strong></td><td><code>tmux new -s lr0.01</code> → SSH 끊겨도 학습 지속</td></tr><tr><td><strong>실시간 로그 확인</strong></td><td><code>tmux</code> + <code>tail -f /var/log/mlflow.log</code></td></tr><tr><td><strong>권한 제한 사용자 구성</strong></td><td><code>sudoers.d</code>에서 tmux만 허용 가능</td></tr></tbody></table><hr><h3 id=-오해-방지-포인트>❗ 오해 방지 포인트<a hidden class=anchor aria-hidden=true href=#-오해-방지-포인트>#</a></h3><ul><li><strong><code>rm</code> 허용 여부는 디렉터리 <code>w</code> 권한</strong>에 달림</li><li><code>su</code>는 전체 세션 전환 → 실무에서는 <strong>보안상 위험</strong></li><li><code>tmux</code>는 <strong>백그라운드 실행이 아니라 세션 유지 도구</strong></li></ul><hr><h3 id=-마무리>🏁 마무리<a hidden class=anchor aria-hidden=true href=#-마무리>#</a></h3><blockquote><p>권한을 제대로 이해하고 다루는 건</p><p><strong>협업, 보안, 자동화의 기본기</strong>다.</p><p><code>chmod</code>, <code>sudo</code>, <code>tmux</code>는 실무에서 반드시 손에 익혀야 할 3종 세트</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/linux/07/><span class=title>Next »</span><br><span>[리눅스] 7장. Bash 설정</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

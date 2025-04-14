@@ -1,4 +1,272 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Linux on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/linux/</link><description>Recent content in Linux on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 11 Apr 2025 20:17:17 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 6장. Vim</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/06/</link><pubDate>Fri, 11 Apr 2025 20:17:17 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/06/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Linux on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/linux/</link><description>Recent content in Linux on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 14 Apr 2025 21:18:35 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 7장. 퍼미션 &amp; 슈퍼유저</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/08/</link><pubDate>Mon, 14 Apr 2025 21:18:35 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/08/</guid><description>&lt;h2 id="-리팩토링된-8장-퍼미션--슈퍼유저-chmod-sudo-tmux">✅ 리팩토링된 8장. 퍼미션 &amp;amp; 슈퍼유저 (chmod, sudo, tmux)&lt;/h2>
+&lt;hr>
+&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>리눅스는 파일과 디렉터리에 명확한 권한(rwx) 구조가 있으며,&lt;/p>
+&lt;p>&lt;strong>권한 상승(sudo)&lt;/strong> 과 &lt;strong>세션 유지(tmux)&lt;/strong> 는 실무의 기본 도구&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>핵심 요약&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>rwx&lt;/strong>&lt;/td>
+&lt;td>&lt;code>r&lt;/code>: 읽기, &lt;code>w&lt;/code>: 쓰기, &lt;code>x&lt;/code>: 실행/디렉터리 접근&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>chmod&lt;/strong>&lt;/td>
+&lt;td>권한 설정 도구 (&lt;code>755&lt;/code>, &lt;code>644&lt;/code>, &lt;code>2775&lt;/code> 등)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>삭제 권한&lt;/strong>&lt;/td>
+&lt;td>&lt;strong>디렉터리의 쓰기 권한&lt;/strong>이 있어야 파일 삭제 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>su vs sudo&lt;/strong>&lt;/td>
+&lt;td>&lt;code>su&lt;/code>: 전체 전환 / &lt;code>sudo&lt;/code>: 명령어 단위&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>tmux&lt;/strong>&lt;/td>
+&lt;td>SSH 끊겨도 세션 유지, 실험·학습 환경에 필수&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-흐름-정리">🖼️ 흐름 정리&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[권한 표현]
+r (4) + w (2) + x (1) → 합산해 사용
+예: 755 = rwxr-xr-x
+[chmod 예시]
+chmod 644 → 일반 파일
+chmod 755 → 실행 스크립트
+chmod 2775 → SetGID + 그룹 협업
+[tmux 기본 흐름]
+tmux new -s mlflow
+→ 세션 작업
+→ tmux detach
+→ tmux attach -t mlflow
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-연결">🔍 실무 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>활용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>공유 디렉터리 설정&lt;/strong>&lt;/td>
+&lt;td>&lt;code>chmod 2775&lt;/code> + 그룹 지정 → 협업 환경 구성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>서비스 제어&lt;/strong>&lt;/td>
+&lt;td>&lt;code>sudo systemctl restart mlflow&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>실험 유지&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tmux new -s train1&lt;/code> → SSH 끊겨도 학습 계속&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>로그 모니터링&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tmux&lt;/code> + &lt;code>tail -f&lt;/code> 병렬 실행으로 디버깅&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>파일 삭제는 디렉터리 권한으로 결정&lt;/strong>됨&lt;/li>
+&lt;li>&lt;code>sudo visudo&lt;/code>로만 sudo 설정 → 문법 오류 방지&lt;/li>
+&lt;li>&lt;code>chmod 2775&lt;/code>는 &lt;strong>그룹 내 쓰기 + 소유권 유지&lt;/strong>에 유용&lt;/li>
+&lt;li>&lt;code>tmux&lt;/code> 세션에는 &lt;strong>명시적 이름(-s)&lt;/strong> 필수&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🛠️ MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>적용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>모델 디렉터리 협업&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/opt/ml/&lt;/code>에 &lt;code>chmod 2775&lt;/code> → 팀원과 공유 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>서비스 재시작 자동화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>sudo systemctl restart mlflow&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>학습 환경 유지&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tmux new -s lr0.01&lt;/code> → SSH 끊겨도 학습 지속&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>실시간 로그 확인&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tmux&lt;/code> + &lt;code>tail -f /var/log/mlflow.log&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>권한 제한 사용자 구성&lt;/strong>&lt;/td>
+&lt;td>&lt;code>sudoers.d&lt;/code>에서 tmux만 허용 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-오해-방지-포인트">❗ 오해 방지 포인트&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>&lt;code>rm&lt;/code> 허용 여부는 디렉터리 &lt;code>w&lt;/code> 권한&lt;/strong>에 달림&lt;/li>
+&lt;li>&lt;code>su&lt;/code>는 전체 세션 전환 → 실무에서는 &lt;strong>보안상 위험&lt;/strong>&lt;/li>
+&lt;li>&lt;code>tmux&lt;/code>는 &lt;strong>백그라운드 실행이 아니라 세션 유지 도구&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>권한을 제대로 이해하고 다루는 건&lt;/p></description></item><item><title>[리눅스] 7장. Bash 설정</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/07/</link><pubDate>Mon, 14 Apr 2025 21:18:26 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/07/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>Bash 설정은 개발 편의성 + 실수 방지 + 자동화 기반을 만들어준다.&lt;/p>
+&lt;p>alias, 환경변수, 프롬프트, 설정파일은 &lt;strong>모든 실무 셸 환경의 기본 뼈대&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>핵심 설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>alias&lt;/strong>&lt;/td>
+&lt;td>명령어 단축. 반복 명령·위험 명령 보호에 필수&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>Bash 옵션&lt;/strong>&lt;/td>
+&lt;td>&lt;code>set&lt;/code>, &lt;code>shopt&lt;/code>로 셸 동작 커스터마이징 (예: 덮어쓰기 방지, 재귀 검색 허용 등)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>환경 변수&lt;/strong>&lt;/td>
+&lt;td>&lt;code>export&lt;/code> 여부로 &lt;strong>자식 프로세스 전파 여부 결정&lt;/strong> (&lt;code>MLFLOW_&lt;/code>, &lt;code>CUDA_&lt;/code> 등)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>PS1&lt;/strong>&lt;/td>
+&lt;td>프롬프트 커스터마이징 → 서버 구분, 현재 위치 표시 등&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>설정 파일&lt;/strong>&lt;/td>
+&lt;td>&lt;code>.bashrc&lt;/code>, &lt;code>.profile&lt;/code>, &lt;code>/etc/bash.bashrc&lt;/code> → &lt;strong>실행 시점과 범위 구분&lt;/strong> 필요&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-흐름도-도식화">🖼️ 흐름도 도식화&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[alias 예시]
+alias gs=&amp;#39;git status&amp;#39;
+alias mlflow-dev=&amp;#39;mlflow ui ...&amp;#39;
+[Bash 옵션]
+set -o noclobber # &amp;gt; 덮어쓰기 방지
+shopt -s globstar # **/*.py 허용
+set -o ignoreeof # Ctrl+D 방지
+[환경 변수]
+export VAR=value # 자식 프로세스 전달
+VAR=value # 현재 셸만 적용
+[PS1 예시]
+[\u@\h \W]\$ # 사용자@호스트 현재디렉터리$
+[설정 파일 실행 흐름]
+로그인 셸 → ~/.profile
+비로그인 셸 → ~/.bashrc
+시스템 전체 → /etc/bash.bashrc
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-연결">🔍 실무 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>적용 예&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>명령어 반복 줄이기&lt;/strong>&lt;/td>
+&lt;td>&lt;code>alias mlflow-dev=&amp;quot;mlflow ui ...&amp;quot;&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>실수 방지&lt;/strong>&lt;/td>
+&lt;td>&lt;code>alias rm='rm -i'&lt;/code>, &lt;code>set -o noclobber&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>서버 구분&lt;/strong>&lt;/td>
+&lt;td>&lt;code>PS1='[\u@\h prod]\$'&lt;/code> → 프롬프트로 환경 식별&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>환경 자동 초기화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>.bashrc&lt;/code>에 &lt;code>export&lt;/code>, &lt;code>alias&lt;/code> 세팅&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>로그 탐색 자동화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>shopt -s globstar&lt;/code> + &lt;code>grep &amp;quot;**/*.log&amp;quot;&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>alias&lt;/code>는 &lt;code>.bashrc&lt;/code>에 등록해야 셸 재시작 후 유지&lt;/li>
+&lt;li>&lt;code>set -o noclobber&lt;/code>: 실수로 파일 덮어쓰기 방지&lt;/li>
+&lt;li>&lt;code>export VAR=value&lt;/code>: 실험 환경 변수 설정에 필수&lt;/li>
+&lt;li>&lt;code>source ~/.bashrc&lt;/code>: 변경사항 반영&lt;/li>
+&lt;li>Docker 내 환경 통일 → &lt;code>.bashrc_profile&lt;/code> 등 활용&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🛠️ MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>MLOps 활용 예&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>ENV 자동 세팅&lt;/strong>&lt;/td>
+&lt;td>&lt;code>MLFLOW_TRACKING_URI&lt;/code>, &lt;code>CUDA_VISIBLE_DEVICES&lt;/code> 등 &lt;code>.bashrc&lt;/code>에 미리 정의&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 서빙 단축 명령어&lt;/strong>&lt;/td>
+&lt;td>&lt;code>alias mlflow-dev=&amp;quot;mlflow ui --...&amp;quot;&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>컨테이너 자동 초기화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>.bashrc_profile&lt;/code> → dev 환경 재현&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>로그 패턴 검색&lt;/strong>&lt;/td>
+&lt;td>&lt;code>globstar&lt;/code> + &lt;code>grep&lt;/code> → 수천 로그 파일 탐색&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>CI/CD 연동&lt;/strong>&lt;/td>
+&lt;td>GitHub Actions/Jenkins에서도 &lt;code>.bashrc&lt;/code> 설정 반영 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-자주-헷갈리는-포인트">❗ 자주 헷갈리는 포인트&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>alias&lt;/code>는 일시적 → &lt;code>.bashrc&lt;/code>에 등록 필수&lt;/li>
+&lt;li>&lt;code>set&lt;/code> vs &lt;code>shopt&lt;/code>: &lt;code>shopt&lt;/code>은 Bash 전용 기능&lt;/li>
+&lt;li>프롬프트 설정(&lt;code>PS1&lt;/code>)은 실수 예방용 시각 장치&lt;/li>
+&lt;li>환경 변수 설정 안 하면 &lt;code>mlflow&lt;/code>, &lt;code>torch&lt;/code> 등이 작동하지 않기도 함&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>Bash 설정은 “자동화와 실수 방지의 기반”이다.&lt;/p></description></item><item><title>[리눅스] 6장. Vim</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/06/</link><pubDate>Fri, 11 Apr 2025 20:17:17 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/06/</guid><description>&lt;h3 id="-핵심-개념">📌 핵심 개념&lt;/h3>
 &lt;blockquote>
 &lt;p>Vim은 “로그 + 설정 + 데이터 편집”을 위한 실무형 텍스트 도구&lt;/p>&lt;/blockquote>
 &lt;hr>

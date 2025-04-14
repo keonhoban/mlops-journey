@@ -1,0 +1,310 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[리눅스] 7장. Bash 설정 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="📌 핵심 개념 요약
+
+Bash 설정은 개발 편의성 + 실수 방지 + 자동화 기반을 만들어준다.
+alias, 환경변수, 프롬프트, 설정파일은 모든 실무 셸 환경의 기본 뼈대
+
+🧠 결정적 지식 요약
+
+  
+      
+          항목
+          핵심 설명
+      
+  
+  
+      
+          alias
+          명령어 단축. 반복 명령·위험 명령 보호에 필수
+      
+      
+          Bash 옵션
+          set, shopt로 셸 동작 커스터마이징 (예: 덮어쓰기 방지, 재귀 검색 허용 등)
+      
+      
+          환경 변수
+          export 여부로 자식 프로세스 전파 여부 결정 (MLFLOW_, CUDA_ 등)
+      
+      
+          PS1
+          프롬프트 커스터마이징 → 서버 구분, 현재 위치 표시 등
+      
+      
+          설정 파일
+          .bashrc, .profile, /etc/bash.bashrc → 실행 시점과 범위 구분 필요
+      
+  
+
+
+🖼️ 흐름도 도식화
+[alias 예시]
+alias gs='git status'
+alias mlflow-dev='mlflow ui ...'
+
+[Bash 옵션]
+set -o noclobber       # > 덮어쓰기 방지
+shopt -s globstar      # **/*.py 허용
+set -o ignoreeof       # Ctrl+D 방지
+
+[환경 변수]
+export VAR=value       # 자식 프로세스 전달
+VAR=value              # 현재 셸만 적용
+
+[PS1 예시]
+[\u@\h \W]\$           # 사용자@호스트 현재디렉터리$
+
+[설정 파일 실행 흐름]
+로그인 셸   → ~/.profile
+비로그인 셸 → ~/.bashrc
+시스템 전체 → /etc/bash.bashrc
+
+🔍 실무 시나리오 연결
+
+  
+      
+          상황
+          적용 예
+      
+  
+  
+      
+          명령어 반복 줄이기
+          alias mlflow-dev=&#34;mlflow ui ...&#34;
+      
+      
+          실수 방지
+          alias rm='rm -i', set -o noclobber
+      
+      
+          서버 구분
+          PS1='[\u@\h prod]\$' → 프롬프트로 환경 식별
+      
+      
+          환경 자동 초기화
+          .bashrc에 export, alias 세팅
+      
+      
+          로그 탐색 자동화
+          shopt -s globstar + grep &#34;**/*.log&#34;
+      
+  
+
+
+💡 실전 팁 모음
+
+alias는 .bashrc에 등록해야 셸 재시작 후 유지
+set -o noclobber: 실수로 파일 덮어쓰기 방지
+export VAR=value: 실험 환경 변수 설정에 필수
+source ~/.bashrc: 변경사항 반영
+Docker 내 환경 통일 → .bashrc_profile 등 활용
+
+
+🛠️ MLOps 연결 요약
+
+  
+      
+          항목
+          MLOps 활용 예
+      
+  
+  
+      
+          ENV 자동 세팅
+          MLFLOW_TRACKING_URI, CUDA_VISIBLE_DEVICES 등 .bashrc에 미리 정의
+      
+      
+          모델 서빙 단축 명령어
+          alias mlflow-dev=&#34;mlflow ui --...&#34;
+      
+      
+          컨테이너 자동 초기화
+          .bashrc_profile → dev 환경 재현
+      
+      
+          로그 패턴 검색
+          globstar + grep → 수천 로그 파일 탐색
+      
+      
+          CI/CD 연동
+          GitHub Actions/Jenkins에서도 .bashrc 설정 반영 가능
+      
+  
+
+
+❗ 자주 헷갈리는 포인트
+
+alias는 일시적 → .bashrc에 등록 필수
+set vs shopt: shopt은 Bash 전용 기능
+프롬프트 설정(PS1)은 실수 예방용 시각 장치
+환경 변수 설정 안 하면 mlflow, torch 등이 작동하지 않기도 함
+
+
+🏁 마무리
+
+Bash 설정은 “자동화와 실수 방지의 기반”이다."><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/07/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/07/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/07/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[리눅스] 7장. Bash 설정"><meta property="og:description" content="📌 핵심 개념 요약 Bash 설정은 개발 편의성 + 실수 방지 + 자동화 기반을 만들어준다.
+alias, 환경변수, 프롬프트, 설정파일은 모든 실무 셸 환경의 기본 뼈대
+🧠 결정적 지식 요약 항목 핵심 설명 alias 명령어 단축. 반복 명령·위험 명령 보호에 필수 Bash 옵션 set, shopt로 셸 동작 커스터마이징 (예: 덮어쓰기 방지, 재귀 검색 허용 등) 환경 변수 export 여부로 자식 프로세스 전파 여부 결정 (MLFLOW_, CUDA_ 등) PS1 프롬프트 커스터마이징 → 서버 구분, 현재 위치 표시 등 설정 파일 .bashrc, .profile, /etc/bash.bashrc → 실행 시점과 범위 구분 필요 🖼️ 흐름도 도식화 [alias 예시] alias gs='git status' alias mlflow-dev='mlflow ui ...' [Bash 옵션] set -o noclobber # > 덮어쓰기 방지 shopt -s globstar # **/*.py 허용 set -o ignoreeof # Ctrl+D 방지 [환경 변수] export VAR=value # 자식 프로세스 전달 VAR=value # 현재 셸만 적용 [PS1 예시] [\u@\h \W]\$ # 사용자@호스트 현재디렉터리$ [설정 파일 실행 흐름] 로그인 셸 → ~/.profile 비로그인 셸 → ~/.bashrc 시스템 전체 → /etc/bash.bashrc 🔍 실무 시나리오 연결 상황 적용 예 명령어 반복 줄이기 alias mlflow-dev=&#34;mlflow ui ...&#34; 실수 방지 alias rm='rm -i', set -o noclobber 서버 구분 PS1='[\u@\h prod]\$' → 프롬프트로 환경 식별 환경 자동 초기화 .bashrc에 export, alias 세팅 로그 탐색 자동화 shopt -s globstar + grep &#34;**/*.log&#34; 💡 실전 팁 모음 alias는 .bashrc에 등록해야 셸 재시작 후 유지 set -o noclobber: 실수로 파일 덮어쓰기 방지 export VAR=value: 실험 환경 변수 설정에 필수 source ~/.bashrc: 변경사항 반영 Docker 내 환경 통일 → .bashrc_profile 등 활용 🛠️ MLOps 연결 요약 항목 MLOps 활용 예 ENV 자동 세팅 MLFLOW_TRACKING_URI, CUDA_VISIBLE_DEVICES 등 .bashrc에 미리 정의 모델 서빙 단축 명령어 alias mlflow-dev=&#34;mlflow ui --...&#34; 컨테이너 자동 초기화 .bashrc_profile → dev 환경 재현 로그 패턴 검색 globstar + grep → 수천 로그 파일 탐색 CI/CD 연동 GitHub Actions/Jenkins에서도 .bashrc 설정 반영 가능 ❗ 자주 헷갈리는 포인트 alias는 일시적 → .bashrc에 등록 필수 set vs shopt: shopt은 Bash 전용 기능 프롬프트 설정(PS1)은 실수 예방용 시각 장치 환경 변수 설정 안 하면 mlflow, torch 등이 작동하지 않기도 함 🏁 마무리 Bash 설정은 “자동화와 실수 방지의 기반”이다."><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-14T21:18:26+09:00"><meta property="article:modified_time" content="2025-04-14T21:18:26+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[리눅스] 7장. Bash 설정"><meta name=twitter:description content="📌 핵심 개념 요약
+
+Bash 설정은 개발 편의성 + 실수 방지 + 자동화 기반을 만들어준다.
+alias, 환경변수, 프롬프트, 설정파일은 모든 실무 셸 환경의 기본 뼈대
+
+🧠 결정적 지식 요약
+
+  
+      
+          항목
+          핵심 설명
+      
+  
+  
+      
+          alias
+          명령어 단축. 반복 명령·위험 명령 보호에 필수
+      
+      
+          Bash 옵션
+          set, shopt로 셸 동작 커스터마이징 (예: 덮어쓰기 방지, 재귀 검색 허용 등)
+      
+      
+          환경 변수
+          export 여부로 자식 프로세스 전파 여부 결정 (MLFLOW_, CUDA_ 등)
+      
+      
+          PS1
+          프롬프트 커스터마이징 → 서버 구분, 현재 위치 표시 등
+      
+      
+          설정 파일
+          .bashrc, .profile, /etc/bash.bashrc → 실행 시점과 범위 구분 필요
+      
+  
+
+
+🖼️ 흐름도 도식화
+[alias 예시]
+alias gs='git status'
+alias mlflow-dev='mlflow ui ...'
+
+[Bash 옵션]
+set -o noclobber       # > 덮어쓰기 방지
+shopt -s globstar      # **/*.py 허용
+set -o ignoreeof       # Ctrl+D 방지
+
+[환경 변수]
+export VAR=value       # 자식 프로세스 전달
+VAR=value              # 현재 셸만 적용
+
+[PS1 예시]
+[\u@\h \W]\$           # 사용자@호스트 현재디렉터리$
+
+[설정 파일 실행 흐름]
+로그인 셸   → ~/.profile
+비로그인 셸 → ~/.bashrc
+시스템 전체 → /etc/bash.bashrc
+
+🔍 실무 시나리오 연결
+
+  
+      
+          상황
+          적용 예
+      
+  
+  
+      
+          명령어 반복 줄이기
+          alias mlflow-dev=&#34;mlflow ui ...&#34;
+      
+      
+          실수 방지
+          alias rm='rm -i', set -o noclobber
+      
+      
+          서버 구분
+          PS1='[\u@\h prod]\$' → 프롬프트로 환경 식별
+      
+      
+          환경 자동 초기화
+          .bashrc에 export, alias 세팅
+      
+      
+          로그 탐색 자동화
+          shopt -s globstar + grep &#34;**/*.log&#34;
+      
+  
+
+
+💡 실전 팁 모음
+
+alias는 .bashrc에 등록해야 셸 재시작 후 유지
+set -o noclobber: 실수로 파일 덮어쓰기 방지
+export VAR=value: 실험 환경 변수 설정에 필수
+source ~/.bashrc: 변경사항 반영
+Docker 내 환경 통일 → .bashrc_profile 등 활용
+
+
+🛠️ MLOps 연결 요약
+
+  
+      
+          항목
+          MLOps 활용 예
+      
+  
+  
+      
+          ENV 자동 세팅
+          MLFLOW_TRACKING_URI, CUDA_VISIBLE_DEVICES 등 .bashrc에 미리 정의
+      
+      
+          모델 서빙 단축 명령어
+          alias mlflow-dev=&#34;mlflow ui --...&#34;
+      
+      
+          컨테이너 자동 초기화
+          .bashrc_profile → dev 환경 재현
+      
+      
+          로그 패턴 검색
+          globstar + grep → 수천 로그 파일 탐색
+      
+      
+          CI/CD 연동
+          GitHub Actions/Jenkins에서도 .bashrc 설정 반영 가능
+      
+  
+
+
+❗ 자주 헷갈리는 포인트
+
+alias는 일시적 → .bashrc에 등록 필수
+set vs shopt: shopt은 Bash 전용 기능
+프롬프트 설정(PS1)은 실수 예방용 시각 장치
+환경 변수 설정 안 하면 mlflow, torch 등이 작동하지 않기도 함
+
+
+🏁 마무리
+
+Bash 설정은 “자동화와 실수 방지의 기반”이다."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[리눅스] 7장. Bash 설정","item":"https://keonhoban.github.io/mlops-journey/posts/linux/07/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[리눅스] 7장. Bash 설정","name":"[리눅스] 7장. Bash 설정","description":"📌 핵심 개념 요약 Bash 설정은 개발 편의성 + 실수 방지 + 자동화 기반을 만들어준다.\nalias, 환경변수, 프롬프트, 설정파일은 모든 실무 셸 환경의 기본 뼈대\n🧠 결정적 지식 요약 항목 핵심 설명 alias 명령어 단축. 반복 명령·위험 명령 보호에 필수 Bash 옵션 set, shopt로 셸 동작 커스터마이징 (예: 덮어쓰기 방지, 재귀 검색 허용 등) 환경 변수 export 여부로 자식 프로세스 전파 여부 결정 (MLFLOW_, CUDA_ 등) PS1 프롬프트 커스터마이징 → 서버 구분, 현재 위치 표시 등 설정 파일 .bashrc, .profile, /etc/bash.bashrc → 실행 시점과 범위 구분 필요 🖼️ 흐름도 도식화 [alias 예시] alias gs=\u0026#39;git status\u0026#39; alias mlflow-dev=\u0026#39;mlflow ui ...\u0026#39; [Bash 옵션] set -o noclobber # \u0026gt; 덮어쓰기 방지 shopt -s globstar # **/*.py 허용 set -o ignoreeof # Ctrl+D 방지 [환경 변수] export VAR=value # 자식 프로세스 전달 VAR=value # 현재 셸만 적용 [PS1 예시] [\\u@\\h \\W]\\$ # 사용자@호스트 현재디렉터리$ [설정 파일 실행 흐름] 로그인 셸 → ~/.profile 비로그인 셸 → ~/.bashrc 시스템 전체 → /etc/bash.bashrc 🔍 실무 시나리오 연결 상황 적용 예 명령어 반복 줄이기 alias mlflow-dev=\u0026quot;mlflow ui ...\u0026quot; 실수 방지 alias rm='rm -i', set -o noclobber 서버 구분 PS1='[\\u@\\h prod]\\$' → 프롬프트로 환경 식별 환경 자동 초기화 .bashrc에 export, alias 세팅 로그 탐색 자동화 shopt -s globstar + grep \u0026quot;**/*.log\u0026quot; 💡 실전 팁 모음 alias는 .bashrc에 등록해야 셸 재시작 후 유지 set -o noclobber: 실수로 파일 덮어쓰기 방지 export VAR=value: 실험 환경 변수 설정에 필수 source ~/.bashrc: 변경사항 반영 Docker 내 환경 통일 → .bashrc_profile 등 활용 🛠️ MLOps 연결 요약 항목 MLOps 활용 예 ENV 자동 세팅 MLFLOW_TRACKING_URI, CUDA_VISIBLE_DEVICES 등 .bashrc에 미리 정의 모델 서빙 단축 명령어 alias mlflow-dev=\u0026quot;mlflow ui --...\u0026quot; 컨테이너 자동 초기화 .bashrc_profile → dev 환경 재현 로그 패턴 검색 globstar + grep → 수천 로그 파일 탐색 CI/CD 연동 GitHub Actions/Jenkins에서도 .bashrc 설정 반영 가능 ❗ 자주 헷갈리는 포인트 alias는 일시적 → .bashrc에 등록 필수 set vs shopt: shopt은 Bash 전용 기능 프롬프트 설정(PS1)은 실수 예방용 시각 장치 환경 변수 설정 안 하면 mlflow, torch 등이 작동하지 않기도 함 🏁 마무리 Bash 설정은 “자동화와 실수 방지의 기반”이다.\n","keywords":[],"articleBody":"📌 핵심 개념 요약 Bash 설정은 개발 편의성 + 실수 방지 + 자동화 기반을 만들어준다.\nalias, 환경변수, 프롬프트, 설정파일은 모든 실무 셸 환경의 기본 뼈대\n🧠 결정적 지식 요약 항목 핵심 설명 alias 명령어 단축. 반복 명령·위험 명령 보호에 필수 Bash 옵션 set, shopt로 셸 동작 커스터마이징 (예: 덮어쓰기 방지, 재귀 검색 허용 등) 환경 변수 export 여부로 자식 프로세스 전파 여부 결정 (MLFLOW_, CUDA_ 등) PS1 프롬프트 커스터마이징 → 서버 구분, 현재 위치 표시 등 설정 파일 .bashrc, .profile, /etc/bash.bashrc → 실행 시점과 범위 구분 필요 🖼️ 흐름도 도식화 [alias 예시] alias gs='git status' alias mlflow-dev='mlflow ui ...' [Bash 옵션] set -o noclobber # \u003e 덮어쓰기 방지 shopt -s globstar # **/*.py 허용 set -o ignoreeof # Ctrl+D 방지 [환경 변수] export VAR=value # 자식 프로세스 전달 VAR=value # 현재 셸만 적용 [PS1 예시] [\\u@\\h \\W]\\$ # 사용자@호스트 현재디렉터리$ [설정 파일 실행 흐름] 로그인 셸 → ~/.profile 비로그인 셸 → ~/.bashrc 시스템 전체 → /etc/bash.bashrc 🔍 실무 시나리오 연결 상황 적용 예 명령어 반복 줄이기 alias mlflow-dev=\"mlflow ui ...\" 실수 방지 alias rm='rm -i', set -o noclobber 서버 구분 PS1='[\\u@\\h prod]\\$' → 프롬프트로 환경 식별 환경 자동 초기화 .bashrc에 export, alias 세팅 로그 탐색 자동화 shopt -s globstar + grep \"**/*.log\" 💡 실전 팁 모음 alias는 .bashrc에 등록해야 셸 재시작 후 유지 set -o noclobber: 실수로 파일 덮어쓰기 방지 export VAR=value: 실험 환경 변수 설정에 필수 source ~/.bashrc: 변경사항 반영 Docker 내 환경 통일 → .bashrc_profile 등 활용 🛠️ MLOps 연결 요약 항목 MLOps 활용 예 ENV 자동 세팅 MLFLOW_TRACKING_URI, CUDA_VISIBLE_DEVICES 등 .bashrc에 미리 정의 모델 서빙 단축 명령어 alias mlflow-dev=\"mlflow ui --...\" 컨테이너 자동 초기화 .bashrc_profile → dev 환경 재현 로그 패턴 검색 globstar + grep → 수천 로그 파일 탐색 CI/CD 연동 GitHub Actions/Jenkins에서도 .bashrc 설정 반영 가능 ❗ 자주 헷갈리는 포인트 alias는 일시적 → .bashrc에 등록 필수 set vs shopt: shopt은 Bash 전용 기능 프롬프트 설정(PS1)은 실수 예방용 시각 장치 환경 변수 설정 안 하면 mlflow, torch 등이 작동하지 않기도 함 🏁 마무리 Bash 설정은 “자동화와 실수 방지의 기반”이다.\n.bashrc를 잘 세팅하면,\nMLOps 환경도 안정적이고 예측 가능하게 유지할 수 있다\n","wordCount":"344","inLanguage":"en","datePublished":"2025-04-14T21:18:26+09:00","dateModified":"2025-04-14T21:18:26+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/07/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[리눅스] 7장. Bash 설정</h1><div class=post-meta><span title='2025-04-14 21:18:26 +0900 +0900'>April 14, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h3 id=-핵심-개념-요약>📌 핵심 개념 요약<a hidden class=anchor aria-hidden=true href=#-핵심-개념-요약>#</a></h3><blockquote><p>Bash 설정은 개발 편의성 + 실수 방지 + 자동화 기반을 만들어준다.</p><p>alias, 환경변수, 프롬프트, 설정파일은 <strong>모든 실무 셸 환경의 기본 뼈대</strong></p></blockquote><hr><h3 id=-결정적-지식-요약>🧠 결정적 지식 요약<a hidden class=anchor aria-hidden=true href=#-결정적-지식-요약>#</a></h3><table><thead><tr><th>항목</th><th>핵심 설명</th></tr></thead><tbody><tr><td><strong>alias</strong></td><td>명령어 단축. 반복 명령·위험 명령 보호에 필수</td></tr><tr><td><strong>Bash 옵션</strong></td><td><code>set</code>, <code>shopt</code>로 셸 동작 커스터마이징 (예: 덮어쓰기 방지, 재귀 검색 허용 등)</td></tr><tr><td><strong>환경 변수</strong></td><td><code>export</code> 여부로 <strong>자식 프로세스 전파 여부 결정</strong> (<code>MLFLOW_</code>, <code>CUDA_</code> 등)</td></tr><tr><td><strong>PS1</strong></td><td>프롬프트 커스터마이징 → 서버 구분, 현재 위치 표시 등</td></tr><tr><td><strong>설정 파일</strong></td><td><code>.bashrc</code>, <code>.profile</code>, <code>/etc/bash.bashrc</code> → <strong>실행 시점과 범위 구분</strong> 필요</td></tr></tbody></table><hr><h3 id=-흐름도-도식화>🖼️ 흐름도 도식화<a hidden class=anchor aria-hidden=true href=#-흐름도-도식화>#</a></h3><pre tabindex=0><code>[alias 예시]
+alias gs=&#39;git status&#39;
+alias mlflow-dev=&#39;mlflow ui ...&#39;
+
+[Bash 옵션]
+set -o noclobber       # &gt; 덮어쓰기 방지
+shopt -s globstar      # **/*.py 허용
+set -o ignoreeof       # Ctrl+D 방지
+
+[환경 변수]
+export VAR=value       # 자식 프로세스 전달
+VAR=value              # 현재 셸만 적용
+
+[PS1 예시]
+[\u@\h \W]\$           # 사용자@호스트 현재디렉터리$
+
+[설정 파일 실행 흐름]
+로그인 셸   → ~/.profile
+비로그인 셸 → ~/.bashrc
+시스템 전체 → /etc/bash.bashrc
+</code></pre><hr><h3 id=-실무-시나리오-연결>🔍 실무 시나리오 연결<a hidden class=anchor aria-hidden=true href=#-실무-시나리오-연결>#</a></h3><table><thead><tr><th>상황</th><th>적용 예</th></tr></thead><tbody><tr><td><strong>명령어 반복 줄이기</strong></td><td><code>alias mlflow-dev="mlflow ui ..."</code></td></tr><tr><td><strong>실수 방지</strong></td><td><code>alias rm='rm -i'</code>, <code>set -o noclobber</code></td></tr><tr><td><strong>서버 구분</strong></td><td><code>PS1='[\u@\h prod]\$'</code> → 프롬프트로 환경 식별</td></tr><tr><td><strong>환경 자동 초기화</strong></td><td><code>.bashrc</code>에 <code>export</code>, <code>alias</code> 세팅</td></tr><tr><td><strong>로그 탐색 자동화</strong></td><td><code>shopt -s globstar</code> + <code>grep "**/*.log"</code></td></tr></tbody></table><hr><h3 id=-실전-팁-모음>💡 실전 팁 모음<a hidden class=anchor aria-hidden=true href=#-실전-팁-모음>#</a></h3><ul><li><code>alias</code>는 <code>.bashrc</code>에 등록해야 셸 재시작 후 유지</li><li><code>set -o noclobber</code>: 실수로 파일 덮어쓰기 방지</li><li><code>export VAR=value</code>: 실험 환경 변수 설정에 필수</li><li><code>source ~/.bashrc</code>: 변경사항 반영</li><li>Docker 내 환경 통일 → <code>.bashrc_profile</code> 등 활용</li></ul><hr><h3 id=-mlops-연결-요약>🛠️ MLOps 연결 요약<a hidden class=anchor aria-hidden=true href=#-mlops-연결-요약>#</a></h3><table><thead><tr><th>항목</th><th>MLOps 활용 예</th></tr></thead><tbody><tr><td><strong>ENV 자동 세팅</strong></td><td><code>MLFLOW_TRACKING_URI</code>, <code>CUDA_VISIBLE_DEVICES</code> 등 <code>.bashrc</code>에 미리 정의</td></tr><tr><td><strong>모델 서빙 단축 명령어</strong></td><td><code>alias mlflow-dev="mlflow ui --..."</code></td></tr><tr><td><strong>컨테이너 자동 초기화</strong></td><td><code>.bashrc_profile</code> → dev 환경 재현</td></tr><tr><td><strong>로그 패턴 검색</strong></td><td><code>globstar</code> + <code>grep</code> → 수천 로그 파일 탐색</td></tr><tr><td><strong>CI/CD 연동</strong></td><td>GitHub Actions/Jenkins에서도 <code>.bashrc</code> 설정 반영 가능</td></tr></tbody></table><hr><h3 id=-자주-헷갈리는-포인트>❗ 자주 헷갈리는 포인트<a hidden class=anchor aria-hidden=true href=#-자주-헷갈리는-포인트>#</a></h3><ul><li><code>alias</code>는 일시적 → <code>.bashrc</code>에 등록 필수</li><li><code>set</code> vs <code>shopt</code>: <code>shopt</code>은 Bash 전용 기능</li><li>프롬프트 설정(<code>PS1</code>)은 실수 예방용 시각 장치</li><li>환경 변수 설정 안 하면 <code>mlflow</code>, <code>torch</code> 등이 작동하지 않기도 함</li></ul><hr><h3 id=-마무리>🏁 마무리<a hidden class=anchor aria-hidden=true href=#-마무리>#</a></h3><blockquote><p>Bash 설정은 “자동화와 실수 방지의 기반”이다.</p><p><code>.bashrc</code>를 잘 세팅하면,</p><p>MLOps 환경도 안정적이고 예측 가능하게 유지할 수 있다</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/linux/08/><span class=title>« Prev</span><br><span>[리눅스] 7장. 퍼미션 & 슈퍼유저</span>
+</a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/network/06/><span class=title>Next »</span><br><span>[네트워크] 6장. 네트워크와 보안</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
