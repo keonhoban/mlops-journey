@@ -1,0 +1,284 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[리눅스] 9장. 프로세스와 잡 (Process & Job) | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="📌 핵심 개념 요약
+
+실행 중인 프로그램은 모두 **프로세스(Process)**이며,
+셸은 이를 **잡(Job)**이라는 단위로 제어한다.
+
+🧠 결정적 지식 요약
+
+  
+      
+          개념
+          설명
+      
+  
+  
+      
+          프로세스
+          실행 중인 프로그램. 고유 PID 가짐
+      
+      
+          잡
+          셸이 관리하는 작업 단위. 포그라운드/백그라운드 전환 가능
+      
+      
+          시그널
+          프로세스를 제어하는 메시지 (kill, Ctrl+C, Ctrl+Z)
+      
+      
+          실행 제어
+          &, fg, bg, jobs, Ctrl+Z 등으로 상태 조작
+      
+      
+          종료 방식
+          kill -15: 정상 종료 / kill -9: 강제 종료 (주의)
+      
+  
+
+
+🖼️ 실행 흐름 도식
+[ 실행 흐름 ]
+
+명령 실행
+ ↓
+프로세스 생성 (PID 부여)
+ ↓
+ ├─ 포그라운드 실행: 즉시 동작
+ ├─ 백그라운드 실행: & / jobs로 확인
+ └─ 중단 후 전환: Ctrl+Z → fg / bg
+
+[ 주요 시그널 ]
+
+Ctrl+C   → SIGINT (2): 중단
+Ctrl+Z   → SIGTSTP (20): 일시 정지
+kill -15 → SIGTERM: 정상 종료
+kill -9  → SIGKILL: 강제 종료
+
+🔍 실전 시나리오 연결
+
+  
+      
+          상황
+          실전 활용
+      
+  
+  
+      
+          학습 로그 저장 + 백그라운드 실행
+          python train.py > log.txt 2>&amp;1 &
+      
+      
+          실행 중 프로세스 확인
+          ps aux
+      
+      
+          프로세스 종료
+          kill -15 <PID> → 응답 없을 시 kill -9 <PID>
+      
+      
+          중단 후 재개
+          Ctrl+Z → bg, fg
+      
+      
+          세션 유지
+          tmux, nohup 등으로 종료 방지
+      
+  
+
+
+💡 실무 팁 요약
+
+PID 확인 루틴: ps aux | grep, jobs -l
+정상 종료 우선: kill -15 → kill -9은 최후 수단
+로그 리디렉션 습관화: > log 2>&amp;1 &
+세션 보존: tmux, nohup 필수
+trap 명령어: 스크립트 종료 전 cleanup 처리에 활용
+
+
+🛠️ MLOps 연결 요약
+
+  
+      
+          항목
+          예시
+      
+  
+  
+      
+          학습 세션 유지
+          tmux new -s train1 → SSH 끊겨도 지속
+      
+      
+          병렬 학습/실험 실행
+          &, tmux, screen으로 동시 실행
+      
+      
+          디버깅
+          ps aux, kill, tail -f로 상태 추적
+      
+      
+          모델 로그 확보
+          학습 시 출력 리디렉션으로 결과 보존
+      
+      
+          서버 유지 자동화
+          nohup, trap, 스크립트로 백그라운드 제어
+      
+  
+
+
+❗ 자주 헷갈리는 포인트
+
+
+kill = “죽이는 명령” 아님 → 시그널 전달 도구"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/09/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/09/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/09/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[리눅스] 9장. 프로세스와 잡 (Process & Job)"><meta property="og:description" content="📌 핵심 개념 요약 실행 중인 프로그램은 모두 **프로세스(Process)**이며,
+셸은 이를 **잡(Job)**이라는 단위로 제어한다.
+🧠 결정적 지식 요약 개념 설명 프로세스 실행 중인 프로그램. 고유 PID 가짐 잡 셸이 관리하는 작업 단위. 포그라운드/백그라운드 전환 가능 시그널 프로세스를 제어하는 메시지 (kill, Ctrl+C, Ctrl+Z) 실행 제어 &, fg, bg, jobs, Ctrl+Z 등으로 상태 조작 종료 방식 kill -15: 정상 종료 / kill -9: 강제 종료 (주의) 🖼️ 실행 흐름 도식 [ 실행 흐름 ] 명령 실행 ↓ 프로세스 생성 (PID 부여) ↓ ├─ 포그라운드 실행: 즉시 동작 ├─ 백그라운드 실행: & / jobs로 확인 └─ 중단 후 전환: Ctrl+Z → fg / bg [ 주요 시그널 ] Ctrl+C → SIGINT (2): 중단 Ctrl+Z → SIGTSTP (20): 일시 정지 kill -15 → SIGTERM: 정상 종료 kill -9 → SIGKILL: 강제 종료 🔍 실전 시나리오 연결 상황 실전 활용 학습 로그 저장 + 백그라운드 실행 python train.py > log.txt 2>&amp;1 & 실행 중 프로세스 확인 ps aux 프로세스 종료 kill -15 <PID> → 응답 없을 시 kill -9 <PID> 중단 후 재개 Ctrl+Z → bg, fg 세션 유지 tmux, nohup 등으로 종료 방지 💡 실무 팁 요약 PID 확인 루틴: ps aux | grep, jobs -l 정상 종료 우선: kill -15 → kill -9은 최후 수단 로그 리디렉션 습관화: > log 2>&amp;1 & 세션 보존: tmux, nohup 필수 trap 명령어: 스크립트 종료 전 cleanup 처리에 활용 🛠️ MLOps 연결 요약 항목 예시 학습 세션 유지 tmux new -s train1 → SSH 끊겨도 지속 병렬 학습/실험 실행 &, tmux, screen으로 동시 실행 디버깅 ps aux, kill, tail -f로 상태 추적 모델 로그 확보 학습 시 출력 리디렉션으로 결과 보존 서버 유지 자동화 nohup, trap, 스크립트로 백그라운드 제어 ❗ 자주 헷갈리는 포인트 kill = “죽이는 명령” 아님 → 시그널 전달 도구"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-15T18:44:56+09:00"><meta property="article:modified_time" content="2025-04-15T18:44:56+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[리눅스] 9장. 프로세스와 잡 (Process & Job)"><meta name=twitter:description content="📌 핵심 개념 요약
+
+실행 중인 프로그램은 모두 **프로세스(Process)**이며,
+셸은 이를 **잡(Job)**이라는 단위로 제어한다.
+
+🧠 결정적 지식 요약
+
+  
+      
+          개념
+          설명
+      
+  
+  
+      
+          프로세스
+          실행 중인 프로그램. 고유 PID 가짐
+      
+      
+          잡
+          셸이 관리하는 작업 단위. 포그라운드/백그라운드 전환 가능
+      
+      
+          시그널
+          프로세스를 제어하는 메시지 (kill, Ctrl+C, Ctrl+Z)
+      
+      
+          실행 제어
+          &, fg, bg, jobs, Ctrl+Z 등으로 상태 조작
+      
+      
+          종료 방식
+          kill -15: 정상 종료 / kill -9: 강제 종료 (주의)
+      
+  
+
+
+🖼️ 실행 흐름 도식
+[ 실행 흐름 ]
+
+명령 실행
+ ↓
+프로세스 생성 (PID 부여)
+ ↓
+ ├─ 포그라운드 실행: 즉시 동작
+ ├─ 백그라운드 실행: & / jobs로 확인
+ └─ 중단 후 전환: Ctrl+Z → fg / bg
+
+[ 주요 시그널 ]
+
+Ctrl+C   → SIGINT (2): 중단
+Ctrl+Z   → SIGTSTP (20): 일시 정지
+kill -15 → SIGTERM: 정상 종료
+kill -9  → SIGKILL: 강제 종료
+
+🔍 실전 시나리오 연결
+
+  
+      
+          상황
+          실전 활용
+      
+  
+  
+      
+          학습 로그 저장 + 백그라운드 실행
+          python train.py > log.txt 2>&amp;1 &
+      
+      
+          실행 중 프로세스 확인
+          ps aux
+      
+      
+          프로세스 종료
+          kill -15 <PID> → 응답 없을 시 kill -9 <PID>
+      
+      
+          중단 후 재개
+          Ctrl+Z → bg, fg
+      
+      
+          세션 유지
+          tmux, nohup 등으로 종료 방지
+      
+  
+
+
+💡 실무 팁 요약
+
+PID 확인 루틴: ps aux | grep, jobs -l
+정상 종료 우선: kill -15 → kill -9은 최후 수단
+로그 리디렉션 습관화: > log 2>&amp;1 &
+세션 보존: tmux, nohup 필수
+trap 명령어: 스크립트 종료 전 cleanup 처리에 활용
+
+
+🛠️ MLOps 연결 요약
+
+  
+      
+          항목
+          예시
+      
+  
+  
+      
+          학습 세션 유지
+          tmux new -s train1 → SSH 끊겨도 지속
+      
+      
+          병렬 학습/실험 실행
+          &, tmux, screen으로 동시 실행
+      
+      
+          디버깅
+          ps aux, kill, tail -f로 상태 추적
+      
+      
+          모델 로그 확보
+          학습 시 출력 리디렉션으로 결과 보존
+      
+      
+          서버 유지 자동화
+          nohup, trap, 스크립트로 백그라운드 제어
+      
+  
+
+
+❗ 자주 헷갈리는 포인트
+
+
+kill = “죽이는 명령” 아님 → 시그널 전달 도구"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[리눅스] 9장. 프로세스와 잡 (Process \u0026 Job)","item":"https://keonhoban.github.io/mlops-journey/posts/linux/09/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[리눅스] 9장. 프로세스와 잡 (Process \u0026 Job)","name":"[리눅스] 9장. 프로세스와 잡 (Process \u0026 Job)","description":"📌 핵심 개념 요약 실행 중인 프로그램은 모두 **프로세스(Process)**이며,\n셸은 이를 **잡(Job)**이라는 단위로 제어한다.\n🧠 결정적 지식 요약 개념 설명 프로세스 실행 중인 프로그램. 고유 PID 가짐 잡 셸이 관리하는 작업 단위. 포그라운드/백그라운드 전환 가능 시그널 프로세스를 제어하는 메시지 (kill, Ctrl+C, Ctrl+Z) 실행 제어 \u0026amp;, fg, bg, jobs, Ctrl+Z 등으로 상태 조작 종료 방식 kill -15: 정상 종료 / kill -9: 강제 종료 (주의) 🖼️ 실행 흐름 도식 [ 실행 흐름 ] 명령 실행 ↓ 프로세스 생성 (PID 부여) ↓ ├─ 포그라운드 실행: 즉시 동작 ├─ 백그라운드 실행: \u0026amp; / jobs로 확인 └─ 중단 후 전환: Ctrl+Z → fg / bg [ 주요 시그널 ] Ctrl+C → SIGINT (2): 중단 Ctrl+Z → SIGTSTP (20): 일시 정지 kill -15 → SIGTERM: 정상 종료 kill -9 → SIGKILL: 강제 종료 🔍 실전 시나리오 연결 상황 실전 활용 학습 로그 저장 + 백그라운드 실행 python train.py \u0026gt; log.txt 2\u0026gt;\u0026amp;1 \u0026amp; 실행 중 프로세스 확인 ps aux 프로세스 종료 kill -15 \u0026lt;PID\u0026gt; → 응답 없을 시 kill -9 \u0026lt;PID\u0026gt; 중단 후 재개 Ctrl+Z → bg, fg 세션 유지 tmux, nohup 등으로 종료 방지 💡 실무 팁 요약 PID 확인 루틴: ps aux | grep, jobs -l 정상 종료 우선: kill -15 → kill -9은 최후 수단 로그 리디렉션 습관화: \u0026gt; log 2\u0026gt;\u0026amp;1 \u0026amp; 세션 보존: tmux, nohup 필수 trap 명령어: 스크립트 종료 전 cleanup 처리에 활용 🛠️ MLOps 연결 요약 항목 예시 학습 세션 유지 tmux new -s train1 → SSH 끊겨도 지속 병렬 학습/실험 실행 \u0026amp;, tmux, screen으로 동시 실행 디버깅 ps aux, kill, tail -f로 상태 추적 모델 로그 확보 학습 시 출력 리디렉션으로 결과 보존 서버 유지 자동화 nohup, trap, 스크립트로 백그라운드 제어 ❗ 자주 헷갈리는 포인트 kill = “죽이는 명령” 아님 → 시그널 전달 도구\n","keywords":[],"articleBody":"📌 핵심 개념 요약 실행 중인 프로그램은 모두 **프로세스(Process)**이며,\n셸은 이를 **잡(Job)**이라는 단위로 제어한다.\n🧠 결정적 지식 요약 개념 설명 프로세스 실행 중인 프로그램. 고유 PID 가짐 잡 셸이 관리하는 작업 단위. 포그라운드/백그라운드 전환 가능 시그널 프로세스를 제어하는 메시지 (kill, Ctrl+C, Ctrl+Z) 실행 제어 \u0026, fg, bg, jobs, Ctrl+Z 등으로 상태 조작 종료 방식 kill -15: 정상 종료 / kill -9: 강제 종료 (주의) 🖼️ 실행 흐름 도식 [ 실행 흐름 ] 명령 실행 ↓ 프로세스 생성 (PID 부여) ↓ ├─ 포그라운드 실행: 즉시 동작 ├─ 백그라운드 실행: \u0026 / jobs로 확인 └─ 중단 후 전환: Ctrl+Z → fg / bg [ 주요 시그널 ] Ctrl+C → SIGINT (2): 중단 Ctrl+Z → SIGTSTP (20): 일시 정지 kill -15 → SIGTERM: 정상 종료 kill -9 → SIGKILL: 강제 종료 🔍 실전 시나리오 연결 상황 실전 활용 학습 로그 저장 + 백그라운드 실행 python train.py \u003e log.txt 2\u003e\u00261 \u0026 실행 중 프로세스 확인 ps aux 프로세스 종료 kill -15 → 응답 없을 시 kill -9 중단 후 재개 Ctrl+Z → bg, fg 세션 유지 tmux, nohup 등으로 종료 방지 💡 실무 팁 요약 PID 확인 루틴: ps aux | grep, jobs -l 정상 종료 우선: kill -15 → kill -9은 최후 수단 로그 리디렉션 습관화: \u003e log 2\u003e\u00261 \u0026 세션 보존: tmux, nohup 필수 trap 명령어: 스크립트 종료 전 cleanup 처리에 활용 🛠️ MLOps 연결 요약 항목 예시 학습 세션 유지 tmux new -s train1 → SSH 끊겨도 지속 병렬 학습/실험 실행 \u0026, tmux, screen으로 동시 실행 디버깅 ps aux, kill, tail -f로 상태 추적 모델 로그 확보 학습 시 출력 리디렉션으로 결과 보존 서버 유지 자동화 nohup, trap, 스크립트로 백그라운드 제어 ❗ 자주 헷갈리는 포인트 kill = “죽이는 명령” 아님 → 시그널 전달 도구\n\u0026만 사용하면 셸 종료 시 작업도 함께 종료될 수 있음\n→ tmux, nohup으로 보완\nkill -9은 프로세스에게 정리 기회 없이 즉시 종료 → 데이터 손상 위험 있음\n🏁 마무리 프로세스와 잡은 리눅스 자동화의 심장이다.\n제어하고, 추적하고, 보호하는 기술을 익히면\nMLOps의 안정성과 유연성을 모두 챙길 수 있다.\n","wordCount":"331","inLanguage":"en","datePublished":"2025-04-15T18:44:56+09:00","dateModified":"2025-04-15T18:44:56+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/09/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[리눅스] 9장. 프로세스와 잡 (Process & Job)</h1><div class=post-meta><span title='2025-04-15 18:44:56 +0900 +0900'>April 15, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h3 id=-핵심-개념-요약>📌 핵심 개념 요약<a hidden class=anchor aria-hidden=true href=#-핵심-개념-요약>#</a></h3><blockquote><p>실행 중인 프로그램은 모두 **프로세스(Process)**이며,</p><p>셸은 이를 **잡(Job)**이라는 단위로 제어한다.</p></blockquote><hr><h3 id=-결정적-지식-요약>🧠 결정적 지식 요약<a hidden class=anchor aria-hidden=true href=#-결정적-지식-요약>#</a></h3><table><thead><tr><th>개념</th><th>설명</th></tr></thead><tbody><tr><td><strong>프로세스</strong></td><td>실행 중인 프로그램. 고유 PID 가짐</td></tr><tr><td><strong>잡</strong></td><td>셸이 관리하는 작업 단위. 포그라운드/백그라운드 전환 가능</td></tr><tr><td><strong>시그널</strong></td><td>프로세스를 제어하는 메시지 (<code>kill</code>, <code>Ctrl+C</code>, <code>Ctrl+Z</code>)</td></tr><tr><td><strong>실행 제어</strong></td><td><code>&</code>, <code>fg</code>, <code>bg</code>, <code>jobs</code>, <code>Ctrl+Z</code> 등으로 상태 조작</td></tr><tr><td><strong>종료 방식</strong></td><td><code>kill -15</code>: 정상 종료 / <code>kill -9</code>: 강제 종료 (주의)</td></tr></tbody></table><hr><h3 id=-실행-흐름-도식>🖼️ 실행 흐름 도식<a hidden class=anchor aria-hidden=true href=#-실행-흐름-도식>#</a></h3><pre tabindex=0><code>[ 실행 흐름 ]
+
+명령 실행
+ ↓
+프로세스 생성 (PID 부여)
+ ↓
+ ├─ 포그라운드 실행: 즉시 동작
+ ├─ 백그라운드 실행: &amp; / jobs로 확인
+ └─ 중단 후 전환: Ctrl+Z → fg / bg
+
+[ 주요 시그널 ]
+
+Ctrl+C   → SIGINT (2): 중단
+Ctrl+Z   → SIGTSTP (20): 일시 정지
+kill -15 → SIGTERM: 정상 종료
+kill -9  → SIGKILL: 강제 종료
+</code></pre><hr><h3 id=-실전-시나리오-연결>🔍 실전 시나리오 연결<a hidden class=anchor aria-hidden=true href=#-실전-시나리오-연결>#</a></h3><table><thead><tr><th>상황</th><th>실전 활용</th></tr></thead><tbody><tr><td><strong>학습 로그 저장 + 백그라운드 실행</strong></td><td><code>python train.py > log.txt 2>&amp;1 &</code></td></tr><tr><td><strong>실행 중 프로세스 확인</strong></td><td><code>ps aux</code></td></tr><tr><td><strong>프로세스 종료</strong></td><td><code>kill -15 &lt;PID></code> → 응답 없을 시 <code>kill -9 &lt;PID></code></td></tr><tr><td><strong>중단 후 재개</strong></td><td><code>Ctrl+Z</code> → <code>bg</code>, <code>fg</code></td></tr><tr><td><strong>세션 유지</strong></td><td><code>tmux</code>, <code>nohup</code> 등으로 종료 방지</td></tr></tbody></table><hr><h3 id=-실무-팁-요약>💡 실무 팁 요약<a hidden class=anchor aria-hidden=true href=#-실무-팁-요약>#</a></h3><ul><li><strong>PID 확인 루틴</strong>: <code>ps aux | grep</code>, <code>jobs -l</code></li><li><strong>정상 종료 우선</strong>: <code>kill -15</code> → <code>kill -9</code>은 최후 수단</li><li><strong>로그 리디렉션 습관화</strong>: <code>> log 2>&amp;1 &</code></li><li><strong>세션 보존</strong>: <code>tmux</code>, <code>nohup</code> 필수</li><li><strong>trap 명령어</strong>: 스크립트 종료 전 cleanup 처리에 활용</li></ul><hr><h3 id=-mlops-연결-요약>🛠️ MLOps 연결 요약<a hidden class=anchor aria-hidden=true href=#-mlops-연결-요약>#</a></h3><table><thead><tr><th>항목</th><th>예시</th></tr></thead><tbody><tr><td><strong>학습 세션 유지</strong></td><td><code>tmux new -s train1</code> → SSH 끊겨도 지속</td></tr><tr><td><strong>병렬 학습/실험 실행</strong></td><td><code>&</code>, <code>tmux</code>, <code>screen</code>으로 동시 실행</td></tr><tr><td><strong>디버깅</strong></td><td><code>ps aux</code>, <code>kill</code>, <code>tail -f</code>로 상태 추적</td></tr><tr><td><strong>모델 로그 확보</strong></td><td>학습 시 출력 리디렉션으로 결과 보존</td></tr><tr><td><strong>서버 유지 자동화</strong></td><td><code>nohup</code>, <code>trap</code>, 스크립트로 백그라운드 제어</td></tr></tbody></table><hr><h3 id=-자주-헷갈리는-포인트>❗ 자주 헷갈리는 포인트<a hidden class=anchor aria-hidden=true href=#-자주-헷갈리는-포인트>#</a></h3><ul><li><p><code>kill</code> = “죽이는 명령” 아님 → <strong>시그널 전달</strong> 도구</p></li><li><p><code>&</code>만 사용하면 셸 종료 시 <strong>작업도 함께 종료될 수 있음</strong></p><p>→ <code>tmux</code>, <code>nohup</code>으로 보완</p></li><li><p><code>kill -9</code>은 프로세스에게 <strong>정리 기회 없이 즉시 종료</strong> → 데이터 손상 위험 있음</p></li></ul><hr><h3 id=-마무리>🏁 마무리<a hidden class=anchor aria-hidden=true href=#-마무리>#</a></h3><blockquote><p>프로세스와 잡은 리눅스 자동화의 심장이다.</p><p><strong>제어하고, 추적하고, 보호하는 기술</strong>을 익히면</p><p>MLOps의 안정성과 유연성을 모두 챙길 수 있다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/linux/10/><span class=title>« Prev</span><br><span>[리눅스] 10장. 표준 입출력, 리다이렉션, 파이프라인</span>
+</a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/linux/08/><span class=title>Next »</span><br><span>[리눅스] 8장. 퍼미션 & 슈퍼유저</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
