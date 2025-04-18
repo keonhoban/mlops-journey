@@ -257,7 +257,7 @@ tail -f train.log
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;strong>중복 로그 카운트&lt;/strong>&lt;/td>
-&lt;td>`sort log.txt&lt;/td>
+&lt;td>&lt;code>sort log.txt&lt;/code> | &lt;code>uniq -c&lt;/code> | &lt;code>sort -nr&lt;/code>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;strong>CSV 열 추출&lt;/strong>&lt;/td>
