@@ -1,0 +1,153 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[리눅스] 13장. 고급 텍스트 처리 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="📌 핵심 개념 요약
+
+sed와 awk는 리눅스 텍스트 처리의 양대 도구
+로그 분석, 전처리 자동화, 필드 연산 등에서 강력하게 활용된다.
+
+🧠 결정적 지식 요약
+
+  
+      
+          명령어
+          핵심 설명
+      
+  
+  
+      
+          sed
+          한 줄씩 읽어 수정: 치환, 삭제, 추출에 최적화
+      
+      
+          awk
+          패턴 필터링 + 필드 출력: 조건 처리, 연산, 요약까지 가능
+      
+  
+
+
+🖼️ 구조도 & 예시
+[sed 기본 구조]
+sed 's/old/new/g' file.txt       # 문자열 치환
+sed '1d' file.txt                # 첫 줄 삭제
+
+[awk 기본 구조]
+awk '{print $1, $3}' file.txt    # 첫 번째 + 세 번째 필드 출력
+awk '$3 > 90 {print $1}'         # 조건 기반 필터링
+awk -F ',' '{print $NF}' file.csv # CSV에서 마지막 필드
+
+🔍 실전 시나리오 연결
+
+  
+      
+          상황
+          명령어
+      
+  
+  
+      
+          에러 로그 치환
+          sed 's/error/ERROR/g' log.txt
+      
+      
+          CSV 헤더 제거
+          sed '1d' data.csv
+      
+      
+          정확도 추출
+          awk -F ',' '{print $3}' scores.csv
+      
+      
+          성능 필터링
+          awk -F ',' '$3 >= 0.9 {print $1}'
+      
+      
+          마지막 필드 출력
+          awk '{print $NF}' mlflow.log
+      
+  
+
+
+💡 실전 팁 모음
+
+
+sed는 간단한 치환/삭제에 강력"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/13/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/13/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/13/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[리눅스] 13장. 고급 텍스트 처리"><meta property="og:description" content="📌 핵심 개념 요약 sed와 awk는 리눅스 텍스트 처리의 양대 도구
+로그 분석, 전처리 자동화, 필드 연산 등에서 강력하게 활용된다.
+🧠 결정적 지식 요약 명령어 핵심 설명 sed 한 줄씩 읽어 수정: 치환, 삭제, 추출에 최적화 awk 패턴 필터링 + 필드 출력: 조건 처리, 연산, 요약까지 가능 🖼️ 구조도 & 예시 [sed 기본 구조] sed 's/old/new/g' file.txt # 문자열 치환 sed '1d' file.txt # 첫 줄 삭제 [awk 기본 구조] awk '{print $1, $3}' file.txt # 첫 번째 + 세 번째 필드 출력 awk '$3 > 90 {print $1}' # 조건 기반 필터링 awk -F ',' '{print $NF}' file.csv # CSV에서 마지막 필드 🔍 실전 시나리오 연결 상황 명령어 에러 로그 치환 sed 's/error/ERROR/g' log.txt CSV 헤더 제거 sed '1d' data.csv 정확도 추출 awk -F ',' '{print $3}' scores.csv 성능 필터링 awk -F ',' '$3 >= 0.9 {print $1}' 마지막 필드 출력 awk '{print $NF}' mlflow.log 💡 실전 팁 모음 sed는 간단한 치환/삭제에 강력"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-18T16:36:39+09:00"><meta property="article:modified_time" content="2025-04-18T16:36:39+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[리눅스] 13장. 고급 텍스트 처리"><meta name=twitter:description content="📌 핵심 개념 요약
+
+sed와 awk는 리눅스 텍스트 처리의 양대 도구
+로그 분석, 전처리 자동화, 필드 연산 등에서 강력하게 활용된다.
+
+🧠 결정적 지식 요약
+
+  
+      
+          명령어
+          핵심 설명
+      
+  
+  
+      
+          sed
+          한 줄씩 읽어 수정: 치환, 삭제, 추출에 최적화
+      
+      
+          awk
+          패턴 필터링 + 필드 출력: 조건 처리, 연산, 요약까지 가능
+      
+  
+
+
+🖼️ 구조도 & 예시
+[sed 기본 구조]
+sed 's/old/new/g' file.txt       # 문자열 치환
+sed '1d' file.txt                # 첫 줄 삭제
+
+[awk 기본 구조]
+awk '{print $1, $3}' file.txt    # 첫 번째 + 세 번째 필드 출력
+awk '$3 > 90 {print $1}'         # 조건 기반 필터링
+awk -F ',' '{print $NF}' file.csv # CSV에서 마지막 필드
+
+🔍 실전 시나리오 연결
+
+  
+      
+          상황
+          명령어
+      
+  
+  
+      
+          에러 로그 치환
+          sed 's/error/ERROR/g' log.txt
+      
+      
+          CSV 헤더 제거
+          sed '1d' data.csv
+      
+      
+          정확도 추출
+          awk -F ',' '{print $3}' scores.csv
+      
+      
+          성능 필터링
+          awk -F ',' '$3 >= 0.9 {print $1}'
+      
+      
+          마지막 필드 출력
+          awk '{print $NF}' mlflow.log
+      
+  
+
+
+💡 실전 팁 모음
+
+
+sed는 간단한 치환/삭제에 강력"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[리눅스] 13장. 고급 텍스트 처리","item":"https://keonhoban.github.io/mlops-journey/posts/linux/13/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[리눅스] 13장. 고급 텍스트 처리","name":"[리눅스] 13장. 고급 텍스트 처리","description":"📌 핵심 개념 요약 sed와 awk는 리눅스 텍스트 처리의 양대 도구\n로그 분석, 전처리 자동화, 필드 연산 등에서 강력하게 활용된다.\n🧠 결정적 지식 요약 명령어 핵심 설명 sed 한 줄씩 읽어 수정: 치환, 삭제, 추출에 최적화 awk 패턴 필터링 + 필드 출력: 조건 처리, 연산, 요약까지 가능 🖼️ 구조도 \u0026amp; 예시 [sed 기본 구조] sed \u0026#39;s/old/new/g\u0026#39; file.txt # 문자열 치환 sed \u0026#39;1d\u0026#39; file.txt # 첫 줄 삭제 [awk 기본 구조] awk \u0026#39;{print $1, $3}\u0026#39; file.txt # 첫 번째 + 세 번째 필드 출력 awk \u0026#39;$3 \u0026gt; 90 {print $1}\u0026#39; # 조건 기반 필터링 awk -F \u0026#39;,\u0026#39; \u0026#39;{print $NF}\u0026#39; file.csv # CSV에서 마지막 필드 🔍 실전 시나리오 연결 상황 명령어 에러 로그 치환 sed 's/error/ERROR/g' log.txt CSV 헤더 제거 sed '1d' data.csv 정확도 추출 awk -F ',' '{print $3}' scores.csv 성능 필터링 awk -F ',' '$3 \u0026gt;= 0.9 {print $1}' 마지막 필드 출력 awk '{print $NF}' mlflow.log 💡 실전 팁 모음 sed는 간단한 치환/삭제에 강력\n","keywords":[],"articleBody":"📌 핵심 개념 요약 sed와 awk는 리눅스 텍스트 처리의 양대 도구\n로그 분석, 전처리 자동화, 필드 연산 등에서 강력하게 활용된다.\n🧠 결정적 지식 요약 명령어 핵심 설명 sed 한 줄씩 읽어 수정: 치환, 삭제, 추출에 최적화 awk 패턴 필터링 + 필드 출력: 조건 처리, 연산, 요약까지 가능 🖼️ 구조도 \u0026 예시 [sed 기본 구조] sed 's/old/new/g' file.txt # 문자열 치환 sed '1d' file.txt # 첫 줄 삭제 [awk 기본 구조] awk '{print $1, $3}' file.txt # 첫 번째 + 세 번째 필드 출력 awk '$3 \u003e 90 {print $1}' # 조건 기반 필터링 awk -F ',' '{print $NF}' file.csv # CSV에서 마지막 필드 🔍 실전 시나리오 연결 상황 명령어 에러 로그 치환 sed 's/error/ERROR/g' log.txt CSV 헤더 제거 sed '1d' data.csv 정확도 추출 awk -F ',' '{print $3}' scores.csv 성능 필터링 awk -F ',' '$3 \u003e= 0.9 {print $1}' 마지막 필드 출력 awk '{print $NF}' mlflow.log 💡 실전 팁 모음 sed는 간단한 치환/삭제에 강력\n→ 파일 직접 수정은 -i 옵션 필요\nawk는 조건 기반 요약/필드 추출에 적합\n→ -F ','로 CSV 처리\nawk '{print $NF}' → 마지막 필드 추출 자주 활용됨\n⚠️ 오해 방지 포인트 sed 기본 출력은 표준 출력(STDOUT)\n→ 수정 저장하려면 -i 옵션 필수 (-i.bak 권장)\nawk는 print 생략하면 전체 행 출력\nawk 기본 필드 구분자: 공백 → CSV는 F ',' 필수\n🛠️ MLOps 연결 요약 목적 명령어 활용 로그 정리 자동화 sed 's/WARNING/INFO/' log.txt \u003e clean.log 모델 성능 추출 awk -F ',' '$2 \u003e 0.95 {print $1}' result.csv 전처리 파이프라인 `cat raw.csv 정확도 평균 계산 awk '{sum+=$2} END {print sum/NR}' acc.log 🏁 마무리 한줄 요약 sed는 수정에 특화, awk는 분석과 요약에 특화\n이 둘은 셸 기반 자동화와 MLOps 실전 파이프라인의 텍스트 처리 핵심 도구\n","wordCount":"277","inLanguage":"en","datePublished":"2025-04-18T16:36:39+09:00","dateModified":"2025-04-18T16:36:39+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/13/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[리눅스] 13장. 고급 텍스트 처리</h1><div class=post-meta><span title='2025-04-18 16:36:39 +0900 +0900'>April 18, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h3 id=-핵심-개념-요약>📌 핵심 개념 요약<a hidden class=anchor aria-hidden=true href=#-핵심-개념-요약>#</a></h3><blockquote><p>sed와 awk는 리눅스 텍스트 처리의 양대 도구</p><p>로그 분석, 전처리 자동화, 필드 연산 등에서 강력하게 활용된다.</p></blockquote><hr><h3 id=-결정적-지식-요약>🧠 결정적 지식 요약<a hidden class=anchor aria-hidden=true href=#-결정적-지식-요약>#</a></h3><table><thead><tr><th>명령어</th><th>핵심 설명</th></tr></thead><tbody><tr><td><strong>sed</strong></td><td><strong>한 줄씩 읽어 수정</strong>: 치환, 삭제, 추출에 최적화</td></tr><tr><td><strong>awk</strong></td><td><strong>패턴 필터링 + 필드 출력</strong>: 조건 처리, 연산, 요약까지 가능</td></tr></tbody></table><hr><h3 id=-구조도--예시>🖼️ 구조도 & 예시<a hidden class=anchor aria-hidden=true href=#-구조도--예시>#</a></h3><pre tabindex=0><code>[sed 기본 구조]
+sed &#39;s/old/new/g&#39; file.txt       # 문자열 치환
+sed &#39;1d&#39; file.txt                # 첫 줄 삭제
+
+[awk 기본 구조]
+awk &#39;{print $1, $3}&#39; file.txt    # 첫 번째 + 세 번째 필드 출력
+awk &#39;$3 &gt; 90 {print $1}&#39;         # 조건 기반 필터링
+awk -F &#39;,&#39; &#39;{print $NF}&#39; file.csv # CSV에서 마지막 필드
+</code></pre><hr><h3 id=-실전-시나리오-연결>🔍 실전 시나리오 연결<a hidden class=anchor aria-hidden=true href=#-실전-시나리오-연결>#</a></h3><table><thead><tr><th>상황</th><th>명령어</th></tr></thead><tbody><tr><td><strong>에러 로그 치환</strong></td><td><code>sed 's/error/ERROR/g' log.txt</code></td></tr><tr><td><strong>CSV 헤더 제거</strong></td><td><code>sed '1d' data.csv</code></td></tr><tr><td><strong>정확도 추출</strong></td><td><code>awk -F ',' '{print $3}' scores.csv</code></td></tr><tr><td><strong>성능 필터링</strong></td><td><code>awk -F ',' '$3 >= 0.9 {print $1}'</code></td></tr><tr><td><strong>마지막 필드 출력</strong></td><td><code>awk '{print $NF}' mlflow.log</code></td></tr></tbody></table><hr><h3 id=-실전-팁-모음>💡 실전 팁 모음<a hidden class=anchor aria-hidden=true href=#-실전-팁-모음>#</a></h3><ul><li><p><code>sed</code>는 <strong>간단한 치환/삭제</strong>에 강력</p><p>→ 파일 직접 수정은 <code>-i</code> 옵션 필요</p></li><li><p><code>awk</code>는 <strong>조건 기반 요약/필드 추출</strong>에 적합</p><p>→ <code>-F ','</code>로 CSV 처리</p></li><li><p><code>awk '{print $NF}'</code> → 마지막 필드 추출 자주 활용됨</p></li></ul><hr><h3 id=-오해-방지-포인트>⚠️ 오해 방지 포인트<a hidden class=anchor aria-hidden=true href=#-오해-방지-포인트>#</a></h3><ul><li><p><code>sed</code> 기본 출력은 <strong>표준 출력(STDOUT)</strong></p><p>→ 수정 저장하려면 <code>-i</code> 옵션 필수 (<code>-i.bak</code> 권장)</p></li><li><p><code>awk</code>는 <code>print</code> 생략하면 <strong>전체 행 출력</strong></p></li><li><p><code>awk</code> 기본 필드 구분자: <strong>공백</strong> → CSV는 <code>F ','</code> 필수</p></li></ul><hr><h3 id=-mlops-연결-요약>🛠️ MLOps 연결 요약<a hidden class=anchor aria-hidden=true href=#-mlops-연결-요약>#</a></h3><table><thead><tr><th>목적</th><th>명령어 활용</th></tr></thead><tbody><tr><td><strong>로그 정리 자동화</strong></td><td><code>sed 's/WARNING/INFO/' log.txt > clean.log</code></td></tr><tr><td><strong>모델 성능 추출</strong></td><td><code>awk -F ',' '$2 > 0.95 {print $1}' result.csv</code></td></tr><tr><td><strong>전처리 파이프라인</strong></td><td>`cat raw.csv</td></tr><tr><td><strong>정확도 평균 계산</strong></td><td><code>awk '{sum+=$2} END {print sum/NR}' acc.log</code></td></tr></tbody></table><hr><h3 id=-마무리-한줄-요약>🏁 마무리 한줄 요약<a hidden class=anchor aria-hidden=true href=#-마무리-한줄-요약>#</a></h3><blockquote><p>sed는 수정에 특화, awk는 분석과 요약에 특화</p><p>이 둘은 셸 기반 자동화와 MLOps 실전 파이프라인의 <strong>텍스트 처리 핵심 도구</strong></p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/linux/12/><span class=title>Next »</span><br><span>[리눅스] 12장. 정규 표현식</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

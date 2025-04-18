@@ -1,4 +1,330 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 15 Apr 2025 18:45:00 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 10장. 표준 입출력, 리다이렉션, 파이프라인</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/10/</link><pubDate>Tue, 15 Apr 2025 18:45:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/10/</guid><description>&lt;h3 id="-개념-핵심-요약">📌 개념 핵심 요약&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 18 Apr 2025 16:36:39 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 13장. 고급 텍스트 처리</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/13/</link><pubDate>Fri, 18 Apr 2025 16:36:39 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/13/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>sed와 awk는 리눅스 텍스트 처리의 양대 도구&lt;/p>
+&lt;p>로그 분석, 전처리 자동화, 필드 연산 등에서 강력하게 활용된다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>명령어&lt;/th>
+&lt;th>핵심 설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>sed&lt;/strong>&lt;/td>
+&lt;td>&lt;strong>한 줄씩 읽어 수정&lt;/strong>: 치환, 삭제, 추출에 최적화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>awk&lt;/strong>&lt;/td>
+&lt;td>&lt;strong>패턴 필터링 + 필드 출력&lt;/strong>: 조건 처리, 연산, 요약까지 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-구조도--예시">🖼️ 구조도 &amp;amp; 예시&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[sed 기본 구조]
+sed &amp;#39;s/old/new/g&amp;#39; file.txt # 문자열 치환
+sed &amp;#39;1d&amp;#39; file.txt # 첫 줄 삭제
+[awk 기본 구조]
+awk &amp;#39;{print $1, $3}&amp;#39; file.txt # 첫 번째 + 세 번째 필드 출력
+awk &amp;#39;$3 &amp;gt; 90 {print $1}&amp;#39; # 조건 기반 필터링
+awk -F &amp;#39;,&amp;#39; &amp;#39;{print $NF}&amp;#39; file.csv # CSV에서 마지막 필드
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실전-시나리오-연결">🔍 실전 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>명령어&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>에러 로그 치환&lt;/strong>&lt;/td>
+&lt;td>&lt;code>sed 's/error/ERROR/g' log.txt&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>CSV 헤더 제거&lt;/strong>&lt;/td>
+&lt;td>&lt;code>sed '1d' data.csv&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>정확도 추출&lt;/strong>&lt;/td>
+&lt;td>&lt;code>awk -F ',' '{print $3}' scores.csv&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>성능 필터링&lt;/strong>&lt;/td>
+&lt;td>&lt;code>awk -F ',' '$3 &amp;gt;= 0.9 {print $1}'&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>마지막 필드 출력&lt;/strong>&lt;/td>
+&lt;td>&lt;code>awk '{print $NF}' mlflow.log&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>sed&lt;/code>는 &lt;strong>간단한 치환/삭제&lt;/strong>에 강력&lt;/p></description></item><item><title>[리눅스] 12장. 정규 표현식</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/12/</link><pubDate>Thu, 17 Apr 2025 22:28:31 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/12/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>grep은 텍스트 패턴 필터링 도구,&lt;/p>
+&lt;p>정규 표현식은 &lt;strong>특정 규칙의 문자열을 탐색·추출&lt;/strong>하는 언어&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>요약 설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>grep&lt;/strong>&lt;/td>
+&lt;td>텍스트 내 &lt;strong>패턴 검색&lt;/strong> 도구, 정규식 지원&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>기본 정규식&lt;/strong>&lt;/td>
+&lt;td>&lt;code>^&lt;/code>, &lt;code>$&lt;/code>, &lt;code>.&lt;/code>, &lt;code>[ ]&lt;/code>, &lt;code>[^ ]&lt;/code>, &lt;code>*&lt;/code> 등&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>확장 정규식 (-E)&lt;/strong>&lt;/td>
+&lt;td>&lt;code>+&lt;/code>, &lt;code>{m,n}&lt;/code>, &lt;code>()&lt;/code> 등 사용 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>주요 패턴 예시&lt;/strong>&lt;/td>
+&lt;td>&lt;code>'error$'&lt;/code>, &lt;code>^[A-Z]&lt;/code>, &lt;code>ID[0-9]{2,4}&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-정규식--grep-흐름도">🖼️ 정규식 &amp;amp; grep 흐름도&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[정규 표현식 작동 예]
+^Err → &amp;#39;Err&amp;#39;로 시작하는 줄
+error$ → &amp;#39;error&amp;#39;로 끝나는 줄
+[a-z]+ → 소문자 1회 이상
+[^0-9] → 숫자가 아닌 문자
+x{2,4} → &amp;#39;x&amp;#39;가 2~4회 반복
+[grep 핵심 옵션]
+-i → 대소문자 무시
+-n → 줄 번호 표시
+-v → 부정 조건
+-E → 확장 정규식 사용
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-연결">🔍 실무 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>명령어 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>오류 로그만 보기&lt;/strong>&lt;/td>
+&lt;td>&lt;code>grep '^ERROR' mlflow.log&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>훈련 완료 라인 추출&lt;/strong>&lt;/td>
+&lt;td>&lt;code>grep 'Training.*Done' log.txt&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>반복된 실패 감지&lt;/strong>&lt;/td>
+&lt;td>&lt;code>grep -E '(Fail){2,}' result.log&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>ID 패턴 추출&lt;/strong>&lt;/td>
+&lt;td>&lt;code>grep -E 'ID[0-9]{3,4}' data.txt&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>는 &amp;ldquo;0회 이상&amp;rdquo; → &lt;code>be*er&lt;/code>: &lt;code>br&lt;/code>, &lt;code>beer&lt;/code>, &lt;code>beeeer&lt;/code> 전부 매치됨&lt;/li>
+&lt;li>&lt;code>+&lt;/code>, &lt;code>{}&lt;/code> 등은 &lt;code>grep -E&lt;/code> 필수&lt;/li>
+&lt;li>&lt;code>.&lt;/code>는 줄바꿈 제외 → 여러 줄 매치는 &lt;code>grep -P&lt;/code> 또는 &lt;code>awk&lt;/code> 활용&lt;/li>
+&lt;li>&lt;code>grep&lt;/code> 결과는 &lt;code>less&lt;/code>, &lt;code>cut&lt;/code>, &lt;code>awk&lt;/code> 등과 파이프 연결 가능&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🛠️ MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>요소&lt;/th>
+&lt;th>활용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>오류 탐지 자동화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>grep -E 'ERROR$' train.log&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>학습 로그 필터링&lt;/strong>&lt;/td>
+&lt;td>&lt;code>grep '^Epoch [0-9]+' log.txt&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 버전 감지&lt;/strong>&lt;/td>
+&lt;td>&lt;code>grep -E 'model_v[0-9]+'&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>설정 파라미터 추출&lt;/strong>&lt;/td>
+&lt;td>&lt;code>grep -n '^port' mlflow.conf&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-자주-헷갈리는-포인트">❗ 자주 헷갈리는 포인트&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>grep&lt;/code> 기본은 &lt;strong>정규식 일부만 지원&lt;/strong> → &lt;code>E&lt;/code>로 확장 필요&lt;/li>
+&lt;li>는 반드시 &lt;strong>이전 문자 기준&lt;/strong> (예: &lt;code>e*&lt;/code>는 &lt;code>e&lt;/code> 반복)&lt;/li>
+&lt;li>&lt;code>.&lt;/code>는 &lt;strong>모든 문자&lt;/strong>, 줄바꿈은 제외됨 (&lt;code>grep&lt;/code> 한계점 주의)&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>정규표현식은 텍스트 속 숨은 규칙을 찾는 언어이며,&lt;/p></description></item><item><title>[리눅스] 11장. 텍스트 처리 명령어</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/11/</link><pubDate>Wed, 16 Apr 2025 16:25:29 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/11/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>텍스트 처리 명령어는 로그 분석, 전처리, 구성 비교 등&lt;/p>
+&lt;p>&lt;strong>실무 자동화&lt;/strong>의 기본 도구&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>명령어&lt;/th>
+&lt;th>기능&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>wc&lt;/code>&lt;/td>
+&lt;td>행/단어/바이트 수 출력 (&lt;code>-l&lt;/code>, &lt;code>-w&lt;/code>, &lt;code>-c&lt;/code>)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>sort&lt;/code>&lt;/td>
+&lt;td>행 정렬 (&lt;code>-n&lt;/code>: 숫자, &lt;code>-r&lt;/code>: 역순)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>uniq&lt;/code>&lt;/td>
+&lt;td>중복 제거 (&lt;code>-c&lt;/code>: 개수 출력) → &lt;code>sort&lt;/code>와 함께 사용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>cut&lt;/code>&lt;/td>
+&lt;td>열 추출 (&lt;code>-d&lt;/code> 구분자, &lt;code>-f&lt;/code> 필드)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>tr&lt;/code>&lt;/td>
+&lt;td>문자 치환 (&lt;code>a-z → A-Z&lt;/code> 등)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>tail&lt;/code>&lt;/td>
+&lt;td>끝부분 N줄 출력, &lt;code>-f&lt;/code>: 실시간 모니터링&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>diff&lt;/code>&lt;/td>
+&lt;td>파일 간 차이 비교 (설정 변경 감지)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-핵심-도식화">🖼️ 핵심 도식화&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[CSV 전처리 흐름 예시]
+raw.csv
+↓ cut -d &amp;#39;,&amp;#39; -f1,3
+↓ sort | uniq -c
+↓ &amp;gt; cleaned.csv
+&lt;/code>&lt;/pre>&lt;pre tabindex="0">&lt;code>[실시간 로그 처리]
+tail -f train.log
+| grep &amp;#34;loss&amp;#34;
+| tr &amp;#39;a-z&amp;#39; &amp;#39;A-Z&amp;#39;
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실전-시나리오-연결">🔍 실전 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>목적&lt;/th>
+&lt;th>명령어 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>데이터 크기 확인&lt;/strong>&lt;/td>
+&lt;td>&lt;code>wc -l train.csv&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>중복 로그 카운트&lt;/strong>&lt;/td>
+&lt;td>`sort log.txt&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>CSV 열 추출&lt;/strong>&lt;/td>
+&lt;td>&lt;code>cut -d ',' -f2,5 data.csv&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>실시간 학습 모니터링&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tail -f train.log&lt;/code> + &lt;code>grep&lt;/code>, &lt;code>tr&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>설정 변경 추적&lt;/strong>&lt;/td>
+&lt;td>&lt;code>diff config1.yaml config2.yaml&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>uniq&lt;/code>은 &lt;strong>반드시 정렬 후 사용&lt;/strong>&lt;/li>
+&lt;li>&lt;code>cut&lt;/code>은 구분자/필드 번호 정확히 지정&lt;/li>
+&lt;li>&lt;code>tail -f&lt;/code>는 로그 확인 필수 도구&lt;/li>
+&lt;li>&lt;code>tr&lt;/code>은 단순 문자 변환만 가능 → 복잡한 처리에는 &lt;code>awk&lt;/code>, &lt;code>sed&lt;/code> 사용&lt;/li>
+&lt;li>&lt;code>diff&lt;/code>는 Git 외에도 &lt;strong>환경 설정 변경 추적&lt;/strong>에 유용&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🛠️ MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>활용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>로그 용량 점검&lt;/strong>&lt;/td>
+&lt;td>&lt;code>wc -l mlflow.log&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 결과 전처리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>cut&lt;/code>, &lt;code>sort&lt;/code>, &lt;code>uniq&lt;/code> 조합으로 결과 통계&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>CSV 파이프라인 구축&lt;/strong>&lt;/td>
+&lt;td>&lt;code>cut&lt;/code>으로 feature 선택, 셸 스크립트와 연결&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>학습 상태 추적&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tail -f train.log&lt;/code>로 실시간 loss 확인&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>설정 변경 감지&lt;/strong>&lt;/td>
+&lt;td>&lt;code>diff mlflow.conf mlflow-prod.conf&lt;/code> → 배포 전 확인&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-오해-방지-포인트">❗ 오해 방지 포인트&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>uniq&lt;/code>은 &lt;strong>연속된 중복만 제거&lt;/strong> → &lt;code>sort&lt;/code> 선행 필요&lt;/li>
+&lt;li>&lt;code>tr&lt;/code>은 &lt;strong>문자 단위 치환&lt;/strong> → 문자열/열 단위는 불가&lt;/li>
+&lt;li>&lt;code>tail -f&lt;/code>는 오래 켜두면 &lt;strong>리소스 소모&lt;/strong> 주의&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>텍스트 처리 명령어는 전처리, 분석, 디버깅, 자동화의 기반&lt;/p></description></item><item><title>[리눅스] 10장. 표준 입출력, 리다이렉션, 파이프라인</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/10/</link><pubDate>Tue, 15 Apr 2025 18:45:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/10/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
 &lt;blockquote>
 &lt;p>셸에서 실행 결과는 표준 출력/에러로 나뉘며,&lt;/p>
 &lt;p>&lt;strong>리다이렉션과 파이프라인&lt;/strong>은 이 흐름을 &lt;strong>제어하고 연결&lt;/strong>하는 도구다.&lt;/p>&lt;/blockquote>
