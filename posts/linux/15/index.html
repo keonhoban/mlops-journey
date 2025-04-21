@@ -1,0 +1,286 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[리눅스] 15장. 셸 스크립트 기초 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='🧠 결정적 지식 요약
+
+  
+      
+          개념
+          핵심 요약
+      
+  
+  
+      
+          스크립트 구조
+          명령어 나열 + 흐름 제어 (if, for, case)
+      
+      
+          변수
+          name=값, "${var}", ${var:-기본값}
+      
+      
+          인자 처리
+          $1, $#, "$@", getopts
+      
+      
+          조건문
+          [[ 조건 ]] 권장 (==, &&, =~, -n, -z 등 지원)
+      
+      
+          고급 문법
+          trap, IFS, while read, 산술 for문 등
+      
+  
+
+
+🖼️ 실행 흐름 도식화
+[스크립트 기본 실행 구조]
+
+입력 인자 → 변수 저장 → 조건문/반복문 실행 → 출력 or 파일 처리 → 종료 시 cleanup(trap)
+
+🔍 실전 흐름 예시
+
+  
+      
+          상황
+          스크립트 흐름 요약
+      
+  
+  
+      
+          인자 부족 시 종료
+          [ "$#" -lt 1 ] → echo 사용법 → exit 1
+      
+      
+          로그 자동 백업
+          cp log.txt log_$(date +%F_%H%M).bak
+      
+      
+          CLI 옵션 처리
+          getopts로 -e, -l 등 파라미터 받기
+      
+      
+          비정상 종료 처리
+          trap "정리작업" EXIT
+      
+      
+          CSV 반복 처리
+          while IFS=&#39;,&#39; read ... done < file.csv
+      
+  
+
+
+✅ 실전 체크리스트
+
+#!/usr/bin/env bash 사용 여부 ✅
+인자 유효성 검사 ($#, $1) ✅
+[[ ]]로 조건문 통일 ✅
+쿼팅 필수: "${var}", "$@" ✅
+trap, getopts, IFS 사용 경험 ✅
+
+
+⚠️ 실수 방지 포인트
+
+  
+      
+          항목
+          주의 설명
+      
+  
+  
+      
+          "${@}" vs "${*}"
+          "${@}"는 각 인자 개별 처리 (정확한 전달)
+      
+      
+          [[ ... ]] 추천 이유
+          =~, &&, `
+      
+      
+          trap 미사용 시 문제
+          임시 파일/세션 정리 누락 가능성
+      
+      
+          getopts 한계
+          --long-option 지원 안 됨 → 직접 파싱 필요
+      
+  
+
+
+🛠️ MLOps 실전 연결
+
+  
+      
+          시나리오
+          적용 예시
+      
+  
+  
+      
+          학습 파라미터 전달
+          ./train.sh -e 50 -l 0.001 → getopts
+      
+      
+          로그 백업
+          mv log.txt log_$(date +%F_%H%M).txt
+      
+      
+          임시 파일 정리
+          trap "rm -f /tmp/*.log" EXIT
+      
+      
+          대량 CSV 처리
+          for file in data/*.csv; do ... done
+      
+      
+          오류 요약 출력
+          grep ERROR train.log > error.log
+      
+  
+
+
+🏁 마무리
+
+셸 스크립트는 실무의 반복작업을 자동화하고,'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/15/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/15/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/15/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[리눅스] 15장. 셸 스크립트 기초"><meta property="og:description" content='🧠 결정적 지식 요약 개념 핵심 요약 스크립트 구조 명령어 나열 + 흐름 제어 (if, for, case) 변수 name=값, "${var}", ${var:-기본값} 인자 처리 $1, $#, "$@", getopts 조건문 [[ 조건 ]] 권장 (==, &&, =~, -n, -z 등 지원) 고급 문법 trap, IFS, while read, 산술 for문 등 🖼️ 실행 흐름 도식화 [스크립트 기본 실행 구조] 입력 인자 → 변수 저장 → 조건문/반복문 실행 → 출력 or 파일 처리 → 종료 시 cleanup(trap) 🔍 실전 흐름 예시 상황 스크립트 흐름 요약 인자 부족 시 종료 [ "$#" -lt 1 ] → echo 사용법 → exit 1 로그 자동 백업 cp log.txt log_$(date +%F_%H%M).bak CLI 옵션 처리 getopts로 -e, -l 등 파라미터 받기 비정상 종료 처리 trap "정리작업" EXIT CSV 반복 처리 while IFS=&#39;,&#39; read ... done < file.csv ✅ 실전 체크리스트 #!/usr/bin/env bash 사용 여부 ✅ 인자 유효성 검사 ($#, $1) ✅ [[ ]]로 조건문 통일 ✅ 쿼팅 필수: "${var}", "$@" ✅ trap, getopts, IFS 사용 경험 ✅ ⚠️ 실수 방지 포인트 항목 주의 설명 "${@}" vs "${*}" "${@}"는 각 인자 개별 처리 (정확한 전달) [[ ... ]] 추천 이유 =~, &&, ` trap 미사용 시 문제 임시 파일/세션 정리 누락 가능성 getopts 한계 --long-option 지원 안 됨 → 직접 파싱 필요 🛠️ MLOps 실전 연결 시나리오 적용 예시 학습 파라미터 전달 ./train.sh -e 50 -l 0.001 → getopts 로그 백업 mv log.txt log_$(date +%F_%H%M).txt 임시 파일 정리 trap "rm -f /tmp/*.log" EXIT 대량 CSV 처리 for file in data/*.csv; do ... done 오류 요약 출력 grep ERROR train.log > error.log 🏁 마무리 셸 스크립트는 실무의 반복작업을 자동화하고,'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-21T20:23:58+09:00"><meta property="article:modified_time" content="2025-04-21T20:23:58+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[리눅스] 15장. 셸 스크립트 기초"><meta name=twitter:description content='🧠 결정적 지식 요약
+
+  
+      
+          개념
+          핵심 요약
+      
+  
+  
+      
+          스크립트 구조
+          명령어 나열 + 흐름 제어 (if, for, case)
+      
+      
+          변수
+          name=값, "${var}", ${var:-기본값}
+      
+      
+          인자 처리
+          $1, $#, "$@", getopts
+      
+      
+          조건문
+          [[ 조건 ]] 권장 (==, &&, =~, -n, -z 등 지원)
+      
+      
+          고급 문법
+          trap, IFS, while read, 산술 for문 등
+      
+  
+
+
+🖼️ 실행 흐름 도식화
+[스크립트 기본 실행 구조]
+
+입력 인자 → 변수 저장 → 조건문/반복문 실행 → 출력 or 파일 처리 → 종료 시 cleanup(trap)
+
+🔍 실전 흐름 예시
+
+  
+      
+          상황
+          스크립트 흐름 요약
+      
+  
+  
+      
+          인자 부족 시 종료
+          [ "$#" -lt 1 ] → echo 사용법 → exit 1
+      
+      
+          로그 자동 백업
+          cp log.txt log_$(date +%F_%H%M).bak
+      
+      
+          CLI 옵션 처리
+          getopts로 -e, -l 등 파라미터 받기
+      
+      
+          비정상 종료 처리
+          trap "정리작업" EXIT
+      
+      
+          CSV 반복 처리
+          while IFS=&#39;,&#39; read ... done < file.csv
+      
+  
+
+
+✅ 실전 체크리스트
+
+#!/usr/bin/env bash 사용 여부 ✅
+인자 유효성 검사 ($#, $1) ✅
+[[ ]]로 조건문 통일 ✅
+쿼팅 필수: "${var}", "$@" ✅
+trap, getopts, IFS 사용 경험 ✅
+
+
+⚠️ 실수 방지 포인트
+
+  
+      
+          항목
+          주의 설명
+      
+  
+  
+      
+          "${@}" vs "${*}"
+          "${@}"는 각 인자 개별 처리 (정확한 전달)
+      
+      
+          [[ ... ]] 추천 이유
+          =~, &&, `
+      
+      
+          trap 미사용 시 문제
+          임시 파일/세션 정리 누락 가능성
+      
+      
+          getopts 한계
+          --long-option 지원 안 됨 → 직접 파싱 필요
+      
+  
+
+
+🛠️ MLOps 실전 연결
+
+  
+      
+          시나리오
+          적용 예시
+      
+  
+  
+      
+          학습 파라미터 전달
+          ./train.sh -e 50 -l 0.001 → getopts
+      
+      
+          로그 백업
+          mv log.txt log_$(date +%F_%H%M).txt
+      
+      
+          임시 파일 정리
+          trap "rm -f /tmp/*.log" EXIT
+      
+      
+          대량 CSV 처리
+          for file in data/*.csv; do ... done
+      
+      
+          오류 요약 출력
+          grep ERROR train.log > error.log
+      
+  
+
+
+🏁 마무리
+
+셸 스크립트는 실무의 반복작업을 자동화하고,'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[리눅스] 15장. 셸 스크립트 기초","item":"https://keonhoban.github.io/mlops-journey/posts/linux/15/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[리눅스] 15장. 셸 스크립트 기초","name":"[리눅스] 15장. 셸 스크립트 기초","description":"🧠 결정적 지식 요약 개념 핵심 요약 스크립트 구조 명령어 나열 + 흐름 제어 (if, for, case) 변수 name=값, \u0026quot;${var}\u0026quot;, ${var:-기본값} 인자 처리 $1, $#, \u0026quot;$@\u0026quot;, getopts 조건문 [[ 조건 ]] 권장 (==, \u0026amp;\u0026amp;, =~, -n, -z 등 지원) 고급 문법 trap, IFS, while read, 산술 for문 등 🖼️ 실행 흐름 도식화 [스크립트 기본 실행 구조] 입력 인자 → 변수 저장 → 조건문/반복문 실행 → 출력 or 파일 처리 → 종료 시 cleanup(trap) 🔍 실전 흐름 예시 상황 스크립트 흐름 요약 인자 부족 시 종료 [ \u0026quot;$#\u0026quot; -lt 1 ] → echo 사용법 → exit 1 로그 자동 백업 cp log.txt log_$(date +%F_%H%M).bak CLI 옵션 처리 getopts로 -e, -l 등 파라미터 받기 비정상 종료 처리 trap \u0026quot;정리작업\u0026quot; EXIT CSV 반복 처리 while IFS=',' read ... done \u0026lt; file.csv ✅ 실전 체크리스트 #!/usr/bin/env bash 사용 여부 ✅ 인자 유효성 검사 ($#, $1) ✅ [[ ]]로 조건문 통일 ✅ 쿼팅 필수: \u0026quot;${var}\u0026quot;, \u0026quot;$@\u0026quot; ✅ trap, getopts, IFS 사용 경험 ✅ ⚠️ 실수 방지 포인트 항목 주의 설명 \u0026quot;${@}\u0026quot; vs \u0026quot;${*}\u0026quot; \u0026quot;${@}\u0026quot;는 각 인자 개별 처리 (정확한 전달) [[ ... ]] 추천 이유 =~, \u0026amp;\u0026amp;, ` trap 미사용 시 문제 임시 파일/세션 정리 누락 가능성 getopts 한계 --long-option 지원 안 됨 → 직접 파싱 필요 🛠️ MLOps 실전 연결 시나리오 적용 예시 학습 파라미터 전달 ./train.sh -e 50 -l 0.001 → getopts 로그 백업 mv log.txt log_$(date +%F_%H%M).txt 임시 파일 정리 trap \u0026quot;rm -f /tmp/*.log\u0026quot; EXIT 대량 CSV 처리 for file in data/*.csv; do ... done 오류 요약 출력 grep ERROR train.log \u0026gt; error.log 🏁 마무리 셸 스크립트는 실무의 반복작업을 자동화하고,\n","keywords":[],"articleBody":"🧠 결정적 지식 요약 개념 핵심 요약 스크립트 구조 명령어 나열 + 흐름 제어 (if, for, case) 변수 name=값, \"${var}\", ${var:-기본값} 인자 처리 $1, $#, \"$@\", getopts 조건문 [[ 조건 ]] 권장 (==, \u0026\u0026, =~, -n, -z 등 지원) 고급 문법 trap, IFS, while read, 산술 for문 등 🖼️ 실행 흐름 도식화 [스크립트 기본 실행 구조] 입력 인자 → 변수 저장 → 조건문/반복문 실행 → 출력 or 파일 처리 → 종료 시 cleanup(trap) 🔍 실전 흐름 예시 상황 스크립트 흐름 요약 인자 부족 시 종료 [ \"$#\" -lt 1 ] → echo 사용법 → exit 1 로그 자동 백업 cp log.txt log_$(date +%F_%H%M).bak CLI 옵션 처리 getopts로 -e, -l 등 파라미터 받기 비정상 종료 처리 trap \"정리작업\" EXIT CSV 반복 처리 while IFS=',' read ... done \u003c file.csv ✅ 실전 체크리스트 #!/usr/bin/env bash 사용 여부 ✅ 인자 유효성 검사 ($#, $1) ✅ [[ ]]로 조건문 통일 ✅ 쿼팅 필수: \"${var}\", \"$@\" ✅ trap, getopts, IFS 사용 경험 ✅ ⚠️ 실수 방지 포인트 항목 주의 설명 \"${@}\" vs \"${*}\" \"${@}\"는 각 인자 개별 처리 (정확한 전달) [[ ... ]] 추천 이유 =~, \u0026\u0026, ` trap 미사용 시 문제 임시 파일/세션 정리 누락 가능성 getopts 한계 --long-option 지원 안 됨 → 직접 파싱 필요 🛠️ MLOps 실전 연결 시나리오 적용 예시 학습 파라미터 전달 ./train.sh -e 50 -l 0.001 → getopts 로그 백업 mv log.txt log_$(date +%F_%H%M).txt 임시 파일 정리 trap \"rm -f /tmp/*.log\" EXIT 대량 CSV 처리 for file in data/*.csv; do ... done 오류 요약 출력 grep ERROR train.log \u003e error.log 🏁 마무리 셸 스크립트는 실무의 반복작업을 자동화하고,\n빠르고 유연한 제어를 가능하게 해준다.\n","wordCount":"263","inLanguage":"en","datePublished":"2025-04-21T20:23:58+09:00","dateModified":"2025-04-21T20:23:58+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/15/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[리눅스] 15장. 셸 스크립트 기초</h1><div class=post-meta><span title='2025-04-21 20:23:58 +0900 +0900'>April 21, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h3 id=-결정적-지식-요약>🧠 결정적 지식 요약<a hidden class=anchor aria-hidden=true href=#-결정적-지식-요약>#</a></h3><table><thead><tr><th>개념</th><th>핵심 요약</th></tr></thead><tbody><tr><td><strong>스크립트 구조</strong></td><td>명령어 나열 + 흐름 제어 (<code>if</code>, <code>for</code>, <code>case</code>)</td></tr><tr><td><strong>변수</strong></td><td><code>name=값</code>, <code>"${var}"</code>, <code>${var:-기본값}</code></td></tr><tr><td><strong>인자 처리</strong></td><td><code>$1</code>, <code>$#</code>, <code>"$@"</code>, <code>getopts</code></td></tr><tr><td><strong>조건문</strong></td><td><code>[[ 조건 ]]</code> 권장 (<code>==</code>, <code>&&</code>, <code>=~</code>, <code>-n</code>, <code>-z</code> 등 지원)</td></tr><tr><td><strong>고급 문법</strong></td><td><code>trap</code>, <code>IFS</code>, <code>while read</code>, 산술 for문 등</td></tr></tbody></table><hr><h3 id=-실행-흐름-도식화>🖼️ 실행 흐름 도식화<a hidden class=anchor aria-hidden=true href=#-실행-흐름-도식화>#</a></h3><pre tabindex=0><code>[스크립트 기본 실행 구조]
+
+입력 인자 → 변수 저장 → 조건문/반복문 실행 → 출력 or 파일 처리 → 종료 시 cleanup(trap)
+</code></pre><hr><h3 id=-실전-흐름-예시>🔍 실전 흐름 예시<a hidden class=anchor aria-hidden=true href=#-실전-흐름-예시>#</a></h3><table><thead><tr><th>상황</th><th>스크립트 흐름 요약</th></tr></thead><tbody><tr><td><strong>인자 부족 시 종료</strong></td><td><code>[ "$#" -lt 1 ] → echo 사용법 → exit 1</code></td></tr><tr><td><strong>로그 자동 백업</strong></td><td><code>cp log.txt log_$(date +%F_%H%M).bak</code></td></tr><tr><td><strong>CLI 옵션 처리</strong></td><td><code>getopts</code>로 <code>-e</code>, <code>-l</code> 등 파라미터 받기</td></tr><tr><td><strong>비정상 종료 처리</strong></td><td><code>trap "정리작업" EXIT</code></td></tr><tr><td><strong>CSV 반복 처리</strong></td><td><code>while IFS=',' read ... done &lt; file.csv</code></td></tr></tbody></table><hr><h3 id=-실전-체크리스트>✅ 실전 체크리스트<a hidden class=anchor aria-hidden=true href=#-실전-체크리스트>#</a></h3><ul><li><code>#!/usr/bin/env bash</code> 사용 여부 ✅</li><li>인자 유효성 검사 (<code>$#</code>, <code>$1</code>) ✅</li><li><code>[[ ]]</code>로 조건문 통일 ✅</li><li>쿼팅 필수: <code>"${var}"</code>, <code>"$@"</code> ✅</li><li><code>trap</code>, <code>getopts</code>, <code>IFS</code> 사용 경험 ✅</li></ul><hr><h3 id=-실수-방지-포인트>⚠️ 실수 방지 포인트<a hidden class=anchor aria-hidden=true href=#-실수-방지-포인트>#</a></h3><table><thead><tr><th>항목</th><th>주의 설명</th></tr></thead><tbody><tr><td><code>"${@}"</code> vs <code>"${*}"</code></td><td><code>"${@}"</code>는 각 인자 개별 처리 (정확한 전달)</td></tr><tr><td><code>[[ ... ]]</code> 추천 이유</td><td><code>=~</code>, <code>&&</code>, `</td></tr><tr><td><code>trap</code> 미사용 시 문제</td><td>임시 파일/세션 정리 누락 가능성</td></tr><tr><td><code>getopts</code> 한계</td><td><code>--long-option</code> 지원 안 됨 → 직접 파싱 필요</td></tr></tbody></table><hr><h3 id=-mlops-실전-연결>🛠️ MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#-mlops-실전-연결>#</a></h3><table><thead><tr><th>시나리오</th><th>적용 예시</th></tr></thead><tbody><tr><td><strong>학습 파라미터 전달</strong></td><td><code>./train.sh -e 50 -l 0.001</code> → <code>getopts</code></td></tr><tr><td><strong>로그 백업</strong></td><td><code>mv log.txt log_$(date +%F_%H%M).txt</code></td></tr><tr><td><strong>임시 파일 정리</strong></td><td><code>trap "rm -f /tmp/*.log" EXIT</code></td></tr><tr><td><strong>대량 CSV 처리</strong></td><td><code>for file in data/*.csv; do ... done</code></td></tr><tr><td><strong>오류 요약 출력</strong></td><td><code>grep ERROR train.log > error.log</code></td></tr></tbody></table><hr><h3 id=-마무리>🏁 마무리<a hidden class=anchor aria-hidden=true href=#-마무리>#</a></h3><blockquote><p>셸 스크립트는 실무의 반복작업을 자동화하고,</p><p><strong>빠르고 유연한 제어</strong>를 가능하게 해준다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/linux/14/><span class=title>Next »</span><br><span>[리눅스] 14장. 셸 스크립트 작성</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

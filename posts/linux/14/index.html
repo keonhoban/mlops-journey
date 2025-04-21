@@ -1,0 +1,308 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[리눅스] 14장. 셸 스크립트 작성 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="📌 핵심 개념 요약
+
+셸 스크립트는 반복되는 명령어를 자동화하는
+가장 기본이자 강력한 도구
+
+🧠 결정적 지식 요약
+
+  
+      
+          개념
+          설명
+      
+  
+  
+      
+          셸 스크립트
+          명령어를 파일로 저장해 실행 (.sh)
+      
+      
+          실행 방법
+          chmod +x 후 ./script.sh 또는 bash script.sh
+      
+      
+          source 실행
+          현재 셸에서 실행 → 환경 변수 유지됨
+      
+      
+          PATH 등록
+          ~/bin 등 등록 시 어느 위치에서든 실행 가능
+      
+      
+          SSH 키 인증
+          비밀번호 없이 자동 접속 → 스크립트 자동화 필수 구성
+      
+  
+
+
+🖼️ 실행 흐름 요약 (도식화)
+[스크립트 작성]
+   ↓
+[실행 권한 부여: chmod +x]
+   ↓
+[실행 방식]
+   ├─ ./script.sh → 서브 셸 (권장)
+   ├─ bash script.sh → 명시적 실행
+   └─ source script.sh → 현재 셸 (환경 반영)
+
+[확장]
+   ├─ ~/bin 등록 → PATH로 어디서든 실행
+   └─ SSH 키 → 서버 자동 접속 스크립트화
+
+🔍 실전 시나리오 연결
+
+  
+      
+          상황
+          활용 예
+      
+  
+  
+      
+          디렉터리 정리 자동화
+          로그/임시 파일 삭제 스크립트
+      
+      
+          환경 설정 일괄 적용
+          source ~/env.sh → 변수 한 번에 적용
+      
+      
+          다중 서버 접속
+          SSH 키 기반 루프 스크립트로 순차 로그인
+      
+      
+          PATH 설정
+          자주 쓰는 스크립트를 ~/bin에 넣고 등록
+      
+  
+
+
+💡 실전 팁 모음
+
+#!/usr/bin/env bash → OS 이식성 확보
+chmod +x 필수 → ./ 실행 시
+source는 현재 셸 변경 가능 → 주의 필요
+PATH 등록 후에는 셸 재시작 또는 source ~/.bashrc
+
+
+🛠️ MLOps 연결 요약
+
+  
+      
+          요소
+          활용 예시
+      
+  
+  
+      
+          실험 디렉터리 초기화
+          clean_experiment.sh로 자동 정리
+      
+      
+          학습 환경 구성
+          source mlops_env.sh → 환경 변수 자동 적용
+      
+      
+          모델 서버 자동 배포
+          deploy.sh + SSH 키로 무중단 배포
+      
+      
+          서버 상태 수집
+          check_resources.sh로 메모리/디스크 확인 자동화
+      
+  
+
+
+❗ 자주 헷갈리는 포인트
+
+  
+      
+          오해
+          실제 의미
+      
+  
+  
+      
+          #!/bin/bash만 써야 한다
+          #!/usr/bin/env bash가 더 유연하고 이식성 있음
+      
+      
+          source는 항상 편리하다
+          현재 셸에 직접 영향, 실수 시 복구 어려움
+      
+      
+          chmod +x 없이 실행 가능
+          bash script.sh는 가능하나 ./은 불가
+      
+      
+          PATH 등록 = 즉시 실행
+          셸 재시작 or source ~/.bashrc 필요
+      
+  
+
+
+🏁 마무리
+
+셸 스크립트는 MLOps 자동화의 첫 도구이며,"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/14/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/14/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/14/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[리눅스] 14장. 셸 스크립트 작성"><meta property="og:description" content="📌 핵심 개념 요약 셸 스크립트는 반복되는 명령어를 자동화하는
+가장 기본이자 강력한 도구
+🧠 결정적 지식 요약 개념 설명 셸 스크립트 명령어를 파일로 저장해 실행 (.sh) 실행 방법 chmod +x 후 ./script.sh 또는 bash script.sh source 실행 현재 셸에서 실행 → 환경 변수 유지됨 PATH 등록 ~/bin 등 등록 시 어느 위치에서든 실행 가능 SSH 키 인증 비밀번호 없이 자동 접속 → 스크립트 자동화 필수 구성 🖼️ 실행 흐름 요약 (도식화) [스크립트 작성] ↓ [실행 권한 부여: chmod +x] ↓ [실행 방식] ├─ ./script.sh → 서브 셸 (권장) ├─ bash script.sh → 명시적 실행 └─ source script.sh → 현재 셸 (환경 반영) [확장] ├─ ~/bin 등록 → PATH로 어디서든 실행 └─ SSH 키 → 서버 자동 접속 스크립트화 🔍 실전 시나리오 연결 상황 활용 예 디렉터리 정리 자동화 로그/임시 파일 삭제 스크립트 환경 설정 일괄 적용 source ~/env.sh → 변수 한 번에 적용 다중 서버 접속 SSH 키 기반 루프 스크립트로 순차 로그인 PATH 설정 자주 쓰는 스크립트를 ~/bin에 넣고 등록 💡 실전 팁 모음 #!/usr/bin/env bash → OS 이식성 확보 chmod +x 필수 → ./ 실행 시 source는 현재 셸 변경 가능 → 주의 필요 PATH 등록 후에는 셸 재시작 또는 source ~/.bashrc 🛠️ MLOps 연결 요약 요소 활용 예시 실험 디렉터리 초기화 clean_experiment.sh로 자동 정리 학습 환경 구성 source mlops_env.sh → 환경 변수 자동 적용 모델 서버 자동 배포 deploy.sh + SSH 키로 무중단 배포 서버 상태 수집 check_resources.sh로 메모리/디스크 확인 자동화 ❗ 자주 헷갈리는 포인트 오해 실제 의미 #!/bin/bash만 써야 한다 #!/usr/bin/env bash가 더 유연하고 이식성 있음 source는 항상 편리하다 현재 셸에 직접 영향, 실수 시 복구 어려움 chmod +x 없이 실행 가능 bash script.sh는 가능하나 ./은 불가 PATH 등록 = 즉시 실행 셸 재시작 or source ~/.bashrc 필요 🏁 마무리 셸 스크립트는 MLOps 자동화의 첫 도구이며,"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-21T20:23:56+09:00"><meta property="article:modified_time" content="2025-04-21T20:23:56+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[리눅스] 14장. 셸 스크립트 작성"><meta name=twitter:description content="📌 핵심 개념 요약
+
+셸 스크립트는 반복되는 명령어를 자동화하는
+가장 기본이자 강력한 도구
+
+🧠 결정적 지식 요약
+
+  
+      
+          개념
+          설명
+      
+  
+  
+      
+          셸 스크립트
+          명령어를 파일로 저장해 실행 (.sh)
+      
+      
+          실행 방법
+          chmod +x 후 ./script.sh 또는 bash script.sh
+      
+      
+          source 실행
+          현재 셸에서 실행 → 환경 변수 유지됨
+      
+      
+          PATH 등록
+          ~/bin 등 등록 시 어느 위치에서든 실행 가능
+      
+      
+          SSH 키 인증
+          비밀번호 없이 자동 접속 → 스크립트 자동화 필수 구성
+      
+  
+
+
+🖼️ 실행 흐름 요약 (도식화)
+[스크립트 작성]
+   ↓
+[실행 권한 부여: chmod +x]
+   ↓
+[실행 방식]
+   ├─ ./script.sh → 서브 셸 (권장)
+   ├─ bash script.sh → 명시적 실행
+   └─ source script.sh → 현재 셸 (환경 반영)
+
+[확장]
+   ├─ ~/bin 등록 → PATH로 어디서든 실행
+   └─ SSH 키 → 서버 자동 접속 스크립트화
+
+🔍 실전 시나리오 연결
+
+  
+      
+          상황
+          활용 예
+      
+  
+  
+      
+          디렉터리 정리 자동화
+          로그/임시 파일 삭제 스크립트
+      
+      
+          환경 설정 일괄 적용
+          source ~/env.sh → 변수 한 번에 적용
+      
+      
+          다중 서버 접속
+          SSH 키 기반 루프 스크립트로 순차 로그인
+      
+      
+          PATH 설정
+          자주 쓰는 스크립트를 ~/bin에 넣고 등록
+      
+  
+
+
+💡 실전 팁 모음
+
+#!/usr/bin/env bash → OS 이식성 확보
+chmod +x 필수 → ./ 실행 시
+source는 현재 셸 변경 가능 → 주의 필요
+PATH 등록 후에는 셸 재시작 또는 source ~/.bashrc
+
+
+🛠️ MLOps 연결 요약
+
+  
+      
+          요소
+          활용 예시
+      
+  
+  
+      
+          실험 디렉터리 초기화
+          clean_experiment.sh로 자동 정리
+      
+      
+          학습 환경 구성
+          source mlops_env.sh → 환경 변수 자동 적용
+      
+      
+          모델 서버 자동 배포
+          deploy.sh + SSH 키로 무중단 배포
+      
+      
+          서버 상태 수집
+          check_resources.sh로 메모리/디스크 확인 자동화
+      
+  
+
+
+❗ 자주 헷갈리는 포인트
+
+  
+      
+          오해
+          실제 의미
+      
+  
+  
+      
+          #!/bin/bash만 써야 한다
+          #!/usr/bin/env bash가 더 유연하고 이식성 있음
+      
+      
+          source는 항상 편리하다
+          현재 셸에 직접 영향, 실수 시 복구 어려움
+      
+      
+          chmod +x 없이 실행 가능
+          bash script.sh는 가능하나 ./은 불가
+      
+      
+          PATH 등록 = 즉시 실행
+          셸 재시작 or source ~/.bashrc 필요
+      
+  
+
+
+🏁 마무리
+
+셸 스크립트는 MLOps 자동화의 첫 도구이며,"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[리눅스] 14장. 셸 스크립트 작성","item":"https://keonhoban.github.io/mlops-journey/posts/linux/14/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[리눅스] 14장. 셸 스크립트 작성","name":"[리눅스] 14장. 셸 스크립트 작성","description":"📌 핵심 개념 요약 셸 스크립트는 반복되는 명령어를 자동화하는\n가장 기본이자 강력한 도구\n🧠 결정적 지식 요약 개념 설명 셸 스크립트 명령어를 파일로 저장해 실행 (.sh) 실행 방법 chmod +x 후 ./script.sh 또는 bash script.sh source 실행 현재 셸에서 실행 → 환경 변수 유지됨 PATH 등록 ~/bin 등 등록 시 어느 위치에서든 실행 가능 SSH 키 인증 비밀번호 없이 자동 접속 → 스크립트 자동화 필수 구성 🖼️ 실행 흐름 요약 (도식화) [스크립트 작성] ↓ [실행 권한 부여: chmod +x] ↓ [실행 방식] ├─ ./script.sh → 서브 셸 (권장) ├─ bash script.sh → 명시적 실행 └─ source script.sh → 현재 셸 (환경 반영) [확장] ├─ ~/bin 등록 → PATH로 어디서든 실행 └─ SSH 키 → 서버 자동 접속 스크립트화 🔍 실전 시나리오 연결 상황 활용 예 디렉터리 정리 자동화 로그/임시 파일 삭제 스크립트 환경 설정 일괄 적용 source ~/env.sh → 변수 한 번에 적용 다중 서버 접속 SSH 키 기반 루프 스크립트로 순차 로그인 PATH 설정 자주 쓰는 스크립트를 ~/bin에 넣고 등록 💡 실전 팁 모음 #!/usr/bin/env bash → OS 이식성 확보 chmod +x 필수 → ./ 실행 시 source는 현재 셸 변경 가능 → 주의 필요 PATH 등록 후에는 셸 재시작 또는 source ~/.bashrc 🛠️ MLOps 연결 요약 요소 활용 예시 실험 디렉터리 초기화 clean_experiment.sh로 자동 정리 학습 환경 구성 source mlops_env.sh → 환경 변수 자동 적용 모델 서버 자동 배포 deploy.sh + SSH 키로 무중단 배포 서버 상태 수집 check_resources.sh로 메모리/디스크 확인 자동화 ❗ 자주 헷갈리는 포인트 오해 실제 의미 #!/bin/bash만 써야 한다 #!/usr/bin/env bash가 더 유연하고 이식성 있음 source는 항상 편리하다 현재 셸에 직접 영향, 실수 시 복구 어려움 chmod +x 없이 실행 가능 bash script.sh는 가능하나 ./은 불가 PATH 등록 = 즉시 실행 셸 재시작 or source ~/.bashrc 필요 🏁 마무리 셸 스크립트는 MLOps 자동화의 첫 도구이며,\n","keywords":[],"articleBody":"📌 핵심 개념 요약 셸 스크립트는 반복되는 명령어를 자동화하는\n가장 기본이자 강력한 도구\n🧠 결정적 지식 요약 개념 설명 셸 스크립트 명령어를 파일로 저장해 실행 (.sh) 실행 방법 chmod +x 후 ./script.sh 또는 bash script.sh source 실행 현재 셸에서 실행 → 환경 변수 유지됨 PATH 등록 ~/bin 등 등록 시 어느 위치에서든 실행 가능 SSH 키 인증 비밀번호 없이 자동 접속 → 스크립트 자동화 필수 구성 🖼️ 실행 흐름 요약 (도식화) [스크립트 작성] ↓ [실행 권한 부여: chmod +x] ↓ [실행 방식] ├─ ./script.sh → 서브 셸 (권장) ├─ bash script.sh → 명시적 실행 └─ source script.sh → 현재 셸 (환경 반영) [확장] ├─ ~/bin 등록 → PATH로 어디서든 실행 └─ SSH 키 → 서버 자동 접속 스크립트화 🔍 실전 시나리오 연결 상황 활용 예 디렉터리 정리 자동화 로그/임시 파일 삭제 스크립트 환경 설정 일괄 적용 source ~/env.sh → 변수 한 번에 적용 다중 서버 접속 SSH 키 기반 루프 스크립트로 순차 로그인 PATH 설정 자주 쓰는 스크립트를 ~/bin에 넣고 등록 💡 실전 팁 모음 #!/usr/bin/env bash → OS 이식성 확보 chmod +x 필수 → ./ 실행 시 source는 현재 셸 변경 가능 → 주의 필요 PATH 등록 후에는 셸 재시작 또는 source ~/.bashrc 🛠️ MLOps 연결 요약 요소 활용 예시 실험 디렉터리 초기화 clean_experiment.sh로 자동 정리 학습 환경 구성 source mlops_env.sh → 환경 변수 자동 적용 모델 서버 자동 배포 deploy.sh + SSH 키로 무중단 배포 서버 상태 수집 check_resources.sh로 메모리/디스크 확인 자동화 ❗ 자주 헷갈리는 포인트 오해 실제 의미 #!/bin/bash만 써야 한다 #!/usr/bin/env bash가 더 유연하고 이식성 있음 source는 항상 편리하다 현재 셸에 직접 영향, 실수 시 복구 어려움 chmod +x 없이 실행 가능 bash script.sh는 가능하나 ./은 불가 PATH 등록 = 즉시 실행 셸 재시작 or source ~/.bashrc 필요 🏁 마무리 셸 스크립트는 MLOps 자동화의 첫 도구이며,\n습관적으로 작성하고 활용하면 속도가 빨라진다.\n","wordCount":"295","inLanguage":"en","datePublished":"2025-04-21T20:23:56+09:00","dateModified":"2025-04-21T20:23:56+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/14/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[리눅스] 14장. 셸 스크립트 작성</h1><div class=post-meta><span title='2025-04-21 20:23:56 +0900 +0900'>April 21, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h3 id=-핵심-개념-요약>📌 핵심 개념 요약<a hidden class=anchor aria-hidden=true href=#-핵심-개념-요약>#</a></h3><blockquote><p>셸 스크립트는 반복되는 명령어를 자동화하는</p><p>가장 기본이자 강력한 도구</p></blockquote><hr><h3 id=-결정적-지식-요약>🧠 결정적 지식 요약<a hidden class=anchor aria-hidden=true href=#-결정적-지식-요약>#</a></h3><table><thead><tr><th>개념</th><th>설명</th></tr></thead><tbody><tr><td><strong>셸 스크립트</strong></td><td>명령어를 파일로 저장해 실행 (<code>.sh</code>)</td></tr><tr><td><strong>실행 방법</strong></td><td><code>chmod +x</code> 후 <code>./script.sh</code> 또는 <code>bash script.sh</code></td></tr><tr><td><strong>source 실행</strong></td><td>현재 셸에서 실행 → 환경 변수 유지됨</td></tr><tr><td><strong>PATH 등록</strong></td><td><code>~/bin</code> 등 등록 시 어느 위치에서든 실행 가능</td></tr><tr><td><strong>SSH 키 인증</strong></td><td>비밀번호 없이 자동 접속 → 스크립트 자동화 필수 구성</td></tr></tbody></table><hr><h3 id=-실행-흐름-요약-도식화>🖼️ 실행 흐름 요약 (도식화)<a hidden class=anchor aria-hidden=true href=#-실행-흐름-요약-도식화>#</a></h3><pre tabindex=0><code>[스크립트 작성]
+   ↓
+[실행 권한 부여: chmod +x]
+   ↓
+[실행 방식]
+   ├─ ./script.sh → 서브 셸 (권장)
+   ├─ bash script.sh → 명시적 실행
+   └─ source script.sh → 현재 셸 (환경 반영)
+
+[확장]
+   ├─ ~/bin 등록 → PATH로 어디서든 실행
+   └─ SSH 키 → 서버 자동 접속 스크립트화
+</code></pre><hr><h3 id=-실전-시나리오-연결>🔍 실전 시나리오 연결<a hidden class=anchor aria-hidden=true href=#-실전-시나리오-연결>#</a></h3><table><thead><tr><th>상황</th><th>활용 예</th></tr></thead><tbody><tr><td><strong>디렉터리 정리 자동화</strong></td><td>로그/임시 파일 삭제 스크립트</td></tr><tr><td><strong>환경 설정 일괄 적용</strong></td><td><code>source ~/env.sh</code> → 변수 한 번에 적용</td></tr><tr><td><strong>다중 서버 접속</strong></td><td>SSH 키 기반 루프 스크립트로 순차 로그인</td></tr><tr><td><strong>PATH 설정</strong></td><td>자주 쓰는 스크립트를 <code>~/bin</code>에 넣고 등록</td></tr></tbody></table><hr><h3 id=-실전-팁-모음>💡 실전 팁 모음<a hidden class=anchor aria-hidden=true href=#-실전-팁-모음>#</a></h3><ul><li><code>#!/usr/bin/env bash</code> → OS 이식성 확보</li><li><code>chmod +x</code> 필수 → <code>./</code> 실행 시</li><li><code>source</code>는 현재 셸 변경 가능 → <strong>주의 필요</strong></li><li>PATH 등록 후에는 셸 재시작 또는 <code>source ~/.bashrc</code></li></ul><hr><h3 id=-mlops-연결-요약>🛠️ MLOps 연결 요약<a hidden class=anchor aria-hidden=true href=#-mlops-연결-요약>#</a></h3><table><thead><tr><th>요소</th><th>활용 예시</th></tr></thead><tbody><tr><td><strong>실험 디렉터리 초기화</strong></td><td><code>clean_experiment.sh</code>로 자동 정리</td></tr><tr><td><strong>학습 환경 구성</strong></td><td><code>source mlops_env.sh</code> → 환경 변수 자동 적용</td></tr><tr><td><strong>모델 서버 자동 배포</strong></td><td><code>deploy.sh</code> + SSH 키로 무중단 배포</td></tr><tr><td><strong>서버 상태 수집</strong></td><td><code>check_resources.sh</code>로 메모리/디스크 확인 자동화</td></tr></tbody></table><hr><h3 id=-자주-헷갈리는-포인트>❗ 자주 헷갈리는 포인트<a hidden class=anchor aria-hidden=true href=#-자주-헷갈리는-포인트>#</a></h3><table><thead><tr><th>오해</th><th>실제 의미</th></tr></thead><tbody><tr><td><code>#!/bin/bash</code>만 써야 한다</td><td><code>#!/usr/bin/env bash</code>가 더 유연하고 이식성 있음</td></tr><tr><td><code>source</code>는 항상 편리하다</td><td><strong>현재 셸에 직접 영향</strong>, 실수 시 복구 어려움</td></tr><tr><td><code>chmod +x</code> 없이 실행 가능</td><td><code>bash script.sh</code>는 가능하나 <code>./</code>은 불가</td></tr><tr><td>PATH 등록 = 즉시 실행</td><td>셸 재시작 or <code>source ~/.bashrc</code> 필요</td></tr></tbody></table><hr><h3 id=-마무리>🏁 마무리<a hidden class=anchor aria-hidden=true href=#-마무리>#</a></h3><blockquote><p>셸 스크립트는 MLOps 자동화의 첫 도구이며,</p><p>습관적으로 작성하고 활용하면 속도가 빨라진다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/linux/15/><span class=title>« Prev</span><br><span>[리눅스] 15장. 셸 스크립트 기초</span>
+</a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/linux/13/><span class=title>Next »</span><br><span>[리눅스] 13장. 고급 텍스트 처리</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

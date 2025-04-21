@@ -1,4 +1,287 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 18 Apr 2025 16:36:39 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 13장. 고급 텍스트 처리</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/13/</link><pubDate>Fri, 18 Apr 2025 16:36:39 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/13/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 21 Apr 2025 20:23:58 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 15장. 셸 스크립트 기초</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/15/</link><pubDate>Mon, 21 Apr 2025 20:23:58 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/15/</guid><description>&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>핵심 요약&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>스크립트 구조&lt;/strong>&lt;/td>
+&lt;td>명령어 나열 + 흐름 제어 (&lt;code>if&lt;/code>, &lt;code>for&lt;/code>, &lt;code>case&lt;/code>)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>변수&lt;/strong>&lt;/td>
+&lt;td>&lt;code>name=값&lt;/code>, &lt;code>&amp;quot;${var}&amp;quot;&lt;/code>, &lt;code>${var:-기본값}&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>인자 처리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>$1&lt;/code>, &lt;code>$#&lt;/code>, &lt;code>&amp;quot;$@&amp;quot;&lt;/code>, &lt;code>getopts&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>조건문&lt;/strong>&lt;/td>
+&lt;td>&lt;code>[[ 조건 ]]&lt;/code> 권장 (&lt;code>==&lt;/code>, &lt;code>&amp;amp;&amp;amp;&lt;/code>, &lt;code>=~&lt;/code>, &lt;code>-n&lt;/code>, &lt;code>-z&lt;/code> 등 지원)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>고급 문법&lt;/strong>&lt;/td>
+&lt;td>&lt;code>trap&lt;/code>, &lt;code>IFS&lt;/code>, &lt;code>while read&lt;/code>, 산술 for문 등&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실행-흐름-도식화">🖼️ 실행 흐름 도식화&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[스크립트 기본 실행 구조]
+입력 인자 → 변수 저장 → 조건문/반복문 실행 → 출력 or 파일 처리 → 종료 시 cleanup(trap)
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실전-흐름-예시">🔍 실전 흐름 예시&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>스크립트 흐름 요약&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>인자 부족 시 종료&lt;/strong>&lt;/td>
+&lt;td>&lt;code>[ &amp;quot;$#&amp;quot; -lt 1 ] → echo 사용법 → exit 1&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>로그 자동 백업&lt;/strong>&lt;/td>
+&lt;td>&lt;code>cp log.txt log_$(date +%F_%H%M).bak&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>CLI 옵션 처리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>getopts&lt;/code>로 &lt;code>-e&lt;/code>, &lt;code>-l&lt;/code> 등 파라미터 받기&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>비정상 종료 처리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>trap &amp;quot;정리작업&amp;quot; EXIT&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>CSV 반복 처리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>while IFS=',' read ... done &amp;lt; file.csv&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-체크리스트">✅ 실전 체크리스트&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>#!/usr/bin/env bash&lt;/code> 사용 여부 ✅&lt;/li>
+&lt;li>인자 유효성 검사 (&lt;code>$#&lt;/code>, &lt;code>$1&lt;/code>) ✅&lt;/li>
+&lt;li>&lt;code>[[ ]]&lt;/code>로 조건문 통일 ✅&lt;/li>
+&lt;li>쿼팅 필수: &lt;code>&amp;quot;${var}&amp;quot;&lt;/code>, &lt;code>&amp;quot;$@&amp;quot;&lt;/code> ✅&lt;/li>
+&lt;li>&lt;code>trap&lt;/code>, &lt;code>getopts&lt;/code>, &lt;code>IFS&lt;/code> 사용 경험 ✅&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-실수-방지-포인트">⚠️ 실수 방지 포인트&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>주의 설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>&amp;quot;${@}&amp;quot;&lt;/code> vs &lt;code>&amp;quot;${*}&amp;quot;&lt;/code>&lt;/td>
+&lt;td>&lt;code>&amp;quot;${@}&amp;quot;&lt;/code>는 각 인자 개별 처리 (정확한 전달)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>[[ ... ]]&lt;/code> 추천 이유&lt;/td>
+&lt;td>&lt;code>=~&lt;/code>, &lt;code>&amp;amp;&amp;amp;&lt;/code>, `&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>trap&lt;/code> 미사용 시 문제&lt;/td>
+&lt;td>임시 파일/세션 정리 누락 가능성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>getopts&lt;/code> 한계&lt;/td>
+&lt;td>&lt;code>--long-option&lt;/code> 지원 안 됨 → 직접 파싱 필요&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-mlops-실전-연결">🛠️ MLOps 실전 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>시나리오&lt;/th>
+&lt;th>적용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>학습 파라미터 전달&lt;/strong>&lt;/td>
+&lt;td>&lt;code>./train.sh -e 50 -l 0.001&lt;/code> → &lt;code>getopts&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>로그 백업&lt;/strong>&lt;/td>
+&lt;td>&lt;code>mv log.txt log_$(date +%F_%H%M).txt&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>임시 파일 정리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>trap &amp;quot;rm -f /tmp/*.log&amp;quot; EXIT&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>대량 CSV 처리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>for file in data/*.csv; do ... done&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>오류 요약 출력&lt;/strong>&lt;/td>
+&lt;td>&lt;code>grep ERROR train.log &amp;gt; error.log&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>셸 스크립트는 실무의 반복작업을 자동화하고,&lt;/p></description></item><item><title>[리눅스] 14장. 셸 스크립트 작성</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/14/</link><pubDate>Mon, 21 Apr 2025 20:23:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/14/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>셸 스크립트는 반복되는 명령어를 자동화하는&lt;/p>
+&lt;p>가장 기본이자 강력한 도구&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>셸 스크립트&lt;/strong>&lt;/td>
+&lt;td>명령어를 파일로 저장해 실행 (&lt;code>.sh&lt;/code>)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>실행 방법&lt;/strong>&lt;/td>
+&lt;td>&lt;code>chmod +x&lt;/code> 후 &lt;code>./script.sh&lt;/code> 또는 &lt;code>bash script.sh&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>source 실행&lt;/strong>&lt;/td>
+&lt;td>현재 셸에서 실행 → 환경 변수 유지됨&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>PATH 등록&lt;/strong>&lt;/td>
+&lt;td>&lt;code>~/bin&lt;/code> 등 등록 시 어느 위치에서든 실행 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>SSH 키 인증&lt;/strong>&lt;/td>
+&lt;td>비밀번호 없이 자동 접속 → 스크립트 자동화 필수 구성&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실행-흐름-요약-도식화">🖼️ 실행 흐름 요약 (도식화)&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[스크립트 작성]
+↓
+[실행 권한 부여: chmod +x]
+↓
+[실행 방식]
+├─ ./script.sh → 서브 셸 (권장)
+├─ bash script.sh → 명시적 실행
+└─ source script.sh → 현재 셸 (환경 반영)
+[확장]
+├─ ~/bin 등록 → PATH로 어디서든 실행
+└─ SSH 키 → 서버 자동 접속 스크립트화
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실전-시나리오-연결">🔍 실전 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>활용 예&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>디렉터리 정리 자동화&lt;/strong>&lt;/td>
+&lt;td>로그/임시 파일 삭제 스크립트&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>환경 설정 일괄 적용&lt;/strong>&lt;/td>
+&lt;td>&lt;code>source ~/env.sh&lt;/code> → 변수 한 번에 적용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>다중 서버 접속&lt;/strong>&lt;/td>
+&lt;td>SSH 키 기반 루프 스크립트로 순차 로그인&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>PATH 설정&lt;/strong>&lt;/td>
+&lt;td>자주 쓰는 스크립트를 &lt;code>~/bin&lt;/code>에 넣고 등록&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>#!/usr/bin/env bash&lt;/code> → OS 이식성 확보&lt;/li>
+&lt;li>&lt;code>chmod +x&lt;/code> 필수 → &lt;code>./&lt;/code> 실행 시&lt;/li>
+&lt;li>&lt;code>source&lt;/code>는 현재 셸 변경 가능 → &lt;strong>주의 필요&lt;/strong>&lt;/li>
+&lt;li>PATH 등록 후에는 셸 재시작 또는 &lt;code>source ~/.bashrc&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🛠️ MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>요소&lt;/th>
+&lt;th>활용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>실험 디렉터리 초기화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>clean_experiment.sh&lt;/code>로 자동 정리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>학습 환경 구성&lt;/strong>&lt;/td>
+&lt;td>&lt;code>source mlops_env.sh&lt;/code> → 환경 변수 자동 적용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 서버 자동 배포&lt;/strong>&lt;/td>
+&lt;td>&lt;code>deploy.sh&lt;/code> + SSH 키로 무중단 배포&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>서버 상태 수집&lt;/strong>&lt;/td>
+&lt;td>&lt;code>check_resources.sh&lt;/code>로 메모리/디스크 확인 자동화&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-자주-헷갈리는-포인트">❗ 자주 헷갈리는 포인트&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>오해&lt;/th>
+&lt;th>실제 의미&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>#!/bin/bash&lt;/code>만 써야 한다&lt;/td>
+&lt;td>&lt;code>#!/usr/bin/env bash&lt;/code>가 더 유연하고 이식성 있음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>source&lt;/code>는 항상 편리하다&lt;/td>
+&lt;td>&lt;strong>현재 셸에 직접 영향&lt;/strong>, 실수 시 복구 어려움&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>chmod +x&lt;/code> 없이 실행 가능&lt;/td>
+&lt;td>&lt;code>bash script.sh&lt;/code>는 가능하나 &lt;code>./&lt;/code>은 불가&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PATH 등록 = 즉시 실행&lt;/td>
+&lt;td>셸 재시작 or &lt;code>source ~/.bashrc&lt;/code> 필요&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>셸 스크립트는 MLOps 자동화의 첫 도구이며,&lt;/p></description></item><item><title>[리눅스] 13장. 고급 텍스트 처리</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/13/</link><pubDate>Fri, 18 Apr 2025 16:36:39 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/13/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
 &lt;blockquote>
 &lt;p>sed와 awk는 리눅스 텍스트 처리의 양대 도구&lt;/p>
 &lt;p>로그 분석, 전처리 자동화, 필드 연산 등에서 강력하게 활용된다.&lt;/p>&lt;/blockquote>
