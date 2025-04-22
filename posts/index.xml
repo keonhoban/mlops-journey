@@ -1,4 +1,372 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 21 Apr 2025 20:23:58 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 15장. 셸 스크립트 기초</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/15/</link><pubDate>Mon, 21 Apr 2025 20:23:58 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/15/</guid><description>&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 22 Apr 2025 18:37:50 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 17장. 아카이브와 압축</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/17/</link><pubDate>Tue, 22 Apr 2025 18:37:50 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/17/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>아카이브 = 묶기&lt;/p>
+&lt;p>&lt;strong>압축 = 용량 줄이기&lt;/strong>&lt;/p>
+&lt;p>리눅스에서는 보통 &lt;code>tar + gzip&lt;/code> 같이 &lt;strong>조합해서 사용&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>tar&lt;/strong>&lt;/td>
+&lt;td>여러 파일/디렉터리 &lt;strong>하나로 묶는 도구&lt;/strong> (속성 보존)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>gzip/bzip2/xz/zstd&lt;/strong>&lt;/td>
+&lt;td>용량 줄이는 &lt;strong>압축 도구들&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>zip&lt;/strong>&lt;/td>
+&lt;td>아카이브 + 압축 + 암호화까지 한 번에 (Windows 친화적)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>tar.gz&lt;/strong>&lt;/td>
+&lt;td>가장 일반적인 &lt;strong>리눅스용 백업/배포 형식&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-흐름도-시각화">🖼️ 흐름도 시각화&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[아카이브 &amp;amp; 압축 흐름]
+📁 파일들
+↓
+tar → archive.tar
+↓
+gzip / bzip2 / zstd → archive.tar.gz, .bz2, .zst
+or
+zip → archive.zip
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-연결">🔍 실무 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>목적&lt;/th>
+&lt;th>명령어&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 디렉터리 백업&lt;/td>
+&lt;td>&lt;code>tar czf model.tar.gz /opt/ml/&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>로그 압축&lt;/td>
+&lt;td>&lt;code>gzip /var/log/mlflow.log&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>고압축 백업&lt;/td>
+&lt;td>&lt;code>tar -I zstd -cf model.tar.zst model/&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>압축 후 무결성 확인&lt;/td>
+&lt;td>&lt;code>sha256sum model.tar.zst &amp;gt; model.tar.zst.sha256&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>암호화 필요 시&lt;/td>
+&lt;td>&lt;code>gpg -c model.tar.zst&lt;/code> → &lt;code>.gpg&lt;/code> 생성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ZIP 패키징 (호환성↑)&lt;/td>
+&lt;td>&lt;code>zip -r model.zip model/ config/&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-압축-전략-요약">💡 실전 압축 전략 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>추천 방식&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>속도 &amp;amp; 압축률 밸런스&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tar + zstd&lt;/code> (실무 최적)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>이식성 &amp;amp; 단일 파일 전송&lt;/strong>&lt;/td>
+&lt;td>&lt;code>zip&lt;/code>, &lt;code>tar.gz&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>보안 전송&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tar + gpg&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>단일 파일 압축&lt;/strong>&lt;/td>
+&lt;td>&lt;code>gzip&lt;/code>, &lt;code>bzip2&lt;/code>, &lt;code>xz&lt;/code> (속도·압축률 선택)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-체크리스트">✅ 실전 체크리스트&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>tar czf&lt;/code> = &lt;strong>묶기(c) + 압축(z) + 파일(f)&lt;/strong>&lt;/li>
+&lt;li>&lt;code>gzip&lt;/code>, &lt;code>bzip2&lt;/code>는 &lt;strong>단일 파일 전용&lt;/strong> → &lt;code>tar&lt;/code>과 함께 써야 디렉터리 가능&lt;/li>
+&lt;li>&lt;code>zstd&lt;/code>는 &lt;strong>속도·압축률 모두 우수&lt;/strong> → 최근 실무에서 각광&lt;/li>
+&lt;li>&lt;code>sha256sum&lt;/code>, &lt;code>gpg&lt;/code>는 &lt;strong>무결성 + 보안 확보&lt;/strong>용&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-헷갈리기-쉬운-포인트">⚠️ 헷갈리기 쉬운 포인트&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>오해&lt;/th>
+&lt;th>실제 의미&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>gzip&lt;/code>만으로 디렉터리 압축 가능&lt;/td>
+&lt;td>❌ &lt;code>tar&lt;/code>로 묶어야 압축 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>zip&lt;/code>이 무조건 좋다&lt;/td>
+&lt;td>❌ Linux에서는 &lt;code>tar.gz&lt;/code>가 더 적합함&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>압축이 항상 빠르다&lt;/td>
+&lt;td>❌ CPU 리소스 많이 씀, 전송 속도와 트레이드오프 필요&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🛠️ MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>활용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>모델 백업 &amp;amp; 배포&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tar czf model.tar.gz&lt;/code> → S3 업로드&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>로그 정리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>gzip&lt;/code>, &lt;code>cron&lt;/code>으로 주기적 압축&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>실험 결과 패키징&lt;/strong>&lt;/td>
+&lt;td>&lt;code>zip -r results.zip result.csv params.yaml&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>보안 데이터 암호화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tar&lt;/code> + &lt;code>gpg&lt;/code> 조합&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>버전 관리 연동&lt;/strong>&lt;/td>
+&lt;td>&lt;code>tar czf model_v1.2.tar.gz&lt;/code> + Git tag로 연결&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>tar는 묶고, gzip/zstd는 줄인다.&lt;/p></description></item><item><title>[리눅스] 16장. 셸 스크립트 활용</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/16/</link><pubDate>Tue, 22 Apr 2025 18:37:48 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/16/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>반복되는 작업을 자동화하고, 예외 상황에서도 안정적이고 빠르게 처리할 수 있는 경량화된 자동화 도구&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>주요 기능&lt;/strong>&lt;/td>
+&lt;td>파일 처리, 로그 분석, 인자 제어, 오류 감지 및 정리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>성능 개선 팁&lt;/strong>&lt;/td>
+&lt;td>&lt;code>egrep&lt;/code>, &lt;code>awk&lt;/code>, &lt;code>xargs -0&lt;/code>, &lt;code>trap&lt;/code> 등 실전 활용 명령어 중심&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>스크립트 안정화 요소&lt;/strong>&lt;/td>
+&lt;td>&lt;code>usage 함수&lt;/code>, &lt;code>local&lt;/code>, &lt;code>IFS&lt;/code>, &lt;code>set -euo pipefail&lt;/code>, &lt;code>trap&lt;/code> 활용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>공백 파일 안전 처리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>IFS=$'\n'&lt;/code>, `find -print0&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-도구-비교-요약">🧪 도구 비교 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>작업&lt;/th>
+&lt;th>추천 도구&lt;/th>
+&lt;th>이유&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>여러 단어 포함된 줄 필터링&lt;/td>
+&lt;td>&lt;code>egrep&lt;/code>&lt;/td>
+&lt;td>가장 빠름. 단순 검색 최적&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조건 + 계산 or 포맷&lt;/td>
+&lt;td>&lt;code>awk&lt;/code>&lt;/td>
+&lt;td>필터링 + 후처리까지 한 번에&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>안전한 파일 루프&lt;/td>
+&lt;td>&lt;code>find -print0&lt;/code> + &lt;code>xargs -0&lt;/code>&lt;/td>
+&lt;td>공백 포함 파일 안전 처리&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-스크립트-구조-흐름">🖼️ 스크립트 구조 흐름&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[기본 구조]
+1. 인자 검사: usage 안내
+2. 핵심 함수: 변수는 local
+3. 파일 처리: find + xargs + grep/awk
+4. 에러 출력: 1&amp;gt;&amp;amp;2
+5. 종료 처리: trap &amp;#39;cleanup&amp;#39; EXIT
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>요약&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>local&lt;/code>&lt;/td>
+&lt;td>함수 내 변수 범위 제한&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>trap&lt;/code>&lt;/td>
+&lt;td>종료 시 임시 파일/자원 정리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>IFS=$'\n'&lt;/code>&lt;/td>
+&lt;td>줄바꿈만 기준 → 공백 포함 파일 처리 안전&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>rm -rf &amp;quot;${DIR:?}/*&amp;quot;&lt;/code>&lt;/td>
+&lt;td>&lt;code>:?&lt;/code>로 빈 변수 삭제 방지&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>read -r -d ''&lt;/code>&lt;/td>
+&lt;td>null 문자 기준 루프 (safe loop)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실무-예시-요약">🔧 실무 예시 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>스크립트&lt;/th>
+&lt;th>역할&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>diary.sh&lt;/code>&lt;/td>
+&lt;td>날짜별 일기 자동 생성 + 열기&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>tree.sh&lt;/code>&lt;/td>
+&lt;td>디렉터리 트리 구조 출력&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>findgrep.sh&lt;/code>&lt;/td>
+&lt;td>키워드 검색 + 에러 출력 분리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>deploy.sh&lt;/code>&lt;/td>
+&lt;td>인자 기반 배포 스크립트 (with usage, trap)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-mlops-실전-연결">🛠️ MLOps 실전 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>스크립트 활용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>학습 자동화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>train.sh --epochs 100&lt;/code> 구조로 CLI 설계&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>로그 분석&lt;/strong>&lt;/td>
+&lt;td>&lt;code>awk '/error/{print NR&amp;quot;: &amp;quot;$0}' log.txt&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>서버 초기화&lt;/strong>&lt;/td>
+&lt;td>&lt;code>trap&lt;/code> 활용하여 &lt;code>/opt/ml&lt;/code> 정리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>CSV 필터링&lt;/strong>&lt;/td>
+&lt;td>&lt;code>while IFS=, read&lt;/code> → 메타데이터 추출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>배포 파이프라인&lt;/strong>&lt;/td>
+&lt;td>&lt;code>deploy.sh -e staging -v v1.2&lt;/code> 식으로 확장&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-오해-방지">⚠️ 오해 방지&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>주의 사항&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>$(ls)&lt;/code>&lt;/td>
+&lt;td>공백/개행 포함 시 오류 위험&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>grep&lt;/code> 반복&lt;/td>
+&lt;td>프로세스 다수 → 느림&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>trap&lt;/code> 생략&lt;/td>
+&lt;td>Ctrl+C 종료 시 자원 누수&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>getopts&lt;/code>&lt;/td>
+&lt;td>긴 옵션 (&lt;code>--long-option&lt;/code>) 직접 파싱 필요&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>셸 스크립트는 작지만 강력한 자동화 도구다.&lt;/p></description></item><item><title>[리눅스] 15장. 셸 스크립트 기초</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/15/</link><pubDate>Mon, 21 Apr 2025 20:23:58 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/15/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>셸 스크립트는 명령어 자동화 도구이자,&lt;/p>
+&lt;p>실전에서는 &amp;ldquo;작고 빠른 자동화 엔진&amp;rdquo; 역할&lt;/p>&lt;/blockquote>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
 &lt;table>
 &lt;thead>
 &lt;tr>
