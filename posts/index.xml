@@ -1,4 +1,316 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 22 Apr 2025 18:37:50 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 17장. 아카이브와 압축</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/17/</link><pubDate>Tue, 22 Apr 2025 18:37:50 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/17/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 23 Apr 2025 15:46:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[리눅스] 19장. 소프트웨어 패키지 관리</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/19/</link><pubDate>Wed, 23 Apr 2025 15:46:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/19/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>리눅스에서 소프트웨어 설치/삭제는&lt;/p>
+&lt;p>&lt;strong>패키지 관리자(apt, yum)&lt;/strong> 를 통해 수행되며,&lt;/p>
+&lt;p>Docker 환경에서는 &lt;strong>정리/최적화가 필수&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>개념&lt;/th>
+&lt;th>요약 설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>패키지&lt;/strong>&lt;/td>
+&lt;td>실행 파일 + 설정 + 설명서 포함된 SW 묶음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>리포지터리&lt;/strong>&lt;/td>
+&lt;td>패키지를 저장해둔 서버 공간 (공식/서드파티/내부)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>포맷&lt;/strong>&lt;/td>
+&lt;td>&lt;code>.deb&lt;/code> (Debian/Ubuntu), &lt;code>.rpm&lt;/code> (RHEL/CentOS)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>패키지 관리자&lt;/strong>&lt;/td>
+&lt;td>&lt;code>apt&lt;/code>(Debian), &lt;code>yum/dnf&lt;/code>(RHEL)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>삭제 옵션&lt;/strong>&lt;/td>
+&lt;td>&lt;code>apt remove&lt;/code>(설정 유지), &lt;code>apt purge&lt;/code>(완전 삭제)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>자동 의존성&lt;/strong>&lt;/td>
+&lt;td>대부분 자동 해결 (&lt;code>apt&lt;/code>, &lt;code>yum&lt;/code> 모두 지원)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-설치-흐름-도식-우분투-기준">🖼️ 설치 흐름 도식 (우분투 기준)&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[패키지 설치 흐름]
+apt update # 목록 갱신
+apt install nginx # 설치 (의존성 포함)
+apt remove nginx # 제거
+apt purge nginx # 완전 삭제
+apt autoremove # 불필요한 의존성 정리
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실무-시나리오-연결">🔍 실무 시나리오 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>명령어 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 서버 세팅&lt;/td>
+&lt;td>&lt;code>apt install nginx curl jq&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>성능 모니터링 도구&lt;/td>
+&lt;td>&lt;code>yum install htop&lt;/code> or &lt;code>apt install glances&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>의존성 확인&lt;/td>
+&lt;td>&lt;code>apt-cache depends curl&lt;/code> / &lt;code>yum deplist curl&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>서드파티 추가&lt;/td>
+&lt;td>&lt;code>add-apt-repository ppa:deadsnakes/ppa&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>패키지 삭제&lt;/td>
+&lt;td>&lt;code>apt purge&lt;/code>, &lt;code>yum remove&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-dockerfile-최적화-예시">📦 Dockerfile 최적화 예시&lt;/h3>
+&lt;h3 id="-나쁜-예시">❌ 나쁜 예시&lt;/h3>
+&lt;pre tabindex="0">&lt;code>RUN apt update
+RUN apt install -y python3
+RUN apt install -y pip
+&lt;/code>&lt;/pre>&lt;ul>
+&lt;li>레이어 증가 → 캐시 문제 발생&lt;/li>
+&lt;li>용량 증가&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-좋은-예시">✅ 좋은 예시&lt;/h3>
+&lt;pre tabindex="0">&lt;code>RUN apt update &amp;amp;&amp;amp; \
+apt install -y python3 pip &amp;amp;&amp;amp; \
+apt-get clean &amp;amp;&amp;amp; \
+rm -rf /var/lib/apt/lists/*
+&lt;/code>&lt;/pre>&lt;ul>
+&lt;li>1 레이어&lt;/li>
+&lt;li>용량 최소화&lt;/li>
+&lt;li>캐시 정리 완료&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>apt-get update&lt;/code>는 항상 &lt;code>install&lt;/code> 직전에 한 번만&lt;/li>
+&lt;li>설치 후 &lt;code>clean + rm&lt;/code>으로 캐시 정리 → Docker 이미지 최적화&lt;/li>
+&lt;li>수동 설치한 바이너리는 &lt;code>apt remove&lt;/code>로 제거 불가&lt;/li>
+&lt;li>리포지토리 속도 느릴 경우 → &lt;code>/etc/apt/sources.list&lt;/code> 미러 확인&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-실전-연결">🛠️ MLOps 실전 연결&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>작업&lt;/th>
+&lt;th>활용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 배포&lt;/td>
+&lt;td>&lt;code>apt install nginx curl jq unzip&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>자동화 스크립트&lt;/td>
+&lt;td>&lt;code>apt install -y&lt;/code> → 사용자 입력 없이 설치 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Docker 이미지&lt;/td>
+&lt;td>&lt;code>RUN apt update &amp;amp;&amp;amp; apt install&lt;/code> 한 줄로 구성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>CI/CD 환경 설정&lt;/td>
+&lt;td>공통 패키지 설치 → 테스트 환경 표준화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>서버 모니터링&lt;/td>
+&lt;td>&lt;code>htop&lt;/code>, &lt;code>glances&lt;/code>, &lt;code>nmon&lt;/code> 등 설치하여 운영 가시성 확보&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-자주-헷갈리는-포인트">❗ 자주 헷갈리는 포인트&lt;/h3>
+&lt;ul>
+&lt;li>Dockerfile 내에서는 반드시 &lt;code>update + install&lt;/code>을 &lt;strong>한 줄&lt;/strong>로 작성&lt;/li>
+&lt;li>&lt;code>apt purge&lt;/code>만이 설정 파일까지 &lt;strong>완전 삭제&lt;/strong>&lt;/li>
+&lt;li>&lt;code>.tar.gz&lt;/code>, &lt;code>wget&lt;/code> 등으로 설치한 수동 패키지는 패키지 관리 도구로 &lt;strong>삭제 불가&lt;/strong>&lt;/li>
+&lt;li>&lt;code>yum&lt;/code>은 &lt;code>epel-release&lt;/code> 추가 후 다양한 패키지 설치 가능&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>패키지 관리자는 인프라 자동화의 핵심&lt;/p></description></item><item><title>[리눅스] 18장. 버전 관리 시스템</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/18/</link><pubDate>Wed, 23 Apr 2025 15:46:19 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/18/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
+&lt;blockquote>
+&lt;p>코드 / 데이터 / 모델 / 실험을 각각 버전 관리해야&lt;/p>
+&lt;p>&lt;strong>협업, 추적, 재현 가능성&lt;/strong>을 확보할 수 있다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-지식-요약">🧠 결정적 지식 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>도구&lt;/th>
+&lt;th>역할&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>Git&lt;/strong>&lt;/td>
+&lt;td>코드, 설정 파일 버전 관리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>DVC&lt;/strong>&lt;/td>
+&lt;td>대용량 데이터/모델 파일 추적&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>Git-LFS&lt;/strong>&lt;/td>
+&lt;td>Git이 추적 못하는 대용량 파일 관리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>MLflow&lt;/strong>&lt;/td>
+&lt;td>실험 기록, 모델 저장소, 배포 관리&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-핵심-흐름-구조">🖼️ 핵심 흐름 구조&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[Git + DVC + MLflow 실전 흐름]
+코드 변경 → Git commit
+↓
+데이터/모델 → DVC add → .dvc 파일만 Git에 commit
+↓
+실험 기록 → MLflow log, Git tag
+↓
+협업 → Git push + dvc push
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-실전-시나리오-예시">🔍 실전 시나리오 예시&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>작업&lt;/th>
+&lt;th>명령어 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>브랜치 생성&lt;/td>
+&lt;td>&lt;code>git checkout -b exp-v2&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>모델 추적&lt;/td>
+&lt;td>&lt;code>dvc add models/model.pkl&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>커밋 → 실험 기록&lt;/td>
+&lt;td>&lt;code>git commit&lt;/code> → &lt;code>mlflow run . -P param=val&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>공유&lt;/td>
+&lt;td>&lt;code>git push&lt;/code>, &lt;code>dvc push&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>롤백&lt;/td>
+&lt;td>&lt;code>git revert&lt;/code>, &lt;code>dvc checkout&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-팁-모음">💡 실전 팁 모음&lt;/h3>
+&lt;ul>
+&lt;li>&lt;code>.dvc&lt;/code>, 설정 파일만 Git에 commit → &lt;strong>데이터/모델은 DVC 전용&lt;/strong>&lt;/li>
+&lt;li>&lt;code>reset&lt;/code>은 강제 되돌림, &lt;code>revert&lt;/code>는 되돌리는 &lt;strong>기록을 남김&lt;/strong>&lt;/li>
+&lt;li>&lt;code>git diff --cached&lt;/code> → &lt;strong>commit 직전 상태 확인&lt;/strong>&lt;/li>
+&lt;li>실험마다 브랜치 만들면, 추적과 복원이 쉬움&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-mlops-연결-요약">🛠️ MLOps 연결 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>요소&lt;/th>
+&lt;th>적용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>코드 변경 추적&lt;/strong>&lt;/td>
+&lt;td>&lt;code>git diff&lt;/code>, &lt;code>git log&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>데이터 버전 관리&lt;/strong>&lt;/td>
+&lt;td>&lt;code>dvc add&lt;/code>, &lt;code>.dvc&lt;/code>로 추적&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>실험 기록 연동&lt;/strong>&lt;/td>
+&lt;td>MLflow run + Git tag로 버전 기록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>모델 공유&lt;/strong>&lt;/td>
+&lt;td>&lt;code>dvc push&lt;/code>, S3 remote로 연동&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>협업 정리&lt;/strong>&lt;/td>
+&lt;td>Git 브랜치 = 실험 단위 → 실험 병렬 관리 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-실전-흐름-예제">🧪 실전 흐름 예제&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 실험 브랜치&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git checkout -b exp-lr-0.01
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 모델 저장&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>python train.py --lr&lt;span style="color:#f92672">=&lt;/span>0.01
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>dvc add models/model_lr0.01.pkl
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Git 기록&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git add models/model_lr0.01.pkl.dvc
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git commit -m &lt;span style="color:#e6db74">&amp;#34;lr=0.01 실험 모델&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># MLflow 기록&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mlflow run . -P lr&lt;span style="color:#f92672">=&lt;/span>0.01
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 공유&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git push &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> dvc push
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-자주-헷갈리는-포인트">❗ 자주 헷갈리는 포인트&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>오해&lt;/th>
+&lt;th>진실&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Git만으로 모든 파일 관리 가능&lt;/td>
+&lt;td>❌ 모델/데이터는 DVC 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>reset&lt;/code>은 안전&lt;/td>
+&lt;td>❌ 공유 중이라면 &lt;code>revert&lt;/code> 사용 권장&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>revert&lt;/code>는 커밋 삭제&lt;/td>
+&lt;td>❌ 되돌리는 새 커밋을 생성함&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-마무리">🏁 마무리&lt;/h3>
+&lt;blockquote>
+&lt;p>Git은 코드/설정의 중심,&lt;/p></description></item><item><title>[리눅스] 17장. 아카이브와 압축</title><link>https://keonhoban.github.io/mlops-journey/posts/linux/17/</link><pubDate>Tue, 22 Apr 2025 18:37:50 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/linux/17/</guid><description>&lt;h3 id="-핵심-개념-요약">📌 핵심 개념 요약&lt;/h3>
 &lt;blockquote>
 &lt;p>아카이브 = 묶기&lt;/p>
 &lt;p>&lt;strong>압축 = 용량 줄이기&lt;/strong>&lt;/p>

@@ -1,0 +1,328 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[리눅스] 19장. 소프트웨어 패키지 관리 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="📌 핵심 개념 요약
+
+리눅스에서 소프트웨어 설치/삭제는
+패키지 관리자(apt, yum) 를 통해 수행되며,
+Docker 환경에서는 정리/최적화가 필수
+
+🧠 결정적 지식 요약
+
+  
+      
+          개념
+          요약 설명
+      
+  
+  
+      
+          패키지
+          실행 파일 + 설정 + 설명서 포함된 SW 묶음
+      
+      
+          리포지터리
+          패키지를 저장해둔 서버 공간 (공식/서드파티/내부)
+      
+      
+          포맷
+          .deb (Debian/Ubuntu), .rpm (RHEL/CentOS)
+      
+      
+          패키지 관리자
+          apt(Debian), yum/dnf(RHEL)
+      
+      
+          삭제 옵션
+          apt remove(설정 유지), apt purge(완전 삭제)
+      
+      
+          자동 의존성
+          대부분 자동 해결 (apt, yum 모두 지원)
+      
+  
+
+
+🖼️ 설치 흐름 도식 (우분투 기준)
+[패키지 설치 흐름]
+
+apt update              # 목록 갱신
+apt install nginx       # 설치 (의존성 포함)
+apt remove nginx        # 제거
+apt purge nginx         # 완전 삭제
+apt autoremove          # 불필요한 의존성 정리
+
+🔍 실무 시나리오 연결
+
+  
+      
+          상황
+          명령어 예시
+      
+  
+  
+      
+          모델 서버 세팅
+          apt install nginx curl jq
+      
+      
+          성능 모니터링 도구
+          yum install htop or apt install glances
+      
+      
+          의존성 확인
+          apt-cache depends curl / yum deplist curl
+      
+      
+          서드파티 추가
+          add-apt-repository ppa:deadsnakes/ppa
+      
+      
+          패키지 삭제
+          apt purge, yum remove
+      
+  
+
+
+📦 Dockerfile 최적화 예시
+❌ 나쁜 예시
+RUN apt update
+RUN apt install -y python3
+RUN apt install -y pip
+
+레이어 증가 → 캐시 문제 발생
+용량 증가
+
+
+✅ 좋은 예시
+RUN apt update && \
+    apt install -y python3 pip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+1 레이어
+용량 최소화
+캐시 정리 완료
+
+
+💡 실전 팁 모음
+
+apt-get update는 항상 install 직전에 한 번만
+설치 후 clean + rm으로 캐시 정리 → Docker 이미지 최적화
+수동 설치한 바이너리는 apt remove로 제거 불가
+리포지토리 속도 느릴 경우 → /etc/apt/sources.list 미러 확인
+
+
+🛠️ MLOps 실전 연결
+
+  
+      
+          작업
+          활용 예시
+      
+  
+  
+      
+          모델 배포
+          apt install nginx curl jq unzip
+      
+      
+          자동화 스크립트
+          apt install -y → 사용자 입력 없이 설치 가능
+      
+      
+          Docker 이미지
+          RUN apt update && apt install 한 줄로 구성
+      
+      
+          CI/CD 환경 설정
+          공통 패키지 설치 → 테스트 환경 표준화
+      
+      
+          서버 모니터링
+          htop, glances, nmon 등 설치하여 운영 가시성 확보
+      
+  
+
+
+❗ 자주 헷갈리는 포인트
+
+Dockerfile 내에서는 반드시 update + install을 한 줄로 작성
+apt purge만이 설정 파일까지 완전 삭제
+.tar.gz, wget 등으로 설치한 수동 패키지는 패키지 관리 도구로 삭제 불가
+yum은 epel-release 추가 후 다양한 패키지 설치 가능
+
+
+🏁 마무리
+
+패키지 관리자는 인프라 자동화의 핵심"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/linux/19/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/linux/19/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/linux/19/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[리눅스] 19장. 소프트웨어 패키지 관리"><meta property="og:description" content="📌 핵심 개념 요약 리눅스에서 소프트웨어 설치/삭제는
+패키지 관리자(apt, yum) 를 통해 수행되며,
+Docker 환경에서는 정리/최적화가 필수
+🧠 결정적 지식 요약 개념 요약 설명 패키지 실행 파일 + 설정 + 설명서 포함된 SW 묶음 리포지터리 패키지를 저장해둔 서버 공간 (공식/서드파티/내부) 포맷 .deb (Debian/Ubuntu), .rpm (RHEL/CentOS) 패키지 관리자 apt(Debian), yum/dnf(RHEL) 삭제 옵션 apt remove(설정 유지), apt purge(완전 삭제) 자동 의존성 대부분 자동 해결 (apt, yum 모두 지원) 🖼️ 설치 흐름 도식 (우분투 기준) [패키지 설치 흐름] apt update # 목록 갱신 apt install nginx # 설치 (의존성 포함) apt remove nginx # 제거 apt purge nginx # 완전 삭제 apt autoremove # 불필요한 의존성 정리 🔍 실무 시나리오 연결 상황 명령어 예시 모델 서버 세팅 apt install nginx curl jq 성능 모니터링 도구 yum install htop or apt install glances 의존성 확인 apt-cache depends curl / yum deplist curl 서드파티 추가 add-apt-repository ppa:deadsnakes/ppa 패키지 삭제 apt purge, yum remove 📦 Dockerfile 최적화 예시 ❌ 나쁜 예시 RUN apt update RUN apt install -y python3 RUN apt install -y pip 레이어 증가 → 캐시 문제 발생 용량 증가 ✅ 좋은 예시 RUN apt update && \ apt install -y python3 pip && \ apt-get clean && \ rm -rf /var/lib/apt/lists/* 1 레이어 용량 최소화 캐시 정리 완료 💡 실전 팁 모음 apt-get update는 항상 install 직전에 한 번만 설치 후 clean + rm으로 캐시 정리 → Docker 이미지 최적화 수동 설치한 바이너리는 apt remove로 제거 불가 리포지토리 속도 느릴 경우 → /etc/apt/sources.list 미러 확인 🛠️ MLOps 실전 연결 작업 활용 예시 모델 배포 apt install nginx curl jq unzip 자동화 스크립트 apt install -y → 사용자 입력 없이 설치 가능 Docker 이미지 RUN apt update && apt install 한 줄로 구성 CI/CD 환경 설정 공통 패키지 설치 → 테스트 환경 표준화 서버 모니터링 htop, glances, nmon 등 설치하여 운영 가시성 확보 ❗ 자주 헷갈리는 포인트 Dockerfile 내에서는 반드시 update + install을 한 줄로 작성 apt purge만이 설정 파일까지 완전 삭제 .tar.gz, wget 등으로 설치한 수동 패키지는 패키지 관리 도구로 삭제 불가 yum은 epel-release 추가 후 다양한 패키지 설치 가능 🏁 마무리 패키지 관리자는 인프라 자동화의 핵심"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-23T15:46:21+09:00"><meta property="article:modified_time" content="2025-04-23T15:46:21+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[리눅스] 19장. 소프트웨어 패키지 관리"><meta name=twitter:description content="📌 핵심 개념 요약
+
+리눅스에서 소프트웨어 설치/삭제는
+패키지 관리자(apt, yum) 를 통해 수행되며,
+Docker 환경에서는 정리/최적화가 필수
+
+🧠 결정적 지식 요약
+
+  
+      
+          개념
+          요약 설명
+      
+  
+  
+      
+          패키지
+          실행 파일 + 설정 + 설명서 포함된 SW 묶음
+      
+      
+          리포지터리
+          패키지를 저장해둔 서버 공간 (공식/서드파티/내부)
+      
+      
+          포맷
+          .deb (Debian/Ubuntu), .rpm (RHEL/CentOS)
+      
+      
+          패키지 관리자
+          apt(Debian), yum/dnf(RHEL)
+      
+      
+          삭제 옵션
+          apt remove(설정 유지), apt purge(완전 삭제)
+      
+      
+          자동 의존성
+          대부분 자동 해결 (apt, yum 모두 지원)
+      
+  
+
+
+🖼️ 설치 흐름 도식 (우분투 기준)
+[패키지 설치 흐름]
+
+apt update              # 목록 갱신
+apt install nginx       # 설치 (의존성 포함)
+apt remove nginx        # 제거
+apt purge nginx         # 완전 삭제
+apt autoremove          # 불필요한 의존성 정리
+
+🔍 실무 시나리오 연결
+
+  
+      
+          상황
+          명령어 예시
+      
+  
+  
+      
+          모델 서버 세팅
+          apt install nginx curl jq
+      
+      
+          성능 모니터링 도구
+          yum install htop or apt install glances
+      
+      
+          의존성 확인
+          apt-cache depends curl / yum deplist curl
+      
+      
+          서드파티 추가
+          add-apt-repository ppa:deadsnakes/ppa
+      
+      
+          패키지 삭제
+          apt purge, yum remove
+      
+  
+
+
+📦 Dockerfile 최적화 예시
+❌ 나쁜 예시
+RUN apt update
+RUN apt install -y python3
+RUN apt install -y pip
+
+레이어 증가 → 캐시 문제 발생
+용량 증가
+
+
+✅ 좋은 예시
+RUN apt update && \
+    apt install -y python3 pip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+1 레이어
+용량 최소화
+캐시 정리 완료
+
+
+💡 실전 팁 모음
+
+apt-get update는 항상 install 직전에 한 번만
+설치 후 clean + rm으로 캐시 정리 → Docker 이미지 최적화
+수동 설치한 바이너리는 apt remove로 제거 불가
+리포지토리 속도 느릴 경우 → /etc/apt/sources.list 미러 확인
+
+
+🛠️ MLOps 실전 연결
+
+  
+      
+          작업
+          활용 예시
+      
+  
+  
+      
+          모델 배포
+          apt install nginx curl jq unzip
+      
+      
+          자동화 스크립트
+          apt install -y → 사용자 입력 없이 설치 가능
+      
+      
+          Docker 이미지
+          RUN apt update && apt install 한 줄로 구성
+      
+      
+          CI/CD 환경 설정
+          공통 패키지 설치 → 테스트 환경 표준화
+      
+      
+          서버 모니터링
+          htop, glances, nmon 등 설치하여 운영 가시성 확보
+      
+  
+
+
+❗ 자주 헷갈리는 포인트
+
+Dockerfile 내에서는 반드시 update + install을 한 줄로 작성
+apt purge만이 설정 파일까지 완전 삭제
+.tar.gz, wget 등으로 설치한 수동 패키지는 패키지 관리 도구로 삭제 불가
+yum은 epel-release 추가 후 다양한 패키지 설치 가능
+
+
+🏁 마무리
+
+패키지 관리자는 인프라 자동화의 핵심"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[리눅스] 19장. 소프트웨어 패키지 관리","item":"https://keonhoban.github.io/mlops-journey/posts/linux/19/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[리눅스] 19장. 소프트웨어 패키지 관리","name":"[리눅스] 19장. 소프트웨어 패키지 관리","description":"📌 핵심 개념 요약 리눅스에서 소프트웨어 설치/삭제는\n패키지 관리자(apt, yum) 를 통해 수행되며,\nDocker 환경에서는 정리/최적화가 필수\n🧠 결정적 지식 요약 개념 요약 설명 패키지 실행 파일 + 설정 + 설명서 포함된 SW 묶음 리포지터리 패키지를 저장해둔 서버 공간 (공식/서드파티/내부) 포맷 .deb (Debian/Ubuntu), .rpm (RHEL/CentOS) 패키지 관리자 apt(Debian), yum/dnf(RHEL) 삭제 옵션 apt remove(설정 유지), apt purge(완전 삭제) 자동 의존성 대부분 자동 해결 (apt, yum 모두 지원) 🖼️ 설치 흐름 도식 (우분투 기준) [패키지 설치 흐름] apt update # 목록 갱신 apt install nginx # 설치 (의존성 포함) apt remove nginx # 제거 apt purge nginx # 완전 삭제 apt autoremove # 불필요한 의존성 정리 🔍 실무 시나리오 연결 상황 명령어 예시 모델 서버 세팅 apt install nginx curl jq 성능 모니터링 도구 yum install htop or apt install glances 의존성 확인 apt-cache depends curl / yum deplist curl 서드파티 추가 add-apt-repository ppa:deadsnakes/ppa 패키지 삭제 apt purge, yum remove 📦 Dockerfile 최적화 예시 ❌ 나쁜 예시 RUN apt update RUN apt install -y python3 RUN apt install -y pip 레이어 증가 → 캐시 문제 발생 용량 증가 ✅ 좋은 예시 RUN apt update \u0026amp;\u0026amp; \\ apt install -y python3 pip \u0026amp;\u0026amp; \\ apt-get clean \u0026amp;\u0026amp; \\ rm -rf /var/lib/apt/lists/* 1 레이어 용량 최소화 캐시 정리 완료 💡 실전 팁 모음 apt-get update는 항상 install 직전에 한 번만 설치 후 clean + rm으로 캐시 정리 → Docker 이미지 최적화 수동 설치한 바이너리는 apt remove로 제거 불가 리포지토리 속도 느릴 경우 → /etc/apt/sources.list 미러 확인 🛠️ MLOps 실전 연결 작업 활용 예시 모델 배포 apt install nginx curl jq unzip 자동화 스크립트 apt install -y → 사용자 입력 없이 설치 가능 Docker 이미지 RUN apt update \u0026amp;\u0026amp; apt install 한 줄로 구성 CI/CD 환경 설정 공통 패키지 설치 → 테스트 환경 표준화 서버 모니터링 htop, glances, nmon 등 설치하여 운영 가시성 확보 ❗ 자주 헷갈리는 포인트 Dockerfile 내에서는 반드시 update + install을 한 줄로 작성 apt purge만이 설정 파일까지 완전 삭제 .tar.gz, wget 등으로 설치한 수동 패키지는 패키지 관리 도구로 삭제 불가 yum은 epel-release 추가 후 다양한 패키지 설치 가능 🏁 마무리 패키지 관리자는 인프라 자동화의 핵심\n","keywords":[],"articleBody":"📌 핵심 개념 요약 리눅스에서 소프트웨어 설치/삭제는\n패키지 관리자(apt, yum) 를 통해 수행되며,\nDocker 환경에서는 정리/최적화가 필수\n🧠 결정적 지식 요약 개념 요약 설명 패키지 실행 파일 + 설정 + 설명서 포함된 SW 묶음 리포지터리 패키지를 저장해둔 서버 공간 (공식/서드파티/내부) 포맷 .deb (Debian/Ubuntu), .rpm (RHEL/CentOS) 패키지 관리자 apt(Debian), yum/dnf(RHEL) 삭제 옵션 apt remove(설정 유지), apt purge(완전 삭제) 자동 의존성 대부분 자동 해결 (apt, yum 모두 지원) 🖼️ 설치 흐름 도식 (우분투 기준) [패키지 설치 흐름] apt update # 목록 갱신 apt install nginx # 설치 (의존성 포함) apt remove nginx # 제거 apt purge nginx # 완전 삭제 apt autoremove # 불필요한 의존성 정리 🔍 실무 시나리오 연결 상황 명령어 예시 모델 서버 세팅 apt install nginx curl jq 성능 모니터링 도구 yum install htop or apt install glances 의존성 확인 apt-cache depends curl / yum deplist curl 서드파티 추가 add-apt-repository ppa:deadsnakes/ppa 패키지 삭제 apt purge, yum remove 📦 Dockerfile 최적화 예시 ❌ 나쁜 예시 RUN apt update RUN apt install -y python3 RUN apt install -y pip 레이어 증가 → 캐시 문제 발생 용량 증가 ✅ 좋은 예시 RUN apt update \u0026\u0026 \\ apt install -y python3 pip \u0026\u0026 \\ apt-get clean \u0026\u0026 \\ rm -rf /var/lib/apt/lists/* 1 레이어 용량 최소화 캐시 정리 완료 💡 실전 팁 모음 apt-get update는 항상 install 직전에 한 번만 설치 후 clean + rm으로 캐시 정리 → Docker 이미지 최적화 수동 설치한 바이너리는 apt remove로 제거 불가 리포지토리 속도 느릴 경우 → /etc/apt/sources.list 미러 확인 🛠️ MLOps 실전 연결 작업 활용 예시 모델 배포 apt install nginx curl jq unzip 자동화 스크립트 apt install -y → 사용자 입력 없이 설치 가능 Docker 이미지 RUN apt update \u0026\u0026 apt install 한 줄로 구성 CI/CD 환경 설정 공통 패키지 설치 → 테스트 환경 표준화 서버 모니터링 htop, glances, nmon 등 설치하여 운영 가시성 확보 ❗ 자주 헷갈리는 포인트 Dockerfile 내에서는 반드시 update + install을 한 줄로 작성 apt purge만이 설정 파일까지 완전 삭제 .tar.gz, wget 등으로 설치한 수동 패키지는 패키지 관리 도구로 삭제 불가 yum은 epel-release 추가 후 다양한 패키지 설치 가능 🏁 마무리 패키지 관리자는 인프라 자동화의 핵심\n특히 Docker 환경에선 최소 설치 + 완전 정리가\n이미지 크기와 안정성에 결정적 영향을 준다.\n","wordCount":"358","inLanguage":"en","datePublished":"2025-04-23T15:46:21+09:00","dateModified":"2025-04-23T15:46:21+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/linux/19/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[리눅스] 19장. 소프트웨어 패키지 관리</h1><div class=post-meta><span title='2025-04-23 15:46:21 +0900 +0900'>April 23, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h3 id=-핵심-개념-요약>📌 핵심 개념 요약<a hidden class=anchor aria-hidden=true href=#-핵심-개념-요약>#</a></h3><blockquote><p>리눅스에서 소프트웨어 설치/삭제는</p><p><strong>패키지 관리자(apt, yum)</strong> 를 통해 수행되며,</p><p>Docker 환경에서는 <strong>정리/최적화가 필수</strong></p></blockquote><hr><h3 id=-결정적-지식-요약>🧠 결정적 지식 요약<a hidden class=anchor aria-hidden=true href=#-결정적-지식-요약>#</a></h3><table><thead><tr><th>개념</th><th>요약 설명</th></tr></thead><tbody><tr><td><strong>패키지</strong></td><td>실행 파일 + 설정 + 설명서 포함된 SW 묶음</td></tr><tr><td><strong>리포지터리</strong></td><td>패키지를 저장해둔 서버 공간 (공식/서드파티/내부)</td></tr><tr><td><strong>포맷</strong></td><td><code>.deb</code> (Debian/Ubuntu), <code>.rpm</code> (RHEL/CentOS)</td></tr><tr><td><strong>패키지 관리자</strong></td><td><code>apt</code>(Debian), <code>yum/dnf</code>(RHEL)</td></tr><tr><td><strong>삭제 옵션</strong></td><td><code>apt remove</code>(설정 유지), <code>apt purge</code>(완전 삭제)</td></tr><tr><td><strong>자동 의존성</strong></td><td>대부분 자동 해결 (<code>apt</code>, <code>yum</code> 모두 지원)</td></tr></tbody></table><hr><h3 id=-설치-흐름-도식-우분투-기준>🖼️ 설치 흐름 도식 (우분투 기준)<a hidden class=anchor aria-hidden=true href=#-설치-흐름-도식-우분투-기준>#</a></h3><pre tabindex=0><code>[패키지 설치 흐름]
+
+apt update              # 목록 갱신
+apt install nginx       # 설치 (의존성 포함)
+apt remove nginx        # 제거
+apt purge nginx         # 완전 삭제
+apt autoremove          # 불필요한 의존성 정리
+</code></pre><hr><h3 id=-실무-시나리오-연결>🔍 실무 시나리오 연결<a hidden class=anchor aria-hidden=true href=#-실무-시나리오-연결>#</a></h3><table><thead><tr><th>상황</th><th>명령어 예시</th></tr></thead><tbody><tr><td>모델 서버 세팅</td><td><code>apt install nginx curl jq</code></td></tr><tr><td>성능 모니터링 도구</td><td><code>yum install htop</code> or <code>apt install glances</code></td></tr><tr><td>의존성 확인</td><td><code>apt-cache depends curl</code> / <code>yum deplist curl</code></td></tr><tr><td>서드파티 추가</td><td><code>add-apt-repository ppa:deadsnakes/ppa</code></td></tr><tr><td>패키지 삭제</td><td><code>apt purge</code>, <code>yum remove</code></td></tr></tbody></table><hr><h3 id=-dockerfile-최적화-예시>📦 Dockerfile 최적화 예시<a hidden class=anchor aria-hidden=true href=#-dockerfile-최적화-예시>#</a></h3><h3 id=-나쁜-예시>❌ 나쁜 예시<a hidden class=anchor aria-hidden=true href=#-나쁜-예시>#</a></h3><pre tabindex=0><code>RUN apt update
+RUN apt install -y python3
+RUN apt install -y pip
+</code></pre><ul><li>레이어 증가 → 캐시 문제 발생</li><li>용량 증가</li></ul><hr><h3 id=-좋은-예시>✅ 좋은 예시<a hidden class=anchor aria-hidden=true href=#-좋은-예시>#</a></h3><pre tabindex=0><code>RUN apt update &amp;&amp; \
+    apt install -y python3 pip &amp;&amp; \
+    apt-get clean &amp;&amp; \
+    rm -rf /var/lib/apt/lists/*
+</code></pre><ul><li>1 레이어</li><li>용량 최소화</li><li>캐시 정리 완료</li></ul><hr><h3 id=-실전-팁-모음>💡 실전 팁 모음<a hidden class=anchor aria-hidden=true href=#-실전-팁-모음>#</a></h3><ul><li><code>apt-get update</code>는 항상 <code>install</code> 직전에 한 번만</li><li>설치 후 <code>clean + rm</code>으로 캐시 정리 → Docker 이미지 최적화</li><li>수동 설치한 바이너리는 <code>apt remove</code>로 제거 불가</li><li>리포지토리 속도 느릴 경우 → <code>/etc/apt/sources.list</code> 미러 확인</li></ul><hr><h3 id=-mlops-실전-연결>🛠️ MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#-mlops-실전-연결>#</a></h3><table><thead><tr><th>작업</th><th>활용 예시</th></tr></thead><tbody><tr><td>모델 배포</td><td><code>apt install nginx curl jq unzip</code></td></tr><tr><td>자동화 스크립트</td><td><code>apt install -y</code> → 사용자 입력 없이 설치 가능</td></tr><tr><td>Docker 이미지</td><td><code>RUN apt update && apt install</code> 한 줄로 구성</td></tr><tr><td>CI/CD 환경 설정</td><td>공통 패키지 설치 → 테스트 환경 표준화</td></tr><tr><td>서버 모니터링</td><td><code>htop</code>, <code>glances</code>, <code>nmon</code> 등 설치하여 운영 가시성 확보</td></tr></tbody></table><hr><h3 id=-자주-헷갈리는-포인트>❗ 자주 헷갈리는 포인트<a hidden class=anchor aria-hidden=true href=#-자주-헷갈리는-포인트>#</a></h3><ul><li>Dockerfile 내에서는 반드시 <code>update + install</code>을 <strong>한 줄</strong>로 작성</li><li><code>apt purge</code>만이 설정 파일까지 <strong>완전 삭제</strong></li><li><code>.tar.gz</code>, <code>wget</code> 등으로 설치한 수동 패키지는 패키지 관리 도구로 <strong>삭제 불가</strong></li><li><code>yum</code>은 <code>epel-release</code> 추가 후 다양한 패키지 설치 가능</li></ul><hr><h3 id=-마무리>🏁 마무리<a hidden class=anchor aria-hidden=true href=#-마무리>#</a></h3><blockquote><p>패키지 관리자는 인프라 자동화의 핵심</p><p>특히 Docker 환경에선 <code>최소 설치 + 완전 정리</code>가</p><p>이미지 크기와 안정성에 결정적 영향을 준다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/linux/18/><span class=title>Next »</span><br><span>[리눅스] 18장. 버전 관리 시스템</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
