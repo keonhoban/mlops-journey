@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Projects on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/projects/</link><description>Recent content in Projects on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 24 Apr 2025 23:20:08 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/projects/index.xml" rel="self" type="application/rss+xml"/><item><title>[셸 스크립트] 02. Data Processing</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/02/</link><pubDate>Thu, 24 Apr 2025 23:20:08 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/02/</guid><description>&lt;h1 id="-오래된-로그-정리-및-보관">✅ 오래된 로그 정리 및 보관&lt;/h1>
+&lt;h2 id="1--목표">1. 🎯 목표&lt;/h2>
+&lt;blockquote>
+&lt;p>지정한 경로의 오래된 로그 파일을 삭제하거나, 압축 보관하는&lt;/p>
+&lt;p>&lt;strong>모드 기반 자동화 스크립트&lt;/strong>입니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="2--흐름-요약">2. 🧠 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>입력: [모드] [경로] [로그 위치] [기준 날짜]
+↓
+[clean] → 오래된 로그 삭제 + 로그 기록
+[archive] → 오래된 로그 압축 백업
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="3--전체-코드">3. 🔧 전체 코드&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/usr/bin/env bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>set -euo pipefail
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 인자 처리&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>MODE&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>1&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;clean&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>TARGET_PATH&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>2&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/var/log&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>LOG_DIR&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>3&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/backup/logs&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>DAYS_OLD&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>4&lt;span style="color:#66d9ef">:-&lt;/span>30&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>DATE&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">$(&lt;/span>date &lt;span style="color:#e6db74">&amp;#39;+%F&amp;#39;&lt;/span>&lt;span style="color:#66d9ef">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir -p &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$LOG_DIR&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">[[&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$MODE&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;clean&amp;#34;&lt;/span> &lt;span style="color:#f92672">]]&lt;/span>; &lt;span style="color:#66d9ef">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> find &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$TARGET_PATH&lt;span style="color:#e6db74">&amp;#34;&lt;/span> -type f -mtime +$DAYS_OLD -exec ls -lh &lt;span style="color:#f92672">{}&lt;/span> &lt;span style="color:#ae81ff">\;&lt;/span> &amp;gt; &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$LOG_DIR&lt;span style="color:#e6db74">/cleaned_&lt;/span>$DATE&lt;span style="color:#e6db74">.log&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> find &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$TARGET_PATH&lt;span style="color:#e6db74">&amp;#34;&lt;/span> -type f -mtime +$DAYS_OLD -delete
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> echo &lt;span style="color:#e6db74">&amp;#34;[CLEAN] Done: &lt;/span>$DATE&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">elif&lt;/span> &lt;span style="color:#f92672">[[&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$MODE&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;archive&amp;#34;&lt;/span> &lt;span style="color:#f92672">]]&lt;/span>; &lt;span style="color:#66d9ef">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ARCHIVE&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>$LOG_DIR&lt;span style="color:#e6db74">/logs_&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>DAYS_OLD&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">days_&lt;/span>$DATE&lt;span style="color:#e6db74">.tar.gz&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> find &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$TARGET_PATH&lt;span style="color:#e6db74">&amp;#34;&lt;/span> -type f -name &lt;span style="color:#e6db74">&amp;#34;*.log&amp;#34;&lt;/span> -mtime +$DAYS_OLD -print | tar czf &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$ARCHIVE&lt;span style="color:#e6db74">&amp;#34;&lt;/span> -T - &lt;span style="color:#f92672">||&lt;/span> echo &lt;span style="color:#e6db74">&amp;#34;No logs to archive&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> echo &lt;span style="color:#e6db74">&amp;#34;[ARCHIVE] Done: &lt;/span>$ARCHIVE&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> echo &lt;span style="color:#e6db74">&amp;#34;Usage: &lt;/span>$0&lt;span style="color:#e6db74"> [clean|archive] [path] [log_dir] [days]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> exit &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="4--주요-기능-설명">4. 💡 주요 기능 설명&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>MODE&lt;/code> 인자&lt;/td>
+&lt;td>clean / archive 모드 분기 → 멀티 용도 스크립트&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>tar -T -&lt;/code>&lt;/td>
+&lt;td>&lt;code>find&lt;/code> 결과를 안전하게 바로 압축&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>ls -lh&lt;/code> → 로그 보관&lt;/td>
+&lt;td>삭제 전 파일 목록을 보관 → 감사 로그&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>Usage&lt;/code> 출력&lt;/td>
+&lt;td>잘못된 인자 대응 → 실전 운영 스크립트 기준 충족&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="5--실무-활용--확장-포인트">5. 🛠️ 실무 활용 &amp;amp; 확장 포인트&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>확장&lt;/th>
+&lt;th>방법&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>crontab 자동화&lt;/td>
+&lt;td>&lt;code>0 1 * * * /path/cleaner.sh clean /var/log /backup/logs 30&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>확장자 다양화&lt;/td>
+&lt;td>&lt;code>-name &amp;quot;*.log&amp;quot; -o -name &amp;quot;*.out&amp;quot;&lt;/code> 등으로 확장&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>압축 후 업로드&lt;/td>
+&lt;td>&lt;code>aws s3 cp &amp;quot;$ARCHIVE&amp;quot; s3://log-backup-bucket/&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>logrotate와 연동&lt;/td>
+&lt;td>&lt;code>/etc/logrotate.d&lt;/code> → 일정 주기 log 정리 후 이 스크립트 사용&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="6--mlops-실무-연결">6. 🔧 MLOps 실무 연결&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>흐름&lt;/th>
+&lt;th>적용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>ML 학습 로그 정리&lt;/td>
+&lt;td>&lt;code>/opt/ml/logs&lt;/code> 폴더 주기적 clean&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>모델 기록 정리&lt;/td>
+&lt;td>&lt;code>mlruns/&lt;/code> 내 오래된 run data 보관&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Kubeflow pipeline 로그 정리&lt;/td>
+&lt;td>&lt;code>/var/log/kubeflow/*&lt;/code> 압축 보관&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="7--정리">7. ✅ 정리&lt;/h2>
+&lt;blockquote>
+&lt;p>단순한 정리가 아니라,&lt;/p></description></item><item><title>[셸 스크립트] 01. Backup</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/01/</link><pubDate>Thu, 24 Apr 2025 23:19:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/01/</guid><description>&lt;h1 id="-하루-한-번-자동-백업">✅ 하루 한 번, 자동 백업&lt;/h1>
+&lt;h2 id="1--목표">1. 🎯 목표&lt;/h2>
+&lt;blockquote>
+&lt;p>서버에서 특정 디렉토리를 매일 자동으로 백업하고,&lt;/p>
+&lt;p>로그까지 남기는 &lt;strong>안정적인 자동화 스크립트&lt;/strong>를 작성합니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="2--전체-흐름-요약">2. 🧠 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[백업할 경로] → [압축 tar.gz 생성] → [로그 기록] → [저장 경로 이동]
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="3--전체-스크립트-주석-포함">3. 🔧 전체 스크립트 (주석 포함)&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/usr/bin/env bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>set -euo pipefail
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 백업할 경로와 저장 경로 (인자 or 기본값)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>SRC_PATH&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>1&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/home/ubuntu&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>DST_PATH&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>2&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/backup/ubuntu_backup&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 오늘 날짜 기준 파일명 생성&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ARCHIVE_NAME&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#66d9ef">$(&lt;/span>date &lt;span style="color:#e6db74">&amp;#39;+%F&amp;#39;&lt;/span>&lt;span style="color:#66d9ef">)&lt;/span>&lt;span style="color:#e6db74">.tar.gz&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>LOG_FILE&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>$DST_PATH&lt;span style="color:#e6db74">/backup.log&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 실패 시 로그에 남기기&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>trap &lt;span style="color:#e6db74">&amp;#39;echo &amp;#34;[ERROR] Backup failed!&amp;#34; &amp;gt;&amp;gt; $LOG_FILE&amp;#39;&lt;/span> ERR
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 백업 경로 미존재 시 생성&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir -p &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$DST_PATH&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 실제 백업 수행&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">[[&lt;/span> -d &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$SRC_PATH&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#f92672">]]&lt;/span>; &lt;span style="color:#66d9ef">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> echo &lt;span style="color:#e6db74">&amp;#34;[INFO] Backup started at &lt;/span>&lt;span style="color:#66d9ef">$(&lt;/span>date&lt;span style="color:#66d9ef">)&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &amp;gt;&amp;gt; &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$LOG_FILE&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tar -czf &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$DST_PATH&lt;span style="color:#e6db74">/&lt;/span>$ARCHIVE_NAME&lt;span style="color:#e6db74">&amp;#34;&lt;/span> -C &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$SRC_PATH&lt;span style="color:#e6db74">&amp;#34;&lt;/span> . &lt;span style="color:#f92672">||&lt;/span> exit &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> echo &lt;span style="color:#e6db74">&amp;#34;[INFO] Backup success: &lt;/span>$ARCHIVE_NAME&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &amp;gt;&amp;gt; &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$LOG_FILE&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> echo &lt;span style="color:#e6db74">&amp;#34;[ERROR] Source path not found: &lt;/span>$SRC_PATH&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &amp;gt;&amp;gt; &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$LOG_FILE&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> exit &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="4--핵심-설계-포인트">4. 💡 핵심 설계 포인트&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>요소&lt;/th>
+&lt;th>설계 이유&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>set -euo pipefail&lt;/code>&lt;/td>
+&lt;td>예외 발생 즉시 종료 + 예측 불가능한 오류 방지&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>${1:-}&lt;/code>&lt;/td>
+&lt;td>인자 없을 시 기본값으로 동작 → 재사용성 강화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>trap '...' ERR&lt;/code>&lt;/td>
+&lt;td>실패 시 로그 자동 기록 → 디버깅 편의&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>tar -czf&lt;/code>&lt;/td>
+&lt;td>표준 압축 포맷으로 백업&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>mkdir -p&lt;/code>&lt;/td>
+&lt;td>실행 시 폴더 미존재 문제 예방&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="5--실무-적용--확장-아이디어">5. 🛠️ 실무 적용 &amp;amp; 확장 아이디어&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>확장&lt;/th>
+&lt;th>방법&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>매일 자동 실행&lt;/td>
+&lt;td>&lt;code>crontab -e&lt;/code> → &lt;code>0 2 * * * /path/to/script.sh&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>백업 후 업로드&lt;/td>
+&lt;td>&lt;code>aws s3 cp $ARCHIVE_NAME s3://bucket/path/&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>환경 설정 분리&lt;/td>
+&lt;td>&lt;code>.env&lt;/code> 파일에서 SRC/DST 설정 불러오기&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>백업 알림&lt;/td>
+&lt;td>&lt;code>mail&lt;/code> or 슬랙 알림 연동&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="6--mlops-실전-연결-포인트">6. 🔧 MLOps 실전 연결 포인트&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>흐름&lt;/th>
+&lt;th>적용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>학습 결과 자동 백업&lt;/td>
+&lt;td>모델 checkpoint 자동 저장&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>실험 로그 보존&lt;/td>
+&lt;td>&lt;code>~/mlruns&lt;/code> 디렉토리 백업&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>환경 복원 대비&lt;/td>
+&lt;td>&lt;code>Dockerfile&lt;/code>, &lt;code>.env&lt;/code> 백업&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="7--정리">7. ✅ 정리&lt;/h2>
+&lt;blockquote>
+&lt;p>작은 자동화지만, 이 스크립트 하나로&lt;/p></description></item></channel></rss>
