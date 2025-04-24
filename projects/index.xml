@@ -120,7 +120,7 @@
 &lt;hr>
 &lt;h2 id="7--정리">7. ✅ 정리&lt;/h2>
 &lt;blockquote>
-&lt;p>단순한 정리가 아니라,&lt;/p></description></item><item><title>[셸 스크립트] 01. Backup</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/01/</link><pubDate>Thu, 24 Apr 2025 23:19:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/01/</guid><description>&lt;h1 id="-하루-한-번-자동-백업">✅ 하루 한 번, 자동 백업&lt;/h1>
+&lt;p>단순한 로그 정리가 아니라,&lt;/p></description></item><item><title>[셸 스크립트] 01. Backup</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/01/</link><pubDate>Thu, 24 Apr 2025 23:19:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/01/</guid><description>&lt;h1 id="-하루-한-번-자동-백업">✅ 하루 한 번, 자동 백업&lt;/h1>
 &lt;h2 id="1--목표">1. 🎯 목표&lt;/h2>
 &lt;blockquote>
 &lt;p>서버에서 특정 디렉토리를 매일 자동으로 백업하고,&lt;/p>
