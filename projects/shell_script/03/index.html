@@ -1,0 +1,397 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[셸 스크립트] 03. Deployment | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='✅ 모델 패키징 및 배포
+1. 🎯 목표
+
+머신러닝 모델을 운영 환경에 안전하게 배포하기 위한
+모델 파일 점검 → 압축 → 복원 → 원격 배포 과정을
+하나의 통합 스크립트로 자동화합니다.
+
+2. 🧠 흐름 요약
+[모델 디렉토리 점검]
+     ↓
+[모델 압축 (archive)]
+     ↓
+[필요시 복원 (restore)]
+     ↓
+[배포 서버에 SCP 전송 (deploy)]
+
+3. 🔧 전체 코드 (주석 포함)
+#!/usr/bin/env bash
+set -euo pipefail
+
+MODE=${1:-"check"}  # check, archive, restore, deploy
+TARGET_DIR=${2:-"/opt/ml/models"}
+ARCHIVE_FILE=${3:-"models.tar.gz"}
+REQUIRED_FILES=("model.py" "requirements.txt" "config.yaml")
+
+# 간단한 로그 함수
+log() { echo "[$(date &#39;+%F %T&#39;)] $1"; }
+
+# 1. 필수 파일 존재 여부 확인
+check() {
+    [[ -d "$TARGET_DIR" ]] || { log "Missing dir: $TARGET_DIR"; exit 1; }
+    for file in "${REQUIRED_FILES[@]}"; do
+        [[ -e "$TARGET_DIR/$file" ]] || { log "Missing file: $file"; exit 1; }
+    done
+    log "File check complete"
+}
+
+# 2. 모델 디렉토리 압축
+archive() {
+    mkdir -p "$TARGET_DIR"
+    tar -czf "$ARCHIVE_FILE" -C "$TARGET_DIR" .
+    log "Archive created: $ARCHIVE_FILE"
+}
+
+# 3. 압축된 모델 복원
+restore() {
+    [[ -e "$ARCHIVE_FILE" ]] || { log "Missing archive: $ARCHIVE_FILE"; exit 1; }
+    mkdir -p "$TARGET_DIR"
+    tar -xzf "$ARCHIVE_FILE" -C "$TARGET_DIR"
+    log "Restore done to $TARGET_DIR"
+}
+
+# 4. 모델 원격 서버로 전송
+deploy() {
+    USER=${4:-"ubuntu"}
+    HOST=${5:-"127.0.0.1"}
+    DEST=${6:-"/opt/ml/models"}
+    scp "$ARCHIVE_FILE" "$USER@$HOST:$DEST" \
+        && log "Deployed to $HOST" \
+        || { log "Deployment failed"; exit 1; }
+}
+
+# 실행 분기
+case "$MODE" in
+    check)   check ;;
+    archive) archive ;;
+    restore) restore ;;
+    deploy)  deploy "$@" ;;
+    *)
+        echo "Usage: $0 [check|archive|restore|deploy] [target_dir] [archive_file] [user] [host] [remote_path]"
+        exit 1
+        ;;
+esac
+
+4. 📌 주요 기능 설명
+
+  
+      
+          기능
+          설명
+      
+  
+  
+      
+          check
+          모델 디렉토리에 필수 파일 존재 여부 확인
+      
+      
+          archive
+          디렉토리 전체 압축 → .tar.gz 생성
+      
+      
+          restore
+          압축 해제 후 원상 복원
+      
+      
+          deploy
+          scp로 원격 서버 전송, 사용자/호스트 지정 가능
+      
+      
+          log()
+          모든 결과 시간 기록 포함, 운영 추적 가능
+      
+  
+
+
+5. 🛠️ 실무 활용 & 확장 포인트
+
+  
+      
+          확장 방향
+          설명
+      
+  
+  
+      
+          배포 자동화
+          CI/CD 파이프라인에서 이 스크립트 호출
+      
+      
+          환경 설정 외부화
+          .env 파일로 사용자/호스트 설정 관리
+      
+      
+          배포 확인 로직 추가
+          ssh "$HOST" "ls $DEST"로 전송 검증 자동화
+      
+      
+          전송 보안 강화
+          scp → rsync, ssh key 연동, Ansible 등으로 확장
+      
+  
+
+
+6. 🔧 MLOps 실전 연결
+
+  
+      
+          MLOps 흐름
+          적용 예시
+      
+  
+  
+      
+          모델 체크포인트 보존
+          archive를 통해 학습 모델 압축 저장
+      
+      
+          모델 서빙 환경 이관
+          deploy를 통해 서버 간 모델 전송
+      
+      
+          모델 리포지터리 백업
+          restore로 필요시 복원 가능
+      
+      
+          GitHub Actions + SCP 배포
+          배포 자동화 스크립트에 직접 연동 가능
+      
+  
+
+
+7. ✅ 정리
+
+단순히 scp로 모델을 보내는 스크립트가 아니라,'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/projects/shell_script/03/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/projects/shell_script/03/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/projects/shell_script/03/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[셸 스크립트] 03. Deployment"><meta property="og:description" content='✅ 모델 패키징 및 배포 1. 🎯 목표 머신러닝 모델을 운영 환경에 안전하게 배포하기 위한
+모델 파일 점검 → 압축 → 복원 → 원격 배포 과정을
+하나의 통합 스크립트로 자동화합니다.
+2. 🧠 흐름 요약 [모델 디렉토리 점검] ↓ [모델 압축 (archive)] ↓ [필요시 복원 (restore)] ↓ [배포 서버에 SCP 전송 (deploy)] 3. 🔧 전체 코드 (주석 포함) #!/usr/bin/env bash set -euo pipefail MODE=${1:-"check"} # check, archive, restore, deploy TARGET_DIR=${2:-"/opt/ml/models"} ARCHIVE_FILE=${3:-"models.tar.gz"} REQUIRED_FILES=("model.py" "requirements.txt" "config.yaml") # 간단한 로그 함수 log() { echo "[$(date &#39;+%F %T&#39;)] $1"; } # 1. 필수 파일 존재 여부 확인 check() { [[ -d "$TARGET_DIR" ]] || { log "Missing dir: $TARGET_DIR"; exit 1; } for file in "${REQUIRED_FILES[@]}"; do [[ -e "$TARGET_DIR/$file" ]] || { log "Missing file: $file"; exit 1; } done log "File check complete" } # 2. 모델 디렉토리 압축 archive() { mkdir -p "$TARGET_DIR" tar -czf "$ARCHIVE_FILE" -C "$TARGET_DIR" . log "Archive created: $ARCHIVE_FILE" } # 3. 압축된 모델 복원 restore() { [[ -e "$ARCHIVE_FILE" ]] || { log "Missing archive: $ARCHIVE_FILE"; exit 1; } mkdir -p "$TARGET_DIR" tar -xzf "$ARCHIVE_FILE" -C "$TARGET_DIR" log "Restore done to $TARGET_DIR" } # 4. 모델 원격 서버로 전송 deploy() { USER=${4:-"ubuntu"} HOST=${5:-"127.0.0.1"} DEST=${6:-"/opt/ml/models"} scp "$ARCHIVE_FILE" "$USER@$HOST:$DEST" \ && log "Deployed to $HOST" \ || { log "Deployment failed"; exit 1; } } # 실행 분기 case "$MODE" in check) check ;; archive) archive ;; restore) restore ;; deploy) deploy "$@" ;; *) echo "Usage: $0 [check|archive|restore|deploy] [target_dir] [archive_file] [user] [host] [remote_path]" exit 1 ;; esac 4. 📌 주요 기능 설명 기능 설명 check 모델 디렉토리에 필수 파일 존재 여부 확인 archive 디렉토리 전체 압축 → .tar.gz 생성 restore 압축 해제 후 원상 복원 deploy scp로 원격 서버 전송, 사용자/호스트 지정 가능 log() 모든 결과 시간 기록 포함, 운영 추적 가능 5. 🛠️ 실무 활용 & 확장 포인트 확장 방향 설명 배포 자동화 CI/CD 파이프라인에서 이 스크립트 호출 환경 설정 외부화 .env 파일로 사용자/호스트 설정 관리 배포 확인 로직 추가 ssh "$HOST" "ls $DEST"로 전송 검증 자동화 전송 보안 강화 scp → rsync, ssh key 연동, Ansible 등으로 확장 6. 🔧 MLOps 실전 연결 MLOps 흐름 적용 예시 모델 체크포인트 보존 archive를 통해 학습 모델 압축 저장 모델 서빙 환경 이관 deploy를 통해 서버 간 모델 전송 모델 리포지터리 백업 restore로 필요시 복원 가능 GitHub Actions + SCP 배포 배포 자동화 스크립트에 직접 연동 가능 7. ✅ 정리 단순히 scp로 모델을 보내는 스크립트가 아니라,'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="projects"><meta property="article:published_time" content="2025-04-25T11:07:57+09:00"><meta property="article:modified_time" content="2025-04-25T11:07:57+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[셸 스크립트] 03. Deployment"><meta name=twitter:description content='✅ 모델 패키징 및 배포
+1. 🎯 목표
+
+머신러닝 모델을 운영 환경에 안전하게 배포하기 위한
+모델 파일 점검 → 압축 → 복원 → 원격 배포 과정을
+하나의 통합 스크립트로 자동화합니다.
+
+2. 🧠 흐름 요약
+[모델 디렉토리 점검]
+     ↓
+[모델 압축 (archive)]
+     ↓
+[필요시 복원 (restore)]
+     ↓
+[배포 서버에 SCP 전송 (deploy)]
+
+3. 🔧 전체 코드 (주석 포함)
+#!/usr/bin/env bash
+set -euo pipefail
+
+MODE=${1:-"check"}  # check, archive, restore, deploy
+TARGET_DIR=${2:-"/opt/ml/models"}
+ARCHIVE_FILE=${3:-"models.tar.gz"}
+REQUIRED_FILES=("model.py" "requirements.txt" "config.yaml")
+
+# 간단한 로그 함수
+log() { echo "[$(date &#39;+%F %T&#39;)] $1"; }
+
+# 1. 필수 파일 존재 여부 확인
+check() {
+    [[ -d "$TARGET_DIR" ]] || { log "Missing dir: $TARGET_DIR"; exit 1; }
+    for file in "${REQUIRED_FILES[@]}"; do
+        [[ -e "$TARGET_DIR/$file" ]] || { log "Missing file: $file"; exit 1; }
+    done
+    log "File check complete"
+}
+
+# 2. 모델 디렉토리 압축
+archive() {
+    mkdir -p "$TARGET_DIR"
+    tar -czf "$ARCHIVE_FILE" -C "$TARGET_DIR" .
+    log "Archive created: $ARCHIVE_FILE"
+}
+
+# 3. 압축된 모델 복원
+restore() {
+    [[ -e "$ARCHIVE_FILE" ]] || { log "Missing archive: $ARCHIVE_FILE"; exit 1; }
+    mkdir -p "$TARGET_DIR"
+    tar -xzf "$ARCHIVE_FILE" -C "$TARGET_DIR"
+    log "Restore done to $TARGET_DIR"
+}
+
+# 4. 모델 원격 서버로 전송
+deploy() {
+    USER=${4:-"ubuntu"}
+    HOST=${5:-"127.0.0.1"}
+    DEST=${6:-"/opt/ml/models"}
+    scp "$ARCHIVE_FILE" "$USER@$HOST:$DEST" \
+        && log "Deployed to $HOST" \
+        || { log "Deployment failed"; exit 1; }
+}
+
+# 실행 분기
+case "$MODE" in
+    check)   check ;;
+    archive) archive ;;
+    restore) restore ;;
+    deploy)  deploy "$@" ;;
+    *)
+        echo "Usage: $0 [check|archive|restore|deploy] [target_dir] [archive_file] [user] [host] [remote_path]"
+        exit 1
+        ;;
+esac
+
+4. 📌 주요 기능 설명
+
+  
+      
+          기능
+          설명
+      
+  
+  
+      
+          check
+          모델 디렉토리에 필수 파일 존재 여부 확인
+      
+      
+          archive
+          디렉토리 전체 압축 → .tar.gz 생성
+      
+      
+          restore
+          압축 해제 후 원상 복원
+      
+      
+          deploy
+          scp로 원격 서버 전송, 사용자/호스트 지정 가능
+      
+      
+          log()
+          모든 결과 시간 기록 포함, 운영 추적 가능
+      
+  
+
+
+5. 🛠️ 실무 활용 & 확장 포인트
+
+  
+      
+          확장 방향
+          설명
+      
+  
+  
+      
+          배포 자동화
+          CI/CD 파이프라인에서 이 스크립트 호출
+      
+      
+          환경 설정 외부화
+          .env 파일로 사용자/호스트 설정 관리
+      
+      
+          배포 확인 로직 추가
+          ssh "$HOST" "ls $DEST"로 전송 검증 자동화
+      
+      
+          전송 보안 강화
+          scp → rsync, ssh key 연동, Ansible 등으로 확장
+      
+  
+
+
+6. 🔧 MLOps 실전 연결
+
+  
+      
+          MLOps 흐름
+          적용 예시
+      
+  
+  
+      
+          모델 체크포인트 보존
+          archive를 통해 학습 모델 압축 저장
+      
+      
+          모델 서빙 환경 이관
+          deploy를 통해 서버 간 모델 전송
+      
+      
+          모델 리포지터리 백업
+          restore로 필요시 복원 가능
+      
+      
+          GitHub Actions + SCP 배포
+          배포 자동화 스크립트에 직접 연동 가능
+      
+  
+
+
+7. ✅ 정리
+
+단순히 scp로 모델을 보내는 스크립트가 아니라,'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Projects","item":"https://keonhoban.github.io/mlops-journey/projects/"},{"@type":"ListItem","position":2,"name":"[셸 스크립트] 03. Deployment","item":"https://keonhoban.github.io/mlops-journey/projects/shell_script/03/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[셸 스크립트] 03. Deployment","name":"[셸 스크립트] 03. Deployment","description":"✅ 모델 패키징 및 배포 1. 🎯 목표 머신러닝 모델을 운영 환경에 안전하게 배포하기 위한\n모델 파일 점검 → 압축 → 복원 → 원격 배포 과정을\n하나의 통합 스크립트로 자동화합니다.\n2. 🧠 흐름 요약 [모델 디렉토리 점검] ↓ [모델 압축 (archive)] ↓ [필요시 복원 (restore)] ↓ [배포 서버에 SCP 전송 (deploy)] 3. 🔧 전체 코드 (주석 포함) #!/usr/bin/env bash set -euo pipefail MODE=${1:-\u0026#34;check\u0026#34;} # check, archive, restore, deploy TARGET_DIR=${2:-\u0026#34;/opt/ml/models\u0026#34;} ARCHIVE_FILE=${3:-\u0026#34;models.tar.gz\u0026#34;} REQUIRED_FILES=(\u0026#34;model.py\u0026#34; \u0026#34;requirements.txt\u0026#34; \u0026#34;config.yaml\u0026#34;) # 간단한 로그 함수 log() { echo \u0026#34;[$(date \u0026#39;+%F %T\u0026#39;)] $1\u0026#34;; } # 1. 필수 파일 존재 여부 확인 check() { [[ -d \u0026#34;$TARGET_DIR\u0026#34; ]] || { log \u0026#34;Missing dir: $TARGET_DIR\u0026#34;; exit 1; } for file in \u0026#34;${REQUIRED_FILES[@]}\u0026#34;; do [[ -e \u0026#34;$TARGET_DIR/$file\u0026#34; ]] || { log \u0026#34;Missing file: $file\u0026#34;; exit 1; } done log \u0026#34;File check complete\u0026#34; } # 2. 모델 디렉토리 압축 archive() { mkdir -p \u0026#34;$TARGET_DIR\u0026#34; tar -czf \u0026#34;$ARCHIVE_FILE\u0026#34; -C \u0026#34;$TARGET_DIR\u0026#34; . log \u0026#34;Archive created: $ARCHIVE_FILE\u0026#34; } # 3. 압축된 모델 복원 restore() { [[ -e \u0026#34;$ARCHIVE_FILE\u0026#34; ]] || { log \u0026#34;Missing archive: $ARCHIVE_FILE\u0026#34;; exit 1; } mkdir -p \u0026#34;$TARGET_DIR\u0026#34; tar -xzf \u0026#34;$ARCHIVE_FILE\u0026#34; -C \u0026#34;$TARGET_DIR\u0026#34; log \u0026#34;Restore done to $TARGET_DIR\u0026#34; } # 4. 모델 원격 서버로 전송 deploy() { USER=${4:-\u0026#34;ubuntu\u0026#34;} HOST=${5:-\u0026#34;127.0.0.1\u0026#34;} DEST=${6:-\u0026#34;/opt/ml/models\u0026#34;} scp \u0026#34;$ARCHIVE_FILE\u0026#34; \u0026#34;$USER@$HOST:$DEST\u0026#34; \\ \u0026amp;\u0026amp; log \u0026#34;Deployed to $HOST\u0026#34; \\ || { log \u0026#34;Deployment failed\u0026#34;; exit 1; } } # 실행 분기 case \u0026#34;$MODE\u0026#34; in check) check ;; archive) archive ;; restore) restore ;; deploy) deploy \u0026#34;$@\u0026#34; ;; *) echo \u0026#34;Usage: $0 [check|archive|restore|deploy] [target_dir] [archive_file] [user] [host] [remote_path]\u0026#34; exit 1 ;; esac 4. 📌 주요 기능 설명 기능 설명 check 모델 디렉토리에 필수 파일 존재 여부 확인 archive 디렉토리 전체 압축 → .tar.gz 생성 restore 압축 해제 후 원상 복원 deploy scp로 원격 서버 전송, 사용자/호스트 지정 가능 log() 모든 결과 시간 기록 포함, 운영 추적 가능 5. 🛠️ 실무 활용 \u0026amp; 확장 포인트 확장 방향 설명 배포 자동화 CI/CD 파이프라인에서 이 스크립트 호출 환경 설정 외부화 .env 파일로 사용자/호스트 설정 관리 배포 확인 로직 추가 ssh \u0026quot;$HOST\u0026quot; \u0026quot;ls $DEST\u0026quot;로 전송 검증 자동화 전송 보안 강화 scp → rsync, ssh key 연동, Ansible 등으로 확장 6. 🔧 MLOps 실전 연결 MLOps 흐름 적용 예시 모델 체크포인트 보존 archive를 통해 학습 모델 압축 저장 모델 서빙 환경 이관 deploy를 통해 서버 간 모델 전송 모델 리포지터리 백업 restore로 필요시 복원 가능 GitHub Actions + SCP 배포 배포 자동화 스크립트에 직접 연동 가능 7. ✅ 정리 단순히 scp로 모델을 보내는 스크립트가 아니라,\n","keywords":[],"articleBody":"✅ 모델 패키징 및 배포 1. 🎯 목표 머신러닝 모델을 운영 환경에 안전하게 배포하기 위한\n모델 파일 점검 → 압축 → 복원 → 원격 배포 과정을\n하나의 통합 스크립트로 자동화합니다.\n2. 🧠 흐름 요약 [모델 디렉토리 점검] ↓ [모델 압축 (archive)] ↓ [필요시 복원 (restore)] ↓ [배포 서버에 SCP 전송 (deploy)] 3. 🔧 전체 코드 (주석 포함) #!/usr/bin/env bash set -euo pipefail MODE=${1:-\"check\"} # check, archive, restore, deploy TARGET_DIR=${2:-\"/opt/ml/models\"} ARCHIVE_FILE=${3:-\"models.tar.gz\"} REQUIRED_FILES=(\"model.py\" \"requirements.txt\" \"config.yaml\") # 간단한 로그 함수 log() { echo \"[$(date '+%F %T')] $1\"; } # 1. 필수 파일 존재 여부 확인 check() { [[ -d \"$TARGET_DIR\" ]] || { log \"Missing dir: $TARGET_DIR\"; exit 1; } for file in \"${REQUIRED_FILES[@]}\"; do [[ -e \"$TARGET_DIR/$file\" ]] || { log \"Missing file: $file\"; exit 1; } done log \"File check complete\" } # 2. 모델 디렉토리 압축 archive() { mkdir -p \"$TARGET_DIR\" tar -czf \"$ARCHIVE_FILE\" -C \"$TARGET_DIR\" . log \"Archive created: $ARCHIVE_FILE\" } # 3. 압축된 모델 복원 restore() { [[ -e \"$ARCHIVE_FILE\" ]] || { log \"Missing archive: $ARCHIVE_FILE\"; exit 1; } mkdir -p \"$TARGET_DIR\" tar -xzf \"$ARCHIVE_FILE\" -C \"$TARGET_DIR\" log \"Restore done to $TARGET_DIR\" } # 4. 모델 원격 서버로 전송 deploy() { USER=${4:-\"ubuntu\"} HOST=${5:-\"127.0.0.1\"} DEST=${6:-\"/opt/ml/models\"} scp \"$ARCHIVE_FILE\" \"$USER@$HOST:$DEST\" \\ \u0026\u0026 log \"Deployed to $HOST\" \\ || { log \"Deployment failed\"; exit 1; } } # 실행 분기 case \"$MODE\" in check) check ;; archive) archive ;; restore) restore ;; deploy) deploy \"$@\" ;; *) echo \"Usage: $0 [check|archive|restore|deploy] [target_dir] [archive_file] [user] [host] [remote_path]\" exit 1 ;; esac 4. 📌 주요 기능 설명 기능 설명 check 모델 디렉토리에 필수 파일 존재 여부 확인 archive 디렉토리 전체 압축 → .tar.gz 생성 restore 압축 해제 후 원상 복원 deploy scp로 원격 서버 전송, 사용자/호스트 지정 가능 log() 모든 결과 시간 기록 포함, 운영 추적 가능 5. 🛠️ 실무 활용 \u0026 확장 포인트 확장 방향 설명 배포 자동화 CI/CD 파이프라인에서 이 스크립트 호출 환경 설정 외부화 .env 파일로 사용자/호스트 설정 관리 배포 확인 로직 추가 ssh \"$HOST\" \"ls $DEST\"로 전송 검증 자동화 전송 보안 강화 scp → rsync, ssh key 연동, Ansible 등으로 확장 6. 🔧 MLOps 실전 연결 MLOps 흐름 적용 예시 모델 체크포인트 보존 archive를 통해 학습 모델 압축 저장 모델 서빙 환경 이관 deploy를 통해 서버 간 모델 전송 모델 리포지터리 백업 restore로 필요시 복원 가능 GitHub Actions + SCP 배포 배포 자동화 스크립트에 직접 연동 가능 7. ✅ 정리 단순히 scp로 모델을 보내는 스크립트가 아니라,\n모델 배포 전 필수 점검 → 압축 보존 → 배포 자동화까지\n필요한 모델 관리 루틴 전체를 자동화 했습니다.\n📎 GitHub 링크 👉 GitHub: model_package_tool.sh\n","wordCount":"421","inLanguage":"en","datePublished":"2025-04-25T11:07:57+09:00","dateModified":"2025-04-25T11:07:57+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/projects/shell_script/03/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/projects/>Projects</a></div><h1 class="post-title entry-hint-parent">[셸 스크립트] 03. Deployment</h1><div class=post-meta><span title='2025-04-25 11:07:57 +0900 +0900'>April 25, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><h1 id=-모델-패키징-및-배포>✅ 모델 패키징 및 배포<a hidden class=anchor aria-hidden=true href=#-모델-패키징-및-배포>#</a></h1><h2 id=1--목표>1. 🎯 목표<a hidden class=anchor aria-hidden=true href=#1--목표>#</a></h2><blockquote><p>머신러닝 모델을 운영 환경에 안전하게 배포하기 위한</p><p><strong>모델 파일 점검 → 압축 → 복원 → 원격 배포</strong> 과정을</p><p><strong>하나의 통합 스크립트</strong>로 자동화합니다.</p></blockquote><hr><h2 id=2--흐름-요약>2. 🧠 흐름 요약<a hidden class=anchor aria-hidden=true href=#2--흐름-요약>#</a></h2><pre tabindex=0><code>[모델 디렉토리 점검]
+     ↓
+[모델 압축 (archive)]
+     ↓
+[필요시 복원 (restore)]
+     ↓
+[배포 서버에 SCP 전송 (deploy)]
+</code></pre><hr><h2 id=3--전체-코드-주석-포함>3. 🔧 전체 코드 (주석 포함)<a hidden class=anchor aria-hidden=true href=#3--전체-코드-주석-포함>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e>#!/usr/bin/env bash
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>set -euo pipefail
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>MODE<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>1<span style=color:#66d9ef>:-</span><span style=color:#e6db74>&#34;check&#34;</span><span style=color:#e6db74>}</span>  <span style=color:#75715e># check, archive, restore, deploy</span>
+</span></span><span style=display:flex><span>TARGET_DIR<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>2<span style=color:#66d9ef>:-</span><span style=color:#e6db74>&#34;/opt/ml/models&#34;</span><span style=color:#e6db74>}</span>
+</span></span><span style=display:flex><span>ARCHIVE_FILE<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>3<span style=color:#66d9ef>:-</span><span style=color:#e6db74>&#34;models.tar.gz&#34;</span><span style=color:#e6db74>}</span>
+</span></span><span style=display:flex><span>REQUIRED_FILES<span style=color:#f92672>=(</span><span style=color:#e6db74>&#34;model.py&#34;</span> <span style=color:#e6db74>&#34;requirements.txt&#34;</span> <span style=color:#e6db74>&#34;config.yaml&#34;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 간단한 로그 함수</span>
+</span></span><span style=display:flex><span>log<span style=color:#f92672>()</span> <span style=color:#f92672>{</span> echo <span style=color:#e6db74>&#34;[</span><span style=color:#66d9ef>$(</span>date <span style=color:#e6db74>&#39;+%F %T&#39;</span><span style=color:#66d9ef>)</span><span style=color:#e6db74>] </span>$1<span style=color:#e6db74>&#34;</span>; <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 1. 필수 파일 존재 여부 확인</span>
+</span></span><span style=display:flex><span>check<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>[[</span> -d <span style=color:#e6db74>&#34;</span>$TARGET_DIR<span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]]</span> <span style=color:#f92672>||</span> <span style=color:#f92672>{</span> log <span style=color:#e6db74>&#34;Missing dir: </span>$TARGET_DIR<span style=color:#e6db74>&#34;</span>; exit 1; <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> file in <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>REQUIRED_FILES[@]<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>; <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>[[</span> -e <span style=color:#e6db74>&#34;</span>$TARGET_DIR<span style=color:#e6db74>/</span>$file<span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]]</span> <span style=color:#f92672>||</span> <span style=color:#f92672>{</span> log <span style=color:#e6db74>&#34;Missing file: </span>$file<span style=color:#e6db74>&#34;</span>; exit 1; <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>done</span>
+</span></span><span style=display:flex><span>    log <span style=color:#e6db74>&#34;File check complete&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 2. 모델 디렉토리 압축</span>
+</span></span><span style=display:flex><span>archive<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    mkdir -p <span style=color:#e6db74>&#34;</span>$TARGET_DIR<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>    tar -czf <span style=color:#e6db74>&#34;</span>$ARCHIVE_FILE<span style=color:#e6db74>&#34;</span> -C <span style=color:#e6db74>&#34;</span>$TARGET_DIR<span style=color:#e6db74>&#34;</span> .
+</span></span><span style=display:flex><span>    log <span style=color:#e6db74>&#34;Archive created: </span>$ARCHIVE_FILE<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 3. 압축된 모델 복원</span>
+</span></span><span style=display:flex><span>restore<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>[[</span> -e <span style=color:#e6db74>&#34;</span>$ARCHIVE_FILE<span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]]</span> <span style=color:#f92672>||</span> <span style=color:#f92672>{</span> log <span style=color:#e6db74>&#34;Missing archive: </span>$ARCHIVE_FILE<span style=color:#e6db74>&#34;</span>; exit 1; <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>    mkdir -p <span style=color:#e6db74>&#34;</span>$TARGET_DIR<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>    tar -xzf <span style=color:#e6db74>&#34;</span>$ARCHIVE_FILE<span style=color:#e6db74>&#34;</span> -C <span style=color:#e6db74>&#34;</span>$TARGET_DIR<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>    log <span style=color:#e6db74>&#34;Restore done to </span>$TARGET_DIR<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 4. 모델 원격 서버로 전송</span>
+</span></span><span style=display:flex><span>deploy<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    USER<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>4<span style=color:#66d9ef>:-</span><span style=color:#e6db74>&#34;ubuntu&#34;</span><span style=color:#e6db74>}</span>
+</span></span><span style=display:flex><span>    HOST<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>5<span style=color:#66d9ef>:-</span><span style=color:#e6db74>&#34;127.0.0.1&#34;</span><span style=color:#e6db74>}</span>
+</span></span><span style=display:flex><span>    DEST<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>6<span style=color:#66d9ef>:-</span><span style=color:#e6db74>&#34;/opt/ml/models&#34;</span><span style=color:#e6db74>}</span>
+</span></span><span style=display:flex><span>    scp <span style=color:#e6db74>&#34;</span>$ARCHIVE_FILE<span style=color:#e6db74>&#34;</span> <span style=color:#e6db74>&#34;</span>$USER<span style=color:#e6db74>@</span>$HOST<span style=color:#e6db74>:</span>$DEST<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>        <span style=color:#f92672>&amp;&amp;</span> log <span style=color:#e6db74>&#34;Deployed to </span>$HOST<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>        <span style=color:#f92672>||</span> <span style=color:#f92672>{</span> log <span style=color:#e6db74>&#34;Deployment failed&#34;</span>; exit 1; <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 실행 분기</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;</span>$MODE<span style=color:#e6db74>&#34;</span> in
+</span></span><span style=display:flex><span>    check<span style=color:#f92672>)</span>   check ;;
+</span></span><span style=display:flex><span>    archive<span style=color:#f92672>)</span> archive ;;
+</span></span><span style=display:flex><span>    restore<span style=color:#f92672>)</span> restore ;;
+</span></span><span style=display:flex><span>    deploy<span style=color:#f92672>)</span>  deploy <span style=color:#e6db74>&#34;</span>$@<span style=color:#e6db74>&#34;</span> ;;
+</span></span><span style=display:flex><span>    *<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>        echo <span style=color:#e6db74>&#34;Usage: </span>$0<span style=color:#e6db74> [check|archive|restore|deploy] [target_dir] [archive_file] [user] [host] [remote_path]&#34;</span>
+</span></span><span style=display:flex><span>        exit <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>        ;;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>esac</span>
+</span></span></code></pre></div><hr><h2 id=4--주요-기능-설명>4. 📌 주요 기능 설명<a hidden class=anchor aria-hidden=true href=#4--주요-기능-설명>#</a></h2><table><thead><tr><th>기능</th><th>설명</th></tr></thead><tbody><tr><td><code>check</code></td><td>모델 디렉토리에 필수 파일 존재 여부 확인</td></tr><tr><td><code>archive</code></td><td>디렉토리 전체 압축 → <code>.tar.gz</code> 생성</td></tr><tr><td><code>restore</code></td><td>압축 해제 후 원상 복원</td></tr><tr><td><code>deploy</code></td><td><code>scp</code>로 원격 서버 전송, 사용자/호스트 지정 가능</td></tr><tr><td><code>log()</code></td><td>모든 결과 시간 기록 포함, 운영 추적 가능</td></tr></tbody></table><hr><h2 id=5--실무-활용--확장-포인트>5. 🛠️ 실무 활용 & 확장 포인트<a hidden class=anchor aria-hidden=true href=#5--실무-활용--확장-포인트>#</a></h2><table><thead><tr><th>확장 방향</th><th>설명</th></tr></thead><tbody><tr><td>배포 자동화</td><td><code>CI/CD</code> 파이프라인에서 이 스크립트 호출</td></tr><tr><td>환경 설정 외부화</td><td><code>.env</code> 파일로 사용자/호스트 설정 관리</td></tr><tr><td>배포 확인 로직 추가</td><td><code>ssh "$HOST" "ls $DEST"</code>로 전송 검증 자동화</td></tr><tr><td>전송 보안 강화</td><td><code>scp</code> → <code>rsync</code>, <code>ssh key</code> 연동, <code>Ansible</code> 등으로 확장</td></tr></tbody></table><hr><h2 id=6--mlops-실전-연결>6. 🔧 MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#6--mlops-실전-연결>#</a></h2><table><thead><tr><th>MLOps 흐름</th><th>적용 예시</th></tr></thead><tbody><tr><td>모델 체크포인트 보존</td><td><code>archive</code>를 통해 학습 모델 압축 저장</td></tr><tr><td>모델 서빙 환경 이관</td><td><code>deploy</code>를 통해 서버 간 모델 전송</td></tr><tr><td>모델 리포지터리 백업</td><td><code>restore</code>로 필요시 복원 가능</td></tr><tr><td>GitHub Actions + SCP 배포</td><td>배포 자동화 스크립트에 직접 연동 가능</td></tr></tbody></table><hr><h2 id=7--정리>7. ✅ 정리<a hidden class=anchor aria-hidden=true href=#7--정리>#</a></h2><blockquote><p>단순히 scp로 모델을 보내는 스크립트가 아니라,</p><p><strong>모델 배포 전 필수 점검 → 압축 보존 → 배포 자동화</strong>까지</p><p>필요한 <strong>모델 관리 루틴 전체를 자동화</strong> 했습니다.</p></blockquote><hr><h2 id=-github-링크>📎 GitHub 링크<a hidden class=anchor aria-hidden=true href=#-github-링크>#</a></h2><blockquote><p>👉 <a href=https://github.com/keonhoban/shell-scripts>GitHub: model_package_tool.sh</a></p></blockquote></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

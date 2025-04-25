@@ -1,4 +1,190 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 24 Apr 2025 23:20:08 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[셸 스크립트] 02. Data Processing</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/02/</link><pubDate>Thu, 24 Apr 2025 23:20:08 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/02/</guid><description>&lt;h1 id="-오래된-로그-정리-및-보관">✅ 오래된 로그 정리 및 보관&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 25 Apr 2025 11:08:02 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[셸 스크립트] 04. Monitoring</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/04/</link><pubDate>Fri, 25 Apr 2025 11:08:02 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/04/</guid><description>&lt;h1 id="-디스크-사용률-초과-시-자동-로그-정리">✅ 디스크 사용률 초과 시 자동 로그 정리&lt;/h1>
+&lt;blockquote>
+&lt;p>운영 중 디스크 용량 초과로 장애가 발생하기 전에,
+서버가 스스로 로그를 정리하도록 만드는 자동화 스크립트입니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="1--목표">1. 🎯 목표&lt;/h2>
+&lt;ul>
+&lt;li>✅ 디스크 사용률이 일정 기준을 초과하면,&lt;/li>
+&lt;li>✅ 지정된 경로에서 &lt;strong>오래된 로그 파일을 자동으로 삭제&lt;/strong>&lt;/li>
+&lt;li>✅ 삭제된 파일은 로그로 기록&lt;/li>
+&lt;/ul>
+&lt;p>이 스크립트 하나로 &lt;strong>디스크 감시 + 자동 삭제 + 운영 기록 보관&lt;/strong>까지 가능합니다.&lt;/p>
+&lt;hr>
+&lt;h2 id="2--전체-구조-흐름">2. 🧠 전체 구조 흐름&lt;/h2>
+&lt;pre tabindex="0">&lt;code>df → 각 디스크 사용률 확인
+↓
+사용률이 THRESHOLD 이상이면
+↓
+지정 경로에서 mtime 기반 오래된 로그 탐색
+↓
+삭제 + 로그 기록
+&lt;/code>&lt;/pre>&lt;blockquote>
+&lt;p>예시 실행 흐름:&lt;/p></description></item><item><title>[셸 스크립트] 03. Deployment</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/03/</link><pubDate>Fri, 25 Apr 2025 11:07:57 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/03/</guid><description>&lt;h1 id="-모델-패키징-및-배포">✅ 모델 패키징 및 배포&lt;/h1>
+&lt;h2 id="1--목표">1. 🎯 목표&lt;/h2>
+&lt;blockquote>
+&lt;p>머신러닝 모델을 운영 환경에 안전하게 배포하기 위한&lt;/p>
+&lt;p>&lt;strong>모델 파일 점검 → 압축 → 복원 → 원격 배포&lt;/strong> 과정을&lt;/p>
+&lt;p>&lt;strong>하나의 통합 스크립트&lt;/strong>로 자동화합니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="2--흐름-요약">2. 🧠 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[모델 디렉토리 점검]
+↓
+[모델 압축 (archive)]
+↓
+[필요시 복원 (restore)]
+↓
+[배포 서버에 SCP 전송 (deploy)]
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="3--전체-코드-주석-포함">3. 🔧 전체 코드 (주석 포함)&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/usr/bin/env bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>set -euo pipefail
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>MODE&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>1&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;check&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span> &lt;span style="color:#75715e"># check, archive, restore, deploy&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>TARGET_DIR&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>2&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/opt/ml/models&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ARCHIVE_FILE&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>3&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;models.tar.gz&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>REQUIRED_FILES&lt;span style="color:#f92672">=(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;model.py&amp;#34;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;requirements.txt&amp;#34;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;config.yaml&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 간단한 로그 함수&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>log&lt;span style="color:#f92672">()&lt;/span> &lt;span style="color:#f92672">{&lt;/span> echo &lt;span style="color:#e6db74">&amp;#34;[&lt;/span>&lt;span style="color:#66d9ef">$(&lt;/span>date &lt;span style="color:#e6db74">&amp;#39;+%F %T&amp;#39;&lt;/span>&lt;span style="color:#66d9ef">)&lt;/span>&lt;span style="color:#e6db74">] &lt;/span>$1&lt;span style="color:#e6db74">&amp;#34;&lt;/span>; &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 1. 필수 파일 존재 여부 확인&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>check&lt;span style="color:#f92672">()&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[[&lt;/span> -d &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$TARGET_DIR&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#f92672">]]&lt;/span> &lt;span style="color:#f92672">||&lt;/span> &lt;span style="color:#f92672">{&lt;/span> log &lt;span style="color:#e6db74">&amp;#34;Missing dir: &lt;/span>$TARGET_DIR&lt;span style="color:#e6db74">&amp;#34;&lt;/span>; exit 1; &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> file in &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>REQUIRED_FILES[@]&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>; &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[[&lt;/span> -e &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$TARGET_DIR&lt;span style="color:#e6db74">/&lt;/span>$file&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#f92672">]]&lt;/span> &lt;span style="color:#f92672">||&lt;/span> &lt;span style="color:#f92672">{&lt;/span> log &lt;span style="color:#e6db74">&amp;#34;Missing file: &lt;/span>$file&lt;span style="color:#e6db74">&amp;#34;&lt;/span>; exit 1; &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> log &lt;span style="color:#e6db74">&amp;#34;File check complete&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 2. 모델 디렉토리 압축&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>archive&lt;span style="color:#f92672">()&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir -p &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$TARGET_DIR&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tar -czf &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$ARCHIVE_FILE&lt;span style="color:#e6db74">&amp;#34;&lt;/span> -C &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$TARGET_DIR&lt;span style="color:#e6db74">&amp;#34;&lt;/span> .
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> log &lt;span style="color:#e6db74">&amp;#34;Archive created: &lt;/span>$ARCHIVE_FILE&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 3. 압축된 모델 복원&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>restore&lt;span style="color:#f92672">()&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[[&lt;/span> -e &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$ARCHIVE_FILE&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#f92672">]]&lt;/span> &lt;span style="color:#f92672">||&lt;/span> &lt;span style="color:#f92672">{&lt;/span> log &lt;span style="color:#e6db74">&amp;#34;Missing archive: &lt;/span>$ARCHIVE_FILE&lt;span style="color:#e6db74">&amp;#34;&lt;/span>; exit 1; &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir -p &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$TARGET_DIR&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tar -xzf &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$ARCHIVE_FILE&lt;span style="color:#e6db74">&amp;#34;&lt;/span> -C &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$TARGET_DIR&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> log &lt;span style="color:#e6db74">&amp;#34;Restore done to &lt;/span>$TARGET_DIR&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 4. 모델 원격 서버로 전송&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>deploy&lt;span style="color:#f92672">()&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> USER&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>4&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;ubuntu&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> HOST&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>5&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;127.0.0.1&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> DEST&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>6&lt;span style="color:#66d9ef">:-&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/opt/ml/models&amp;#34;&lt;/span>&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scp &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$ARCHIVE_FILE&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$USER&lt;span style="color:#e6db74">@&lt;/span>$HOST&lt;span style="color:#e6db74">:&lt;/span>$DEST&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> log &lt;span style="color:#e6db74">&amp;#34;Deployed to &lt;/span>$HOST&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> &lt;span style="color:#f92672">||&lt;/span> &lt;span style="color:#f92672">{&lt;/span> log &lt;span style="color:#e6db74">&amp;#34;Deployment failed&amp;#34;&lt;/span>; exit 1; &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 실행 분기&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$MODE&lt;span style="color:#e6db74">&amp;#34;&lt;/span> in
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> check&lt;span style="color:#f92672">)&lt;/span> check ;;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> archive&lt;span style="color:#f92672">)&lt;/span> archive ;;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> restore&lt;span style="color:#f92672">)&lt;/span> restore ;;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> deploy&lt;span style="color:#f92672">)&lt;/span> deploy &lt;span style="color:#e6db74">&amp;#34;&lt;/span>$@&lt;span style="color:#e6db74">&amp;#34;&lt;/span> ;;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> *&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> echo &lt;span style="color:#e6db74">&amp;#34;Usage: &lt;/span>$0&lt;span style="color:#e6db74"> [check|archive|restore|deploy] [target_dir] [archive_file] [user] [host] [remote_path]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> exit &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ;;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">esac&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="4--주요-기능-설명">4. 📌 주요 기능 설명&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>check&lt;/code>&lt;/td>
+&lt;td>모델 디렉토리에 필수 파일 존재 여부 확인&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>archive&lt;/code>&lt;/td>
+&lt;td>디렉토리 전체 압축 → &lt;code>.tar.gz&lt;/code> 생성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>restore&lt;/code>&lt;/td>
+&lt;td>압축 해제 후 원상 복원&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>deploy&lt;/code>&lt;/td>
+&lt;td>&lt;code>scp&lt;/code>로 원격 서버 전송, 사용자/호스트 지정 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>log()&lt;/code>&lt;/td>
+&lt;td>모든 결과 시간 기록 포함, 운영 추적 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="5--실무-활용--확장-포인트">5. 🛠️ 실무 활용 &amp;amp; 확장 포인트&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>확장 방향&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>배포 자동화&lt;/td>
+&lt;td>&lt;code>CI/CD&lt;/code> 파이프라인에서 이 스크립트 호출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>환경 설정 외부화&lt;/td>
+&lt;td>&lt;code>.env&lt;/code> 파일로 사용자/호스트 설정 관리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>배포 확인 로직 추가&lt;/td>
+&lt;td>&lt;code>ssh &amp;quot;$HOST&amp;quot; &amp;quot;ls $DEST&amp;quot;&lt;/code>로 전송 검증 자동화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>전송 보안 강화&lt;/td>
+&lt;td>&lt;code>scp&lt;/code> → &lt;code>rsync&lt;/code>, &lt;code>ssh key&lt;/code> 연동, &lt;code>Ansible&lt;/code> 등으로 확장&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="6--mlops-실전-연결">6. 🔧 MLOps 실전 연결&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>MLOps 흐름&lt;/th>
+&lt;th>적용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 체크포인트 보존&lt;/td>
+&lt;td>&lt;code>archive&lt;/code>를 통해 학습 모델 압축 저장&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>모델 서빙 환경 이관&lt;/td>
+&lt;td>&lt;code>deploy&lt;/code>를 통해 서버 간 모델 전송&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>모델 리포지터리 백업&lt;/td>
+&lt;td>&lt;code>restore&lt;/code>로 필요시 복원 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>GitHub Actions + SCP 배포&lt;/td>
+&lt;td>배포 자동화 스크립트에 직접 연동 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="7--정리">7. ✅ 정리&lt;/h2>
+&lt;blockquote>
+&lt;p>단순히 scp로 모델을 보내는 스크립트가 아니라,&lt;/p></description></item><item><title>[셸 스크립트] 02. Data Processing</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/02/</link><pubDate>Thu, 24 Apr 2025 23:20:08 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/02/</guid><description>&lt;h1 id="-오래된-로그-정리-및-보관">✅ 오래된 로그 정리 및 보관&lt;/h1>
 &lt;h2 id="1--목표">1. 🎯 목표&lt;/h2>
 &lt;blockquote>
 &lt;p>지정한 경로의 오래된 로그 파일을 삭제하거나, 압축 보관하는&lt;/p>
