@@ -1,0 +1,754 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[파이썬] 01장. 자료형 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="📌 자료형이란?
+
+데이터를 저장하고 조작하는 방법을 결정하는 파이썬의 기본 단위
+
+🧠 결정적 핵심 요약
+
+  
+      
+          자료형
+          설명
+          예시
+      
+  
+  
+      
+          숫자형
+          수 표현 (정수, 실수)
+          1, -3, 3.14
+      
+      
+          문자열
+          문자 집합, 변경 불가
+          &#34;Hello&#34;, 'Python'
+      
+      
+          리스트
+          여러 값을 순서대로 저장, 변경 가능
+          [1, 2, 'a']
+      
+      
+          튜플
+          여러 값을 순서대로 저장, 변경 불가
+          (1, 2, 'a')
+      
+      
+          딕셔너리
+          키-값 쌍으로 저장
+          {'name': 'QJ'}
+      
+      
+          집합
+          중복 없는 데이터 집합
+          {1, 2, 3}
+      
+      
+          불형
+          참(True)/거짓(False) 표현
+          True, False
+      
+      
+          변수
+          데이터를 저장하는 이름표
+          a = 3
+      
+  
+
+
+📊 자료형 관계 흐름도
+[ 데이터 입력 ]
+   ↓
+[ 자료형 선택 ]
+   ├─ 수치 → 숫자형
+   ├─ 문자 → 문자열
+   ├─ 순서 집합 → 리스트 / 튜플
+   ├─ 키-값 매칭 → 딕셔너리
+   ├─ 중복 제거 → 집합
+   └─ 조건 판단 → 불형
+
+🔥 자료형별 핵심 문법 + 코드 예시
+
+🧩 숫자형 (int, float)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          덧셈
+          3 + 4 → 7
+      
+      
+          뺄셈
+          7 - 3 → 4
+      
+      
+          곱셈
+          3 * 4 → 12
+      
+      
+          나눗셈
+          7 / 4 → 1.75
+      
+      
+          몫
+          7 // 4 → 1
+      
+      
+          나머지
+          7 % 4 → 3
+      
+      
+          제곱
+          2 ** 3 → 8
+      
+  
+
+a = 7
+b = 4
+print(a // b)  # 몫
+print(a % b)   # 나머지
+
+🧩 문자열 (str)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          인덱싱
+          &#34;Python&#34;[0] → 'P'
+      
+      
+          슬라이싱
+          &#34;Python&#34;[0:3] → 'Pyt'
+      
+      
+          더하기
+          &#34;Hello&#34; + &#34;World&#34; → &#34;HelloWorld&#34;
+      
+      
+          곱하기
+          &#34;=&#34; * 10 → &#34;==========&#34;
+      
+      
+          포매팅(f-string)
+          f&#34;{name}님 환영합니다&#34;
+      
+  
+
+greet = &#34;Hello &#34; + &#34;World&#34;
+print(greet)  # Hello World
+
+word = &#34;Python&#34;
+print(word[2:5])  # tho
+
+🧩 리스트 (list)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          추가
+          append()
+      
+      
+          삽입
+          insert()
+      
+      
+          삭제
+          remove(), pop()
+      
+      
+          정렬
+          sort(), reverse()
+      
+      
+          인덱싱/슬라이싱
+          a[0], a[1:3]
+      
+  
+
+a = [1, 2, 3]
+a.append(4)
+print(a)  # [1, 2, 3, 4]
+
+🧩 튜플 (tuple)
+
+  
+      
+          특징
+          문법 예시
+      
+  
+  
+      
+          변경 불가
+          (1, 2, 3)
+      
+      
+          인덱싱/슬라이싱 가능
+          t[0], t[1:]
+      
+  
+
+t = (1, 2, 3)
+print(t[1])  # 2
+
+🧩 딕셔너리 (dict)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          추가
+          d['age'] = 30
+      
+      
+          삭제
+          del d['age']
+      
+      
+          조회
+          d.get('name')
+      
+      
+          keys/values/items 조회
+          d.keys(), d.values(), d.items()
+      
+  
+
+d = {'name': 'QJ', 'age': 30}
+print(d['name'])  # QJ
+print(d.get('birth', '0401'))  # 디폴트 값 제공
+
+🧩 집합 (set)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          생성
+          set([1,2,3])
+      
+      
+          교집합
+          s1 & s2
+      
+      
+          합집합
+          `s1
+      
+      
+          차집합
+          s1 - s2
+      
+  
+
+s1 = set([1, 2, 3])
+s2 = set([2, 3, 4])
+print(s1 & s2)  # {2, 3}
+
+🧩 불형 (bool)
+
+  
+      
+          값
+          결과
+      
+  
+  
+      
+          &#34;&#34;, [], {}
+          False
+      
+      
+          &#34;text&#34;, [1], {1:2}
+          True
+      
+  
+
+print(bool(&#34;&#34;))  # False
+print(bool([1,2,3]))  # True
+
+🧩 변수
+
+  
+      
+          특징
+          문법 예시
+      
+  
+  
+      
+          값 참조
+          a = [1,2,3]
+      
+      
+          복사 (다른 객체 만들기)
+          b = a.copy()
+      
+  
+
+a = [1, 2, 3]
+b = a.copy()
+print(a is b)  # False (다른 객체)
+
+⚠️ 실수 주의 포인트
+
+  
+      
+          실수
+          올바른 이해
+      
+  
+  
+      
+          a = b 복사하면 값 공유됨
+          .copy() 필요
+      
+      
+          튜플은 수정 불가
+          수정하려면 새 튜플 생성
+      
+      
+          딕셔너리 Key 중복은 마지막 값만 남음
+          Key 고유성 유지 필요
+      
+      
+          집합은 인덱싱 불가
+          변환 후 인덱싱
+      
+      
+          빈 값은 False
+          [], {}, &#34;&#34; 모두 False 처리됨
+      
+  
+
+
+🛠️ 실무 연결 요약
+
+API 데이터 가공 → dict
+파라미터 저장 → dict
+다중 결과 저장 → list
+조건 분기 처리 → bool
+중복 제거 리스트 → set
+
+
+🏁 마무리
+
+자료형을 완전히 이해하면,"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/python/01/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/python/01/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/python/01/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[파이썬] 01장. 자료형"><meta property="og:description" content="📌 자료형이란? 데이터를 저장하고 조작하는 방법을 결정하는 파이썬의 기본 단위
+🧠 결정적 핵심 요약 자료형 설명 예시 숫자형 수 표현 (정수, 실수) 1, -3, 3.14 문자열 문자 집합, 변경 불가 &#34;Hello&#34;, 'Python' 리스트 여러 값을 순서대로 저장, 변경 가능 [1, 2, 'a'] 튜플 여러 값을 순서대로 저장, 변경 불가 (1, 2, 'a') 딕셔너리 키-값 쌍으로 저장 {'name': 'QJ'} 집합 중복 없는 데이터 집합 {1, 2, 3} 불형 참(True)/거짓(False) 표현 True, False 변수 데이터를 저장하는 이름표 a = 3 📊 자료형 관계 흐름도 [ 데이터 입력 ] ↓ [ 자료형 선택 ] ├─ 수치 → 숫자형 ├─ 문자 → 문자열 ├─ 순서 집합 → 리스트 / 튜플 ├─ 키-값 매칭 → 딕셔너리 ├─ 중복 제거 → 집합 └─ 조건 판단 → 불형 🔥 자료형별 핵심 문법 + 코드 예시 🧩 숫자형 (int, float) 기능 문법 예시 덧셈 3 + 4 → 7 뺄셈 7 - 3 → 4 곱셈 3 * 4 → 12 나눗셈 7 / 4 → 1.75 몫 7 // 4 → 1 나머지 7 % 4 → 3 제곱 2 ** 3 → 8 a = 7 b = 4 print(a // b) # 몫 print(a % b) # 나머지 🧩 문자열 (str) 기능 문법 예시 인덱싱 &#34;Python&#34;[0] → 'P' 슬라이싱 &#34;Python&#34;[0:3] → 'Pyt' 더하기 &#34;Hello&#34; + &#34;World&#34; → &#34;HelloWorld&#34; 곱하기 &#34;=&#34; * 10 → &#34;==========&#34; 포매팅(f-string) f&#34;{name}님 환영합니다&#34; greet = &#34;Hello &#34; + &#34;World&#34; print(greet) # Hello World word = &#34;Python&#34; print(word[2:5]) # tho 🧩 리스트 (list) 기능 문법 예시 추가 append() 삽입 insert() 삭제 remove(), pop() 정렬 sort(), reverse() 인덱싱/슬라이싱 a[0], a[1:3] a = [1, 2, 3] a.append(4) print(a) # [1, 2, 3, 4] 🧩 튜플 (tuple) 특징 문법 예시 변경 불가 (1, 2, 3) 인덱싱/슬라이싱 가능 t[0], t[1:] t = (1, 2, 3) print(t[1]) # 2 🧩 딕셔너리 (dict) 기능 문법 예시 추가 d['age'] = 30 삭제 del d['age'] 조회 d.get('name') keys/values/items 조회 d.keys(), d.values(), d.items() d = {'name': 'QJ', 'age': 30} print(d['name']) # QJ print(d.get('birth', '0401')) # 디폴트 값 제공 🧩 집합 (set) 기능 문법 예시 생성 set([1,2,3]) 교집합 s1 & s2 합집합 `s1 차집합 s1 - s2 s1 = set([1, 2, 3]) s2 = set([2, 3, 4]) print(s1 & s2) # {2, 3} 🧩 불형 (bool) 값 결과 &#34;&#34;, [], {} False &#34;text&#34;, [1], {1:2} True print(bool(&#34;&#34;)) # False print(bool([1,2,3])) # True 🧩 변수 특징 문법 예시 값 참조 a = [1,2,3] 복사 (다른 객체 만들기) b = a.copy() a = [1, 2, 3] b = a.copy() print(a is b) # False (다른 객체) ⚠️ 실수 주의 포인트 실수 올바른 이해 a = b 복사하면 값 공유됨 .copy() 필요 튜플은 수정 불가 수정하려면 새 튜플 생성 딕셔너리 Key 중복은 마지막 값만 남음 Key 고유성 유지 필요 집합은 인덱싱 불가 변환 후 인덱싱 빈 값은 False [], {}, &#34;&#34; 모두 False 처리됨 🛠️ 실무 연결 요약 API 데이터 가공 → dict 파라미터 저장 → dict 다중 결과 저장 → list 조건 분기 처리 → bool 중복 제거 리스트 → set 🏁 마무리 자료형을 완전히 이해하면,"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-26T10:08:22+09:00"><meta property="article:modified_time" content="2025-04-26T10:08:22+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[파이썬] 01장. 자료형"><meta name=twitter:description content="📌 자료형이란?
+
+데이터를 저장하고 조작하는 방법을 결정하는 파이썬의 기본 단위
+
+🧠 결정적 핵심 요약
+
+  
+      
+          자료형
+          설명
+          예시
+      
+  
+  
+      
+          숫자형
+          수 표현 (정수, 실수)
+          1, -3, 3.14
+      
+      
+          문자열
+          문자 집합, 변경 불가
+          &#34;Hello&#34;, 'Python'
+      
+      
+          리스트
+          여러 값을 순서대로 저장, 변경 가능
+          [1, 2, 'a']
+      
+      
+          튜플
+          여러 값을 순서대로 저장, 변경 불가
+          (1, 2, 'a')
+      
+      
+          딕셔너리
+          키-값 쌍으로 저장
+          {'name': 'QJ'}
+      
+      
+          집합
+          중복 없는 데이터 집합
+          {1, 2, 3}
+      
+      
+          불형
+          참(True)/거짓(False) 표현
+          True, False
+      
+      
+          변수
+          데이터를 저장하는 이름표
+          a = 3
+      
+  
+
+
+📊 자료형 관계 흐름도
+[ 데이터 입력 ]
+   ↓
+[ 자료형 선택 ]
+   ├─ 수치 → 숫자형
+   ├─ 문자 → 문자열
+   ├─ 순서 집합 → 리스트 / 튜플
+   ├─ 키-값 매칭 → 딕셔너리
+   ├─ 중복 제거 → 집합
+   └─ 조건 판단 → 불형
+
+🔥 자료형별 핵심 문법 + 코드 예시
+
+🧩 숫자형 (int, float)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          덧셈
+          3 + 4 → 7
+      
+      
+          뺄셈
+          7 - 3 → 4
+      
+      
+          곱셈
+          3 * 4 → 12
+      
+      
+          나눗셈
+          7 / 4 → 1.75
+      
+      
+          몫
+          7 // 4 → 1
+      
+      
+          나머지
+          7 % 4 → 3
+      
+      
+          제곱
+          2 ** 3 → 8
+      
+  
+
+a = 7
+b = 4
+print(a // b)  # 몫
+print(a % b)   # 나머지
+
+🧩 문자열 (str)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          인덱싱
+          &#34;Python&#34;[0] → 'P'
+      
+      
+          슬라이싱
+          &#34;Python&#34;[0:3] → 'Pyt'
+      
+      
+          더하기
+          &#34;Hello&#34; + &#34;World&#34; → &#34;HelloWorld&#34;
+      
+      
+          곱하기
+          &#34;=&#34; * 10 → &#34;==========&#34;
+      
+      
+          포매팅(f-string)
+          f&#34;{name}님 환영합니다&#34;
+      
+  
+
+greet = &#34;Hello &#34; + &#34;World&#34;
+print(greet)  # Hello World
+
+word = &#34;Python&#34;
+print(word[2:5])  # tho
+
+🧩 리스트 (list)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          추가
+          append()
+      
+      
+          삽입
+          insert()
+      
+      
+          삭제
+          remove(), pop()
+      
+      
+          정렬
+          sort(), reverse()
+      
+      
+          인덱싱/슬라이싱
+          a[0], a[1:3]
+      
+  
+
+a = [1, 2, 3]
+a.append(4)
+print(a)  # [1, 2, 3, 4]
+
+🧩 튜플 (tuple)
+
+  
+      
+          특징
+          문법 예시
+      
+  
+  
+      
+          변경 불가
+          (1, 2, 3)
+      
+      
+          인덱싱/슬라이싱 가능
+          t[0], t[1:]
+      
+  
+
+t = (1, 2, 3)
+print(t[1])  # 2
+
+🧩 딕셔너리 (dict)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          추가
+          d['age'] = 30
+      
+      
+          삭제
+          del d['age']
+      
+      
+          조회
+          d.get('name')
+      
+      
+          keys/values/items 조회
+          d.keys(), d.values(), d.items()
+      
+  
+
+d = {'name': 'QJ', 'age': 30}
+print(d['name'])  # QJ
+print(d.get('birth', '0401'))  # 디폴트 값 제공
+
+🧩 집합 (set)
+
+  
+      
+          기능
+          문법 예시
+      
+  
+  
+      
+          생성
+          set([1,2,3])
+      
+      
+          교집합
+          s1 & s2
+      
+      
+          합집합
+          `s1
+      
+      
+          차집합
+          s1 - s2
+      
+  
+
+s1 = set([1, 2, 3])
+s2 = set([2, 3, 4])
+print(s1 & s2)  # {2, 3}
+
+🧩 불형 (bool)
+
+  
+      
+          값
+          결과
+      
+  
+  
+      
+          &#34;&#34;, [], {}
+          False
+      
+      
+          &#34;text&#34;, [1], {1:2}
+          True
+      
+  
+
+print(bool(&#34;&#34;))  # False
+print(bool([1,2,3]))  # True
+
+🧩 변수
+
+  
+      
+          특징
+          문법 예시
+      
+  
+  
+      
+          값 참조
+          a = [1,2,3]
+      
+      
+          복사 (다른 객체 만들기)
+          b = a.copy()
+      
+  
+
+a = [1, 2, 3]
+b = a.copy()
+print(a is b)  # False (다른 객체)
+
+⚠️ 실수 주의 포인트
+
+  
+      
+          실수
+          올바른 이해
+      
+  
+  
+      
+          a = b 복사하면 값 공유됨
+          .copy() 필요
+      
+      
+          튜플은 수정 불가
+          수정하려면 새 튜플 생성
+      
+      
+          딕셔너리 Key 중복은 마지막 값만 남음
+          Key 고유성 유지 필요
+      
+      
+          집합은 인덱싱 불가
+          변환 후 인덱싱
+      
+      
+          빈 값은 False
+          [], {}, &#34;&#34; 모두 False 처리됨
+      
+  
+
+
+🛠️ 실무 연결 요약
+
+API 데이터 가공 → dict
+파라미터 저장 → dict
+다중 결과 저장 → list
+조건 분기 처리 → bool
+중복 제거 리스트 → set
+
+
+🏁 마무리
+
+자료형을 완전히 이해하면,"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[파이썬] 01장. 자료형","item":"https://keonhoban.github.io/mlops-journey/posts/python/01/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[파이썬] 01장. 자료형","name":"[파이썬] 01장. 자료형","description":"📌 자료형이란? 데이터를 저장하고 조작하는 방법을 결정하는 파이썬의 기본 단위\n🧠 결정적 핵심 요약 자료형 설명 예시 숫자형 수 표현 (정수, 실수) 1, -3, 3.14 문자열 문자 집합, 변경 불가 \u0026quot;Hello\u0026quot;, 'Python' 리스트 여러 값을 순서대로 저장, 변경 가능 [1, 2, 'a'] 튜플 여러 값을 순서대로 저장, 변경 불가 (1, 2, 'a') 딕셔너리 키-값 쌍으로 저장 {'name': 'QJ'} 집합 중복 없는 데이터 집합 {1, 2, 3} 불형 참(True)/거짓(False) 표현 True, False 변수 데이터를 저장하는 이름표 a = 3 📊 자료형 관계 흐름도 [ 데이터 입력 ] ↓ [ 자료형 선택 ] ├─ 수치 → 숫자형 ├─ 문자 → 문자열 ├─ 순서 집합 → 리스트 / 튜플 ├─ 키-값 매칭 → 딕셔너리 ├─ 중복 제거 → 집합 └─ 조건 판단 → 불형 🔥 자료형별 핵심 문법 + 코드 예시 🧩 숫자형 (int, float) 기능 문법 예시 덧셈 3 + 4 → 7 뺄셈 7 - 3 → 4 곱셈 3 * 4 → 12 나눗셈 7 / 4 → 1.75 몫 7 // 4 → 1 나머지 7 % 4 → 3 제곱 2 ** 3 → 8 a = 7 b = 4 print(a // b) # 몫 print(a % b) # 나머지 🧩 문자열 (str) 기능 문법 예시 인덱싱 \u0026quot;Python\u0026quot;[0] → 'P' 슬라이싱 \u0026quot;Python\u0026quot;[0:3] → 'Pyt' 더하기 \u0026quot;Hello\u0026quot; + \u0026quot;World\u0026quot; → \u0026quot;HelloWorld\u0026quot; 곱하기 \u0026quot;=\u0026quot; * 10 → \u0026quot;==========\u0026quot; 포매팅(f-string) f\u0026quot;{name}님 환영합니다\u0026quot; greet = \u0026#34;Hello \u0026#34; + \u0026#34;World\u0026#34; print(greet) # Hello World word = \u0026#34;Python\u0026#34; print(word[2:5]) # tho 🧩 리스트 (list) 기능 문법 예시 추가 append() 삽입 insert() 삭제 remove(), pop() 정렬 sort(), reverse() 인덱싱/슬라이싱 a[0], a[1:3] a = [1, 2, 3] a.append(4) print(a) # [1, 2, 3, 4] 🧩 튜플 (tuple) 특징 문법 예시 변경 불가 (1, 2, 3) 인덱싱/슬라이싱 가능 t[0], t[1:] t = (1, 2, 3) print(t[1]) # 2 🧩 딕셔너리 (dict) 기능 문법 예시 추가 d['age'] = 30 삭제 del d['age'] 조회 d.get('name') keys/values/items 조회 d.keys(), d.values(), d.items() d = {\u0026#39;name\u0026#39;: \u0026#39;QJ\u0026#39;, \u0026#39;age\u0026#39;: 30} print(d[\u0026#39;name\u0026#39;]) # QJ print(d.get(\u0026#39;birth\u0026#39;, \u0026#39;0401\u0026#39;)) # 디폴트 값 제공 🧩 집합 (set) 기능 문법 예시 생성 set([1,2,3]) 교집합 s1 \u0026amp; s2 합집합 `s1 차집합 s1 - s2 s1 = set([1, 2, 3]) s2 = set([2, 3, 4]) print(s1 \u0026amp; s2) # {2, 3} 🧩 불형 (bool) 값 결과 \u0026quot;\u0026quot;, [], {} False \u0026quot;text\u0026quot;, [1], {1:2} True print(bool(\u0026#34;\u0026#34;)) # False print(bool([1,2,3])) # True 🧩 변수 특징 문법 예시 값 참조 a = [1,2,3] 복사 (다른 객체 만들기) b = a.copy() a = [1, 2, 3] b = a.copy() print(a is b) # False (다른 객체) ⚠️ 실수 주의 포인트 실수 올바른 이해 a = b 복사하면 값 공유됨 .copy() 필요 튜플은 수정 불가 수정하려면 새 튜플 생성 딕셔너리 Key 중복은 마지막 값만 남음 Key 고유성 유지 필요 집합은 인덱싱 불가 변환 후 인덱싱 빈 값은 False [], {}, \u0026quot;\u0026quot; 모두 False 처리됨 🛠️ 실무 연결 요약 API 데이터 가공 → dict 파라미터 저장 → dict 다중 결과 저장 → list 조건 분기 처리 → bool 중복 제거 리스트 → set 🏁 마무리 자료형을 완전히 이해하면,\n","keywords":[],"articleBody":"📌 자료형이란? 데이터를 저장하고 조작하는 방법을 결정하는 파이썬의 기본 단위\n🧠 결정적 핵심 요약 자료형 설명 예시 숫자형 수 표현 (정수, 실수) 1, -3, 3.14 문자열 문자 집합, 변경 불가 \"Hello\", 'Python' 리스트 여러 값을 순서대로 저장, 변경 가능 [1, 2, 'a'] 튜플 여러 값을 순서대로 저장, 변경 불가 (1, 2, 'a') 딕셔너리 키-값 쌍으로 저장 {'name': 'QJ'} 집합 중복 없는 데이터 집합 {1, 2, 3} 불형 참(True)/거짓(False) 표현 True, False 변수 데이터를 저장하는 이름표 a = 3 📊 자료형 관계 흐름도 [ 데이터 입력 ] ↓ [ 자료형 선택 ] ├─ 수치 → 숫자형 ├─ 문자 → 문자열 ├─ 순서 집합 → 리스트 / 튜플 ├─ 키-값 매칭 → 딕셔너리 ├─ 중복 제거 → 집합 └─ 조건 판단 → 불형 🔥 자료형별 핵심 문법 + 코드 예시 🧩 숫자형 (int, float) 기능 문법 예시 덧셈 3 + 4 → 7 뺄셈 7 - 3 → 4 곱셈 3 * 4 → 12 나눗셈 7 / 4 → 1.75 몫 7 // 4 → 1 나머지 7 % 4 → 3 제곱 2 ** 3 → 8 a = 7 b = 4 print(a // b) # 몫 print(a % b) # 나머지 🧩 문자열 (str) 기능 문법 예시 인덱싱 \"Python\"[0] → 'P' 슬라이싱 \"Python\"[0:3] → 'Pyt' 더하기 \"Hello\" + \"World\" → \"HelloWorld\" 곱하기 \"=\" * 10 → \"==========\" 포매팅(f-string) f\"{name}님 환영합니다\" greet = \"Hello \" + \"World\" print(greet) # Hello World word = \"Python\" print(word[2:5]) # tho 🧩 리스트 (list) 기능 문법 예시 추가 append() 삽입 insert() 삭제 remove(), pop() 정렬 sort(), reverse() 인덱싱/슬라이싱 a[0], a[1:3] a = [1, 2, 3] a.append(4) print(a) # [1, 2, 3, 4] 🧩 튜플 (tuple) 특징 문법 예시 변경 불가 (1, 2, 3) 인덱싱/슬라이싱 가능 t[0], t[1:] t = (1, 2, 3) print(t[1]) # 2 🧩 딕셔너리 (dict) 기능 문법 예시 추가 d['age'] = 30 삭제 del d['age'] 조회 d.get('name') keys/values/items 조회 d.keys(), d.values(), d.items() d = {'name': 'QJ', 'age': 30} print(d['name']) # QJ print(d.get('birth', '0401')) # 디폴트 값 제공 🧩 집합 (set) 기능 문법 예시 생성 set([1,2,3]) 교집합 s1 \u0026 s2 합집합 `s1 차집합 s1 - s2 s1 = set([1, 2, 3]) s2 = set([2, 3, 4]) print(s1 \u0026 s2) # {2, 3} 🧩 불형 (bool) 값 결과 \"\", [], {} False \"text\", [1], {1:2} True print(bool(\"\")) # False print(bool([1,2,3])) # True 🧩 변수 특징 문법 예시 값 참조 a = [1,2,3] 복사 (다른 객체 만들기) b = a.copy() a = [1, 2, 3] b = a.copy() print(a is b) # False (다른 객체) ⚠️ 실수 주의 포인트 실수 올바른 이해 a = b 복사하면 값 공유됨 .copy() 필요 튜플은 수정 불가 수정하려면 새 튜플 생성 딕셔너리 Key 중복은 마지막 값만 남음 Key 고유성 유지 필요 집합은 인덱싱 불가 변환 후 인덱싱 빈 값은 False [], {}, \"\" 모두 False 처리됨 🛠️ 실무 연결 요약 API 데이터 가공 → dict 파라미터 저장 → dict 다중 결과 저장 → list 조건 분기 처리 → bool 중복 제거 리스트 → set 🏁 마무리 자료형을 완전히 이해하면,\n파이썬 코드의 구조를 설계할 수 있다.\n","wordCount":"498","inLanguage":"en","datePublished":"2025-04-26T10:08:22+09:00","dateModified":"2025-04-26T10:08:22+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/python/01/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[파이썬] 01장. 자료형</h1><div class=post-meta><span title='2025-04-26 10:08:22 +0900 +0900'>April 26, 2025</span>&nbsp;·&nbsp;3 min</div></header><div class=post-content><h2 id=-자료형이란>📌 자료형이란?<a hidden class=anchor aria-hidden=true href=#-자료형이란>#</a></h2><blockquote><p>데이터를 저장하고 조작하는 방법을 결정하는 파이썬의 기본 단위</p></blockquote><hr><h2 id=-결정적-핵심-요약>🧠 결정적 핵심 요약<a hidden class=anchor aria-hidden=true href=#-결정적-핵심-요약>#</a></h2><table><thead><tr><th>자료형</th><th>설명</th><th>예시</th></tr></thead><tbody><tr><td><strong>숫자형</strong></td><td>수 표현 (정수, 실수)</td><td><code>1</code>, <code>-3</code>, <code>3.14</code></td></tr><tr><td><strong>문자열</strong></td><td>문자 집합, 변경 불가</td><td><code>"Hello"</code>, <code>'Python'</code></td></tr><tr><td><strong>리스트</strong></td><td>여러 값을 순서대로 저장, 변경 가능</td><td><code>[1, 2, 'a']</code></td></tr><tr><td><strong>튜플</strong></td><td>여러 값을 순서대로 저장, 변경 불가</td><td><code>(1, 2, 'a')</code></td></tr><tr><td><strong>딕셔너리</strong></td><td>키-값 쌍으로 저장</td><td><code>{'name': 'QJ'}</code></td></tr><tr><td><strong>집합</strong></td><td>중복 없는 데이터 집합</td><td><code>{1, 2, 3}</code></td></tr><tr><td><strong>불형</strong></td><td>참(True)/거짓(False) 표현</td><td><code>True</code>, <code>False</code></td></tr><tr><td><strong>변수</strong></td><td>데이터를 저장하는 이름표</td><td><code>a = 3</code></td></tr></tbody></table><hr><h2 id=-자료형-관계-흐름도>📊 자료형 관계 흐름도<a hidden class=anchor aria-hidden=true href=#-자료형-관계-흐름도>#</a></h2><pre tabindex=0><code>[ 데이터 입력 ]
+   ↓
+[ 자료형 선택 ]
+   ├─ 수치 → 숫자형
+   ├─ 문자 → 문자열
+   ├─ 순서 집합 → 리스트 / 튜플
+   ├─ 키-값 매칭 → 딕셔너리
+   ├─ 중복 제거 → 집합
+   └─ 조건 판단 → 불형
+</code></pre><hr><h2 id=-자료형별-핵심-문법--코드-예시>🔥 자료형별 핵심 문법 + 코드 예시<a hidden class=anchor aria-hidden=true href=#-자료형별-핵심-문법--코드-예시>#</a></h2><hr><h3 id=-숫자형-int-float>🧩 숫자형 (int, float)<a hidden class=anchor aria-hidden=true href=#-숫자형-int-float>#</a></h3><table><thead><tr><th>기능</th><th>문법 예시</th></tr></thead><tbody><tr><td>덧셈</td><td><code>3 + 4 → 7</code></td></tr><tr><td>뺄셈</td><td><code>7 - 3 → 4</code></td></tr><tr><td>곱셈</td><td><code>3 * 4 → 12</code></td></tr><tr><td>나눗셈</td><td><code>7 / 4 → 1.75</code></td></tr><tr><td>몫</td><td><code>7 // 4 → 1</code></td></tr><tr><td>나머지</td><td><code>7 % 4 → 3</code></td></tr><tr><td>제곱</td><td><code>2 ** 3 → 8</code></td></tr></tbody></table><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>a <span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span>
+</span></span><span style=display:flex><span>b <span style=color:#f92672>=</span> <span style=color:#ae81ff>4</span>
+</span></span><span style=display:flex><span>print(a <span style=color:#f92672>//</span> b)  <span style=color:#75715e># 몫</span>
+</span></span><span style=display:flex><span>print(a <span style=color:#f92672>%</span> b)   <span style=color:#75715e># 나머지</span>
+</span></span></code></pre></div><hr><h3 id=-문자열-str>🧩 문자열 (str)<a hidden class=anchor aria-hidden=true href=#-문자열-str>#</a></h3><table><thead><tr><th>기능</th><th>문법 예시</th></tr></thead><tbody><tr><td>인덱싱</td><td><code>"Python"[0] → 'P'</code></td></tr><tr><td>슬라이싱</td><td><code>"Python"[0:3] → 'Pyt'</code></td></tr><tr><td>더하기</td><td><code>"Hello" + "World" → "HelloWorld"</code></td></tr><tr><td>곱하기</td><td><code>"=" * 10 → "=========="</code></td></tr><tr><td>포매팅(f-string)</td><td><code>f"{name}님 환영합니다"</code></td></tr></tbody></table><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>greet <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Hello &#34;</span> <span style=color:#f92672>+</span> <span style=color:#e6db74>&#34;World&#34;</span>
+</span></span><span style=display:flex><span>print(greet)  <span style=color:#75715e># Hello World</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>word <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Python&#34;</span>
+</span></span><span style=display:flex><span>print(word[<span style=color:#ae81ff>2</span>:<span style=color:#ae81ff>5</span>])  <span style=color:#75715e># tho</span>
+</span></span></code></pre></div><hr><h3 id=-리스트-list>🧩 리스트 (list)<a hidden class=anchor aria-hidden=true href=#-리스트-list>#</a></h3><table><thead><tr><th>기능</th><th>문법 예시</th></tr></thead><tbody><tr><td>추가</td><td><code>append()</code></td></tr><tr><td>삽입</td><td><code>insert()</code></td></tr><tr><td>삭제</td><td><code>remove()</code>, <code>pop()</code></td></tr><tr><td>정렬</td><td><code>sort()</code>, <code>reverse()</code></td></tr><tr><td>인덱싱/슬라이싱</td><td><code>a[0]</code>, <code>a[1:3]</code></td></tr></tbody></table><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>a <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>]
+</span></span><span style=display:flex><span>a<span style=color:#f92672>.</span>append(<span style=color:#ae81ff>4</span>)
+</span></span><span style=display:flex><span>print(a)  <span style=color:#75715e># [1, 2, 3, 4]</span>
+</span></span></code></pre></div><hr><h3 id=-튜플-tuple>🧩 튜플 (tuple)<a hidden class=anchor aria-hidden=true href=#-튜플-tuple>#</a></h3><table><thead><tr><th>특징</th><th>문법 예시</th></tr></thead><tbody><tr><td>변경 불가</td><td><code>(1, 2, 3)</code></td></tr><tr><td>인덱싱/슬라이싱 가능</td><td><code>t[0]</code>, <code>t[1:]</code></td></tr></tbody></table><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>t <span style=color:#f92672>=</span> (<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>)
+</span></span><span style=display:flex><span>print(t[<span style=color:#ae81ff>1</span>])  <span style=color:#75715e># 2</span>
+</span></span></code></pre></div><hr><h3 id=-딕셔너리-dict>🧩 딕셔너리 (dict)<a hidden class=anchor aria-hidden=true href=#-딕셔너리-dict>#</a></h3><table><thead><tr><th>기능</th><th>문법 예시</th></tr></thead><tbody><tr><td>추가</td><td><code>d['age'] = 30</code></td></tr><tr><td>삭제</td><td><code>del d['age']</code></td></tr><tr><td>조회</td><td><code>d.get('name')</code></td></tr><tr><td>keys/values/items 조회</td><td><code>d.keys()</code>, <code>d.values()</code>, <code>d.items()</code></td></tr></tbody></table><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>d <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#39;name&#39;</span>: <span style=color:#e6db74>&#39;QJ&#39;</span>, <span style=color:#e6db74>&#39;age&#39;</span>: <span style=color:#ae81ff>30</span>}
+</span></span><span style=display:flex><span>print(d[<span style=color:#e6db74>&#39;name&#39;</span>])  <span style=color:#75715e># QJ</span>
+</span></span><span style=display:flex><span>print(d<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#39;birth&#39;</span>, <span style=color:#e6db74>&#39;0401&#39;</span>))  <span style=color:#75715e># 디폴트 값 제공</span>
+</span></span></code></pre></div><hr><h3 id=-집합-set>🧩 집합 (set)<a hidden class=anchor aria-hidden=true href=#-집합-set>#</a></h3><table><thead><tr><th>기능</th><th>문법 예시</th></tr></thead><tbody><tr><td>생성</td><td><code>set([1,2,3])</code></td></tr><tr><td>교집합</td><td><code>s1 & s2</code></td></tr><tr><td>합집합</td><td>`s1</td></tr><tr><td>차집합</td><td><code>s1 - s2</code></td></tr></tbody></table><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>s1 <span style=color:#f92672>=</span> set([<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>])
+</span></span><span style=display:flex><span>s2 <span style=color:#f92672>=</span> set([<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>])
+</span></span><span style=display:flex><span>print(s1 <span style=color:#f92672>&amp;</span> s2)  <span style=color:#75715e># {2, 3}</span>
+</span></span></code></pre></div><hr><h3 id=-불형-bool>🧩 불형 (bool)<a hidden class=anchor aria-hidden=true href=#-불형-bool>#</a></h3><table><thead><tr><th>값</th><th>결과</th></tr></thead><tbody><tr><td><code>""</code>, <code>[]</code>, <code>{}</code></td><td>False</td></tr><tr><td><code>"text"</code>, <code>[1]</code>, <code>{1:2}</code></td><td>True</td></tr></tbody></table><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>print(bool(<span style=color:#e6db74>&#34;&#34;</span>))  <span style=color:#75715e># False</span>
+</span></span><span style=display:flex><span>print(bool([<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>,<span style=color:#ae81ff>3</span>]))  <span style=color:#75715e># True</span>
+</span></span></code></pre></div><hr><h3 id=-변수>🧩 변수<a hidden class=anchor aria-hidden=true href=#-변수>#</a></h3><table><thead><tr><th>특징</th><th>문법 예시</th></tr></thead><tbody><tr><td>값 참조</td><td><code>a = [1,2,3]</code></td></tr><tr><td>복사 (다른 객체 만들기)</td><td><code>b = a.copy()</code></td></tr></tbody></table><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>a <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>]
+</span></span><span style=display:flex><span>b <span style=color:#f92672>=</span> a<span style=color:#f92672>.</span>copy()
+</span></span><span style=display:flex><span>print(a <span style=color:#f92672>is</span> b)  <span style=color:#75715e># False (다른 객체)</span>
+</span></span></code></pre></div><hr><h2 id=-실수-주의-포인트>⚠️ 실수 주의 포인트<a hidden class=anchor aria-hidden=true href=#-실수-주의-포인트>#</a></h2><table><thead><tr><th>실수</th><th>올바른 이해</th></tr></thead><tbody><tr><td><code>a = b</code> 복사하면 값 공유됨</td><td><code>.copy()</code> 필요</td></tr><tr><td>튜플은 수정 불가</td><td>수정하려면 새 튜플 생성</td></tr><tr><td>딕셔너리 Key 중복은 마지막 값만 남음</td><td>Key 고유성 유지 필요</td></tr><tr><td>집합은 인덱싱 불가</td><td>변환 후 인덱싱</td></tr><tr><td>빈 값은 False</td><td><code>[]</code>, <code>{}</code>, <code>""</code> 모두 False 처리됨</td></tr></tbody></table><hr><h2 id=-실무-연결-요약>🛠️ 실무 연결 요약<a hidden class=anchor aria-hidden=true href=#-실무-연결-요약>#</a></h2><ul><li>API 데이터 가공 → <code>dict</code></li><li>파라미터 저장 → <code>dict</code></li><li>다중 결과 저장 → <code>list</code></li><li>조건 분기 처리 → <code>bool</code></li><li>중복 제거 리스트 → <code>set</code></li></ul><hr><h2 id=-마무리>🏁 마무리<a hidden class=anchor aria-hidden=true href=#-마무리>#</a></h2><blockquote><p>자료형을 완전히 이해하면,</p><p>파이썬 코드의 구조를 설계할 수 있다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/linux/19/><span class=title>Next »</span><br><span>[리눅스] 19장. 소프트웨어 패키지 관리</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

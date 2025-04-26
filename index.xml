@@ -1,4 +1,362 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 25 Apr 2025 11:08:02 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[셸 스크립트] 04. Monitoring</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/04/</link><pubDate>Fri, 25 Apr 2025 11:08:02 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/04/</guid><description>&lt;h1 id="-디스크-사용률-초과-시-자동-로그-정리">✅ 디스크 사용률 초과 시 자동 로그 정리&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 26 Apr 2025 10:08:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 01장. 자료형</title><link>https://keonhoban.github.io/mlops-journey/posts/python/01/</link><pubDate>Sat, 26 Apr 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/01/</guid><description>&lt;h2 id="-자료형이란">📌 자료형이란?&lt;/h2>
+&lt;blockquote>
+&lt;p>데이터를 저장하고 조작하는 방법을 결정하는 파이썬의 기본 단위&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>자료형&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;th>예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>숫자형&lt;/strong>&lt;/td>
+&lt;td>수 표현 (정수, 실수)&lt;/td>
+&lt;td>&lt;code>1&lt;/code>, &lt;code>-3&lt;/code>, &lt;code>3.14&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>문자열&lt;/strong>&lt;/td>
+&lt;td>문자 집합, 변경 불가&lt;/td>
+&lt;td>&lt;code>&amp;quot;Hello&amp;quot;&lt;/code>, &lt;code>'Python'&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>리스트&lt;/strong>&lt;/td>
+&lt;td>여러 값을 순서대로 저장, 변경 가능&lt;/td>
+&lt;td>&lt;code>[1, 2, 'a']&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>튜플&lt;/strong>&lt;/td>
+&lt;td>여러 값을 순서대로 저장, 변경 불가&lt;/td>
+&lt;td>&lt;code>(1, 2, 'a')&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>딕셔너리&lt;/strong>&lt;/td>
+&lt;td>키-값 쌍으로 저장&lt;/td>
+&lt;td>&lt;code>{'name': 'QJ'}&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>집합&lt;/strong>&lt;/td>
+&lt;td>중복 없는 데이터 집합&lt;/td>
+&lt;td>&lt;code>{1, 2, 3}&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>불형&lt;/strong>&lt;/td>
+&lt;td>참(True)/거짓(False) 표현&lt;/td>
+&lt;td>&lt;code>True&lt;/code>, &lt;code>False&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>변수&lt;/strong>&lt;/td>
+&lt;td>데이터를 저장하는 이름표&lt;/td>
+&lt;td>&lt;code>a = 3&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-자료형-관계-흐름도">📊 자료형 관계 흐름도&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[ 데이터 입력 ]
+↓
+[ 자료형 선택 ]
+├─ 수치 → 숫자형
+├─ 문자 → 문자열
+├─ 순서 집합 → 리스트 / 튜플
+├─ 키-값 매칭 → 딕셔너리
+├─ 중복 제거 → 집합
+└─ 조건 판단 → 불형
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-자료형별-핵심-문법--코드-예시">🔥 자료형별 핵심 문법 + 코드 예시&lt;/h2>
+&lt;hr>
+&lt;h3 id="-숫자형-int-float">🧩 숫자형 (int, float)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>덧셈&lt;/td>
+&lt;td>&lt;code>3 + 4 → 7&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>뺄셈&lt;/td>
+&lt;td>&lt;code>7 - 3 → 4&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>곱셈&lt;/td>
+&lt;td>&lt;code>3 * 4 → 12&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>나눗셈&lt;/td>
+&lt;td>&lt;code>7 / 4 → 1.75&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>몫&lt;/td>
+&lt;td>&lt;code>7 // 4 → 1&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>나머지&lt;/td>
+&lt;td>&lt;code>7 % 4 → 3&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>제곱&lt;/td>
+&lt;td>&lt;code>2 ** 3 → 8&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>a &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">7&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>b &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(a &lt;span style="color:#f92672">//&lt;/span> b) &lt;span style="color:#75715e"># 몫&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(a &lt;span style="color:#f92672">%&lt;/span> b) &lt;span style="color:#75715e"># 나머지&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-문자열-str">🧩 문자열 (str)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>인덱싱&lt;/td>
+&lt;td>&lt;code>&amp;quot;Python&amp;quot;[0] → 'P'&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>슬라이싱&lt;/td>
+&lt;td>&lt;code>&amp;quot;Python&amp;quot;[0:3] → 'Pyt'&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>더하기&lt;/td>
+&lt;td>&lt;code>&amp;quot;Hello&amp;quot; + &amp;quot;World&amp;quot; → &amp;quot;HelloWorld&amp;quot;&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>곱하기&lt;/td>
+&lt;td>&lt;code>&amp;quot;=&amp;quot; * 10 → &amp;quot;==========&amp;quot;&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>포매팅(f-string)&lt;/td>
+&lt;td>&lt;code>f&amp;quot;{name}님 환영합니다&amp;quot;&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>greet &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Hello &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;World&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(greet) &lt;span style="color:#75715e"># Hello World&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>word &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Python&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(word[&lt;span style="color:#ae81ff">2&lt;/span>:&lt;span style="color:#ae81ff">5&lt;/span>]) &lt;span style="color:#75715e"># tho&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-리스트-list">🧩 리스트 (list)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>추가&lt;/td>
+&lt;td>&lt;code>append()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>삽입&lt;/td>
+&lt;td>&lt;code>insert()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>삭제&lt;/td>
+&lt;td>&lt;code>remove()&lt;/code>, &lt;code>pop()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>정렬&lt;/td>
+&lt;td>&lt;code>sort()&lt;/code>, &lt;code>reverse()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>인덱싱/슬라이싱&lt;/td>
+&lt;td>&lt;code>a[0]&lt;/code>, &lt;code>a[1:3]&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>a &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>a&lt;span style="color:#f92672">.&lt;/span>append(&lt;span style="color:#ae81ff">4&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(a) &lt;span style="color:#75715e"># [1, 2, 3, 4]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-튜플-tuple">🧩 튜플 (tuple)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>특징&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>변경 불가&lt;/td>
+&lt;td>&lt;code>(1, 2, 3)&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>인덱싱/슬라이싱 가능&lt;/td>
+&lt;td>&lt;code>t[0]&lt;/code>, &lt;code>t[1:]&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>t &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(t[&lt;span style="color:#ae81ff">1&lt;/span>]) &lt;span style="color:#75715e"># 2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-딕셔너리-dict">🧩 딕셔너리 (dict)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>추가&lt;/td>
+&lt;td>&lt;code>d['age'] = 30&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>삭제&lt;/td>
+&lt;td>&lt;code>del d['age']&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조회&lt;/td>
+&lt;td>&lt;code>d.get('name')&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>keys/values/items 조회&lt;/td>
+&lt;td>&lt;code>d.keys()&lt;/code>, &lt;code>d.values()&lt;/code>, &lt;code>d.items()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>d &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#e6db74">&amp;#39;name&amp;#39;&lt;/span>: &lt;span style="color:#e6db74">&amp;#39;QJ&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;age&amp;#39;&lt;/span>: &lt;span style="color:#ae81ff">30&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(d[&lt;span style="color:#e6db74">&amp;#39;name&amp;#39;&lt;/span>]) &lt;span style="color:#75715e"># QJ&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(d&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#39;birth&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;0401&amp;#39;&lt;/span>)) &lt;span style="color:#75715e"># 디폴트 값 제공&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-집합-set">🧩 집합 (set)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>생성&lt;/td>
+&lt;td>&lt;code>set([1,2,3])&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>교집합&lt;/td>
+&lt;td>&lt;code>s1 &amp;amp; s2&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>합집합&lt;/td>
+&lt;td>`s1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>차집합&lt;/td>
+&lt;td>&lt;code>s1 - s2&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>s1 &lt;span style="color:#f92672">=&lt;/span> set([&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>s2 &lt;span style="color:#f92672">=&lt;/span> set([&lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#ae81ff">4&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(s1 &lt;span style="color:#f92672">&amp;amp;&lt;/span> s2) &lt;span style="color:#75715e"># {2, 3}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-불형-bool">🧩 불형 (bool)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>값&lt;/th>
+&lt;th>결과&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>&amp;quot;&amp;quot;&lt;/code>, &lt;code>[]&lt;/code>, &lt;code>{}&lt;/code>&lt;/td>
+&lt;td>False&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>&amp;quot;text&amp;quot;&lt;/code>, &lt;code>[1]&lt;/code>, &lt;code>{1:2}&lt;/code>&lt;/td>
+&lt;td>True&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>print(bool(&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>)) &lt;span style="color:#75715e"># False&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(bool([&lt;span style="color:#ae81ff">1&lt;/span>,&lt;span style="color:#ae81ff">2&lt;/span>,&lt;span style="color:#ae81ff">3&lt;/span>])) &lt;span style="color:#75715e"># True&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-변수">🧩 변수&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>특징&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>값 참조&lt;/td>
+&lt;td>&lt;code>a = [1,2,3]&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>복사 (다른 객체 만들기)&lt;/td>
+&lt;td>&lt;code>b = a.copy()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>a &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>b &lt;span style="color:#f92672">=&lt;/span> a&lt;span style="color:#f92672">.&lt;/span>copy()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(a &lt;span style="color:#f92672">is&lt;/span> b) &lt;span style="color:#75715e"># False (다른 객체)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-실수-주의-포인트">⚠️ 실수 주의 포인트&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>실수&lt;/th>
+&lt;th>올바른 이해&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>a = b&lt;/code> 복사하면 값 공유됨&lt;/td>
+&lt;td>&lt;code>.copy()&lt;/code> 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>튜플은 수정 불가&lt;/td>
+&lt;td>수정하려면 새 튜플 생성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>딕셔너리 Key 중복은 마지막 값만 남음&lt;/td>
+&lt;td>Key 고유성 유지 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>집합은 인덱싱 불가&lt;/td>
+&lt;td>변환 후 인덱싱&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>빈 값은 False&lt;/td>
+&lt;td>&lt;code>[]&lt;/code>, &lt;code>{}&lt;/code>, &lt;code>&amp;quot;&amp;quot;&lt;/code> 모두 False 처리됨&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-실무-연결-요약">🛠️ 실무 연결 요약&lt;/h2>
+&lt;ul>
+&lt;li>API 데이터 가공 → &lt;code>dict&lt;/code>&lt;/li>
+&lt;li>파라미터 저장 → &lt;code>dict&lt;/code>&lt;/li>
+&lt;li>다중 결과 저장 → &lt;code>list&lt;/code>&lt;/li>
+&lt;li>조건 분기 처리 → &lt;code>bool&lt;/code>&lt;/li>
+&lt;li>중복 제거 리스트 → &lt;code>set&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-마무리">🏁 마무리&lt;/h2>
+&lt;blockquote>
+&lt;p>자료형을 완전히 이해하면,&lt;/p></description></item><item><title>[셸 스크립트] 04. Monitoring</title><link>https://keonhoban.github.io/mlops-journey/projects/shell_script/04/</link><pubDate>Fri, 25 Apr 2025 11:08:02 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/shell_script/04/</guid><description>&lt;h1 id="-디스크-사용률-초과-시-자동-로그-정리">✅ 디스크 사용률 초과 시 자동 로그 정리&lt;/h1>
 &lt;blockquote>
 &lt;p>운영 중 디스크 용량 초과로 장애가 발생하기 전에,
 서버가 스스로 로그를 정리하도록 만드는 자동화 스크립트입니다.&lt;/p>&lt;/blockquote>
