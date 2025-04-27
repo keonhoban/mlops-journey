@@ -1,4 +1,280 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Python on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/python/</link><description>Recent content in Python on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 26 Apr 2025 10:08:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/python/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 01장. 자료형</title><link>https://keonhoban.github.io/mlops-journey/posts/python/01/</link><pubDate>Sat, 26 Apr 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/01/</guid><description>&lt;h2 id="-자료형이란">📌 자료형이란?&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Python on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/python/</link><description>Recent content in Python on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 27 Apr 2025 09:10:54 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/python/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 02장. 제어문</title><link>https://keonhoban.github.io/mlops-journey/posts/python/02/</link><pubDate>Sun, 27 Apr 2025 09:10:54 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/02/</guid><description>&lt;h2 id="-제어문이란">📌 제어문이란?&lt;/h2>
+&lt;blockquote>
+&lt;p>프로그램의 흐름을 제어하는 문법&lt;/p>
+&lt;p>(조건, 반복, 선택을 통해 프로그램 진행 방향을 결정한다.)&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>제어문&lt;/th>
+&lt;th>핵심 역할&lt;/th>
+&lt;th>사용 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>if 문&lt;/strong>&lt;/td>
+&lt;td>조건에 따라 실행 분기&lt;/td>
+&lt;td>&lt;code>if money &amp;gt; 0:&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>while 문&lt;/strong>&lt;/td>
+&lt;td>조건이 참일 동안 반복&lt;/td>
+&lt;td>&lt;code>while count &amp;lt; 10:&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>for 문&lt;/strong>&lt;/td>
+&lt;td>반복 가능한 객체 순회&lt;/td>
+&lt;td>&lt;code>for i in range(5):&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>break&lt;/strong>&lt;/td>
+&lt;td>반복문 강제 종료&lt;/td>
+&lt;td>&lt;code>break&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>continue&lt;/strong>&lt;/td>
+&lt;td>반복문 처음으로 이동&lt;/td>
+&lt;td>&lt;code>continue&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>리스트 컴프리헨션&lt;/strong>&lt;/td>
+&lt;td>반복+조건을 한 줄로 표현&lt;/td>
+&lt;td>&lt;code>[x*2 for x in a if x&amp;gt;0]&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-제어문-흐름도-요약">📊 제어문 흐름도 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[조건 검사]
+↓
+[Yes] → 실행
+↓
+[반복 조건 만족?]
+↓
+[반복]
+↓
+[종료]
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-제어문별-핵심-문법--코드-예시">🔥 제어문별 핵심 문법 + 코드 예시&lt;/h2>
+&lt;hr>
+&lt;h3 id="-if-문-조건문">🧩 if 문 (조건문)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>기본 if문&lt;/td>
+&lt;td>&lt;code>if 조건:&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>else 사용&lt;/td>
+&lt;td>&lt;code>if 조건: ... else: ...&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>elif 사용&lt;/td>
+&lt;td>&lt;code>if 조건: ... elif 조건: ... else: ...&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>pass 사용&lt;/td>
+&lt;td>아무 것도 안 하고 넘김&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>money &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> money:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;택시를 타고 간다.&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;걸어 간다.&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;strong>비교 연산자&lt;/strong>: &lt;code>&amp;lt;&lt;/code>, &lt;code>&amp;gt;&lt;/code>, &lt;code>==&lt;/code>, &lt;code>!=&lt;/code>, &lt;code>&amp;gt;=&lt;/code>, &lt;code>&amp;lt;=&lt;/code>&lt;/li>
+&lt;li>&lt;strong>논리 연산자&lt;/strong>: &lt;code>and&lt;/code>, &lt;code>or&lt;/code>, &lt;code>not&lt;/code>&lt;/li>
+&lt;li>&lt;strong>in, not in&lt;/strong>: 리스트, 튜플, 문자열에 포함 여부 검사&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#e6db74">&amp;#39;money&amp;#39;&lt;/span> &lt;span style="color:#f92672">in&lt;/span> [&lt;span style="color:#e6db74">&amp;#39;paper&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;cellphone&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;money&amp;#39;&lt;/span>]:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;택시를 타고 간다.&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;strong>조건부 표현식 (한 줄 if)&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>message &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;success&amp;#34;&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> score &lt;span style="color:#f92672">&amp;gt;=&lt;/span> &lt;span style="color:#ae81ff">60&lt;/span> &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#e6db74">&amp;#34;failure&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-while-문-반복">🧩 while 문 (반복)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>기본 사용&lt;/td>
+&lt;td>&lt;code>while 조건:&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>break 사용&lt;/td>
+&lt;td>반복 중단&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>continue 사용&lt;/td>
+&lt;td>다음 반복으로 넘어감&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>treeHit &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">while&lt;/span> treeHit &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> treeHit &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;나무를 &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>treeHit&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">번 찍었습니다.&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;strong>break 예시&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>coffee &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> money &lt;span style="color:#f92672">=&lt;/span> int(input())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> money &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">300&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> coffee &lt;span style="color:#f92672">-=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> coffee &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;strong>continue 예시&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>a &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">while&lt;/span> a &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> a &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> a &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span> &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>: &lt;span style="color:#66d9ef">continue&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(a)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-for-문-반복">🧩 for 문 (반복)&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>리스트, 튜플 순회&lt;/td>
+&lt;td>&lt;code>for i in list:&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>range와 함께 사용&lt;/td>
+&lt;td>&lt;code>for i in range(5):&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>continue 사용&lt;/td>
+&lt;td>조건에 따라 건너뛰기&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>test_list &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#e6db74">&amp;#39;one&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;two&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;three&amp;#39;&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> test_list:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(i)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;strong>range 함수와 함께&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">11&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(i)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;strong>구구단 만들기&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">for&lt;/span> i &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">10&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> j &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">10&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(i&lt;span style="color:#f92672">*&lt;/span>j, end&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34; &amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-리스트-컴프리헨션">🧩 리스트 컴프리헨션&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기능&lt;/th>
+&lt;th>문법 예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>기본형&lt;/td>
+&lt;td>&lt;code>[표현식 for 변수 in 반복가능객체]&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조건 포함&lt;/td>
+&lt;td>&lt;code>[표현식 for 변수 in 반복가능객체 if 조건]&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>a &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#ae81ff">4&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>result &lt;span style="color:#f92672">=&lt;/span> [num&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> num &lt;span style="color:#f92672">in&lt;/span> a]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(result) &lt;span style="color:#75715e"># [3, 6, 9, 12]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;strong>여러 for문 중첩&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>result &lt;span style="color:#f92672">=&lt;/span> [x&lt;span style="color:#f92672">*&lt;/span>y &lt;span style="color:#66d9ef">for&lt;/span> x &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">10&lt;/span>) &lt;span style="color:#66d9ef">for&lt;/span> y &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">10&lt;/span>)]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(result)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-제어문-실수-주의">⚠️ 제어문 실수 주의&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>실수&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>if 문에 &lt;code>:&lt;/code> 빠뜨림&lt;/td>
+&lt;td>무조건 &lt;code>:&lt;/code> 붙이기&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>들여쓰기 혼용 (탭/스페이스)&lt;/td>
+&lt;td>통일: 공백 4칸 권장&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>while 무한 루프&lt;/td>
+&lt;td>탈출 조건 명확히 설정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>for + range 끝 값 주의&lt;/td>
+&lt;td>&lt;code>range(1, 5)&lt;/code> → 1~4까지&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-실무-연결-요약">🛠️ 실무 연결 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>제어문 활용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>서버 상태 주기적 체크&lt;/td>
+&lt;td>&lt;code>while&lt;/code> 반복 + &lt;code>break&lt;/code> 조건 탈출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>데이터 전처리&lt;/td>
+&lt;td>&lt;code>for&lt;/code> 순회 + 조건 처리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조건별 로깅&lt;/td>
+&lt;td>&lt;code>if&lt;/code> + 다양한 조건 분기&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>모델 배포 자동화 스크립트&lt;/td>
+&lt;td>&lt;code>for + range&lt;/code> 활용한 반복 작업&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-마무리">🏁 마무리&lt;/h2>
+&lt;blockquote>
+&lt;p>조건과 반복을 자유자재로 다루면,&lt;/p></description></item><item><title>[파이썬] 01장. 자료형</title><link>https://keonhoban.github.io/mlops-journey/posts/python/01/</link><pubDate>Sat, 26 Apr 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/01/</guid><description>&lt;h2 id="-자료형이란">📌 자료형이란?&lt;/h2>
 &lt;blockquote>
 &lt;p>데이터를 저장하고 조작하는 방법을 결정하는 파이썬의 기본 단위&lt;/p>&lt;/blockquote>
 &lt;hr>
