@@ -1,4 +1,113 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 27 Apr 2025 09:10:54 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 02장. 제어문</title><link>https://keonhoban.github.io/mlops-journey/posts/python/02/</link><pubDate>Sun, 27 Apr 2025 09:10:54 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/02/</guid><description>&lt;h2 id="-제어문이란">📌 제어문이란?&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 28 Apr 2025 10:02:00 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 03장. 함수&amp;입출력</title><link>https://keonhoban.github.io/mlops-journey/posts/python/03/</link><pubDate>Mon, 28 Apr 2025 10:02:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/03/</guid><description>&lt;h2 id="-함수function">📌 함수(Function)&lt;/h2>
+&lt;blockquote>
+&lt;p>입력값을 받아서 어떤 작업을 수행한 뒤 결과값을 반환하는 코드 묶음&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>요약&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>함수 정의&lt;/td>
+&lt;td>&lt;code>def 함수명(매개변수):&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>매개변수&lt;/td>
+&lt;td>입력값을 받는 변수&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>인수&lt;/td>
+&lt;td>함수를 호출할 때 전달하는 값&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>리턴값&lt;/td>
+&lt;td>&lt;code>return&lt;/code>으로 반환되는 값 (항상 1개)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>기본값 설정&lt;/td>
+&lt;td>&lt;code>def func(x=0):&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>가변 인자&lt;/td>
+&lt;td>&lt;code>*args&lt;/code> → 튜플로 받음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>키워드 인자&lt;/td>
+&lt;td>&lt;code>**kwargs&lt;/code> → 딕셔너리로 받음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>함수 안 변수&lt;/td>
+&lt;td>지역 변수 우선 적용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>람다 함수&lt;/td>
+&lt;td>&lt;code>lambda 매개변수: 표현식&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h3 id="-함수-흐름-구조">📊 함수 흐름 구조&lt;/h3>
+&lt;pre tabindex="0">&lt;code>[ 입력값 ]
+↓
+[ 함수 실행 ]
+↓
+[ 결과 리턴 ]
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h3 id="-함수-핵심-문법--코드-예시">🔥 함수 핵심 문법 + 코드 예시&lt;/h3>
+&lt;hr>
+&lt;h3 id="-함수-기본-구조">🧩 함수 기본 구조&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">add&lt;/span>(a, b):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> a &lt;span style="color:#f92672">+&lt;/span> b
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(add(&lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#ae81ff">4&lt;/span>)) &lt;span style="color:#75715e"># 7&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-여러-입력-받기-args">🧩 여러 입력 받기 (*args)&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">add_many&lt;/span>(&lt;span style="color:#f92672">*&lt;/span>args):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> sum(args)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(add_many(&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>)) &lt;span style="color:#75715e"># 6&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-키워드-인자-받기-kwargs">🧩 키워드 인자 받기 (**kwargs)&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">print_kwargs&lt;/span>(&lt;span style="color:#f92672">**&lt;/span>kwargs):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(kwargs)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print_kwargs(name&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;QJ&amp;#34;&lt;/span>, age&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">27&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># {&amp;#39;name&amp;#39;: &amp;#39;QJ&amp;#39;, &amp;#39;age&amp;#39;: 27}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-리턴-여러-개-튜플-형태">🧩 리턴 여러 개 (튜플 형태)&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">calc&lt;/span>(a, b):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> a&lt;span style="color:#f92672">+&lt;/span>b, a&lt;span style="color:#f92672">*&lt;/span>b
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sum_, mul_ &lt;span style="color:#f92672">=&lt;/span> calc(&lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#ae81ff">4&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(sum_, mul_) &lt;span style="color:#75715e"># 7 12&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-기본값-매개변수">🧩 기본값 매개변수&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">greet&lt;/span>(name, age&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">30&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>name&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">님은 &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>age&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">살입니다.&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>greet(&lt;span style="color:#e6db74">&amp;#34;QJ&amp;#34;&lt;/span>) &lt;span style="color:#75715e"># QJ님은 30살입니다.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>greet(&lt;span style="color:#e6db74">&amp;#34;Mew&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">27&lt;/span>) &lt;span style="color:#75715e"># Mew님은 27살입니다.&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-함수-안에서-외부-변수-사용-추천-방식">🧩 함수 안에서 외부 변수 사용 (추천 방식)&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>a &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">add_one&lt;/span>(a):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> a &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> a
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>a &lt;span style="color:#f92672">=&lt;/span> add_one(a)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(a) &lt;span style="color:#75715e"># 2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-lambda-표현">🧩 lambda 표현&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>add &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">lambda&lt;/span> a, b: a &lt;span style="color:#f92672">+&lt;/span> b
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(add(&lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#ae81ff">4&lt;/span>)) &lt;span style="color:#75715e"># 7&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-사용자-입출력">📌 사용자 입출력&lt;/h2>
+&lt;blockquote>
+&lt;p>프로그램과 사용자 간 데이터 주고받기!&lt;/p></description></item><item><title>[파이썬] 02장. 제어문</title><link>https://keonhoban.github.io/mlops-journey/posts/python/02/</link><pubDate>Sun, 27 Apr 2025 09:10:54 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/02/</guid><description>&lt;h2 id="-제어문이란">📌 제어문이란?&lt;/h2>
 &lt;blockquote>
 &lt;p>프로그램의 흐름을 제어하는 문법&lt;/p>
 &lt;p>(조건, 반복, 선택을 통해 프로그램 진행 방향을 결정한다.)&lt;/p>&lt;/blockquote>
@@ -274,7 +383,7 @@
 &lt;hr>
 &lt;h2 id="-마무리">🏁 마무리&lt;/h2>
 &lt;blockquote>
-&lt;p>조건과 반복을 자유자재로 다루면,&lt;/p></description></item><item><title>[파이썬] 01장. 자료형</title><link>https://keonhoban.github.io/mlops-journey/posts/python/01/</link><pubDate>Sat, 26 Apr 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/01/</guid><description>&lt;h2 id="-자료형이란">📌 자료형이란?&lt;/h2>
+&lt;p>조건과 반복을 자유자재로 다루면,&lt;/p></description></item><item><title>[파이썬] 01장. 자료형&amp;변수</title><link>https://keonhoban.github.io/mlops-journey/posts/python/01/</link><pubDate>Sat, 26 Apr 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/01/</guid><description>&lt;h2 id="-자료형이란">📌 자료형이란?&lt;/h2>
 &lt;blockquote>
 &lt;p>데이터를 저장하고 조작하는 방법을 결정하는 파이썬의 기본 단위&lt;/p>&lt;/blockquote>
 &lt;hr>

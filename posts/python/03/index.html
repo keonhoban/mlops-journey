@@ -1,0 +1,282 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[파이썬] 03장. 함수&입출력 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='📌 함수(Function)
+
+입력값을 받아서 어떤 작업을 수행한 뒤 결과값을 반환하는 코드 묶음
+
+🧠 결정적 핵심 요약
+
+  
+      
+          항목
+          요약
+      
+  
+  
+      
+          함수 정의
+          def 함수명(매개변수):
+      
+      
+          매개변수
+          입력값을 받는 변수
+      
+      
+          인수
+          함수를 호출할 때 전달하는 값
+      
+      
+          리턴값
+          return으로 반환되는 값 (항상 1개)
+      
+      
+          기본값 설정
+          def func(x=0):
+      
+      
+          가변 인자
+          *args → 튜플로 받음
+      
+      
+          키워드 인자
+          **kwargs → 딕셔너리로 받음
+      
+      
+          함수 안 변수
+          지역 변수 우선 적용
+      
+      
+          람다 함수
+          lambda 매개변수: 표현식
+      
+  
+
+
+📊 함수 흐름 구조
+[ 입력값 ]
+   ↓
+[ 함수 실행 ]
+   ↓
+[ 결과 리턴 ]
+
+🔥 함수 핵심 문법 + 코드 예시
+
+🧩 함수 기본 구조
+def add(a, b):
+    return a + b
+
+print(add(3, 4))  # 7
+
+🧩 여러 입력 받기 (*args)
+def add_many(*args):
+    return sum(args)
+
+print(add_many(1, 2, 3))  # 6
+
+🧩 키워드 인자 받기 (**kwargs)
+def print_kwargs(**kwargs):
+    print(kwargs)
+
+print_kwargs(name="QJ", age=27)
+# {&#39;name&#39;: &#39;QJ&#39;, &#39;age&#39;: 27}
+
+🧩 리턴 여러 개 (튜플 형태)
+def calc(a, b):
+    return a+b, a*b
+
+sum_, mul_ = calc(3, 4)
+print(sum_, mul_)  # 7 12
+
+🧩 기본값 매개변수
+def greet(name, age=30):
+    print(f"{name}님은 {age}살입니다.")
+
+greet("QJ")          # QJ님은 30살입니다.
+greet("Mew", 27)     # Mew님은 27살입니다.
+
+🧩 함수 안에서 외부 변수 사용 (추천 방식)
+a = 1
+def add_one(a):
+    a += 1
+    return a
+
+a = add_one(a)
+print(a)  # 2
+
+🧩 lambda 표현
+add = lambda a, b: a + b
+print(add(3, 4))  # 7
+
+📌 사용자 입출력
+
+프로그램과 사용자 간 데이터 주고받기!'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/python/03/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/python/03/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/python/03/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[파이썬] 03장. 함수&입출력"><meta property="og:description" content='📌 함수(Function) 입력값을 받아서 어떤 작업을 수행한 뒤 결과값을 반환하는 코드 묶음
+🧠 결정적 핵심 요약 항목 요약 함수 정의 def 함수명(매개변수): 매개변수 입력값을 받는 변수 인수 함수를 호출할 때 전달하는 값 리턴값 return으로 반환되는 값 (항상 1개) 기본값 설정 def func(x=0): 가변 인자 *args → 튜플로 받음 키워드 인자 **kwargs → 딕셔너리로 받음 함수 안 변수 지역 변수 우선 적용 람다 함수 lambda 매개변수: 표현식 📊 함수 흐름 구조 [ 입력값 ] ↓ [ 함수 실행 ] ↓ [ 결과 리턴 ] 🔥 함수 핵심 문법 + 코드 예시 🧩 함수 기본 구조 def add(a, b): return a + b print(add(3, 4)) # 7 🧩 여러 입력 받기 (*args) def add_many(*args): return sum(args) print(add_many(1, 2, 3)) # 6 🧩 키워드 인자 받기 (**kwargs) def print_kwargs(**kwargs): print(kwargs) print_kwargs(name="QJ", age=27) # {&#39;name&#39;: &#39;QJ&#39;, &#39;age&#39;: 27} 🧩 리턴 여러 개 (튜플 형태) def calc(a, b): return a+b, a*b sum_, mul_ = calc(3, 4) print(sum_, mul_) # 7 12 🧩 기본값 매개변수 def greet(name, age=30): print(f"{name}님은 {age}살입니다.") greet("QJ") # QJ님은 30살입니다. greet("Mew", 27) # Mew님은 27살입니다. 🧩 함수 안에서 외부 변수 사용 (추천 방식) a = 1 def add_one(a): a += 1 return a a = add_one(a) print(a) # 2 🧩 lambda 표현 add = lambda a, b: a + b print(add(3, 4)) # 7 📌 사용자 입출력 프로그램과 사용자 간 데이터 주고받기!'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-28T10:02:00+09:00"><meta property="article:modified_time" content="2025-04-28T10:02:00+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[파이썬] 03장. 함수&입출력"><meta name=twitter:description content='📌 함수(Function)
+
+입력값을 받아서 어떤 작업을 수행한 뒤 결과값을 반환하는 코드 묶음
+
+🧠 결정적 핵심 요약
+
+  
+      
+          항목
+          요약
+      
+  
+  
+      
+          함수 정의
+          def 함수명(매개변수):
+      
+      
+          매개변수
+          입력값을 받는 변수
+      
+      
+          인수
+          함수를 호출할 때 전달하는 값
+      
+      
+          리턴값
+          return으로 반환되는 값 (항상 1개)
+      
+      
+          기본값 설정
+          def func(x=0):
+      
+      
+          가변 인자
+          *args → 튜플로 받음
+      
+      
+          키워드 인자
+          **kwargs → 딕셔너리로 받음
+      
+      
+          함수 안 변수
+          지역 변수 우선 적용
+      
+      
+          람다 함수
+          lambda 매개변수: 표현식
+      
+  
+
+
+📊 함수 흐름 구조
+[ 입력값 ]
+   ↓
+[ 함수 실행 ]
+   ↓
+[ 결과 리턴 ]
+
+🔥 함수 핵심 문법 + 코드 예시
+
+🧩 함수 기본 구조
+def add(a, b):
+    return a + b
+
+print(add(3, 4))  # 7
+
+🧩 여러 입력 받기 (*args)
+def add_many(*args):
+    return sum(args)
+
+print(add_many(1, 2, 3))  # 6
+
+🧩 키워드 인자 받기 (**kwargs)
+def print_kwargs(**kwargs):
+    print(kwargs)
+
+print_kwargs(name="QJ", age=27)
+# {&#39;name&#39;: &#39;QJ&#39;, &#39;age&#39;: 27}
+
+🧩 리턴 여러 개 (튜플 형태)
+def calc(a, b):
+    return a+b, a*b
+
+sum_, mul_ = calc(3, 4)
+print(sum_, mul_)  # 7 12
+
+🧩 기본값 매개변수
+def greet(name, age=30):
+    print(f"{name}님은 {age}살입니다.")
+
+greet("QJ")          # QJ님은 30살입니다.
+greet("Mew", 27)     # Mew님은 27살입니다.
+
+🧩 함수 안에서 외부 변수 사용 (추천 방식)
+a = 1
+def add_one(a):
+    a += 1
+    return a
+
+a = add_one(a)
+print(a)  # 2
+
+🧩 lambda 표현
+add = lambda a, b: a + b
+print(add(3, 4))  # 7
+
+📌 사용자 입출력
+
+프로그램과 사용자 간 데이터 주고받기!'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[파이썬] 03장. 함수\u0026입출력","item":"https://keonhoban.github.io/mlops-journey/posts/python/03/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[파이썬] 03장. 함수\u0026입출력","name":"[파이썬] 03장. 함수\u0026입출력","description":"📌 함수(Function) 입력값을 받아서 어떤 작업을 수행한 뒤 결과값을 반환하는 코드 묶음\n🧠 결정적 핵심 요약 항목 요약 함수 정의 def 함수명(매개변수): 매개변수 입력값을 받는 변수 인수 함수를 호출할 때 전달하는 값 리턴값 return으로 반환되는 값 (항상 1개) 기본값 설정 def func(x=0): 가변 인자 *args → 튜플로 받음 키워드 인자 **kwargs → 딕셔너리로 받음 함수 안 변수 지역 변수 우선 적용 람다 함수 lambda 매개변수: 표현식 📊 함수 흐름 구조 [ 입력값 ] ↓ [ 함수 실행 ] ↓ [ 결과 리턴 ] 🔥 함수 핵심 문법 + 코드 예시 🧩 함수 기본 구조 def add(a, b): return a + b print(add(3, 4)) # 7 🧩 여러 입력 받기 (*args) def add_many(*args): return sum(args) print(add_many(1, 2, 3)) # 6 🧩 키워드 인자 받기 (**kwargs) def print_kwargs(**kwargs): print(kwargs) print_kwargs(name=\u0026#34;QJ\u0026#34;, age=27) # {\u0026#39;name\u0026#39;: \u0026#39;QJ\u0026#39;, \u0026#39;age\u0026#39;: 27} 🧩 리턴 여러 개 (튜플 형태) def calc(a, b): return a+b, a*b sum_, mul_ = calc(3, 4) print(sum_, mul_) # 7 12 🧩 기본값 매개변수 def greet(name, age=30): print(f\u0026#34;{name}님은 {age}살입니다.\u0026#34;) greet(\u0026#34;QJ\u0026#34;) # QJ님은 30살입니다. greet(\u0026#34;Mew\u0026#34;, 27) # Mew님은 27살입니다. 🧩 함수 안에서 외부 변수 사용 (추천 방식) a = 1 def add_one(a): a += 1 return a a = add_one(a) print(a) # 2 🧩 lambda 표현 add = lambda a, b: a + b print(add(3, 4)) # 7 📌 사용자 입출력 프로그램과 사용자 간 데이터 주고받기!\n","keywords":[],"articleBody":"📌 함수(Function) 입력값을 받아서 어떤 작업을 수행한 뒤 결과값을 반환하는 코드 묶음\n🧠 결정적 핵심 요약 항목 요약 함수 정의 def 함수명(매개변수): 매개변수 입력값을 받는 변수 인수 함수를 호출할 때 전달하는 값 리턴값 return으로 반환되는 값 (항상 1개) 기본값 설정 def func(x=0): 가변 인자 *args → 튜플로 받음 키워드 인자 **kwargs → 딕셔너리로 받음 함수 안 변수 지역 변수 우선 적용 람다 함수 lambda 매개변수: 표현식 📊 함수 흐름 구조 [ 입력값 ] ↓ [ 함수 실행 ] ↓ [ 결과 리턴 ] 🔥 함수 핵심 문법 + 코드 예시 🧩 함수 기본 구조 def add(a, b): return a + b print(add(3, 4)) # 7 🧩 여러 입력 받기 (*args) def add_many(*args): return sum(args) print(add_many(1, 2, 3)) # 6 🧩 키워드 인자 받기 (**kwargs) def print_kwargs(**kwargs): print(kwargs) print_kwargs(name=\"QJ\", age=27) # {'name': 'QJ', 'age': 27} 🧩 리턴 여러 개 (튜플 형태) def calc(a, b): return a+b, a*b sum_, mul_ = calc(3, 4) print(sum_, mul_) # 7 12 🧩 기본값 매개변수 def greet(name, age=30): print(f\"{name}님은 {age}살입니다.\") greet(\"QJ\") # QJ님은 30살입니다. greet(\"Mew\", 27) # Mew님은 27살입니다. 🧩 함수 안에서 외부 변수 사용 (추천 방식) a = 1 def add_one(a): a += 1 return a a = add_one(a) print(a) # 2 🧩 lambda 표현 add = lambda a, b: a + b print(add(3, 4)) # 7 📌 사용자 입출력 프로그램과 사용자 간 데이터 주고받기!\n🧠 결정적 핵심 요약 항목 요약 입력받기 input() (항상 str 반환) 출력하기 print() 출력 옵션 end, sep 지정 가능 🔥 사용자 입출력 핵심 문법 + 코드 예시 🧩 input 사용 name = input(\"이름을 입력하세요: \") print(f\"환영합니다, {name}님!\") 🧩 print 옵션 for i in range(3): print(i, end=' ') # 0 1 2 (줄바꿈 없이 출력) 📌 파일 입출력 프로그램이 직접 파일을 읽거나 쓰는 방법\n🧠 결정적 핵심 요약 항목 요약 파일 열기 open(파일명, 모드) 모드 종류 r, w, a 파일 닫기 close(), 또는 with 사용 파일 읽기 read(), readline(), readlines() 파일 쓰기 write() 🔥 파일 입출력 핵심 문법 + 코드 예시 🧩 파일 쓰기 with open(\"test.txt\", \"w\") as f: f.write(\"Hello Python\\n\") 🧩 파일 읽기 (전체) with open(\"test.txt\", \"r\") as f: data = f.read() print(data) 🧩 파일 읽기 (한 줄씩) with open(\"test.txt\", \"r\") as f: for line in f: print(line.strip()) 🧩 파일에 추가 쓰기 with open(\"test.txt\", \"a\") as f: f.write(\"추가된 줄\\n\") 📌 프로그램 인수 전달 (sys 모듈) 프로그램 실행할 때 외부에서 값을 넣는 방법\n🔥 sys.argv 사용법 import sys args = sys.argv[1:] for arg in args: print(arg) python script.py hello world # 결과 hello world ⚠️ 실수 주의 포인트 주의점 설명 input은 항상 문자열 반환 숫자로 쓰려면 int() 변환 필요 파일 쓰기 모드 w는 덮어쓴다 기존 내용 삭제됨 주의 return은 하나만 한다 여러 값 반환 시 튜플로 묶임 global 사용 지양 함수는 외부 변수에 의존하지 않는 게 좋다 🏁 마무리 함수는 프로그램을 구성하는 최소 단위이고,\n입출력은 프로그램과 사용자를 연결한다.\n","wordCount":"457","inLanguage":"en","datePublished":"2025-04-28T10:02:00+09:00","dateModified":"2025-04-28T10:02:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/python/03/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[파이썬] 03장. 함수&입출력</h1><div class=post-meta><span title='2025-04-28 10:02:00 +0900 +0900'>April 28, 2025</span>&nbsp;·&nbsp;3 min</div></header><div class=post-content><h2 id=-함수function>📌 함수(Function)<a hidden class=anchor aria-hidden=true href=#-함수function>#</a></h2><blockquote><p>입력값을 받아서 어떤 작업을 수행한 뒤 결과값을 반환하는 코드 묶음</p></blockquote><hr><h3 id=-결정적-핵심-요약>🧠 결정적 핵심 요약<a hidden class=anchor aria-hidden=true href=#-결정적-핵심-요약>#</a></h3><table><thead><tr><th>항목</th><th>요약</th></tr></thead><tbody><tr><td>함수 정의</td><td><code>def 함수명(매개변수):</code></td></tr><tr><td>매개변수</td><td>입력값을 받는 변수</td></tr><tr><td>인수</td><td>함수를 호출할 때 전달하는 값</td></tr><tr><td>리턴값</td><td><code>return</code>으로 반환되는 값 (항상 1개)</td></tr><tr><td>기본값 설정</td><td><code>def func(x=0):</code></td></tr><tr><td>가변 인자</td><td><code>*args</code> → 튜플로 받음</td></tr><tr><td>키워드 인자</td><td><code>**kwargs</code> → 딕셔너리로 받음</td></tr><tr><td>함수 안 변수</td><td>지역 변수 우선 적용</td></tr><tr><td>람다 함수</td><td><code>lambda 매개변수: 표현식</code></td></tr></tbody></table><hr><h3 id=-함수-흐름-구조>📊 함수 흐름 구조<a hidden class=anchor aria-hidden=true href=#-함수-흐름-구조>#</a></h3><pre tabindex=0><code>[ 입력값 ]
+   ↓
+[ 함수 실행 ]
+   ↓
+[ 결과 리턴 ]
+</code></pre><hr><h3 id=-함수-핵심-문법--코드-예시>🔥 함수 핵심 문법 + 코드 예시<a hidden class=anchor aria-hidden=true href=#-함수-핵심-문법--코드-예시>#</a></h3><hr><h3 id=-함수-기본-구조>🧩 함수 기본 구조<a hidden class=anchor aria-hidden=true href=#-함수-기본-구조>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>add</span>(a, b):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> a <span style=color:#f92672>+</span> b
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(add(<span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>))  <span style=color:#75715e># 7</span>
+</span></span></code></pre></div><hr><h3 id=-여러-입력-받기-args>🧩 여러 입력 받기 (*args)<a hidden class=anchor aria-hidden=true href=#-여러-입력-받기-args>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>add_many</span>(<span style=color:#f92672>*</span>args):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> sum(args)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(add_many(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>))  <span style=color:#75715e># 6</span>
+</span></span></code></pre></div><hr><h3 id=-키워드-인자-받기-kwargs>🧩 키워드 인자 받기 (**kwargs)<a hidden class=anchor aria-hidden=true href=#-키워드-인자-받기-kwargs>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>print_kwargs</span>(<span style=color:#f92672>**</span>kwargs):
+</span></span><span style=display:flex><span>    print(kwargs)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print_kwargs(name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;QJ&#34;</span>, age<span style=color:#f92672>=</span><span style=color:#ae81ff>27</span>)
+</span></span><span style=display:flex><span><span style=color:#75715e># {&#39;name&#39;: &#39;QJ&#39;, &#39;age&#39;: 27}</span>
+</span></span></code></pre></div><hr><h3 id=-리턴-여러-개-튜플-형태>🧩 리턴 여러 개 (튜플 형태)<a hidden class=anchor aria-hidden=true href=#-리턴-여러-개-튜플-형태>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>calc</span>(a, b):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> a<span style=color:#f92672>+</span>b, a<span style=color:#f92672>*</span>b
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>sum_, mul_ <span style=color:#f92672>=</span> calc(<span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>)
+</span></span><span style=display:flex><span>print(sum_, mul_)  <span style=color:#75715e># 7 12</span>
+</span></span></code></pre></div><hr><h3 id=-기본값-매개변수>🧩 기본값 매개변수<a hidden class=anchor aria-hidden=true href=#-기본값-매개변수>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>greet</span>(name, age<span style=color:#f92672>=</span><span style=color:#ae81ff>30</span>):
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>{</span>name<span style=color:#e6db74>}</span><span style=color:#e6db74>님은 </span><span style=color:#e6db74>{</span>age<span style=color:#e6db74>}</span><span style=color:#e6db74>살입니다.&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>greet(<span style=color:#e6db74>&#34;QJ&#34;</span>)          <span style=color:#75715e># QJ님은 30살입니다.</span>
+</span></span><span style=display:flex><span>greet(<span style=color:#e6db74>&#34;Mew&#34;</span>, <span style=color:#ae81ff>27</span>)     <span style=color:#75715e># Mew님은 27살입니다.</span>
+</span></span></code></pre></div><hr><h3 id=-함수-안에서-외부-변수-사용-추천-방식>🧩 함수 안에서 외부 변수 사용 (추천 방식)<a hidden class=anchor aria-hidden=true href=#-함수-안에서-외부-변수-사용-추천-방식>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>a <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>add_one</span>(a):
+</span></span><span style=display:flex><span>    a <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> a
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>a <span style=color:#f92672>=</span> add_one(a)
+</span></span><span style=display:flex><span>print(a)  <span style=color:#75715e># 2</span>
+</span></span></code></pre></div><hr><h3 id=-lambda-표현>🧩 lambda 표현<a hidden class=anchor aria-hidden=true href=#-lambda-표현>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>add <span style=color:#f92672>=</span> <span style=color:#66d9ef>lambda</span> a, b: a <span style=color:#f92672>+</span> b
+</span></span><span style=display:flex><span>print(add(<span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>))  <span style=color:#75715e># 7</span>
+</span></span></code></pre></div><hr><h2 id=-사용자-입출력>📌 사용자 입출력<a hidden class=anchor aria-hidden=true href=#-사용자-입출력>#</a></h2><blockquote><p>프로그램과 사용자 간 데이터 주고받기!</p></blockquote><hr><h3 id=-결정적-핵심-요약-1>🧠 결정적 핵심 요약<a hidden class=anchor aria-hidden=true href=#-결정적-핵심-요약-1>#</a></h3><table><thead><tr><th>항목</th><th>요약</th></tr></thead><tbody><tr><td>입력받기</td><td><code>input()</code> (항상 str 반환)</td></tr><tr><td>출력하기</td><td><code>print()</code></td></tr><tr><td>출력 옵션</td><td><code>end</code>, <code>sep</code> 지정 가능</td></tr></tbody></table><hr><h3 id=-사용자-입출력-핵심-문법--코드-예시>🔥 사용자 입출력 핵심 문법 + 코드 예시<a hidden class=anchor aria-hidden=true href=#-사용자-입출력-핵심-문법--코드-예시>#</a></h3><hr><h3 id=-input-사용>🧩 input 사용<a hidden class=anchor aria-hidden=true href=#-input-사용>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>name <span style=color:#f92672>=</span> input(<span style=color:#e6db74>&#34;이름을 입력하세요: &#34;</span>)
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;환영합니다, </span><span style=color:#e6db74>{</span>name<span style=color:#e6db74>}</span><span style=color:#e6db74>님!&#34;</span>)
+</span></span></code></pre></div><hr><h3 id=-print-옵션>🧩 print 옵션<a hidden class=anchor aria-hidden=true href=#-print-옵션>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>3</span>):
+</span></span><span style=display:flex><span>    print(i, end<span style=color:#f92672>=</span><span style=color:#e6db74>&#39; &#39;</span>)  <span style=color:#75715e># 0 1 2 (줄바꿈 없이 출력)</span>
+</span></span></code></pre></div><hr><h2 id=-파일-입출력>📌 파일 입출력<a hidden class=anchor aria-hidden=true href=#-파일-입출력>#</a></h2><blockquote><p>프로그램이 직접 파일을 읽거나 쓰는 방법</p></blockquote><hr><h3 id=-결정적-핵심-요약-2>🧠 결정적 핵심 요약<a hidden class=anchor aria-hidden=true href=#-결정적-핵심-요약-2>#</a></h3><table><thead><tr><th>항목</th><th>요약</th></tr></thead><tbody><tr><td>파일 열기</td><td><code>open(파일명, 모드)</code></td></tr><tr><td>모드 종류</td><td><code>r</code>, <code>w</code>, <code>a</code></td></tr><tr><td>파일 닫기</td><td><code>close()</code>, 또는 <code>with</code> 사용</td></tr><tr><td>파일 읽기</td><td><code>read()</code>, <code>readline()</code>, <code>readlines()</code></td></tr><tr><td>파일 쓰기</td><td><code>write()</code></td></tr></tbody></table><hr><h3 id=-파일-입출력-핵심-문법--코드-예시>🔥 파일 입출력 핵심 문법 + 코드 예시<a hidden class=anchor aria-hidden=true href=#-파일-입출력-핵심-문법--코드-예시>#</a></h3><hr><h3 id=-파일-쓰기>🧩 파일 쓰기<a hidden class=anchor aria-hidden=true href=#-파일-쓰기>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>with</span> open(<span style=color:#e6db74>&#34;test.txt&#34;</span>, <span style=color:#e6db74>&#34;w&#34;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>    f<span style=color:#f92672>.</span>write(<span style=color:#e6db74>&#34;Hello Python</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>)
+</span></span></code></pre></div><hr><h3 id=-파일-읽기-전체>🧩 파일 읽기 (전체)<a hidden class=anchor aria-hidden=true href=#-파일-읽기-전체>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>with</span> open(<span style=color:#e6db74>&#34;test.txt&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>    data <span style=color:#f92672>=</span> f<span style=color:#f92672>.</span>read()
+</span></span><span style=display:flex><span>    print(data)
+</span></span></code></pre></div><hr><h3 id=-파일-읽기-한-줄씩>🧩 파일 읽기 (한 줄씩)<a hidden class=anchor aria-hidden=true href=#-파일-읽기-한-줄씩>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>with</span> open(<span style=color:#e6db74>&#34;test.txt&#34;</span>, <span style=color:#e6db74>&#34;r&#34;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> line <span style=color:#f92672>in</span> f:
+</span></span><span style=display:flex><span>        print(line<span style=color:#f92672>.</span>strip())
+</span></span></code></pre></div><hr><h3 id=-파일에-추가-쓰기>🧩 파일에 추가 쓰기<a hidden class=anchor aria-hidden=true href=#-파일에-추가-쓰기>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>with</span> open(<span style=color:#e6db74>&#34;test.txt&#34;</span>, <span style=color:#e6db74>&#34;a&#34;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>    f<span style=color:#f92672>.</span>write(<span style=color:#e6db74>&#34;추가된 줄</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>)
+</span></span></code></pre></div><hr><h2 id=-프로그램-인수-전달-sys-모듈>📌 프로그램 인수 전달 (<code>sys</code> 모듈)<a hidden class=anchor aria-hidden=true href=#-프로그램-인수-전달-sys-모듈>#</a></h2><blockquote><p>프로그램 실행할 때 외부에서 값을 넣는 방법</p></blockquote><hr><h3 id=-sysargv-사용법>🔥 sys.argv 사용법<a hidden class=anchor aria-hidden=true href=#-sysargv-사용법>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> sys
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>args <span style=color:#f92672>=</span> sys<span style=color:#f92672>.</span>argv[<span style=color:#ae81ff>1</span>:]
+</span></span><span style=display:flex><span><span style=color:#66d9ef>for</span> arg <span style=color:#f92672>in</span> args:
+</span></span><span style=display:flex><span>    print(arg)
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>python script.py hello world
+</span></span><span style=display:flex><span><span style=color:#75715e># 결과</span>
+</span></span><span style=display:flex><span>hello
+</span></span><span style=display:flex><span>world
+</span></span></code></pre></div><hr><h2 id=-실수-주의-포인트>⚠️ 실수 주의 포인트<a hidden class=anchor aria-hidden=true href=#-실수-주의-포인트>#</a></h2><table><thead><tr><th>주의점</th><th>설명</th></tr></thead><tbody><tr><td>input은 항상 문자열 반환</td><td>숫자로 쓰려면 <code>int()</code> 변환 필요</td></tr><tr><td>파일 쓰기 모드 <code>w</code>는 덮어쓴다</td><td>기존 내용 삭제됨 주의</td></tr><tr><td>return은 하나만 한다</td><td>여러 값 반환 시 튜플로 묶임</td></tr><tr><td>global 사용 지양</td><td>함수는 외부 변수에 의존하지 않는 게 좋다</td></tr></tbody></table><hr><h2 id=-마무리>🏁 마무리<a hidden class=anchor aria-hidden=true href=#-마무리>#</a></h2><blockquote><p>함수는 프로그램을 구성하는 최소 단위이고,</p><p>입출력은 프로그램과 사용자를 연결한다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/python/02/><span class=title>Next »</span><br><span>[파이썬] 02장. 제어문</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
