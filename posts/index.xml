@@ -1,4 +1,66 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 29 Apr 2025 10:21:58 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 04장. 클래스, 모듈, 패키지, 예외처리</title><link>https://keonhoban.github.io/mlops-journey/posts/python/04/</link><pubDate>Tue, 29 Apr 2025 10:21:58 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/04/</guid><description>&lt;h2 id="-클래스-모듈-패키지-예외처리">📌 클래스, 모듈, 패키지, 예외처리&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/posts/</link><description>Recent content in Posts on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 30 Apr 2025 08:21:40 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 05장. 내장 함수</title><link>https://keonhoban.github.io/mlops-journey/posts/python/05/</link><pubDate>Wed, 30 Apr 2025 08:21:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/05/</guid><description>&lt;h2 id="-내장-함수란">📌 내장 함수란?&lt;/h2>
+&lt;blockquote>
+&lt;p>파이썬이 기본적으로 제공하는 내장 기능 함수&lt;/p>
+&lt;p>&lt;code>import&lt;/code> 없이 언제든 바로 사용 가능하며,&lt;/p>
+&lt;p>&lt;strong>자료형 처리, 수치 계산, 제어 흐름 등&lt;/strong> 다양한 작업에 활용된다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>범주&lt;/th>
+&lt;th>함수&lt;/th>
+&lt;th>요약&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>수치 계산&lt;/td>
+&lt;td>&lt;code>abs&lt;/code>, &lt;code>pow&lt;/code>, &lt;code>round&lt;/code>, &lt;code>divmod&lt;/code>&lt;/td>
+&lt;td>절댓값, 제곱, 반올림, 몫+나머지&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>자료 변환&lt;/td>
+&lt;td>&lt;code>int&lt;/code>, &lt;code>str&lt;/code>, &lt;code>list&lt;/code>, &lt;code>tuple&lt;/code>, &lt;code>set&lt;/code>&lt;/td>
+&lt;td>형 변환&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>조건 판단&lt;/td>
+&lt;td>&lt;code>all&lt;/code>, &lt;code>any&lt;/code>, &lt;code>bool&lt;/code>&lt;/td>
+&lt;td>AND/OR 판단&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>반복 처리&lt;/td>
+&lt;td>&lt;code>enumerate&lt;/code>, &lt;code>map&lt;/code>, &lt;code>filter&lt;/code>, &lt;code>zip&lt;/code>&lt;/td>
+&lt;td>반복 + 위치/조건/함수 적용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>유틸리티&lt;/td>
+&lt;td>&lt;code>len&lt;/code>, &lt;code>type&lt;/code>, &lt;code>id&lt;/code>, &lt;code>dir&lt;/code>&lt;/td>
+&lt;td>기본 정보 추출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>입출력&lt;/td>
+&lt;td>&lt;code>input&lt;/code>, &lt;code>print&lt;/code>, &lt;code>open&lt;/code>&lt;/td>
+&lt;td>사용자와의 상호작용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>표현식 실행&lt;/td>
+&lt;td>&lt;code>eval&lt;/code>&lt;/td>
+&lt;td>문자열로 표현된 코드 실행&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>진수 변환&lt;/td>
+&lt;td>&lt;code>bin&lt;/code>, &lt;code>oct&lt;/code>, &lt;code>hex&lt;/code>, &lt;code>ord&lt;/code>, &lt;code>chr&lt;/code>&lt;/td>
+&lt;td>정수 ↔ 진수/문자&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-대표-함수-요약--예시">🔥 대표 함수 요약 + 예시&lt;/h2>
+&lt;hr>
+&lt;h3 id="-abs">✅ abs&lt;/h3>
+&lt;p>절댓값 반환&lt;/p></description></item><item><title>[파이썬] 04장. 클래스, 모듈, 패키지, 예외처리</title><link>https://keonhoban.github.io/mlops-journey/posts/python/04/</link><pubDate>Tue, 29 Apr 2025 10:21:58 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/04/</guid><description>&lt;h2 id="-클래스-모듈-패키지-예외처리">📌 클래스, 모듈, 패키지, 예외처리&lt;/h2>
 &lt;blockquote>
 &lt;p>파이썬 프로그램은 **클래스(설계도)**로 구조화하고,&lt;/p>
 &lt;p>&lt;strong>모듈/패키지&lt;/strong>로 기능을 묶으며,&lt;/p>
