@@ -1,0 +1,347 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[파이썬] 07장. 프로그래밍 | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="📌 프로그래밍이란?
+
+문제를 해결하기 위한 입력 → 처리 → 출력의 흐름을 코드로 구성하는 것
+
+🧠 결정적 핵심 요약
+
+  
+      
+          문제 유형
+          핵심 개념
+          연결 개념
+      
+  
+  
+      
+          구구단 만들기
+          함수 정의, 반복문 사용
+          리스트, while, return
+      
+      
+          배수 합 구하기
+          조건문, 누적 합산
+          for, if, +=
+      
+      
+          페이지 계산기
+          나눗셈, 조건 분기
+          //, %, if-else
+      
+      
+          메모장 만들기
+          파일 쓰기/읽기, 인자 처리
+          sys.argv, open()
+      
+      
+          탭 문자 변환기
+          문자열 처리, 파일 다루기
+          .replace(), read/write
+      
+      
+          디렉터리 검색
+          파일 탐색, 재귀 함수
+          os.listdir(), os.walk()
+      
+  
+
+
+🧩 문제별 핵심 요약 + 예시
+
+1. ✅ 구구단 함수 만들기
+
+함수 이름: gugu(n)
+입력: 단 수 (2)
+출력: [2, 4, 6, ..., 18] 리스트
+기술: while 반복문, append()
+
+def gugu(n):
+    result = []
+    i = 1
+    while i < 10:
+        result.append(n * i)
+        i += 1
+    return result
+
+print(gugu(2))  # [2, 4, 6, ..., 18]
+
+2. ✅ 3과 5의 배수 합 구하기
+
+목표: 1000 미만 자연수 중 3, 5의 배수 총합
+주의: or 조건 사용 (중복 방지)
+
+result = 0
+for n in range(1, 1000):
+    if n % 3 == 0 or n % 5 == 0:
+        result += n
+print(result)  # 233168
+
+3. ✅ 게시판 페이징 계산기
+
+목표: 총 게시물 수 / 한 페이지당 게시물 수로 페이지 수 계산
+예외 처리: 나머지 없을 경우 +1 제외
+
+def get_total_page(m, n):
+    return m // n if m % n == 0 else m // n + 1
+
+print(get_total_page(15, 10))  # 2
+
+4. ✅ 간단한 메모장
+
+기능: a (추가), v (조회)
+모듈: sys, open(), write/read
+
+import sys
+
+option = sys.argv[1]
+if option == '-a':
+    memo = sys.argv[2]
+    with open('memo.txt', 'a') as f:
+        f.write(memo + '\n')
+elif option == '-v':
+    with open('memo.txt', 'r') as f:
+        print(f.read())
+
+5. ✅ 탭 → 공백 4칸 변환기
+
+목표: 탭 문자 → 공백 4칸 변경
+입력: a.txt, 출력: b.txt
+
+import sys
+
+src = sys.argv[1]
+dst = sys.argv[2]
+
+with open(src) as f:
+    content = f.read()
+
+content = content.replace('\t', ' ' * 4)
+
+with open(dst, 'w') as f:
+    f.write(content)
+
+6. ✅ 디렉터리 내 .py 파일 검색기
+
+목표: 특정 디렉터리의 .py 파일 모두 출력
+기술: os.listdir(), os.path, 재귀 호출
+
+import os
+
+def search(dirname):
+    try:
+        for filename in os.listdir(dirname):
+            full_path = os.path.join(dirname, filename)
+            if os.path.isdir(full_path):
+                search(full_path)
+            else:
+                if os.path.splitext(full_path)[-1] == '.py':
+                    print(full_path)
+    except PermissionError:
+        pass
+
+search(&#34;C:/&#34;)
+📌 대체 함수: os.walk() 활용 (더 간단)"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/python/07/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/python/07/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/python/07/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[파이썬] 07장. 프로그래밍"><meta property="og:description" content="📌 프로그래밍이란? 문제를 해결하기 위한 입력 → 처리 → 출력의 흐름을 코드로 구성하는 것
+🧠 결정적 핵심 요약 문제 유형 핵심 개념 연결 개념 구구단 만들기 함수 정의, 반복문 사용 리스트, while, return 배수 합 구하기 조건문, 누적 합산 for, if, += 페이지 계산기 나눗셈, 조건 분기 //, %, if-else 메모장 만들기 파일 쓰기/읽기, 인자 처리 sys.argv, open() 탭 문자 변환기 문자열 처리, 파일 다루기 .replace(), read/write 디렉터리 검색 파일 탐색, 재귀 함수 os.listdir(), os.walk() 🧩 문제별 핵심 요약 + 예시 1. ✅ 구구단 함수 만들기 함수 이름: gugu(n) 입력: 단 수 (2) 출력: [2, 4, 6, ..., 18] 리스트 기술: while 반복문, append() def gugu(n): result = [] i = 1 while i < 10: result.append(n * i) i += 1 return result print(gugu(2)) # [2, 4, 6, ..., 18] 2. ✅ 3과 5의 배수 합 구하기 목표: 1000 미만 자연수 중 3, 5의 배수 총합 주의: or 조건 사용 (중복 방지) result = 0 for n in range(1, 1000): if n % 3 == 0 or n % 5 == 0: result += n print(result) # 233168 3. ✅ 게시판 페이징 계산기 목표: 총 게시물 수 / 한 페이지당 게시물 수로 페이지 수 계산 예외 처리: 나머지 없을 경우 +1 제외 def get_total_page(m, n): return m // n if m % n == 0 else m // n + 1 print(get_total_page(15, 10)) # 2 4. ✅ 간단한 메모장 기능: a (추가), v (조회) 모듈: sys, open(), write/read import sys option = sys.argv[1] if option == '-a': memo = sys.argv[2] with open('memo.txt', 'a') as f: f.write(memo + '\n') elif option == '-v': with open('memo.txt', 'r') as f: print(f.read()) 5. ✅ 탭 → 공백 4칸 변환기 목표: 탭 문자 → 공백 4칸 변경 입력: a.txt, 출력: b.txt import sys src = sys.argv[1] dst = sys.argv[2] with open(src) as f: content = f.read() content = content.replace('\t', ' ' * 4) with open(dst, 'w') as f: f.write(content) 6. ✅ 디렉터리 내 .py 파일 검색기 목표: 특정 디렉터리의 .py 파일 모두 출력 기술: os.listdir(), os.path, 재귀 호출 import os def search(dirname): try: for filename in os.listdir(dirname): full_path = os.path.join(dirname, filename) if os.path.isdir(full_path): search(full_path) else: if os.path.splitext(full_path)[-1] == '.py': print(full_path) except PermissionError: pass search(&#34;C:/&#34;) 📌 대체 함수: os.walk() 활용 (더 간단)"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-05-02T09:42:24+09:00"><meta property="article:modified_time" content="2025-05-02T09:42:24+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[파이썬] 07장. 프로그래밍"><meta name=twitter:description content="📌 프로그래밍이란?
+
+문제를 해결하기 위한 입력 → 처리 → 출력의 흐름을 코드로 구성하는 것
+
+🧠 결정적 핵심 요약
+
+  
+      
+          문제 유형
+          핵심 개념
+          연결 개념
+      
+  
+  
+      
+          구구단 만들기
+          함수 정의, 반복문 사용
+          리스트, while, return
+      
+      
+          배수 합 구하기
+          조건문, 누적 합산
+          for, if, +=
+      
+      
+          페이지 계산기
+          나눗셈, 조건 분기
+          //, %, if-else
+      
+      
+          메모장 만들기
+          파일 쓰기/읽기, 인자 처리
+          sys.argv, open()
+      
+      
+          탭 문자 변환기
+          문자열 처리, 파일 다루기
+          .replace(), read/write
+      
+      
+          디렉터리 검색
+          파일 탐색, 재귀 함수
+          os.listdir(), os.walk()
+      
+  
+
+
+🧩 문제별 핵심 요약 + 예시
+
+1. ✅ 구구단 함수 만들기
+
+함수 이름: gugu(n)
+입력: 단 수 (2)
+출력: [2, 4, 6, ..., 18] 리스트
+기술: while 반복문, append()
+
+def gugu(n):
+    result = []
+    i = 1
+    while i < 10:
+        result.append(n * i)
+        i += 1
+    return result
+
+print(gugu(2))  # [2, 4, 6, ..., 18]
+
+2. ✅ 3과 5의 배수 합 구하기
+
+목표: 1000 미만 자연수 중 3, 5의 배수 총합
+주의: or 조건 사용 (중복 방지)
+
+result = 0
+for n in range(1, 1000):
+    if n % 3 == 0 or n % 5 == 0:
+        result += n
+print(result)  # 233168
+
+3. ✅ 게시판 페이징 계산기
+
+목표: 총 게시물 수 / 한 페이지당 게시물 수로 페이지 수 계산
+예외 처리: 나머지 없을 경우 +1 제외
+
+def get_total_page(m, n):
+    return m // n if m % n == 0 else m // n + 1
+
+print(get_total_page(15, 10))  # 2
+
+4. ✅ 간단한 메모장
+
+기능: a (추가), v (조회)
+모듈: sys, open(), write/read
+
+import sys
+
+option = sys.argv[1]
+if option == '-a':
+    memo = sys.argv[2]
+    with open('memo.txt', 'a') as f:
+        f.write(memo + '\n')
+elif option == '-v':
+    with open('memo.txt', 'r') as f:
+        print(f.read())
+
+5. ✅ 탭 → 공백 4칸 변환기
+
+목표: 탭 문자 → 공백 4칸 변경
+입력: a.txt, 출력: b.txt
+
+import sys
+
+src = sys.argv[1]
+dst = sys.argv[2]
+
+with open(src) as f:
+    content = f.read()
+
+content = content.replace('\t', ' ' * 4)
+
+with open(dst, 'w') as f:
+    f.write(content)
+
+6. ✅ 디렉터리 내 .py 파일 검색기
+
+목표: 특정 디렉터리의 .py 파일 모두 출력
+기술: os.listdir(), os.path, 재귀 호출
+
+import os
+
+def search(dirname):
+    try:
+        for filename in os.listdir(dirname):
+            full_path = os.path.join(dirname, filename)
+            if os.path.isdir(full_path):
+                search(full_path)
+            else:
+                if os.path.splitext(full_path)[-1] == '.py':
+                    print(full_path)
+    except PermissionError:
+        pass
+
+search(&#34;C:/&#34;)
+📌 대체 함수: os.walk() 활용 (더 간단)"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[파이썬] 07장. 프로그래밍","item":"https://keonhoban.github.io/mlops-journey/posts/python/07/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[파이썬] 07장. 프로그래밍","name":"[파이썬] 07장. 프로그래밍","description":"📌 프로그래밍이란? 문제를 해결하기 위한 입력 → 처리 → 출력의 흐름을 코드로 구성하는 것\n🧠 결정적 핵심 요약 문제 유형 핵심 개념 연결 개념 구구단 만들기 함수 정의, 반복문 사용 리스트, while, return 배수 합 구하기 조건문, 누적 합산 for, if, += 페이지 계산기 나눗셈, 조건 분기 //, %, if-else 메모장 만들기 파일 쓰기/읽기, 인자 처리 sys.argv, open() 탭 문자 변환기 문자열 처리, 파일 다루기 .replace(), read/write 디렉터리 검색 파일 탐색, 재귀 함수 os.listdir(), os.walk() 🧩 문제별 핵심 요약 + 예시 1. ✅ 구구단 함수 만들기 함수 이름: gugu(n) 입력: 단 수 (2) 출력: [2, 4, 6, ..., 18] 리스트 기술: while 반복문, append() def gugu(n): result = [] i = 1 while i \u0026lt; 10: result.append(n * i) i += 1 return result print(gugu(2)) # [2, 4, 6, ..., 18] 2. ✅ 3과 5의 배수 합 구하기 목표: 1000 미만 자연수 중 3, 5의 배수 총합 주의: or 조건 사용 (중복 방지) result = 0 for n in range(1, 1000): if n % 3 == 0 or n % 5 == 0: result += n print(result) # 233168 3. ✅ 게시판 페이징 계산기 목표: 총 게시물 수 / 한 페이지당 게시물 수로 페이지 수 계산 예외 처리: 나머지 없을 경우 +1 제외 def get_total_page(m, n): return m // n if m % n == 0 else m // n + 1 print(get_total_page(15, 10)) # 2 4. ✅ 간단한 메모장 기능: a (추가), v (조회) 모듈: sys, open(), write/read import sys option = sys.argv[1] if option == \u0026#39;-a\u0026#39;: memo = sys.argv[2] with open(\u0026#39;memo.txt\u0026#39;, \u0026#39;a\u0026#39;) as f: f.write(memo + \u0026#39;\\n\u0026#39;) elif option == \u0026#39;-v\u0026#39;: with open(\u0026#39;memo.txt\u0026#39;, \u0026#39;r\u0026#39;) as f: print(f.read()) 5. ✅ 탭 → 공백 4칸 변환기 목표: 탭 문자 → 공백 4칸 변경 입력: a.txt, 출력: b.txt import sys src = sys.argv[1] dst = sys.argv[2] with open(src) as f: content = f.read() content = content.replace(\u0026#39;\\t\u0026#39;, \u0026#39; \u0026#39; * 4) with open(dst, \u0026#39;w\u0026#39;) as f: f.write(content) 6. ✅ 디렉터리 내 .py 파일 검색기 목표: 특정 디렉터리의 .py 파일 모두 출력 기술: os.listdir(), os.path, 재귀 호출 import os def search(dirname): try: for filename in os.listdir(dirname): full_path = os.path.join(dirname, filename) if os.path.isdir(full_path): search(full_path) else: if os.path.splitext(full_path)[-1] == \u0026#39;.py\u0026#39;: print(full_path) except PermissionError: pass search(\u0026#34;C:/\u0026#34;) 📌 대체 함수: os.walk() 활용 (더 간단)\n","keywords":[],"articleBody":"📌 프로그래밍이란? 문제를 해결하기 위한 입력 → 처리 → 출력의 흐름을 코드로 구성하는 것\n🧠 결정적 핵심 요약 문제 유형 핵심 개념 연결 개념 구구단 만들기 함수 정의, 반복문 사용 리스트, while, return 배수 합 구하기 조건문, 누적 합산 for, if, += 페이지 계산기 나눗셈, 조건 분기 //, %, if-else 메모장 만들기 파일 쓰기/읽기, 인자 처리 sys.argv, open() 탭 문자 변환기 문자열 처리, 파일 다루기 .replace(), read/write 디렉터리 검색 파일 탐색, 재귀 함수 os.listdir(), os.walk() 🧩 문제별 핵심 요약 + 예시 1. ✅ 구구단 함수 만들기 함수 이름: gugu(n) 입력: 단 수 (2) 출력: [2, 4, 6, ..., 18] 리스트 기술: while 반복문, append() def gugu(n): result = [] i = 1 while i \u003c 10: result.append(n * i) i += 1 return result print(gugu(2)) # [2, 4, 6, ..., 18] 2. ✅ 3과 5의 배수 합 구하기 목표: 1000 미만 자연수 중 3, 5의 배수 총합 주의: or 조건 사용 (중복 방지) result = 0 for n in range(1, 1000): if n % 3 == 0 or n % 5 == 0: result += n print(result) # 233168 3. ✅ 게시판 페이징 계산기 목표: 총 게시물 수 / 한 페이지당 게시물 수로 페이지 수 계산 예외 처리: 나머지 없을 경우 +1 제외 def get_total_page(m, n): return m // n if m % n == 0 else m // n + 1 print(get_total_page(15, 10)) # 2 4. ✅ 간단한 메모장 기능: a (추가), v (조회) 모듈: sys, open(), write/read import sys option = sys.argv[1] if option == '-a': memo = sys.argv[2] with open('memo.txt', 'a') as f: f.write(memo + '\\n') elif option == '-v': with open('memo.txt', 'r') as f: print(f.read()) 5. ✅ 탭 → 공백 4칸 변환기 목표: 탭 문자 → 공백 4칸 변경 입력: a.txt, 출력: b.txt import sys src = sys.argv[1] dst = sys.argv[2] with open(src) as f: content = f.read() content = content.replace('\\t', ' ' * 4) with open(dst, 'w') as f: f.write(content) 6. ✅ 디렉터리 내 .py 파일 검색기 목표: 특정 디렉터리의 .py 파일 모두 출력 기술: os.listdir(), os.path, 재귀 호출 import os def search(dirname): try: for filename in os.listdir(dirname): full_path = os.path.join(dirname, filename) if os.path.isdir(full_path): search(full_path) else: if os.path.splitext(full_path)[-1] == '.py': print(full_path) except PermissionError: pass search(\"C:/\") 📌 대체 함수: os.walk() 활용 (더 간단)\nimport os for path, dirs, files in os.walk(\"C:/\"): for filename in files: if filename.endswith('.py'): print(f'{path}/{filename}') 🛠️ 실무 연결 포인트 실무 작업 활용 예시 로그 정리 자동화 구구단 → 반복 결과 저장 패턴 조건별 데이터 수집 3과 5 배수처럼 if 조건 분기 페이지 UI 개발 게시물 페이징 수 계산 로컬 설정 스크립트 메모 파일처럼 설정 저장 CSV 변환/클렌징 탭 문자 처리 → replace 사용 파일 리포트 생성기 특정 확장자 .log, .csv 찾기 🏁 마무리 문제를 나누고, 흐름을 따라가고,\n하나씩 출력해보면 어떤 프로그래밍이든 만들 수 있다.\n","wordCount":"451","inLanguage":"en","datePublished":"2025-05-02T09:42:24+09:00","dateModified":"2025-05-02T09:42:24+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/python/07/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[파이썬] 07장. 프로그래밍</h1><div class=post-meta><span title='2025-05-02 09:42:24 +0900 +0900'>May 2, 2025</span>&nbsp;·&nbsp;3 min</div></header><div class=post-content><h2 id=-프로그래밍이란>📌 프로그래밍이란?<a hidden class=anchor aria-hidden=true href=#-프로그래밍이란>#</a></h2><blockquote><p>문제를 해결하기 위한 입력 → 처리 → 출력의 흐름을 코드로 구성하는 것</p></blockquote><hr><h2 id=-결정적-핵심-요약>🧠 결정적 핵심 요약<a hidden class=anchor aria-hidden=true href=#-결정적-핵심-요약>#</a></h2><table><thead><tr><th>문제 유형</th><th>핵심 개념</th><th>연결 개념</th></tr></thead><tbody><tr><td><strong>구구단 만들기</strong></td><td>함수 정의, 반복문 사용</td><td>리스트, <code>while</code>, <code>return</code></td></tr><tr><td><strong>배수 합 구하기</strong></td><td>조건문, 누적 합산</td><td><code>for</code>, <code>if</code>, <code>+=</code></td></tr><tr><td><strong>페이지 계산기</strong></td><td>나눗셈, 조건 분기</td><td><code>//</code>, <code>%</code>, <code>if-else</code></td></tr><tr><td><strong>메모장 만들기</strong></td><td>파일 쓰기/읽기, 인자 처리</td><td><code>sys.argv</code>, <code>open()</code></td></tr><tr><td><strong>탭 문자 변환기</strong></td><td>문자열 처리, 파일 다루기</td><td><code>.replace()</code>, <code>read/write</code></td></tr><tr><td><strong>디렉터리 검색</strong></td><td>파일 탐색, 재귀 함수</td><td><code>os.listdir()</code>, <code>os.walk()</code></td></tr></tbody></table><hr><h2 id=-문제별-핵심-요약--예시>🧩 문제별 핵심 요약 + 예시<a hidden class=anchor aria-hidden=true href=#-문제별-핵심-요약--예시>#</a></h2><hr><h3 id=1--구구단-함수-만들기>1. ✅ 구구단 함수 만들기<a hidden class=anchor aria-hidden=true href=#1--구구단-함수-만들기>#</a></h3><ul><li>함수 이름: <code>gugu(n)</code></li><li>입력: 단 수 (<code>2</code>)</li><li>출력: <code>[2, 4, 6, ..., 18]</code> 리스트</li><li>기술: <code>while</code> 반복문, <code>append()</code></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>gugu</span>(n):
+</span></span><span style=display:flex><span>    result <span style=color:#f92672>=</span> []
+</span></span><span style=display:flex><span>    i <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> i <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>10</span>:
+</span></span><span style=display:flex><span>        result<span style=color:#f92672>.</span>append(n <span style=color:#f92672>*</span> i)
+</span></span><span style=display:flex><span>        i <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> result
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(gugu(<span style=color:#ae81ff>2</span>))  <span style=color:#75715e># [2, 4, 6, ..., 18]</span>
+</span></span></code></pre></div><hr><h3 id=2--3과-5의-배수-합-구하기>2. ✅ 3과 5의 배수 합 구하기<a hidden class=anchor aria-hidden=true href=#2--3과-5의-배수-합-구하기>#</a></h3><ul><li>목표: 1000 미만 자연수 중 3, 5의 배수 총합</li><li>주의: <code>or</code> 조건 사용 (중복 방지)</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>result <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>for</span> n <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>1000</span>):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> n <span style=color:#f92672>%</span> <span style=color:#ae81ff>3</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>or</span> n <span style=color:#f92672>%</span> <span style=color:#ae81ff>5</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>:
+</span></span><span style=display:flex><span>        result <span style=color:#f92672>+=</span> n
+</span></span><span style=display:flex><span>print(result)  <span style=color:#75715e># 233168</span>
+</span></span></code></pre></div><hr><h3 id=3--게시판-페이징-계산기>3. ✅ 게시판 페이징 계산기<a hidden class=anchor aria-hidden=true href=#3--게시판-페이징-계산기>#</a></h3><ul><li>목표: <code>총 게시물 수 / 한 페이지당 게시물 수</code>로 페이지 수 계산</li><li>예외 처리: 나머지 없을 경우 +1 제외</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_total_page</span>(m, n):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> m <span style=color:#f92672>//</span> n <span style=color:#66d9ef>if</span> m <span style=color:#f92672>%</span> n <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span> <span style=color:#66d9ef>else</span> m <span style=color:#f92672>//</span> n <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(get_total_page(<span style=color:#ae81ff>15</span>, <span style=color:#ae81ff>10</span>))  <span style=color:#75715e># 2</span>
+</span></span></code></pre></div><hr><h3 id=4--간단한-메모장>4. ✅ 간단한 메모장<a hidden class=anchor aria-hidden=true href=#4--간단한-메모장>#</a></h3><ul><li>기능: <code>a</code> (추가), <code>v</code> (조회)</li><li>모듈: <code>sys</code>, <code>open()</code>, <code>write/read</code></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> sys
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>option <span style=color:#f92672>=</span> sys<span style=color:#f92672>.</span>argv[<span style=color:#ae81ff>1</span>]
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> option <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;-a&#39;</span>:
+</span></span><span style=display:flex><span>    memo <span style=color:#f92672>=</span> sys<span style=color:#f92672>.</span>argv[<span style=color:#ae81ff>2</span>]
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>with</span> open(<span style=color:#e6db74>&#39;memo.txt&#39;</span>, <span style=color:#e6db74>&#39;a&#39;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>        f<span style=color:#f92672>.</span>write(memo <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#39;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>elif</span> option <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;-v&#39;</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>with</span> open(<span style=color:#e6db74>&#39;memo.txt&#39;</span>, <span style=color:#e6db74>&#39;r&#39;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>        print(f<span style=color:#f92672>.</span>read())
+</span></span></code></pre></div><hr><h3 id=5--탭--공백-4칸-변환기>5. ✅ 탭 → 공백 4칸 변환기<a hidden class=anchor aria-hidden=true href=#5--탭--공백-4칸-변환기>#</a></h3><ul><li>목표: 탭 문자 → 공백 4칸 변경</li><li>입력: <code>a.txt</code>, 출력: <code>b.txt</code></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> sys
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>src <span style=color:#f92672>=</span> sys<span style=color:#f92672>.</span>argv[<span style=color:#ae81ff>1</span>]
+</span></span><span style=display:flex><span>dst <span style=color:#f92672>=</span> sys<span style=color:#f92672>.</span>argv[<span style=color:#ae81ff>2</span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>with</span> open(src) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>    content <span style=color:#f92672>=</span> f<span style=color:#f92672>.</span>read()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>content <span style=color:#f92672>=</span> content<span style=color:#f92672>.</span>replace(<span style=color:#e6db74>&#39;</span><span style=color:#ae81ff>\t</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39; &#39;</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>4</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>with</span> open(dst, <span style=color:#e6db74>&#39;w&#39;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>    f<span style=color:#f92672>.</span>write(content)
+</span></span></code></pre></div><hr><h3 id=6--디렉터리-내-py-파일-검색기>6. ✅ 디렉터리 내 .py 파일 검색기<a hidden class=anchor aria-hidden=true href=#6--디렉터리-내-py-파일-검색기>#</a></h3><ul><li>목표: 특정 디렉터리의 <code>.py</code> 파일 모두 출력</li><li>기술: <code>os.listdir()</code>, <code>os.path</code>, 재귀 호출</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>search</span>(dirname):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> filename <span style=color:#f92672>in</span> os<span style=color:#f92672>.</span>listdir(dirname):
+</span></span><span style=display:flex><span>            full_path <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>join(dirname, filename)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>isdir(full_path):
+</span></span><span style=display:flex><span>                search(full_path)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>splitext(full_path)[<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;.py&#39;</span>:
+</span></span><span style=display:flex><span>                    print(full_path)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>PermissionError</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>pass</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>search(<span style=color:#e6db74>&#34;C:/&#34;</span>)
+</span></span></code></pre></div><p>📌 대체 함수: <code>os.walk()</code> 활용 (더 간단)</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>for</span> path, dirs, files <span style=color:#f92672>in</span> os<span style=color:#f92672>.</span>walk(<span style=color:#e6db74>&#34;C:/&#34;</span>):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> filename <span style=color:#f92672>in</span> files:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> filename<span style=color:#f92672>.</span>endswith(<span style=color:#e6db74>&#39;.py&#39;</span>):
+</span></span><span style=display:flex><span>            print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#39;</span><span style=color:#e6db74>{</span>path<span style=color:#e6db74>}</span><span style=color:#e6db74>/</span><span style=color:#e6db74>{</span>filename<span style=color:#e6db74>}</span><span style=color:#e6db74>&#39;</span>)
+</span></span></code></pre></div><hr><h2 id=-실무-연결-포인트>🛠️ 실무 연결 포인트<a hidden class=anchor aria-hidden=true href=#-실무-연결-포인트>#</a></h2><table><thead><tr><th>실무 작업</th><th>활용 예시</th></tr></thead><tbody><tr><td>로그 정리 자동화</td><td>구구단 → 반복 결과 저장 패턴</td></tr><tr><td>조건별 데이터 수집</td><td>3과 5 배수처럼 if 조건 분기</td></tr><tr><td>페이지 UI 개발</td><td>게시물 페이징 수 계산</td></tr><tr><td>로컬 설정 스크립트</td><td>메모 파일처럼 설정 저장</td></tr><tr><td>CSV 변환/클렌징</td><td>탭 문자 처리 → replace 사용</td></tr><tr><td>파일 리포트 생성기</td><td>특정 확장자 <code>.log</code>, <code>.csv</code> 찾기</td></tr></tbody></table><hr><h2 id=-마무리>🏁 마무리<a hidden class=anchor aria-hidden=true href=#-마무리>#</a></h2><blockquote><p>문제를 나누고, 흐름을 따라가고,</p><p>하나씩 출력해보면 <strong>어떤 프로그래밍이든 만들 수 있다.</strong></p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/python/06/><span class=title>Next »</span><br><span>[파이썬] 06장. 표준 & 외부 라이브러리</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

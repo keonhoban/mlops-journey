@@ -1,4 +1,145 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 01 May 2025 09:40:31 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 06장. 표준 &amp; 외부 라이브러리</title><link>https://keonhoban.github.io/mlops-journey/posts/python/06/</link><pubDate>Thu, 01 May 2025 09:40:31 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/06/</guid><description>&lt;h2 id="-핵심-개념-요약">🧠 핵심 개념 요약&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 02 May 2025 09:42:24 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 07장. 프로그래밍</title><link>https://keonhoban.github.io/mlops-journey/posts/python/07/</link><pubDate>Fri, 02 May 2025 09:42:24 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/07/</guid><description>&lt;h2 id="-프로그래밍이란">📌 프로그래밍이란?&lt;/h2>
+&lt;blockquote>
+&lt;p>문제를 해결하기 위한 입력 → 처리 → 출력의 흐름을 코드로 구성하는 것&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>문제 유형&lt;/th>
+&lt;th>핵심 개념&lt;/th>
+&lt;th>연결 개념&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>구구단 만들기&lt;/strong>&lt;/td>
+&lt;td>함수 정의, 반복문 사용&lt;/td>
+&lt;td>리스트, &lt;code>while&lt;/code>, &lt;code>return&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>배수 합 구하기&lt;/strong>&lt;/td>
+&lt;td>조건문, 누적 합산&lt;/td>
+&lt;td>&lt;code>for&lt;/code>, &lt;code>if&lt;/code>, &lt;code>+=&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>페이지 계산기&lt;/strong>&lt;/td>
+&lt;td>나눗셈, 조건 분기&lt;/td>
+&lt;td>&lt;code>//&lt;/code>, &lt;code>%&lt;/code>, &lt;code>if-else&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>메모장 만들기&lt;/strong>&lt;/td>
+&lt;td>파일 쓰기/읽기, 인자 처리&lt;/td>
+&lt;td>&lt;code>sys.argv&lt;/code>, &lt;code>open()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>탭 문자 변환기&lt;/strong>&lt;/td>
+&lt;td>문자열 처리, 파일 다루기&lt;/td>
+&lt;td>&lt;code>.replace()&lt;/code>, &lt;code>read/write&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>디렉터리 검색&lt;/strong>&lt;/td>
+&lt;td>파일 탐색, 재귀 함수&lt;/td>
+&lt;td>&lt;code>os.listdir()&lt;/code>, &lt;code>os.walk()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-문제별-핵심-요약--예시">🧩 문제별 핵심 요약 + 예시&lt;/h2>
+&lt;hr>
+&lt;h3 id="1--구구단-함수-만들기">1. ✅ 구구단 함수 만들기&lt;/h3>
+&lt;ul>
+&lt;li>함수 이름: &lt;code>gugu(n)&lt;/code>&lt;/li>
+&lt;li>입력: 단 수 (&lt;code>2&lt;/code>)&lt;/li>
+&lt;li>출력: &lt;code>[2, 4, 6, ..., 18]&lt;/code> 리스트&lt;/li>
+&lt;li>기술: &lt;code>while&lt;/code> 반복문, &lt;code>append()&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">gugu&lt;/span>(n):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> result &lt;span style="color:#f92672">=&lt;/span> []
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> result&lt;span style="color:#f92672">.&lt;/span>append(n &lt;span style="color:#f92672">*&lt;/span> i)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> i &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> result
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(gugu(&lt;span style="color:#ae81ff">2&lt;/span>)) &lt;span style="color:#75715e"># [2, 4, 6, ..., 18]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="2--3과-5의-배수-합-구하기">2. ✅ 3과 5의 배수 합 구하기&lt;/h3>
+&lt;ul>
+&lt;li>목표: 1000 미만 자연수 중 3, 5의 배수 총합&lt;/li>
+&lt;li>주의: &lt;code>or&lt;/code> 조건 사용 (중복 방지)&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">for&lt;/span> n &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1000&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> n &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">3&lt;/span> &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#f92672">or&lt;/span> n &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span> &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> result &lt;span style="color:#f92672">+=&lt;/span> n
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(result) &lt;span style="color:#75715e"># 233168&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="3--게시판-페이징-계산기">3. ✅ 게시판 페이징 계산기&lt;/h3>
+&lt;ul>
+&lt;li>목표: &lt;code>총 게시물 수 / 한 페이지당 게시물 수&lt;/code>로 페이지 수 계산&lt;/li>
+&lt;li>예외 처리: 나머지 없을 경우 +1 제외&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">get_total_page&lt;/span>(m, n):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> m &lt;span style="color:#f92672">//&lt;/span> n &lt;span style="color:#66d9ef">if&lt;/span> m &lt;span style="color:#f92672">%&lt;/span> n &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#66d9ef">else&lt;/span> m &lt;span style="color:#f92672">//&lt;/span> n &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(get_total_page(&lt;span style="color:#ae81ff">15&lt;/span>, &lt;span style="color:#ae81ff">10&lt;/span>)) &lt;span style="color:#75715e"># 2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="4--간단한-메모장">4. ✅ 간단한 메모장&lt;/h3>
+&lt;ul>
+&lt;li>기능: &lt;code>a&lt;/code> (추가), &lt;code>v&lt;/code> (조회)&lt;/li>
+&lt;li>모듈: &lt;code>sys&lt;/code>, &lt;code>open()&lt;/code>, &lt;code>write/read&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> sys
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>option &lt;span style="color:#f92672">=&lt;/span> sys&lt;span style="color:#f92672">.&lt;/span>argv[&lt;span style="color:#ae81ff">1&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> option &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;-a&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> memo &lt;span style="color:#f92672">=&lt;/span> sys&lt;span style="color:#f92672">.&lt;/span>argv[&lt;span style="color:#ae81ff">2&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">with&lt;/span> open(&lt;span style="color:#e6db74">&amp;#39;memo.txt&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;a&amp;#39;&lt;/span>) &lt;span style="color:#66d9ef">as&lt;/span> f:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> f&lt;span style="color:#f92672">.&lt;/span>write(memo &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#39;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">elif&lt;/span> option &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;-v&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">with&lt;/span> open(&lt;span style="color:#e6db74">&amp;#39;memo.txt&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;r&amp;#39;&lt;/span>) &lt;span style="color:#66d9ef">as&lt;/span> f:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(f&lt;span style="color:#f92672">.&lt;/span>read())
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="5--탭--공백-4칸-변환기">5. ✅ 탭 → 공백 4칸 변환기&lt;/h3>
+&lt;ul>
+&lt;li>목표: 탭 문자 → 공백 4칸 변경&lt;/li>
+&lt;li>입력: &lt;code>a.txt&lt;/code>, 출력: &lt;code>b.txt&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> sys
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>src &lt;span style="color:#f92672">=&lt;/span> sys&lt;span style="color:#f92672">.&lt;/span>argv[&lt;span style="color:#ae81ff">1&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>dst &lt;span style="color:#f92672">=&lt;/span> sys&lt;span style="color:#f92672">.&lt;/span>argv[&lt;span style="color:#ae81ff">2&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> open(src) &lt;span style="color:#66d9ef">as&lt;/span> f:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> content &lt;span style="color:#f92672">=&lt;/span> f&lt;span style="color:#f92672">.&lt;/span>read()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>content &lt;span style="color:#f92672">=&lt;/span> content&lt;span style="color:#f92672">.&lt;/span>replace(&lt;span style="color:#e6db74">&amp;#39;&lt;/span>&lt;span style="color:#ae81ff">\t&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39; &amp;#39;&lt;/span> &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#ae81ff">4&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> open(dst, &lt;span style="color:#e6db74">&amp;#39;w&amp;#39;&lt;/span>) &lt;span style="color:#66d9ef">as&lt;/span> f:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> f&lt;span style="color:#f92672">.&lt;/span>write(content)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="6--디렉터리-내-py-파일-검색기">6. ✅ 디렉터리 내 .py 파일 검색기&lt;/h3>
+&lt;ul>
+&lt;li>목표: 특정 디렉터리의 &lt;code>.py&lt;/code> 파일 모두 출력&lt;/li>
+&lt;li>기술: &lt;code>os.listdir()&lt;/code>, &lt;code>os.path&lt;/code>, 재귀 호출&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">search&lt;/span>(dirname):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> filename &lt;span style="color:#f92672">in&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>listdir(dirname):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> full_path &lt;span style="color:#f92672">=&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>path&lt;span style="color:#f92672">.&lt;/span>join(dirname, filename)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>path&lt;span style="color:#f92672">.&lt;/span>isdir(full_path):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> search(full_path)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>path&lt;span style="color:#f92672">.&lt;/span>splitext(full_path)[&lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;.py&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(full_path)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">PermissionError&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">pass&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>search(&lt;span style="color:#e6db74">&amp;#34;C:/&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>📌 대체 함수: &lt;code>os.walk()&lt;/code> 활용 (더 간단)&lt;/p></description></item><item><title>[파이썬] 06장. 표준 &amp; 외부 라이브러리</title><link>https://keonhoban.github.io/mlops-journey/posts/python/06/</link><pubDate>Thu, 01 May 2025 09:40:31 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/06/</guid><description>&lt;h2 id="-핵심-개념-요약">🧠 핵심 개념 요약&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>
