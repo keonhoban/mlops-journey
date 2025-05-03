@@ -1,4 +1,64 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 02 May 2025 09:42:24 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 07장. 프로그래밍</title><link>https://keonhoban.github.io/mlops-journey/posts/python/07/</link><pubDate>Fri, 02 May 2025 09:42:24 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/07/</guid><description>&lt;h2 id="-프로그래밍이란">📌 프로그래밍이란?&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 03 May 2025 11:36:53 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 08장. 표준 라이브러리 심화</title><link>https://keonhoban.github.io/mlops-journey/posts/python/08/</link><pubDate>Sat, 03 May 2025 11:36:53 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/08/</guid><description>&lt;h2 id="-표준-라이브러리-심화">📌 표준 라이브러리 심화&lt;/h2>
+&lt;blockquote>
+&lt;p>내부 구조를 조작하고, 함수를 다루고, 흐름을 제어하는 기초 체력&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>주제&lt;/th>
+&lt;th>핵심 개념&lt;/th>
+&lt;th>연결 개념&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>유니코드 처리&lt;/td>
+&lt;td>인코딩/디코딩&lt;/td>
+&lt;td>&lt;code>encode()&lt;/code>, &lt;code>decode()&lt;/code>, &lt;code>open(encoding=)&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>클로저&lt;/td>
+&lt;td>함수가 상태 기억&lt;/td>
+&lt;td>&lt;code>함수 내 함수&lt;/code>, &lt;code>return inner()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>데코레이터&lt;/td>
+&lt;td>함수 기능 확장&lt;/td>
+&lt;td>&lt;code>@decorator&lt;/code>, &lt;code>*args&lt;/code>, &lt;code>**kwargs&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>이터레이터&lt;/td>
+&lt;td>값 순차 반환&lt;/td>
+&lt;td>&lt;code>__iter__&lt;/code>, &lt;code>__next__&lt;/code>, &lt;code>iter()&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>제너레이터&lt;/td>
+&lt;td>yield 기반 순차 처리&lt;/td>
+&lt;td>&lt;code>yield&lt;/code>, &lt;code>next()&lt;/code>, lazy evaluation&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>타입 어노테이션&lt;/td>
+&lt;td>타입 힌트 제공&lt;/td>
+&lt;td>&lt;code>a: int&lt;/code>, &lt;code>-&amp;gt; str&lt;/code>, &lt;code>mypy&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-주제별-핵심-요약--예시">🧩 주제별 핵심 요약 + 예시&lt;/h2>
+&lt;hr>
+&lt;h3 id="1--유니코드와-인코딩디코딩">1. ✅ 유니코드와 인코딩/디코딩&lt;/h3>
+&lt;ul>
+&lt;li>파이썬 3.x는 모든 문자열을 유니코드로 처리&lt;/li>
+&lt;li>외부 저장/전송시 &lt;code>encode()&lt;/code>, 다시 사용할 땐 &lt;code>decode()&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 유니코드 → 바이트&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>s &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;한글&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>b &lt;span style="color:#f92672">=&lt;/span> s&lt;span style="color:#f92672">.&lt;/span>encode(&lt;span style="color:#e6db74">&amp;#34;utf-8&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 바이트 → 유니코드&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>s2 &lt;span style="color:#f92672">=&lt;/span> b&lt;span style="color:#f92672">.&lt;/span>decode(&lt;span style="color:#e6db74">&amp;#34;utf-8&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>🧩 한글 파일을 euc-kr로 저장하려면?&lt;/p></description></item><item><title>[파이썬] 07장. 프로그래밍</title><link>https://keonhoban.github.io/mlops-journey/posts/python/07/</link><pubDate>Fri, 02 May 2025 09:42:24 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/07/</guid><description>&lt;h2 id="-프로그래밍이란">📌 프로그래밍이란?&lt;/h2>
 &lt;blockquote>
 &lt;p>문제를 해결하기 위한 입력 → 처리 → 출력의 흐름을 코드로 구성하는 것&lt;/p>&lt;/blockquote>
 &lt;hr>
