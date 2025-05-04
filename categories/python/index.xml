@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Python on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/python/</link><description>Recent content in Python on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 04 May 2025 11:25:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/python/index.xml" rel="self" type="application/rss+xml"/><item><title>[파이썬] 09장. 정규 표현식</title><link>https://keonhoban.github.io/mlops-journey/posts/python/09/</link><pubDate>Sun, 04 May 2025 11:25:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/09/</guid><description>&lt;h2 id="-정규-표현식">📌 정규 표현식&lt;/h2>
 &lt;blockquote>
-&lt;p>문자열 검색, 추출, 변환을 간단히 해결할 수 있는 정규 표현식&lt;/p>&lt;/blockquote>
+&lt;p>문자열 검색, 추출, 변환을 간단히 해결할 수 있는 정규 표현식의 핵심&lt;/p>&lt;/blockquote>
 &lt;hr>
-&lt;h2 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h2>
+&lt;h3 id="-결정적-핵심-요약">🧠 결정적 핵심 요약&lt;/h3>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -40,89 +40,10 @@
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
-&lt;h2 id="-주제별-핵심-요약--예시">🧩 주제별 핵심 요약 + 예시&lt;/h2>
-&lt;h3 id="1--정규-표현식-기초">1. ✅ 정규 표현식 기초&lt;/h3>
-&lt;pre>&lt;code>문자열에서 특정 패턴을 찾고, 교체하거나, 매칭하는 데 유용한 도구
-```python
-import re
-data = &amp;quot;park 800905-1049118&amp;quot;
-pat = re.compile(r&amp;quot;(\d{6})[-]\d{7}&amp;quot;)
-print(pat.sub(&amp;quot;\g&amp;lt;1&amp;gt;-&amp;quot;, data)) # 800905-
-```
-&lt;/code>&lt;/pre>
-&lt;h3 id="2--메타-문자와-문자-클래스">2. ✅ 메타 문자와 문자 클래스&lt;/h3>
-&lt;pre>&lt;code>문자 클래스를 사용하여 특정 범위의 문자와 매치하고, 메타 문자를 활용해 특별한 검색이 가능
-```python
-p = re.compile(r'\d+')
-result = p.findall(&amp;quot;abc 123 def 456&amp;quot;)
-print(result) # ['123', '456']
-```
-&lt;/code>&lt;/pre>
-&lt;h3 id="3--그루핑">3. ✅ 그루핑&lt;/h3>
-&lt;pre>&lt;code>그룹을 사용하면 정규식에서 특정 부분을 추출할 수 있음
-```python
-p = re.compile(r&amp;quot;(\w+)\s+(\d+)&amp;quot;)
-m = p.search(&amp;quot;park 010-1234-1234&amp;quot;)
-print(m.group(1)) # park
-print(m.group(2)) # 010-1234-1234
-```
-&lt;/code>&lt;/pre>
-&lt;h3 id="4--전방-탐색">4. ✅ 전방 탐색&lt;/h3>
-&lt;pre>&lt;code>조건을 만족하는 문자열을 소비하지 않고 매칭할 수 있는 기능
-```python
-p = re.compile(r&amp;quot;.+(?=[:])&amp;quot;)
-m = p.search(&amp;quot;http://google.com&amp;quot;)
-print(m.group()) # http
-```
-&lt;/code>&lt;/pre>
-&lt;h3 id="5--문자열-바꾸기">5. ✅ 문자열 바꾸기&lt;/h3>
-&lt;pre>&lt;code>`sub()` 메소드를 사용해 매칭된 부분을 간단하게 다른 문자열로 변환할 수 있음
-```python
-p = re.compile(r'(blue|white|red)')
-result = p.sub('colour', 'blue socks and red shoes')
-print(result) # colour socks and colour shoes
-```
-&lt;/code>&lt;/pre>
-&lt;h3 id="6--탐욕과-비탐욕">6. ✅ 탐욕과 비탐욕&lt;/h3>
-&lt;pre>&lt;code>탐욕적(`greedy`) 매칭과 최소한의 매칭(`non-greedy`)을 이해하고 사용하는 방법
-```python
-s = '&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Title&amp;lt;/title&amp;gt;'
-print(re.match(r'&amp;lt;.&amp;gt;', s).group()) # &amp;lt;html&amp;gt;&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Title&amp;lt;/title&amp;gt;
-print(re.match(r'&amp;lt;.?&amp;gt;', s).group()) # &amp;lt;html&amp;gt;
-```
-&lt;/code>&lt;/pre>
-&lt;hr>
-&lt;h2 id="-실무-연결-포인트">🔧 실무 연결 포인트&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>실무 작업&lt;/th>
-&lt;th>활용 예시&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>문자열 검색&lt;/td>
-&lt;td>&lt;code>re&lt;/code> 모듈로 패턴 매칭 및 추출&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>데이터 전처리&lt;/td>
-&lt;td>정규 표현식으로 텍스트 변환 및 처리&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>로그 파일 분석&lt;/td>
-&lt;td>대량의 로그 파일에서 유용한 정보 추출&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>파일 이름 변경&lt;/td>
-&lt;td>정규 표현식으로 파일 이름을 일괄 수정&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-마무리">🏁 마무리&lt;/h2>
-&lt;blockquote>
-&lt;p>정규 표현식은 복잡한 문자열 작업을 한 번에 처리할 수 있는 강력한 도구&lt;/p></description></item><item><title>[파이썬] 08장. 표준 라이브러리 심화</title><link>https://keonhoban.github.io/mlops-journey/posts/python/08/</link><pubDate>Sat, 03 May 2025 11:36:53 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/08/</guid><description>&lt;h2 id="-표준-라이브러리-심화">📌 표준 라이브러리 심화&lt;/h2>
+&lt;h3 id="-주제별-핵심-요약--예시">🧩 주제별 핵심 요약 + 예시&lt;/h3>
+&lt;ol>
+&lt;li>
+&lt;p>✅ &lt;strong>정규 표현식 기초&lt;/strong>&lt;/p></description></item><item><title>[파이썬] 08장. 표준 라이브러리 심화</title><link>https://keonhoban.github.io/mlops-journey/posts/python/08/</link><pubDate>Sat, 03 May 2025 11:36:53 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/python/08/</guid><description>&lt;h2 id="-표준-라이브러리-심화">📌 표준 라이브러리 심화&lt;/h2>
 &lt;blockquote>
 &lt;p>내부 구조를 조작하고, 함수를 다루고, 흐름을 제어하는 기초 체력&lt;/p>&lt;/blockquote>
 &lt;hr>
