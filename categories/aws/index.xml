@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>AWS on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/aws/</link><description>Recent content in AWS on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 02 Jun 2025 12:09:40 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/aws/index.xml" rel="self" type="application/rss+xml"/><item><title>AWS SAP-C02 합격 후기</title><link>https://keonhoban.github.io/mlops-journey/posts/aws/01/</link><pubDate>Mon, 02 Jun 2025 12:09:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/aws/01/</guid><description>&lt;h2 id="1--왜-sap를-준비했을까">1. 📌 왜 SAP를 준비했을까?&lt;/h2>
+&lt;ul>
+&lt;li>현재 MLOps 엔지니어를 목표로 하며,&lt;/li>
+&lt;li>&lt;strong>AWS 기반 인프라 설계 및 운영 능력 강화&lt;/strong>가 필요하다고 판단했습니다.&lt;/li>
+&lt;li>SAP는 단순 암기보다 &lt;strong>시나리오 기반 설계 사고력&lt;/strong>을 묻기 때문에
+학습 과정 자체가 실무 사고 확장에 큰 도움이 되었습니다.&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="2--공부-방법--자료">2. 📚 공부 방법 &amp;amp; 자료&lt;/h2>
+&lt;ul>
+&lt;li>📘 주요 개념은 문제별로 정리본 작성&lt;/li>
+&lt;li>🧠 매일 오답 복습 &amp;amp; 회상 기반 학습
+&lt;ul>
+&lt;li>왜 정답일지, 실제 아키텍처에서 어떤 선택을 할지 예상하며 진행하는게 도움이 됐습니다.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>내용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>준비 기간&lt;/td>
+&lt;td>약 1개월&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>방식&lt;/td>
+&lt;td>🔁 덤프, AWS 공식 문서, 개인 요약본&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>실전 훈련&lt;/td>
+&lt;td>랜덤 75문제 모의고사 3회 → 최종 85~94점대 유지&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>참고 자료&lt;/td>
+&lt;td>- ExamTopics (최신 SAP-C02 기준 / 529 문제)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;ul>
+&lt;li>AWS 공식 문서&lt;/li>
+&lt;li>개인 노션 요약&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="3--합격-인증">3. ✅ 합격 인증&lt;/h2>
+&lt;p>&lt;img alt="AWS SAP 합격 인증" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/aws-sap-pass.png">&lt;/p></description></item></channel></rss>
