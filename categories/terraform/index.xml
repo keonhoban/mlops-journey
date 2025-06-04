@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Terraform on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/terraform/</link><description>Recent content in Terraform on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 04 Jun 2025 12:51:32 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/terraform/index.xml" rel="self" type="application/rss+xml"/><item><title>[Terraform] EC2 &amp; S3 리소스 자동화 구축 실습</title><link>https://keonhoban.github.io/mlops-journey/posts/terraform/01/</link><pubDate>Wed, 04 Jun 2025 12:51:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/terraform/01/</guid><description>&lt;h2 id="-aws--terraform-실습-ec2--s3-완전-자동화">☁️ AWS + Terraform 실습: EC2 &amp;amp; S3 완전 자동화&lt;/h2>
+&lt;blockquote>
+&lt;p>목표: IAM 사용자 생성 → CLI 구성 → Terraform 설치 → EC2 &amp;amp; S3 리소스 자동화 구축&lt;/p>&lt;/blockquote>
+&lt;p>👉 실습 디렉토리 전체 코드&lt;/p>
+&lt;p>&lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/terraform/01-ec2-s3-basic">🔗 GitHub – terraform/01-ec2-s3-basic&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-전체-실습-흐름-요약">🔭 전체 실습 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[1단계] IAM 사용자 생성 (Access Key 발급)
+[2단계] AWS CLI 설치 및 configure
+[3단계] Terraform 설치
+[4단계] 실습 디렉토리 + 코드 구성
+[5단계] terraform init → plan → apply → EC2 &amp;amp; S3 생성
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실습-준비-체크리스트">🧩 실습 준비 체크리스트&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>AWS 계정&lt;/td>
+&lt;td>루트 계정으로 로그인 후, IAM 사용자 생성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>IAM 사용자&lt;/td>
+&lt;td>프로그래밍 접근 + AdministratorAccess 부여&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AWS CLI&lt;/td>
+&lt;td>&lt;code>aws configure&lt;/code>로 API 키 등록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Terraform&lt;/td>
+&lt;td>CLI 설치 필요 (OS별 방법 상이)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>SSH 키페어&lt;/td>
+&lt;td>EC2 접속용 &lt;code>.pem&lt;/code> 키 직접 생성&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-1단계-iam-사용자-생성">🪪 1단계: IAM 사용자 생성&lt;/h2>
+&lt;ol>
+&lt;li>AWS 콘솔 → IAM → 사용자 추가&lt;/li>
+&lt;li>액세스 유형: &lt;strong>프로그래밍 방식 액세스&lt;/strong> 체크&lt;/li>
+&lt;li>권한: &lt;code>AdministratorAccess&lt;/code> 정책 부여
+&lt;ul>
+&lt;li>실습 목적이므로 관리자 권한줬지만, 이후 필요시 Least Privilege 원칙 적용
+&lt;ul>
+&lt;li>ex) EC2FullAccess, S3FullAccess&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>생성 후 &lt;code>Access Key ID&lt;/code>, &lt;code>Secret Access Key&lt;/code> 복사 (중요!)&lt;/li>
+&lt;/ol>
+&lt;hr>
+&lt;h2 id="-2단계-aws-cli-설치-및-구성">⚙️ 2단계: AWS CLI 설치 및 구성&lt;/h2>
+&lt;h3 id="-설치-명령어">✅ 설치 명령어&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>Ubuntu&lt;/strong>: &lt;code>sudo apt install awscli -y&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;h3 id="-구성-명령어">✅ 구성 명령어&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>aws configure
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>입력 항목&lt;/th>
+&lt;th>예시&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Access Key&lt;/td>
+&lt;td>&lt;code>AKIA...&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Secret Key&lt;/td>
+&lt;td>&lt;code>wJalrXUtnF...&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Region&lt;/td>
+&lt;td>&lt;code>ap-northeast-2&lt;/code> (서울)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Output&lt;/td>
+&lt;td>&lt;code>json&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-3단계-terraform-설치">🧱 3단계: Terraform 설치&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>Ubuntu&lt;/strong>:&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>sudo apt update &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> sudo apt install -y gnupg curl
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>curl -fsSL https://apt.releases.hashicorp.com/gpg | &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>echo &lt;span style="color:#e6db74">&amp;#34;deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">https://apt.releases.hashicorp.com &lt;/span>&lt;span style="color:#66d9ef">$(&lt;/span>lsb_release -cs&lt;span style="color:#66d9ef">)&lt;/span>&lt;span style="color:#e6db74"> main&amp;#34;&lt;/span> | &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span>sudo tee /etc/apt/sources.list.d/hashicorp.list
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt update &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> sudo apt install terraform
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-4단계-디렉토리-및-코드-구성">📁 4단계: 디렉토리 및 코드 구성&lt;/h2>
+&lt;h3 id="-디렉토리-구조">✅ 디렉토리 구조&lt;/h3>
+&lt;pre tabindex="0">&lt;code>terraform-aws-basic/
+├── main.tf
+├── provider.tf
+├── variables.tf
+├── terraform.tfvars
+├── outputs.tf
+└── README.md
+&lt;/code>&lt;/pre>&lt;h3 id="-주요-파일-설명">✅ 주요 파일 설명&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>provider.tf&lt;/strong>: AWS 리전 및 프로필 설정&lt;/li>
+&lt;li>&lt;strong>variables.tf&lt;/strong>: 변수 정의 (&lt;code>instance_type&lt;/code>, &lt;code>key_name&lt;/code>, &lt;code>bucket_name&lt;/code>)&lt;/li>
+&lt;li>&lt;strong>terraform.tfvars&lt;/strong>: 변수 실제 값 입력&lt;/li>
+&lt;li>&lt;strong>main.tf&lt;/strong>: EC2, S3 리소스 정의&lt;/li>
+&lt;li>&lt;strong>outputs.tf&lt;/strong>: 결과 출력 설정&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-maintf-예시">🖥️ main.tf 예시&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-hcl" data-lang="hcl">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">resource&lt;/span> &lt;span style="color:#e6db74">&amp;#34;aws_instance&amp;#34; &amp;#34;web&amp;#34;&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ami &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;ami-0e3e8ebc5f90867c0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> instance_type &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">var&lt;/span>.&lt;span style="color:#66d9ef">instance_type&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> key_name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">var&lt;/span>.&lt;span style="color:#66d9ef">key_name&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tags &lt;span style="color:#f92672">=&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Keonho-Terraform-EC2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">resource&lt;/span> &lt;span style="color:#e6db74">&amp;#34;aws_s3_bucket&amp;#34; &amp;#34;bucket&amp;#34;&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bucket &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">var&lt;/span>.&lt;span style="color:#66d9ef">bucket_name&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tags &lt;span style="color:#f92672">=&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Environment &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Dev&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Owner &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Keonho&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-5단계-terraform-실행">🔍 5단계: Terraform 실행&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>terraform init &lt;span style="color:#75715e"># 초기화&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>terraform plan &lt;span style="color:#75715e"># 계획 확인&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>terraform apply &lt;span style="color:#75715e"># 인프라 생성&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>실행 결과&lt;/strong>:&lt;/p></description></item></channel></rss>
