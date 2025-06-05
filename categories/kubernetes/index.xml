@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Kubernetes on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/kubernetes/</link><description>Recent content in Kubernetes on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 05 Jun 2025 20:06:43 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/kubernetes/index.xml" rel="self" type="application/rss+xml"/><item><title>[Kubernetes 실습 - 5단계: Prometheus + Grafana 모니터링]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/05/</link><pubDate>Thu, 05 Jun 2025 20:06:43 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/05/</guid><description>&lt;h2 id="-kubernetes-실습---prometheus--grafana-모니터링-구축">📡 Kubernetes 실습 ⑤ – Prometheus + Grafana 모니터링 구축&lt;/h2>
+&lt;blockquote>
+&lt;p>🎯 목표&lt;/p>
+&lt;ol>
+&lt;li>쿠버네티스 클러스터 내 자원(Pod, Node 등) 실시간 모니터링&lt;/li>
+&lt;li>Prometheus로 메트릭 수집 → Grafana 대시보드 시각화&lt;/li>
+&lt;li>실무 MLOps 환경에서 모니터링 아키텍처 구축 기반 다지기&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;p>👉 실습 코드: &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/k8s-basic/05_Prometheus_and_Grafana">🔗 GitHub (Monitoring)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-전체-흐름-요약">🧭 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>① Helm 저장소 추가
+② Prometheus 설치 (메트릭 수집)
+③ Grafana 설치 (대시보드 시각화)
+④ Web UI 접속 → Prometheus 연결 → 대시보드 불러오기
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-디렉토리-구성">📂 디렉토리 구성&lt;/h2>
+&lt;pre tabindex="0">&lt;code>k8s-monitoring/
+├── values-prometheus.yaml # Prometheus 커스터마이징 설정
+├── values-grafana.yaml # Grafana 설정 + 비밀번호 지정
+├── README.md
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-1단계-helm-저장소-추가">⚙️ [1단계] Helm 저장소 추가&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm repo add grafana https://grafana.github.io/helm-charts
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm repo update
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-2단계-prometheus-설치">📦 [2단계] Prometheus 설치&lt;/h2>
+&lt;h3 id="-기본-설치">🔹 기본 설치&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>helm install prometheus prometheus-community/prometheus
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl port-forward svc/prometheus-server 9090:80
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>접속: &lt;code>http://localhost:9090&lt;/code>&lt;/p></description></item><item><title>[Kubernetes 실습 - 4단계: Helm]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/04/</link><pubDate>Thu, 05 Jun 2025 20:06:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/04/</guid><description>&lt;h2 id="-kubernetes-실습---helm으로-nginx-배포--커스터마이징">🗂️ Kubernetes 실습 ④ – Helm으로 Nginx 배포 &amp;amp; 커스터마이징&lt;/h2>
+&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;ol>
+&lt;li>Helm CLI 설치 및 Chart 개념 이해&lt;/li>
+&lt;li>Nginx를 Helm으로 배포 &amp;amp; 기존 YAML 방식과 차이 체감&lt;/li>
+&lt;li>&lt;code>values.yaml&lt;/code>로 설정을 바꾸고 재배포하는 방법 익히기&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/k8s-basic/04_helm">🔗 GitHub (Helm)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-전체-흐름-요약">🧭 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>① Helm 설치 및 Chart 저장소 등록
+② bitnami/nginx Chart 검색 → 설치
+③ 기본 설치 결과 확인 (LoadBalancer → Pending)
+④ values.yaml로 NodePort 설정 변경
+⑤ 설정 적용하여 재설치 + 포트 접속 확인
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실습-디렉토리-구성">📁 실습 디렉토리 구성&lt;/h2>
+&lt;pre tabindex="0">&lt;code>k8s-helm/
+├── values-nginx.yaml # 커스터마이징용 설정 파일
+└── README.md
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-1단계-helm-설치">⚙️ [1단계] Helm 설치&lt;/h2>
+&lt;h3 id="-ubuntu-설치-명령어">🔧 Ubuntu 설치 명령어&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm version
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-2단계-chart-저장소-등록--검색">📦 [2단계] Chart 저장소 등록 &amp;amp; 검색&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>helm repo add bitnami https://charts.bitnami.com/bitnami
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm repo update
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm search repo nginx
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>helm search repo는 Chart 목록을 검색하는 명령어야&lt;/p></description></item><item><title>[Kubernetes 실습 - 3단계 : Ingress &amp; Nginx Controller]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/03/</link><pubDate>Thu, 05 Jun 2025 20:06:39 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/03/</guid><description>&lt;h2 id="-kubernetes-실습---ingress--nginx-controller">🌐 Kubernetes 실습 ③ – Ingress &amp;amp; Nginx Controller&lt;/h2>
+&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;ol>
+&lt;li>여러 서비스를 &lt;strong>도메인 또는 경로 기반&lt;/strong>으로 라우팅&lt;/li>
+&lt;li>Cluster 외부에서 서비스를 &lt;code>http://foo.local&lt;/code> 형식으로 접근&lt;/li>
+&lt;li>실무에서 가장 많이 쓰는 Ingress 구조(Nginx Ingress Controller) 익히기&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/k8s-basic/03_Ingress_and_Nginx_Controller">🔗 GitHub (Ingress_and_Nginx_Controller)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-전체-흐름-요약">🧭 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>① Ingress Controller 설치 (minikube addons 사용)
+② nginx / httpd 서비스 배포
+③ Ingress 리소스로 경로 라우팅 설정
+④ /etc/hosts 수정 → curl 테스트로 확인
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실습-디렉토리-구조">📦 실습 디렉토리 구조&lt;/h2>
+&lt;pre tabindex="0">&lt;code>k8s-ingress/
+├── deploy-nginx.yaml # nginx 배포 + 서비스
+├── deploy-httpd.yaml # httpd 배포 + 서비스
+├── ingress.yaml # Ingress 라우팅 정의
+└── README.md
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-1단계-ingress-controller-설치">⚙️ [1단계] Ingress Controller 설치&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>minikube addons enable ingress
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kubectl get pods -n ingress-nginx
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;code>ingress-nginx-controller&lt;/code> Pod가 &lt;code>Running&lt;/code> 상태면 설치 성공&lt;/li>
+&lt;li>NodePort 기본 포트: &lt;code>80&lt;/code>, &lt;code>443&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-2단계-서비스-2개-배포-nginx--httpd">🧱 [2단계] 서비스 2개 배포 (nginx / httpd)&lt;/h2>
+&lt;h3 id="-deploy-nginxyaml">🔹 deploy-nginx.yaml&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">apps/v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Deployment&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">nginx-deployment&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">replicas&lt;/span>: &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">selector&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">matchLabels&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">app&lt;/span>: &lt;span style="color:#ae81ff">nginx&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">template&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">labels&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">app&lt;/span>: &lt;span style="color:#ae81ff">nginx&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">spec&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">containers&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">nginx&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">image&lt;/span>: &lt;span style="color:#ae81ff">nginx&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">containerPort&lt;/span>: &lt;span style="color:#ae81ff">80&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>---
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">nginx-service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">selector&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">app&lt;/span>: &lt;span style="color:#ae81ff">nginx&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">port&lt;/span>: &lt;span style="color:#ae81ff">80&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">targetPort&lt;/span>: &lt;span style="color:#ae81ff">80&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-deploy-httpdyaml">🔹 deploy-httpd.yaml&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">apps/v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Deployment&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">httpd-deployment&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">replicas&lt;/span>: &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">selector&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">matchLabels&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">app&lt;/span>: &lt;span style="color:#ae81ff">httpd&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">template&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">labels&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">app&lt;/span>: &lt;span style="color:#ae81ff">httpd&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">spec&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">containers&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">httpd&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">image&lt;/span>: &lt;span style="color:#ae81ff">httpd&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">containerPort&lt;/span>: &lt;span style="color:#ae81ff">80&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>---
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">httpd-service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">selector&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">app&lt;/span>: &lt;span style="color:#ae81ff">httpd&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">port&lt;/span>: &lt;span style="color:#ae81ff">80&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">targetPort&lt;/span>: &lt;span style="color:#ae81ff">80&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-3단계-ingress-라우팅-설정">🗺️ [3단계] Ingress 라우팅 설정&lt;/h2>
+&lt;h3 id="-ingressyaml">🔹 ingress.yaml&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">networking.k8s.io/v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Ingress&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">example-ingress&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">annotations&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">nginx.ingress.kubernetes.io/rewrite-target&lt;/span>: &lt;span style="color:#ae81ff">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">rules&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">host&lt;/span>: &lt;span style="color:#ae81ff">foo.local&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">http&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">paths&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">path&lt;/span>: &lt;span style="color:#ae81ff">/nginx&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">pathType&lt;/span>: &lt;span style="color:#ae81ff">Prefix&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">backend&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">service&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">nginx-service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">port&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">number&lt;/span>: &lt;span style="color:#ae81ff">80&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">path&lt;/span>: &lt;span style="color:#ae81ff">/httpd&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">pathType&lt;/span>: &lt;span style="color:#ae81ff">Prefix&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">backend&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">service&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">httpd-service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">port&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">number&lt;/span>: &lt;span style="color:#ae81ff">80&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-4단계-실행-및-테스트">🚀 [4단계] 실행 및 테스트&lt;/h2>
+&lt;h3 id="실습-리소스-적용">실습 리소스 적용&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl apply -f deploy-nginx.yaml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kubectl apply -f deploy-httpd.yaml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kubectl apply -f ingress.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="minikube-ip-확인">minikube IP 확인&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>minikube ip
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 예: 192.168.49.2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="etchosts-수정">&lt;code>/etc/hosts&lt;/code> 수정&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>sudo nano /etc/hosts
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 아래 줄 추가&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>192.168.49.2 foo.local
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="curl로-테스트">curl로 테스트&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>curl http://foo.local/nginx &lt;span style="color:#75715e"># nginx 화면 반환&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>curl http://foo.local/httpd &lt;span style="color:#75715e"># httpd 페이지 반환&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-정리-요약">🎯 정리 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>내용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Ingress&lt;/td>
+&lt;td>HTTP(S) 요청을 Path/Host 기반으로 내부 서비스에 라우팅&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Ingress Controller&lt;/td>
+&lt;td>실제 라우팅 처리 담당 (Nginx 등)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>/etc/hosts&lt;/td>
+&lt;td>로컬 DNS 역할 (클러스터 외부 접근 가능하게 설정)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>활용 사례&lt;/td>
+&lt;td>&lt;code>/api&lt;/code>, &lt;code>/mlflow&lt;/code>, &lt;code>/jupyter&lt;/code> 등 URL별 서비스 분리 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-실무-팁">🧩 실무 팁&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>Ingress Controller는 단일 진입점 역할&lt;/strong> → 도메인 or 경로 기반으로 서비스 분리 가능&lt;/li>
+&lt;li>실무에서는 TLS 인증서 연동 (Let&amp;rsquo;s Encrypt, Cert Manager)도 함께 구성&lt;/li>
+&lt;li>API Gateway 역할로도 확장 가능 (ex. Kong, Ambassador 등)&lt;/li>
+&lt;li>&lt;code>/etc/hosts&lt;/code> 설정은 &lt;strong>개발 환경 전용&lt;/strong> (운영에서는 DNS 서버와 연동)&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-mlops-실전-연결">🔧 MLOps 실전 연결&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>Ingress 활용 방식&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>실험 추적 툴 MLflow&lt;/td>
+&lt;td>&lt;code>/mlflow&lt;/code> 경로로 노출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>노트북 환경 JupyterHub&lt;/td>
+&lt;td>&lt;code>/jupyter&lt;/code> 경로로 접속&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>LLM 서빙 엔드포인트&lt;/td>
+&lt;td>&lt;code>/v1/chat/completions&lt;/code> 등으로 구성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>보안 연동&lt;/td>
+&lt;td>&lt;code>cert-manager&lt;/code> + Ingress → TLS 적용&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>[Kubernetes 실습 - 2단계: ConfigMap &amp; Secret]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/02/</link><pubDate>Thu, 05 Jun 2025 20:06:38 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/02/</guid><description>&lt;h2 id="-kubernetes-실습---configmap--secret-환경-변수-주입">🗂️ Kubernetes 실습 ② – ConfigMap &amp;amp; Secret 환경 변수 주입&lt;/h2>
+&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;ol>
+&lt;li>환경 변수와 설정을 외부로 분리해서 관리하는 법 익히기&lt;/li>
+&lt;li>민감한 정보(비밀번호 등)는 Secret으로 안전하게 주입&lt;/li>
+&lt;li>애플리케이션에서 ConfigMap/Secret을 환경 변수 또는 파일로 읽는 구조 학습&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/k8s-basic/02_Configmap_and_Secret">🔗 GitHub (Configmap_and_Secret)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-전체-흐름-요약">🧭 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>① ConfigMap 생성 (일반 설정값)
+② Secret 생성 (민감 정보 – base64 인코딩)
+③ Pod에 환경 변수로 주입
+④ 컨테이너 안에서 값 확인 (env 명령어)
+⑤ 실전 적용 및 보안 주의사항 학습
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실습에-사용된-파일-구성">📂 실습에 사용된 파일 구성&lt;/h2>
+&lt;pre tabindex="0">&lt;code>k8s-configmap-secret/
+├── configmap.yaml # 일반 설정값 정의
+├── secret.yaml # 민감 정보 (base64 인코딩)
+├── pod-env.yaml # Pod 환경 변수로 주입
+└── README.md
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-주요-yaml-파일-정리">📄 주요 YAML 파일 정리&lt;/h2>
+&lt;h3 id="-configmapyaml">🔹 &lt;code>configmap.yaml&lt;/code>&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">ConfigMap&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">app-config&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">data&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">APP_MODE&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;production&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">APP_PORT&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;8080&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-secretyaml">🔹 &lt;code>secret.yaml&lt;/code>&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">v1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Secret&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">app-secret&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">Opaque&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">data&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">DB_PASSWORD&lt;/span>: &lt;span style="color:#ae81ff">c3VwZXJzZWNyZXQ= &lt;/span> &lt;span style="color:#75715e"># base64 → &amp;#34;supersecret&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>✅ 인코딩 방법: echo -n &amp;ldquo;supersecret&amp;rdquo; | base64&lt;/p></description></item><item><title>[Kubernetes 실습 - 1단계 : Deployment &amp; Service]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/01/</link><pubDate>Thu, 05 Jun 2025 20:06:36 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/01/</guid><description>&lt;h2 id="-kubernetes-실습---minikube--nginx-배포">☸️ Kubernetes 실습 ① – Minikube + Nginx 배포&lt;/h2>
+&lt;blockquote>
+&lt;p>목표: 로컬 Minikube 클러스터 구성 → Nginx Deployment &amp;amp; Service 생성 → kubectl 명령어 체득&lt;/p>&lt;/blockquote>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/k8s-basic/01_Deployment_and_Service">🔗 GitHub (Deployment_and_Service)&lt;/a> 에서 확인 가능&lt;/p>
+&lt;hr>
+&lt;h2 id="-전체-흐름-요약">🧭 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>① Minikube 설치 및 클러스터 시작
+② kubectl 명령어 실습
+③ Nginx Deployment + Service 배포
+④ 상태 확인 / 파드 접속 / 로그 확인 / 수평 확장
+⑤ 블로그 정리
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-1단계--minikube--kubectl-설치">⚙️ 1단계 – Minikube &amp;amp; kubectl 설치&lt;/h2>
+&lt;h3 id="-docker-설치--권한-부여">🔹 Docker 설치 &amp;amp; 권한 부여&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>sudo apt update &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> sudo apt install -y docker.io
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo usermod -aG docker $USER
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>⚠️ 설치 후 logout → login 또는 newgrp docker 실행 필요&lt;/p></description></item></channel></rss>
