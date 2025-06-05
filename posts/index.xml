@@ -235,35 +235,7 @@
 &lt;li>실무에서는 TLS 인증서 연동 (Let&amp;rsquo;s Encrypt, Cert Manager)도 함께 구성&lt;/li>
 &lt;li>API Gateway 역할로도 확장 가능 (ex. Kong, Ambassador 등)&lt;/li>
 &lt;li>&lt;code>/etc/hosts&lt;/code> 설정은 &lt;strong>개발 환경 전용&lt;/strong> (운영에서는 DNS 서버와 연동)&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="-mlops-실전-연결">🔧 MLOps 실전 연결&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>상황&lt;/th>
-&lt;th>Ingress 활용 방식&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>실험 추적 툴 MLflow&lt;/td>
-&lt;td>&lt;code>/mlflow&lt;/code> 경로로 노출&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>노트북 환경 JupyterHub&lt;/td>
-&lt;td>&lt;code>/jupyter&lt;/code> 경로로 접속&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>LLM 서빙 엔드포인트&lt;/td>
-&lt;td>&lt;code>/v1/chat/completions&lt;/code> 등으로 구성&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>보안 연동&lt;/td>
-&lt;td>&lt;code>cert-manager&lt;/code> + Ingress → TLS 적용&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table></description></item><item><title>[Kubernetes 실습 - 2단계: ConfigMap &amp; Secret]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/02/</link><pubDate>Thu, 05 Jun 2025 20:06:38 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/02/</guid><description>&lt;h2 id="-kubernetes-실습---configmap--secret-환경-변수-주입">🗂️ Kubernetes 실습 ② – ConfigMap &amp;amp; Secret 환경 변수 주입&lt;/h2>
+&lt;/ul></description></item><item><title>[Kubernetes 실습 - 2단계: ConfigMap &amp; Secret]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/02/</link><pubDate>Thu, 05 Jun 2025 20:06:38 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/02/</guid><description>&lt;h2 id="-kubernetes-실습---configmap--secret-환경-변수-주입">🗂️ Kubernetes 실습 ② – ConfigMap &amp;amp; Secret 환경 변수 주입&lt;/h2>
 &lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
