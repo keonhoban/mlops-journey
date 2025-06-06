@@ -1,6 +1,77 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 05 Jun 2025 20:06:43 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[Kubernetes 실습 - 5단계: Prometheus + Grafana 모니터링]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/05/</link><pubDate>Thu, 05 Jun 2025 20:06:43 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/05/</guid><description>&lt;h2 id="-kubernetes-실습---prometheus--grafana-모니터링-구축">📡 Kubernetes 실습 ⑤ – Prometheus + Grafana 모니터링 구축&lt;/h2>
-&lt;blockquote>
-&lt;p>🎯 목표&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 06 Jun 2025 15:14:40 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 실습 : Tracking + FastAPI 연동]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</link><pubDate>Fri, 06 Jun 2025 15:14:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</guid><description>&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;ol>
+&lt;li>MLflow Tracking Server 구성&lt;/li>
+&lt;li>실험(Experiment), 파라미터, 메트릭, 아티팩트 기록&lt;/li>
+&lt;li>모델 등록 → Stage 이동 → API 연동까지&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/mlflow">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-실습-전체-흐름-요약">🧭 실습 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[1단계] MLflow Tracking Server 구성 (로컬 환경에서 실행)
+[2단계] 실험 실행 (train.py) → 모델 학습, 기록
+[3단계] 모델 등록 및 Stage 설정 (Production 이동)
+[4단계] FastAPI 연동 → 예측 API 서비스
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실습-디렉토리-예시">🧩 실습 디렉토리 예시&lt;/h2>
+&lt;pre tabindex="0">&lt;code>mlops-mlflow/
+├── app/
+│ ├── train.py # 모델 훈련 및 실험 기록
+│ └── model.pkl # 저장된 모델
+├── mlruns/ # 실험 데이터 자동 생성
+├── fastapi_app/
+│ └── app.py # FastAPI 예측 API
+├── Dockerfile (선택)
+└── README.md
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-1단계-mlflow-설치--실행">✅ [1단계] MLflow 설치 &amp;amp; 실행&lt;/h2>
+&lt;h3 id="-가상-환경-설정">🛠️ 가상 환경 설정&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 1. venv 설치&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install python3-venv -y
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 2. 가상환경 생성&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>python3 -m venv .venv
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 3. 가상환경 활성화&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source .venv/bin/activate
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 4. 패키지 설치&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pip install mlflow scikit-learn pandas fastapi uvicorn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 5. 나갈 때&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>deactivate
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="-mlflow-서버-실행">🔧 MLflow 서버 실행&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>mlflow ui --port &lt;span style="color:#ae81ff">5000&lt;/span> &lt;span style="color:#75715e"># http://localhost:5000 에서 UI 확인&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-2단계-실험-실행-trainpy">🧪 [2단계] 실험 실행 (train.py)&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># app/train.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow.sklearn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.ensemble &lt;span style="color:#f92672">import&lt;/span> RandomForestClassifier
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.datasets &lt;span style="color:#f92672">import&lt;/span> load_iris
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.model_selection &lt;span style="color:#f92672">import&lt;/span> train_test_split
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># MLflow 설정&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mlflow&lt;span style="color:#f92672">.&lt;/span>set_tracking_uri(&lt;span style="color:#e6db74">&amp;#34;http://localhost:5000&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mlflow&lt;span style="color:#f92672">.&lt;/span>set_experiment(&lt;span style="color:#e6db74">&amp;#34;iris-rf-exp&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> mlflow&lt;span style="color:#f92672">.&lt;/span>start_run():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> iris &lt;span style="color:#f92672">=&lt;/span> load_iris()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> X_train, X_test, y_train, y_test &lt;span style="color:#f92672">=&lt;/span> train_test_split(iris&lt;span style="color:#f92672">.&lt;/span>data, iris&lt;span style="color:#f92672">.&lt;/span>target, test_size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0.2&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clf &lt;span style="color:#f92672">=&lt;/span> RandomForestClassifier(n_estimators&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">100&lt;/span>, max_depth&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clf&lt;span style="color:#f92672">.&lt;/span>fit(X_train, y_train)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc &lt;span style="color:#f92672">=&lt;/span> clf&lt;span style="color:#f92672">.&lt;/span>score(X_test, y_test)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_param(&lt;span style="color:#e6db74">&amp;#34;n_estimators&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">100&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_param(&lt;span style="color:#e6db74">&amp;#34;max_depth&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_metric(&lt;span style="color:#e6db74">&amp;#34;accuracy&amp;#34;&lt;/span>, acc)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>sklearn&lt;span style="color:#f92672">.&lt;/span>log_model(clf, &lt;span style="color:#e6db74">&amp;#34;model&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 실험 실행&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>python app/train.py
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>📌 실험이 끝나면 mlruns/ 폴더에 실험 기록 및 모델이 저장돼!&lt;/p></description></item><item><title>[Kubernetes 실습 - 5단계: Prometheus + Grafana 모니터링]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/05/</link><pubDate>Thu, 05 Jun 2025 20:06:43 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/05/</guid><description>&lt;blockquote>
+&lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>쿠버네티스 클러스터 내 자원(Pod, Node 등) 실시간 모니터링&lt;/li>
 &lt;li>Prometheus로 메트릭 수집 → Grafana 대시보드 시각화&lt;/li>
@@ -29,8 +100,7 @@
 &lt;h3 id="-기본-설치">🔹 기본 설치&lt;/h3>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>helm install prometheus prometheus-community/prometheus
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl port-forward svc/prometheus-server 9090:80
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>접속: &lt;code>http://localhost:9090&lt;/code>&lt;/p></description></item><item><title>[Kubernetes 실습 - 4단계: Helm]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/04/</link><pubDate>Thu, 05 Jun 2025 20:06:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/04/</guid><description>&lt;h2 id="-kubernetes-실습---helm으로-nginx-배포--커스터마이징">🗂️ Kubernetes 실습 ④ – Helm으로 Nginx 배포 &amp;amp; 커스터마이징&lt;/h2>
-&lt;blockquote>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>접속: &lt;code>http://localhost:9090&lt;/code>&lt;/p></description></item><item><title>[Kubernetes 실습 - 4단계: Helm]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/04/</link><pubDate>Thu, 05 Jun 2025 20:06:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/04/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>Helm CLI 설치 및 Chart 개념 이해&lt;/li>
@@ -61,8 +131,7 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm repo update
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm search repo nginx
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>helm search repo는 Chart 목록을 검색하는 명령어야&lt;/p></description></item><item><title>[Kubernetes 실습 - 3단계 : Ingress &amp; Nginx Controller]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/03/</link><pubDate>Thu, 05 Jun 2025 20:06:39 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/03/</guid><description>&lt;h2 id="-kubernetes-실습---ingress--nginx-controller">🌐 Kubernetes 실습 ③ – Ingress &amp;amp; Nginx Controller&lt;/h2>
-&lt;blockquote>
+&lt;p>helm search repo는 Chart 목록을 검색하는 명령어&lt;/p></description></item><item><title>[Kubernetes 실습 - 3단계 : Ingress &amp; Nginx Controller]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/03/</link><pubDate>Thu, 05 Jun 2025 20:06:39 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/03/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>여러 서비스를 &lt;strong>도메인 또는 경로 기반&lt;/strong>으로 라우팅&lt;/li>
@@ -235,8 +304,35 @@
 &lt;li>실무에서는 TLS 인증서 연동 (Let&amp;rsquo;s Encrypt, Cert Manager)도 함께 구성&lt;/li>
 &lt;li>API Gateway 역할로도 확장 가능 (ex. Kong, Ambassador 등)&lt;/li>
 &lt;li>&lt;code>/etc/hosts&lt;/code> 설정은 &lt;strong>개발 환경 전용&lt;/strong> (운영에서는 DNS 서버와 연동)&lt;/li>
-&lt;/ul></description></item><item><title>[Kubernetes 실습 - 2단계: ConfigMap &amp; Secret]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/02/</link><pubDate>Thu, 05 Jun 2025 20:06:38 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/02/</guid><description>&lt;h2 id="-kubernetes-실습---configmap--secret-환경-변수-주입">🗂️ Kubernetes 실습 ② – ConfigMap &amp;amp; Secret 환경 변수 주입&lt;/h2>
-&lt;blockquote>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-mlops-실전-연결">🔧 MLOps 실전 연결&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>상황&lt;/th>
+&lt;th>Ingress 활용 방식&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>실험 추적 툴 MLflow&lt;/td>
+&lt;td>&lt;code>/mlflow&lt;/code> 경로로 노출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>노트북 환경 JupyterHub&lt;/td>
+&lt;td>&lt;code>/jupyter&lt;/code> 경로로 접속&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>LLM 서빙 엔드포인트&lt;/td>
+&lt;td>&lt;code>/v1/chat/completions&lt;/code> 등으로 구성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>보안 연동&lt;/td>
+&lt;td>&lt;code>cert-manager&lt;/code> + Ingress → TLS 적용&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>[Kubernetes 실습 - 2단계: ConfigMap &amp; Secret]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/02/</link><pubDate>Thu, 05 Jun 2025 20:06:38 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/02/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>환경 변수와 설정을 외부로 분리해서 관리하는 법 익히기&lt;/li>
@@ -278,8 +374,7 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">data&lt;/span>:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">DB_PASSWORD&lt;/span>: &lt;span style="color:#ae81ff">c3VwZXJzZWNyZXQ= &lt;/span> &lt;span style="color:#75715e"># base64 → &amp;#34;supersecret&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>✅ 인코딩 방법: echo -n &amp;ldquo;supersecret&amp;rdquo; | base64&lt;/p></description></item><item><title>[Kubernetes 실습 - 1단계 : Deployment &amp; Service]</title><link>https://keonhoban.github.io/mlops-journey/posts/kubernetes/01/</link><pubDate>Thu, 05 Jun 2025 20:06:36 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/kubernetes/01/</guid><description>&lt;h2 id="-kubernetes-실습---minikube--nginx-배포">☸️ Kubernetes 실습 ① – Minikube + Nginx 배포&lt;/h2>
-&lt;blockquote>
+&lt;p>✅ 인코딩 방법: echo -n &amp;ldquo;supersecret&amp;rdquo; | base64&lt;/p></description></item><item><title>[Kubernetes 실습 - 1단계 : Deployment &amp; Service]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/01/</link><pubDate>Thu, 05 Jun 2025 20:06:36 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/01/</guid><description>&lt;blockquote>
 &lt;p>목표: 로컬 Minikube 클러스터 구성 → Nginx Deployment &amp;amp; Service 생성 → kubectl 명령어 체득&lt;/p>&lt;/blockquote>
 &lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/k8s-basic/01_Deployment_and_Service">🔗 GitHub (Deployment_and_Service)&lt;/a> 에서 확인 가능&lt;/p>
 &lt;hr>
@@ -295,8 +390,7 @@
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>sudo apt update &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> sudo apt install -y docker.io
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo usermod -aG docker $USER
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>⚠️ 설치 후 logout → login 또는 newgrp docker 실행 필요&lt;/p></description></item><item><title>[Terraform] EC2 &amp; S3 리소스 자동화 구축 실습</title><link>https://keonhoban.github.io/mlops-journey/posts/terraform/01/</link><pubDate>Wed, 04 Jun 2025 12:51:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/terraform/01/</guid><description>&lt;h2 id="-aws--terraform-실습-ec2--s3-완전-자동화">☁️ AWS + Terraform 실습: EC2 &amp;amp; S3 완전 자동화&lt;/h2>
-&lt;blockquote>
+&lt;p>⚠️ 설치 후 logout → login 또는 newgrp docker 실행 필요&lt;/p></description></item><item><title>[Terraform 실습] EC2 &amp; S3 리소스 자동화 구축</title><link>https://keonhoban.github.io/mlops-journey/projects/terraform/01/</link><pubDate>Wed, 04 Jun 2025 12:51:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/terraform/01/</guid><description>&lt;blockquote>
 &lt;p>&lt;strong>Terraform 도입 배경&lt;/strong>&lt;/p>
 &lt;p>수동 콘솔 설정은 반복성과 확장성에 한계가 있음&lt;/p>
 &lt;p>Terraform은 &lt;strong>버전 관리가 가능한 코드형 인프라(IaC)&lt;/strong> 로,&lt;/p>
@@ -413,7 +507,7 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="3--합격-인증">3. ✅ 합격 인증&lt;/h2>
-&lt;p>&lt;img alt="AWS SAP 합격 인증" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/aws-sap-pass.png">&lt;/p></description></item><item><title>[코드업] 기초 100제. 십자 뒤집기, 설탕과자 뽑기, 성실한 개미</title><link>https://keonhoban.github.io/mlops-journey/posts/online_judge/01/</link><pubDate>Sat, 10 May 2025 12:25:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/online_judge/01/</guid><description>&lt;h1 id="-codeup-문제-요약">📘 CodeUp 문제 요약&lt;/h1>
+&lt;p>&lt;img alt="AWS SAP 합격 인증" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/aws-sap-pass.png">&lt;/p></description></item><item><title>[코드업] 기초 100제. 십자 뒤집기, 설탕과자 뽑기, 성실한 개미</title><link>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</link><pubDate>Sat, 10 May 2025 12:25:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</guid><description>&lt;h1 id="-codeup-문제-요약">📘 CodeUp 문제 요약&lt;/h1>
 &lt;hr>
 &lt;h2 id="-6096---십자-뒤집기">🔹 6096 - 십자 뒤집기&lt;/h2>
 &lt;blockquote>
