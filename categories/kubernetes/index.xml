@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Kubernetes on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/kubernetes/</link><description>Recent content in Kubernetes on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 05 Jun 2025 20:06:43 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/kubernetes/index.xml" rel="self" type="application/rss+xml"/><item><title>[Kubernetes 실습 - 5단계: Prometheus + Grafana 모니터링]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/05/</link><pubDate>Thu, 05 Jun 2025 20:06:43 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/05/</guid><description>&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Kubernetes on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/kubernetes/</link><description>Recent content in Kubernetes on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 05 Jun 2025 20:06:43 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/kubernetes/index.xml" rel="self" type="application/rss+xml"/><item><title>[Kubernetes - 5단계: Prometheus + Grafana 모니터링]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/05/</link><pubDate>Thu, 05 Jun 2025 20:06:43 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/05/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>쿠버네티스 클러스터 내 자원(Pod, Node 등) 실시간 모니터링&lt;/li>
@@ -28,7 +28,7 @@
 &lt;h3 id="-기본-설치">🔹 기본 설치&lt;/h3>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>helm install prometheus prometheus-community/prometheus
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl port-forward svc/prometheus-server 9090:80
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>접속: &lt;code>http://localhost:9090&lt;/code>&lt;/p></description></item><item><title>[Kubernetes 실습 - 4단계: Helm]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/04/</link><pubDate>Thu, 05 Jun 2025 20:06:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/04/</guid><description>&lt;blockquote>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>접속: &lt;code>http://localhost:9090&lt;/code>&lt;/p></description></item><item><title>[Kubernetes - 4단계: Helm]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/04/</link><pubDate>Thu, 05 Jun 2025 20:06:41 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/04/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>Helm CLI 설치 및 Chart 개념 이해&lt;/li>
@@ -59,7 +59,7 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm repo update
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm search repo nginx
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>helm search repo는 Chart 목록을 검색하는 명령어&lt;/p></description></item><item><title>[Kubernetes 실습 - 3단계 : Ingress &amp; Nginx Controller]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/03/</link><pubDate>Thu, 05 Jun 2025 20:06:39 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/03/</guid><description>&lt;blockquote>
+&lt;p>helm search repo는 Chart 목록을 검색하는 명령어&lt;/p></description></item><item><title>[Kubernetes - 3단계 : Ingress &amp; Nginx Controller]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/03/</link><pubDate>Thu, 05 Jun 2025 20:06:39 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/03/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>여러 서비스를 &lt;strong>도메인 또는 경로 기반&lt;/strong>으로 라우팅&lt;/li>
@@ -260,7 +260,7 @@
 &lt;td>&lt;code>cert-manager&lt;/code> + Ingress → TLS 적용&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>[Kubernetes 실습 - 2단계: ConfigMap &amp; Secret]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/02/</link><pubDate>Thu, 05 Jun 2025 20:06:38 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/02/</guid><description>&lt;blockquote>
+&lt;/table></description></item><item><title>[Kubernetes - 2단계: ConfigMap &amp; Secret]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/02/</link><pubDate>Thu, 05 Jun 2025 20:06:38 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/02/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>환경 변수와 설정을 외부로 분리해서 관리하는 법 익히기&lt;/li>
@@ -302,7 +302,7 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">data&lt;/span>:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">DB_PASSWORD&lt;/span>: &lt;span style="color:#ae81ff">c3VwZXJzZWNyZXQ= &lt;/span> &lt;span style="color:#75715e"># base64 → &amp;#34;supersecret&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>✅ 인코딩 방법: echo -n &amp;ldquo;supersecret&amp;rdquo; | base64&lt;/p></description></item><item><title>[Kubernetes 실습 - 1단계 : Deployment &amp; Service]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/01/</link><pubDate>Thu, 05 Jun 2025 20:06:36 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/01/</guid><description>&lt;blockquote>
+&lt;p>✅ 인코딩 방법: echo -n &amp;ldquo;supersecret&amp;rdquo; | base64&lt;/p></description></item><item><title>[Kubernetes - 1단계 : Deployment &amp; Service]</title><link>https://keonhoban.github.io/mlops-journey/projects/kubernetes/01/</link><pubDate>Thu, 05 Jun 2025 20:06:36 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/kubernetes/01/</guid><description>&lt;blockquote>
 &lt;p>목표: 로컬 Minikube 클러스터 구성 → Nginx Deployment &amp;amp; Service 생성 → kubectl 명령어 체득&lt;/p>&lt;/blockquote>
 &lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/k8s-basic/01_Deployment_and_Service">🔗 GitHub (Deployment_and_Service)&lt;/a> 에서 확인 가능&lt;/p>
 &lt;hr>

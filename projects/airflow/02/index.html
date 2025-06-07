@@ -1,0 +1,286 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[Airflow - 2단계: Python & Bash Operator + XCom 데이터 전달] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="
+목표
+
+Python 함수와 Bash 스크립트를 하나의 DAG으로 구성
+XCom을 활용한 Task 간 데이터 전달 체험
+Web UI에서 실행 흐름과 로그 확인
+
+👉 전체 실습 흐름 요약:
+① DAG 생성: PythonOperator + BashOperator 조합
+② XCom으로 태스크 간 메시지 전달
+③ 로그로 전달 메시지 확인
+④ 전체 DAG 실행 및 의존성 확인
+
+📁 DAG 파일 구조
+airflow/
+├── dags/
+│   └── python_bash_xcom.py  ← 여기 저장
+└── docker-compose.yaml
+
+🧱 DAG 코드 예시
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
+from datetime import datetime
+
+def generate_message():
+    return &#34;🌟 Hello from PythonOperator!&#34;
+
+def print_xcom_message(**context):
+    msg = context['ti'].xcom_pull(task_ids='generate_task')
+    print(f&#34;📬 XCom received message: {msg}&#34;)
+
+with DAG(
+    dag_id='python_bash_xcom',
+    start_date=datetime(2023, 1, 1),
+    schedule_interval=None,
+    catchup=False,
+) as dag:
+
+    generate_task = PythonOperator(
+        task_id='generate_task',
+        python_callable=generate_message,
+    )
+
+    consume_task = PythonOperator(
+        task_id='consume_task',
+        python_callable=print_xcom_message,
+        provide_context=True,
+    )
+
+    bash_task = BashOperator(
+        task_id='bash_echo',
+        bash_command=&#34;echo '🎉 Bash task is running!'&#34;
+    )
+
+    generate_task >> consume_task >> bash_task
+
+🧪 실행 방법 요약
+docker-compose up -d  # Airflow 실행 중인지 확인
+
+브라우저 접속: http://localhost:8080
+DAG 목록 → python_bash_xcom ON
+▶ 버튼 클릭 → Trigger DAG
+각 Task 클릭 → Log 탭에서 실행 결과 확인
+
+
+📊 결과 확인 포인트
+
+  
+      
+          Task
+          로그에서 확인 내용
+      
+  
+  
+      
+          generate_task
+          &#34;🌟 Hello from PythonOperator!&#34; 메시지 리턴
+      
+      
+          consume_task
+          📬 XCom received message: 출력 확인
+      
+      
+          bash_task
+          '🎉 Bash task is running!' 로그 확인
+      
+  
+
+
+🧩 실무 팁
+
+XCom은 간단한 문자열/경로/ID 등 소형 데이터 전달에 적합
+대용량 결과는 S3/DB에 저장 후 경로만 XCom으로 전달하는 방식 추천
+
+
+🔧 MLOps 실전 연결
+
+  
+      
+          실무 시나리오
+          Airflow 사용 방식
+      
+  
+  
+      
+          학습 결과 저장
+          train_model → register_model 태스크로 XCom 전달
+      
+      
+          태스크 연결 흐름 추적
+          Graph View에서 DAG 시각화로 관리
+      
+      
+          후속 작업 자동화
+          BashOperator로 배포 스크립트 실행 등 자동화 가능
+      
+  
+"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/projects/airflow/02/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/projects/airflow/02/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/projects/airflow/02/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[Airflow - 2단계: Python & Bash Operator &#43; XCom 데이터 전달]"><meta property="og:description" content=" 목표
+Python 함수와 Bash 스크립트를 하나의 DAG으로 구성 XCom을 활용한 Task 간 데이터 전달 체험 Web UI에서 실행 흐름과 로그 확인 👉 전체 실습 흐름 요약:
+① DAG 생성: PythonOperator + BashOperator 조합 ② XCom으로 태스크 간 메시지 전달 ③ 로그로 전달 메시지 확인 ④ 전체 DAG 실행 및 의존성 확인 📁 DAG 파일 구조 airflow/ ├── dags/ │ └── python_bash_xcom.py ← 여기 저장 └── docker-compose.yaml 🧱 DAG 코드 예시 from airflow import DAG from airflow.operators.python import PythonOperator from airflow.operators.bash import BashOperator from datetime import datetime def generate_message(): return &#34;🌟 Hello from PythonOperator!&#34; def print_xcom_message(**context): msg = context['ti'].xcom_pull(task_ids='generate_task') print(f&#34;📬 XCom received message: {msg}&#34;) with DAG( dag_id='python_bash_xcom', start_date=datetime(2023, 1, 1), schedule_interval=None, catchup=False, ) as dag: generate_task = PythonOperator( task_id='generate_task', python_callable=generate_message, ) consume_task = PythonOperator( task_id='consume_task', python_callable=print_xcom_message, provide_context=True, ) bash_task = BashOperator( task_id='bash_echo', bash_command=&#34;echo '🎉 Bash task is running!'&#34; ) generate_task >> consume_task >> bash_task 🧪 실행 방법 요약 docker-compose up -d # Airflow 실행 중인지 확인 브라우저 접속: http://localhost:8080 DAG 목록 → python_bash_xcom ON ▶ 버튼 클릭 → Trigger DAG 각 Task 클릭 → Log 탭에서 실행 결과 확인 📊 결과 확인 포인트 Task 로그에서 확인 내용 generate_task &#34;🌟 Hello from PythonOperator!&#34; 메시지 리턴 consume_task 📬 XCom received message: 출력 확인 bash_task '🎉 Bash task is running!' 로그 확인 🧩 실무 팁 XCom은 간단한 문자열/경로/ID 등 소형 데이터 전달에 적합 대용량 결과는 S3/DB에 저장 후 경로만 XCom으로 전달하는 방식 추천 🔧 MLOps 실전 연결 실무 시나리오 Airflow 사용 방식 학습 결과 저장 train_model → register_model 태스크로 XCom 전달 태스크 연결 흐름 추적 Graph View에서 DAG 시각화로 관리 후속 작업 자동화 BashOperator로 배포 스크립트 실행 등 자동화 가능 "><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="projects"><meta property="article:published_time" content="2025-06-07T19:30:15+09:00"><meta property="article:modified_time" content="2025-06-07T19:30:15+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Airflow - 2단계: Python & Bash Operator + XCom 데이터 전달]"><meta name=twitter:description content="
+목표
+
+Python 함수와 Bash 스크립트를 하나의 DAG으로 구성
+XCom을 활용한 Task 간 데이터 전달 체험
+Web UI에서 실행 흐름과 로그 확인
+
+👉 전체 실습 흐름 요약:
+① DAG 생성: PythonOperator + BashOperator 조합
+② XCom으로 태스크 간 메시지 전달
+③ 로그로 전달 메시지 확인
+④ 전체 DAG 실행 및 의존성 확인
+
+📁 DAG 파일 구조
+airflow/
+├── dags/
+│   └── python_bash_xcom.py  ← 여기 저장
+└── docker-compose.yaml
+
+🧱 DAG 코드 예시
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
+from datetime import datetime
+
+def generate_message():
+    return &#34;🌟 Hello from PythonOperator!&#34;
+
+def print_xcom_message(**context):
+    msg = context['ti'].xcom_pull(task_ids='generate_task')
+    print(f&#34;📬 XCom received message: {msg}&#34;)
+
+with DAG(
+    dag_id='python_bash_xcom',
+    start_date=datetime(2023, 1, 1),
+    schedule_interval=None,
+    catchup=False,
+) as dag:
+
+    generate_task = PythonOperator(
+        task_id='generate_task',
+        python_callable=generate_message,
+    )
+
+    consume_task = PythonOperator(
+        task_id='consume_task',
+        python_callable=print_xcom_message,
+        provide_context=True,
+    )
+
+    bash_task = BashOperator(
+        task_id='bash_echo',
+        bash_command=&#34;echo '🎉 Bash task is running!'&#34;
+    )
+
+    generate_task >> consume_task >> bash_task
+
+🧪 실행 방법 요약
+docker-compose up -d  # Airflow 실행 중인지 확인
+
+브라우저 접속: http://localhost:8080
+DAG 목록 → python_bash_xcom ON
+▶ 버튼 클릭 → Trigger DAG
+각 Task 클릭 → Log 탭에서 실행 결과 확인
+
+
+📊 결과 확인 포인트
+
+  
+      
+          Task
+          로그에서 확인 내용
+      
+  
+  
+      
+          generate_task
+          &#34;🌟 Hello from PythonOperator!&#34; 메시지 리턴
+      
+      
+          consume_task
+          📬 XCom received message: 출력 확인
+      
+      
+          bash_task
+          '🎉 Bash task is running!' 로그 확인
+      
+  
+
+
+🧩 실무 팁
+
+XCom은 간단한 문자열/경로/ID 등 소형 데이터 전달에 적합
+대용량 결과는 S3/DB에 저장 후 경로만 XCom으로 전달하는 방식 추천
+
+
+🔧 MLOps 실전 연결
+
+  
+      
+          실무 시나리오
+          Airflow 사용 방식
+      
+  
+  
+      
+          학습 결과 저장
+          train_model → register_model 태스크로 XCom 전달
+      
+      
+          태스크 연결 흐름 추적
+          Graph View에서 DAG 시각화로 관리
+      
+      
+          후속 작업 자동화
+          BashOperator로 배포 스크립트 실행 등 자동화 가능
+      
+  
+"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Projects","item":"https://keonhoban.github.io/mlops-journey/projects/"},{"@type":"ListItem","position":2,"name":"[Airflow - 2단계: Python \u0026 Bash Operator + XCom 데이터 전달]","item":"https://keonhoban.github.io/mlops-journey/projects/airflow/02/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[Airflow - 2단계: Python \u0026 Bash Operator + XCom 데이터 전달]","name":"[Airflow - 2단계: Python \u0026 Bash Operator \u002b XCom 데이터 전달]","description":" 목표\nPython 함수와 Bash 스크립트를 하나의 DAG으로 구성 XCom을 활용한 Task 간 데이터 전달 체험 Web UI에서 실행 흐름과 로그 확인 👉 전체 실습 흐름 요약:\n① DAG 생성: PythonOperator + BashOperator 조합 ② XCom으로 태스크 간 메시지 전달 ③ 로그로 전달 메시지 확인 ④ 전체 DAG 실행 및 의존성 확인 📁 DAG 파일 구조 airflow/ ├── dags/ │ └── python_bash_xcom.py ← 여기 저장 └── docker-compose.yaml 🧱 DAG 코드 예시 from airflow import DAG from airflow.operators.python import PythonOperator from airflow.operators.bash import BashOperator from datetime import datetime def generate_message(): return \u0026#34;🌟 Hello from PythonOperator!\u0026#34; def print_xcom_message(**context): msg = context[\u0026#39;ti\u0026#39;].xcom_pull(task_ids=\u0026#39;generate_task\u0026#39;) print(f\u0026#34;📬 XCom received message: {msg}\u0026#34;) with DAG( dag_id=\u0026#39;python_bash_xcom\u0026#39;, start_date=datetime(2023, 1, 1), schedule_interval=None, catchup=False, ) as dag: generate_task = PythonOperator( task_id=\u0026#39;generate_task\u0026#39;, python_callable=generate_message, ) consume_task = PythonOperator( task_id=\u0026#39;consume_task\u0026#39;, python_callable=print_xcom_message, provide_context=True, ) bash_task = BashOperator( task_id=\u0026#39;bash_echo\u0026#39;, bash_command=\u0026#34;echo \u0026#39;🎉 Bash task is running!\u0026#39;\u0026#34; ) generate_task \u0026gt;\u0026gt; consume_task \u0026gt;\u0026gt; bash_task 🧪 실행 방법 요약 docker-compose up -d # Airflow 실행 중인지 확인 브라우저 접속: http://localhost:8080 DAG 목록 → python_bash_xcom ON ▶ 버튼 클릭 → Trigger DAG 각 Task 클릭 → Log 탭에서 실행 결과 확인 📊 결과 확인 포인트 Task 로그에서 확인 내용 generate_task \u0026quot;🌟 Hello from PythonOperator!\u0026quot; 메시지 리턴 consume_task 📬 XCom received message: 출력 확인 bash_task '🎉 Bash task is running!' 로그 확인 🧩 실무 팁 XCom은 간단한 문자열/경로/ID 등 소형 데이터 전달에 적합 대용량 결과는 S3/DB에 저장 후 경로만 XCom으로 전달하는 방식 추천 🔧 MLOps 실전 연결 실무 시나리오 Airflow 사용 방식 학습 결과 저장 train_model → register_model 태스크로 XCom 전달 태스크 연결 흐름 추적 Graph View에서 DAG 시각화로 관리 후속 작업 자동화 BashOperator로 배포 스크립트 실행 등 자동화 가능 ","keywords":[],"articleBody":" 목표\nPython 함수와 Bash 스크립트를 하나의 DAG으로 구성 XCom을 활용한 Task 간 데이터 전달 체험 Web UI에서 실행 흐름과 로그 확인 👉 전체 실습 흐름 요약:\n① DAG 생성: PythonOperator + BashOperator 조합 ② XCom으로 태스크 간 메시지 전달 ③ 로그로 전달 메시지 확인 ④ 전체 DAG 실행 및 의존성 확인 📁 DAG 파일 구조 airflow/ ├── dags/ │ └── python_bash_xcom.py ← 여기 저장 └── docker-compose.yaml 🧱 DAG 코드 예시 from airflow import DAG from airflow.operators.python import PythonOperator from airflow.operators.bash import BashOperator from datetime import datetime def generate_message(): return \"🌟 Hello from PythonOperator!\" def print_xcom_message(**context): msg = context['ti'].xcom_pull(task_ids='generate_task') print(f\"📬 XCom received message: {msg}\") with DAG( dag_id='python_bash_xcom', start_date=datetime(2023, 1, 1), schedule_interval=None, catchup=False, ) as dag: generate_task = PythonOperator( task_id='generate_task', python_callable=generate_message, ) consume_task = PythonOperator( task_id='consume_task', python_callable=print_xcom_message, provide_context=True, ) bash_task = BashOperator( task_id='bash_echo', bash_command=\"echo '🎉 Bash task is running!'\" ) generate_task \u003e\u003e consume_task \u003e\u003e bash_task 🧪 실행 방법 요약 docker-compose up -d # Airflow 실행 중인지 확인 브라우저 접속: http://localhost:8080 DAG 목록 → python_bash_xcom ON ▶ 버튼 클릭 → Trigger DAG 각 Task 클릭 → Log 탭에서 실행 결과 확인 📊 결과 확인 포인트 Task 로그에서 확인 내용 generate_task \"🌟 Hello from PythonOperator!\" 메시지 리턴 consume_task 📬 XCom received message: 출력 확인 bash_task '🎉 Bash task is running!' 로그 확인 🧩 실무 팁 XCom은 간단한 문자열/경로/ID 등 소형 데이터 전달에 적합 대용량 결과는 S3/DB에 저장 후 경로만 XCom으로 전달하는 방식 추천 🔧 MLOps 실전 연결 실무 시나리오 Airflow 사용 방식 학습 결과 저장 train_model → register_model 태스크로 XCom 전달 태스크 연결 흐름 추적 Graph View에서 DAG 시각화로 관리 후속 작업 자동화 BashOperator로 배포 스크립트 실행 등 자동화 가능 ","wordCount":"266","inLanguage":"en","datePublished":"2025-06-07T19:30:15+09:00","dateModified":"2025-06-07T19:30:15+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/projects/airflow/02/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/projects/>Projects</a></div><h1 class="post-title entry-hint-parent">[Airflow - 2단계: Python & Bash Operator + XCom 데이터 전달]</h1><div class=post-meta><span title='2025-06-07 19:30:15 +0900 +0900'>June 7, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><blockquote><p>목표</p><ol><li>Python 함수와 Bash 스크립트를 하나의 DAG으로 구성</li><li>XCom을 활용한 Task 간 데이터 전달 체험</li><li>Web UI에서 실행 흐름과 로그 확인</li></ol></blockquote><p>👉 전체 실습 흐름 요약:</p><pre tabindex=0><code>① DAG 생성: PythonOperator + BashOperator 조합
+② XCom으로 태스크 간 메시지 전달
+③ 로그로 전달 메시지 확인
+④ 전체 DAG 실행 및 의존성 확인
+</code></pre><hr><h2 id=-dag-파일-구조>📁 DAG 파일 구조<a hidden class=anchor aria-hidden=true href=#-dag-파일-구조>#</a></h2><pre tabindex=0><code>airflow/
+├── dags/
+│   └── python_bash_xcom.py  ← 여기 저장
+└── docker-compose.yaml
+</code></pre><hr><h2 id=-dag-코드-예시>🧱 DAG 코드 예시<a hidden class=anchor aria-hidden=true href=#-dag-코드-예시>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> airflow <span style=color:#f92672>import</span> DAG
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> airflow.operators.python <span style=color:#f92672>import</span> PythonOperator
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> airflow.operators.bash <span style=color:#f92672>import</span> BashOperator
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> datetime <span style=color:#f92672>import</span> datetime
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>generate_message</span>():
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#34;🌟 Hello from PythonOperator!&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>print_xcom_message</span>(<span style=color:#f92672>**</span>context):
+</span></span><span style=display:flex><span>    msg <span style=color:#f92672>=</span> context[<span style=color:#e6db74>&#39;ti&#39;</span>]<span style=color:#f92672>.</span>xcom_pull(task_ids<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;generate_task&#39;</span>)
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;📬 XCom received message: </span><span style=color:#e6db74>{</span>msg<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>with</span> DAG(
+</span></span><span style=display:flex><span>    dag_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;python_bash_xcom&#39;</span>,
+</span></span><span style=display:flex><span>    start_date<span style=color:#f92672>=</span>datetime(<span style=color:#ae81ff>2023</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>1</span>),
+</span></span><span style=display:flex><span>    schedule_interval<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>,
+</span></span><span style=display:flex><span>    catchup<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>,
+</span></span><span style=display:flex><span>) <span style=color:#66d9ef>as</span> dag:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    generate_task <span style=color:#f92672>=</span> PythonOperator(
+</span></span><span style=display:flex><span>        task_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;generate_task&#39;</span>,
+</span></span><span style=display:flex><span>        python_callable<span style=color:#f92672>=</span>generate_message,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    consume_task <span style=color:#f92672>=</span> PythonOperator(
+</span></span><span style=display:flex><span>        task_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;consume_task&#39;</span>,
+</span></span><span style=display:flex><span>        python_callable<span style=color:#f92672>=</span>print_xcom_message,
+</span></span><span style=display:flex><span>        provide_context<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    bash_task <span style=color:#f92672>=</span> BashOperator(
+</span></span><span style=display:flex><span>        task_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;bash_echo&#39;</span>,
+</span></span><span style=display:flex><span>        bash_command<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;echo &#39;🎉 Bash task is running!&#39;&#34;</span>
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    generate_task <span style=color:#f92672>&gt;&gt;</span> consume_task <span style=color:#f92672>&gt;&gt;</span> bash_task
+</span></span></code></pre></div><hr><h2 id=-실행-방법-요약>🧪 실행 방법 요약<a hidden class=anchor aria-hidden=true href=#-실행-방법-요약>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>docker-compose up -d  <span style=color:#75715e># Airflow 실행 중인지 확인</span>
+</span></span></code></pre></div><ol><li>브라우저 접속: <a href=http://localhost:8080/>http://localhost:8080</a></li><li>DAG 목록 → <code>python_bash_xcom</code> ON</li><li>▶ 버튼 클릭 → Trigger DAG</li><li>각 Task 클릭 → Log 탭에서 실행 결과 확인</li></ol><hr><h2 id=-결과-확인-포인트>📊 결과 확인 포인트<a hidden class=anchor aria-hidden=true href=#-결과-확인-포인트>#</a></h2><table><thead><tr><th>Task</th><th>로그에서 확인 내용</th></tr></thead><tbody><tr><td>generate_task</td><td><code>"🌟 Hello from PythonOperator!"</code> 메시지 리턴</td></tr><tr><td>consume_task</td><td><code>📬 XCom received message:</code> 출력 확인</td></tr><tr><td>bash_task</td><td><code>'🎉 Bash task is running!'</code> 로그 확인</td></tr></tbody></table><hr><h2 id=-실무-팁>🧩 실무 팁<a hidden class=anchor aria-hidden=true href=#-실무-팁>#</a></h2><ul><li>XCom은 <strong>간단한 문자열/경로/ID 등 소형 데이터</strong> 전달에 적합</li><li>대용량 결과는 S3/DB에 저장 후 <strong>경로만 XCom으로 전달</strong>하는 방식 추천</li></ul><hr><h2 id=-mlops-실전-연결>🔧 MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#-mlops-실전-연결>#</a></h2><table><thead><tr><th>실무 시나리오</th><th>Airflow 사용 방식</th></tr></thead><tbody><tr><td>학습 결과 저장</td><td><code>train_model</code> → <code>register_model</code> 태스크로 XCom 전달</td></tr><tr><td>태스크 연결 흐름 추적</td><td>Graph View에서 DAG 시각화로 관리</td></tr><tr><td>후속 작업 자동화</td><td>BashOperator로 배포 스크립트 실행 등 자동화 가능</td></tr></tbody></table></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

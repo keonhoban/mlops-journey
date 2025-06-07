@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Airflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/airflow/</link><description>Recent content in Airflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 07 Jun 2025 19:30:16 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/airflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow - 3단계: ML 파이프라인 DAG 구성]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/03/</link><pubDate>Sat, 07 Jun 2025 19:30:16 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/03/</guid><description>&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;p>ML 워크플로우를 DAG 형태로 구성하여&lt;/p>
+&lt;p>데이터 준비 → 모델 학습 → 모델 저장 흐름을 시뮬레이션함&lt;/p>&lt;/blockquote>
+&lt;p>👉 전체 흐름 요약:&lt;/p>
+&lt;pre tabindex="0">&lt;code>① load_data (가상 데이터 경로 리턴)
+② train_model (데이터 경로 받아 학습 흉내)
+③ save_model (모델 경로 받아 저장 완료 메시지)
+→ XCom을 통해 단계별 결과 전달
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실습-디렉토리-예시">📁 실습 디렉토리 예시&lt;/h2>
+&lt;pre tabindex="0">&lt;code>airflow/
+└── dags/
+└── ml_simulation.py
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실습-코드-ml_simulationpy">🧪 실습 코드 (ml_simulation.py)&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow &lt;span style="color:#f92672">import&lt;/span> DAG
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.python &lt;span style="color:#f92672">import&lt;/span> PythonOperator
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> datetime &lt;span style="color:#f92672">import&lt;/span> datetime
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">load_data&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;📥 데이터 로딩 완료 (가상)&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;data_path&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;/tmp/fake_data.csv&amp;#34;&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">train_model&lt;/span>(&lt;span style="color:#f92672">**&lt;/span>context):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> data &lt;span style="color:#f92672">=&lt;/span> context[&lt;span style="color:#e6db74">&amp;#39;ti&amp;#39;&lt;/span>]&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;load_data&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;🧪 데이터 경로: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>data[&lt;span style="color:#e6db74">&amp;#39;data_path&amp;#39;&lt;/span>]&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;🚀 모델 학습 완료 (가상)&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;model_path&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;/tmp/fake_model.pkl&amp;#34;&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">save_model&lt;/span>(&lt;span style="color:#f92672">**&lt;/span>context):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model &lt;span style="color:#f92672">=&lt;/span> context[&lt;span style="color:#e6db74">&amp;#39;ti&amp;#39;&lt;/span>]&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;train_model&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;💾 모델 저장 경로: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model[&lt;span style="color:#e6db74">&amp;#39;model_path&amp;#39;&lt;/span>]&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;✅ 저장 완료 (가상)&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> DAG(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dag_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;ml_simulation&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> start_date&lt;span style="color:#f92672">=&lt;/span>datetime(&lt;span style="color:#ae81ff">2023&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> schedule_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> catchup&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>) &lt;span style="color:#66d9ef">as&lt;/span> dag:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> t1 &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;load_data&amp;#39;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>load_data)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> t2 &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;train_model&amp;#39;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>train_model, provide_context&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">True&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> t3 &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;save_model&amp;#39;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>save_model, provide_context&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">True&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> t1 &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> t2 &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> t3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>✅ 저장 경로: dags/ml_simulation.py&lt;/p></description></item><item><title>[Airflow - 2단계: Python &amp; Bash Operator + XCom 데이터 전달]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/02/</link><pubDate>Sat, 07 Jun 2025 19:30:15 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/02/</guid><description>&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;ol>
+&lt;li>Python 함수와 Bash 스크립트를 하나의 DAG으로 구성&lt;/li>
+&lt;li>XCom을 활용한 Task 간 데이터 전달 체험&lt;/li>
+&lt;li>Web UI에서 실행 흐름과 로그 확인&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;p>👉 전체 실습 흐름 요약:&lt;/p>
+&lt;pre tabindex="0">&lt;code>① DAG 생성: PythonOperator + BashOperator 조합
+② XCom으로 태스크 간 메시지 전달
+③ 로그로 전달 메시지 확인
+④ 전체 DAG 실행 및 의존성 확인
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-dag-파일-구조">📁 DAG 파일 구조&lt;/h2>
+&lt;pre tabindex="0">&lt;code>airflow/
+├── dags/
+│ └── python_bash_xcom.py ← 여기 저장
+└── docker-compose.yaml
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-dag-코드-예시">🧱 DAG 코드 예시&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow &lt;span style="color:#f92672">import&lt;/span> DAG
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.python &lt;span style="color:#f92672">import&lt;/span> PythonOperator
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.bash &lt;span style="color:#f92672">import&lt;/span> BashOperator
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> datetime &lt;span style="color:#f92672">import&lt;/span> datetime
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">generate_message&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#34;🌟 Hello from PythonOperator!&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">print_xcom_message&lt;/span>(&lt;span style="color:#f92672">**&lt;/span>context):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> msg &lt;span style="color:#f92672">=&lt;/span> context[&lt;span style="color:#e6db74">&amp;#39;ti&amp;#39;&lt;/span>]&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;generate_task&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;📬 XCom received message: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>msg&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> DAG(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dag_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;python_bash_xcom&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> start_date&lt;span style="color:#f92672">=&lt;/span>datetime(&lt;span style="color:#ae81ff">2023&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> schedule_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> catchup&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>) &lt;span style="color:#66d9ef">as&lt;/span> dag:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> generate_task &lt;span style="color:#f92672">=&lt;/span> PythonOperator(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;generate_task&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> python_callable&lt;span style="color:#f92672">=&lt;/span>generate_message,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> consume_task &lt;span style="color:#f92672">=&lt;/span> PythonOperator(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;consume_task&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> python_callable&lt;span style="color:#f92672">=&lt;/span>print_xcom_message,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> provide_context&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">True&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bash_task &lt;span style="color:#f92672">=&lt;/span> BashOperator(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;bash_echo&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bash_command&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;echo &amp;#39;🎉 Bash task is running!&amp;#39;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> generate_task &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> consume_task &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> bash_task
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-실행-방법-요약">🧪 실행 방법 요약&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>docker-compose up -d &lt;span style="color:#75715e"># Airflow 실행 중인지 확인&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ol>
+&lt;li>브라우저 접속: &lt;a href="http://localhost:8080/">http://localhost:8080&lt;/a>&lt;/li>
+&lt;li>DAG 목록 → &lt;code>python_bash_xcom&lt;/code> ON&lt;/li>
+&lt;li>▶ 버튼 클릭 → Trigger DAG&lt;/li>
+&lt;li>각 Task 클릭 → Log 탭에서 실행 결과 확인&lt;/li>
+&lt;/ol>
+&lt;hr>
+&lt;h2 id="-결과-확인-포인트">📊 결과 확인 포인트&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Task&lt;/th>
+&lt;th>로그에서 확인 내용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>generate_task&lt;/td>
+&lt;td>&lt;code>&amp;quot;🌟 Hello from PythonOperator!&amp;quot;&lt;/code> 메시지 리턴&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>consume_task&lt;/td>
+&lt;td>&lt;code>📬 XCom received message:&lt;/code> 출력 확인&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>bash_task&lt;/td>
+&lt;td>&lt;code>'🎉 Bash task is running!'&lt;/code> 로그 확인&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-실무-팁">🧩 실무 팁&lt;/h2>
+&lt;ul>
+&lt;li>XCom은 &lt;strong>간단한 문자열/경로/ID 등 소형 데이터&lt;/strong> 전달에 적합&lt;/li>
+&lt;li>대용량 결과는 S3/DB에 저장 후 &lt;strong>경로만 XCom으로 전달&lt;/strong>하는 방식 추천&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-mlops-실전-연결">🔧 MLOps 실전 연결&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>실무 시나리오&lt;/th>
+&lt;th>Airflow 사용 방식&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>학습 결과 저장&lt;/td>
+&lt;td>&lt;code>train_model&lt;/code> → &lt;code>register_model&lt;/code> 태스크로 XCom 전달&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>태스크 연결 흐름 추적&lt;/td>
+&lt;td>Graph View에서 DAG 시각화로 관리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>후속 작업 자동화&lt;/td>
+&lt;td>BashOperator로 배포 스크립트 실행 등 자동화 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>[Airflow - 1단계: 로컬 환경에서 기본 DAG 실행]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/01/</link><pubDate>Sat, 07 Jun 2025 19:29:36 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/01/</guid><description>&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;ol>
+&lt;li>Docker 기반 Airflow 환경 구성&lt;/li>
+&lt;li>DAG 파일을 작성하고 실행&lt;/li>
+&lt;li>UI에서 워크플로우 흐름과 로그를 직접 확인&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;p>👉 실습 전체 흐름 요약:&lt;/p>
+&lt;pre tabindex="0">&lt;code>① Docker 설치 확인
+② 공식 Airflow 예제 다운로드
+③ docker-compose 실행
+④ DAG UI 접속 및 실행
+⑤ 로그 확인으로 정상 여부 검증
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실습-디렉토리-구조">📁 실습 디렉토리 구조&lt;/h2>
+&lt;pre tabindex="0">&lt;code>airflow/
+├── dags/ # DAG 파일 작성 위치
+├── logs/ # 작업 로그 저장
+├── plugins/ # 커스텀 플러그인 (선택)
+├── docker-compose.yaml
+└── .env # AIRFLOW_UID 포함
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-주요-명령어-정리">🔧 주요 명령어 정리&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Airflow 예제 다운로드&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git clone https://github.com/apache/airflow.git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd airflow/dev &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> ./docker-compose/setup.sh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 또는 간단한 버전&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>curl -LfO &lt;span style="color:#e6db74">&amp;#39;https://airflow.apache.org/docs/apache-airflow/2.8.2/docker-compose.yaml&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir -p ./dags ./logs ./plugins
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>echo -e &lt;span style="color:#e6db74">&amp;#34;AIRFLOW_UID=&lt;/span>&lt;span style="color:#66d9ef">$(&lt;/span>id -u&lt;span style="color:#66d9ef">)&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &amp;gt; .env
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 서비스 실행&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>docker-compose up -d
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 접속&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>http://localhost:8080 &lt;span style="color:#f92672">(&lt;/span>ID/PW: airflow / airflow&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-샘플-dag-예시">💡 샘플 DAG 예시&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow &lt;span style="color:#f92672">import&lt;/span> DAG
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.bash &lt;span style="color:#f92672">import&lt;/span> BashOperator
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> datetime &lt;span style="color:#f92672">import&lt;/span> datetime
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> DAG(dag_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;hello_airflow&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> start_date&lt;span style="color:#f92672">=&lt;/span>datetime(&lt;span style="color:#ae81ff">2023&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> schedule_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;@daily&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> catchup&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span>) &lt;span style="color:#66d9ef">as&lt;/span> dag:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> t1 &lt;span style="color:#f92672">=&lt;/span> BashOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;print_date&amp;#34;&lt;/span>, bash_command&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;date&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> t2 &lt;span style="color:#f92672">=&lt;/span> BashOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;say_hello&amp;#34;&lt;/span>, bash_command&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;echo &amp;#39;Hello, Airflow!&amp;#39;&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> t1 &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> t2
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>👉 dags/hello_airflow.py 로 저장&lt;/p></description></item></channel></rss>
