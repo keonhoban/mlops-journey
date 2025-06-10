@@ -1,8 +1,137 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Airflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/airflow/</link><description>Recent content in Airflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 07 Jun 2025 19:30:16 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/airflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow - 3단계: ML 파이프라인 DAG 구성]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/03/</link><pubDate>Sat, 07 Jun 2025 19:30:16 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/03/</guid><description>&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Airflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/airflow/</link><description>Recent content in Airflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 10 Jun 2025 19:49:29 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/airflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow - 5단계: PythonOperator + MLflow Tracking 연동 실습]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/05/</link><pubDate>Tue, 10 Jun 2025 19:49:29 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/05/</guid><description>&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;p>PythonOperator를 사용하여 MLflow로 실험(모델 학습)을 자동화하고, 파라미터, 메트릭, 모델을 기록하는 방법을 학습합니다.&lt;/p>&lt;/blockquote>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow/05_Airflow_and_MLflow">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-실습-전체-흐름-요약">🧭 실습 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[1단계] MLflow 실험 스크립트 작성
+[2단계] Airflow DAG 구성
+[3단계] DAG 실행 및 파라미터/메트릭 확인
+[4단계] 모델 저장 및 로깅 상태 점검
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-디렉토리-구조">📁 디렉토리 구조&lt;/h2>
+&lt;pre tabindex="0">&lt;code>airflow/
+├── dags/
+│ ├── train_with_mlflow.py ← DAG 파일
+├── ml_code/
+│ ├── train_mlflow.py ← MLflow 연동 학습 스크립트
+└── mlruns/ ← MLflow 로깅 결과 저장 폴더 (자동 생성)
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-1단계-mlflow-학습-스크립트-작성">🧪 1단계: MLflow 학습 스크립트 작성&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># airflow/ml_code/train_mlflow.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow.sklearn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.datasets &lt;span style="color:#f92672">import&lt;/span> load_iris
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.ensemble &lt;span style="color:#f92672">import&lt;/span> RandomForestClassifier
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.metrics &lt;span style="color:#f92672">import&lt;/span> accuracy_score
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">run_experiment&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>set_tracking_uri(&lt;span style="color:#e6db74">&amp;#34;file:/opt/airflow/mlruns&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>set_experiment(&lt;span style="color:#e6db74">&amp;#34;airflow_mlflow_example&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">with&lt;/span> mlflow&lt;span style="color:#f92672">.&lt;/span>start_run():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 데이터 로딩&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> data &lt;span style="color:#f92672">=&lt;/span> load_iris()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> X, y &lt;span style="color:#f92672">=&lt;/span> data&lt;span style="color:#f92672">.&lt;/span>data, data&lt;span style="color:#f92672">.&lt;/span>target
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 모델 정의&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model &lt;span style="color:#f92672">=&lt;/span> RandomForestClassifier(n_estimators&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">50&lt;/span>, max_depth&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model&lt;span style="color:#f92672">.&lt;/span>fit(X, y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> preds &lt;span style="color:#f92672">=&lt;/span> model&lt;span style="color:#f92672">.&lt;/span>predict(X)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc &lt;span style="color:#f92672">=&lt;/span> accuracy_score(y, preds)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># MLflow 기록&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_param(&lt;span style="color:#e6db74">&amp;#34;n_estimators&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">50&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_param(&lt;span style="color:#e6db74">&amp;#34;max_depth&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_metric(&lt;span style="color:#e6db74">&amp;#34;accuracy&amp;#34;&lt;/span>, acc)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>sklearn&lt;span style="color:#f92672">.&lt;/span>log_model(model, &lt;span style="color:#e6db74">&amp;#34;model&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-2단계-airflow-dag-작성">🧪 2단계: Airflow DAG 작성&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># airflow/dags/train_with_mlflow.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow &lt;span style="color:#f92672">import&lt;/span> DAG
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.python &lt;span style="color:#f92672">import&lt;/span> PythonOperator
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> datetime &lt;span style="color:#f92672">import&lt;/span> datetime
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> sys
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sys&lt;span style="color:#f92672">.&lt;/span>path&lt;span style="color:#f92672">.&lt;/span>append(&lt;span style="color:#e6db74">&amp;#34;/opt/airflow/ml_code&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> train_mlflow &lt;span style="color:#f92672">import&lt;/span> run_experiment
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> DAG(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dag_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;mlflow_tracking_dag&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> start_date&lt;span style="color:#f92672">=&lt;/span>datetime(&lt;span style="color:#ae81ff">2023&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> schedule_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> catchup&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>) &lt;span style="color:#66d9ef">as&lt;/span> dag:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> run_mlflow &lt;span style="color:#f92672">=&lt;/span> PythonOperator(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;run_mlflow_training&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> python_callable&lt;span style="color:#f92672">=&lt;/span>run_experiment,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-실행-절차">✅ 실행 절차&lt;/h2>
+&lt;ol>
+&lt;li>&lt;code>train_mlflow.py&lt;/code> 작성&lt;/li>
+&lt;li>&lt;code>train_with_mlflow.py&lt;/code> DAG 등록&lt;/li>
+&lt;li>Airflow UI에서 DAG 실행&lt;/li>
+&lt;li>Task 로그에서 파라미터/메트릭/모델 기록 확인&lt;/li>
+&lt;/ol>
+&lt;hr>
+&lt;h2 id="모듈-에러가-발생하면">❓모듈 에러가 발생하면?&lt;/h2>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;code>docker-compose.yaml&lt;/code>에서 &lt;code>volumes:&lt;/code> 항목 확인&lt;/p></description></item><item><title>[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/04/</link><pubDate>Tue, 10 Jun 2025 19:49:27 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/04/</guid><description>&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>train.py&lt;/code> 모델 학습 스크립트를 별도 파일로 작성&lt;/li>
+&lt;li>Airflow DAG에서 해당 스크립트를 &lt;code>BashOperator&lt;/code>로 실행&lt;/li>
+&lt;li>모델 학습 및 결과 확인&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow/04_BashOperator_and_Python_ML_Script">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-실습-전체-흐름-요약">🧭 실습 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[1단계] 학습 스크립트 작성
+[2단계] BashOperator로 스크립트 실행 DAG 구성
+[3단계] Airflow 웹 UI에서 실행 및 로그 확인
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-디렉토리-구조">📁 디렉토리 구조&lt;/h2>
+&lt;pre tabindex="0">&lt;code>airflow/
+├── dags/
+│ └── run_train_script.py ← DAG 파일
+├── ml_code/
+│ ├── train.py ← 모델 학습 스크립트
+│ └── model.pkl ← 학습된 모델 파일
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-1단계-학습-스크립트-작성-trainpy">🧪 [1단계] 학습 스크립트 작성 (&lt;code>train.py&lt;/code>)&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># airflow/ml_code/train.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> pickle
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.datasets &lt;span style="color:#f92672">import&lt;/span> load_iris
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.ensemble &lt;span style="color:#f92672">import&lt;/span> RandomForestClassifier
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 데이터 로딩&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>data &lt;span style="color:#f92672">=&lt;/span> load_iris()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>X, y &lt;span style="color:#f92672">=&lt;/span> data&lt;span style="color:#f92672">.&lt;/span>data, data&lt;span style="color:#f92672">.&lt;/span>target
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 모델 학습&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>model &lt;span style="color:#f92672">=&lt;/span> RandomForestClassifier()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>model&lt;span style="color:#f92672">.&lt;/span>fit(X, y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 모델 저장&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>model_path &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;/opt/airflow/ml_code/model.pkl&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> open(model_path, &lt;span style="color:#e6db74">&amp;#34;wb&amp;#34;&lt;/span>) &lt;span style="color:#66d9ef">as&lt;/span> f:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pickle&lt;span style="color:#f92672">.&lt;/span>dump(model, f)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>모델은 /opt/airflow/ml_code/model.pkl 경로에 저장됩니다.&lt;/p></description></item><item><title>[Airflow - 3단계: ML 파이프라인 DAG 구성]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/03/</link><pubDate>Sat, 07 Jun 2025 19:30:16 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/03/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;p>ML 워크플로우를 DAG 형태로 구성하여&lt;/p>
 &lt;p>데이터 준비 → 모델 학습 → 모델 저장 흐름을 시뮬레이션함&lt;/p>&lt;/blockquote>
-&lt;p>👉 전체 흐름 요약:&lt;/p>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow/03_ML_Pipeline">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-실습-전체-흐름-요약">🧭 실습 전체 흐름 요약&lt;/h2>
 &lt;pre tabindex="0">&lt;code>① load_data (가상 데이터 경로 리턴)
 ② train_model (데이터 경로 받아 학습 흉내)
 ③ save_model (모델 경로 받아 저장 완료 메시지)
@@ -53,7 +182,9 @@
 &lt;li>XCom을 활용한 Task 간 데이터 전달 체험&lt;/li>
 &lt;li>Web UI에서 실행 흐름과 로그 확인&lt;/li>
 &lt;/ol>&lt;/blockquote>
-&lt;p>👉 전체 실습 흐름 요약:&lt;/p>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow/02_PythonOperator_and_XCom">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-실습-전체-흐름-요약">🧭 실습 전체 흐름 요약&lt;/h2>
 &lt;pre tabindex="0">&lt;code>① DAG 생성: PythonOperator + BashOperator 조합
 ② XCom으로 태스크 간 메시지 전달
 ③ 로그로 전달 메시지 확인
@@ -171,7 +302,9 @@
 &lt;li>DAG 파일을 작성하고 실행&lt;/li>
 &lt;li>UI에서 워크플로우 흐름과 로그를 직접 확인&lt;/li>
 &lt;/ol>&lt;/blockquote>
-&lt;p>👉 실습 전체 흐름 요약:&lt;/p>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow/01_DAG_basic">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-실습-전체-흐름-요약">🧭 실습 전체 흐름 요약&lt;/h2>
 &lt;pre tabindex="0">&lt;code>① Docker 설치 확인
 ② 공식 Airflow 예제 다운로드
 ③ docker-compose 실행
