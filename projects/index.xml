@@ -11,7 +11,8 @@
 ↓
 [FastAPI]
 - models:/IrisModel/Production → 실시간 예측
-&lt;/code>&lt;/pre>&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi">🔗 GitHub (Airflow → MLflow → FastAPI)&lt;/a>&lt;/p>
+&lt;/code>&lt;/pre>&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi">🔗 GitHub (Airflow → MLflow → FastAPI)&lt;/a>
+👉 Trouble Shoot은 &lt;a href="https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/">🔗 Trouble_Shoot (Airflow 기초 자동화)&lt;/a>&lt;/p>
 &lt;hr>
 &lt;h2 id="-1단계-프로젝트-기본-폴더-구조-설계">✅ [1단계] 프로젝트 기본 폴더 구조 설계&lt;/h2>
 &lt;h3 id="-1-전체-디렉토리-구성도">📁 1. 전체 디렉토리 구성도&lt;/h3>
