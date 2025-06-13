@@ -22,8 +22,10 @@ categories = 'MLOps Pipeline'
    - models:/IrisModel/Production → 실시간 예측
 ```
 
-👉 실습 코드는 [🔗 GitHub (Airflow → MLflow → FastAPI)](https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi)
-👉 Trouble Shoot은 [🔗 Trouble_Shoot (Airflow 기초 자동화)](https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/)
+> 👉 실습 코드는 [🔗 GitHub (Airflow → MLflow → FastAPI)](https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi)
+>
+> 👉 Trouble Shoot은 [🔗 Trouble_Shoot (Airflow 기초 자동화)](https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/)
+>
 
 ---
 
