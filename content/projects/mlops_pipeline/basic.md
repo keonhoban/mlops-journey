@@ -525,6 +525,8 @@ Airflow 웹 UI에서 `train_with_mlflow` DAG 실행 →
 
 ✅ `IrisModel`이 **Model Registry**에 등록됨
 
+✅ promote_mlflow.py 실행을 통해, 등록된 모델을 Staging 또는 Production 단계로 자동 승격함
+
 ---
 
 ## 🔍 확인 방법
