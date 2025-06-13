@@ -1,0 +1,252 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='
+Airflow + MLflow 연동 실습 중 발생한 실전 에러 3종 정리
+발생 원인 분석 + 즉시 적용 가능한 해결 방법까지 포함
+
+🧩 배경
+
+Airflow DAG 내부에서 mlflow.sklearn.log_model() 호출
+실험 자동 등록 및 Model Registry 연동 시도
+✅ 결과적으로 3가지 에러 순차 발생
+
+
+🔥 에러 1. PermissionError: [Errno 13] Permission denied: &#39;/mlflow&#39;
+🧠 원인 분석
+
+  
+      
+          증상
+          원인
+      
+  
+  
+      
+          /mlflow 경로 접근 실패
+          Airflow 컨테이너에 mount되지 않음
+      
+      
+          mlruns 쓰기 실패
+          공유 볼륨 누락 → 쓰기 권한 없음
+      
+      
+          실험 생성 실패
+          artifact 저장소 지정 실패
+      
+  
+
+✅ 해결 방법
+
+Airflow 컨테이너에 공유 볼륨 추가
+
+volumes:
+  - ./mlflow:/mlflow
+  - ./mlruns:/mlflow/mlruns
+
+초기 실험 수동 생성 스크립트 실행
+
+# init_experiments.py
+from mlflow.tracking import MlflowClient
+
+mlflow.set_tracking_uri("http://localhost:5000")
+client = MlflowClient()
+
+if not client.get_experiment_by_name("Iris_Model_Registry_Go"):
+    client.create_experiment(
+        name="Iris_Model_Registry_Go",
+        artifact_location="file:///mlflow/mlruns/Iris_Model_Registry_Go"
+    )
+docker exec -it airflow_mlflow_1 python3 /mlflow/init_experiments.py
+
+Airflow DAG 내에서 동일한 이름 지정
+
+mlflow.set_experiment("Iris_Model_Registry_Go")
+
+💥 에러 2. 404 Not Found on /api/2.0/mlflow/logged-models
+🧠 원인 분석
+
+  
+      
+          핵심 문제
+          상세 설명
+      
+  
+  
+      
+          Model Registry API 미탑재
+          mlflow ui 또는 mlflow server의 옵션 누락
+      
+      
+          /logged-models 경로 없음
+          기본 실행 시에는 Registry 관련 API가 비활성화
+      
+  
+
+✅ 해결 방법
+
+정상 작동 조건:
+
+
+  
+      
+          실행 방식
+          Registry API
+      
+  
+  
+      
+          mlflow ui
+          ❌ 없음
+      
+      
+          mlflow server
+          ⚠️ 일부 없음
+      
+      
+          mlflow server --serve-artifacts
+          ✅ 모두 활성화
+      
+      
+          mlflow[extras] 패키지
+          ✅ 커스텀 이미지 사용 필요
+      
+  
+
+📌 Dockerfile.mlflow 예시 (커스텀 구성)'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI"><meta property="og:description" content=' Airflow + MLflow 연동 실습 중 발생한 실전 에러 3종 정리
+발생 원인 분석 + 즉시 적용 가능한 해결 방법까지 포함
+🧩 배경 Airflow DAG 내부에서 mlflow.sklearn.log_model() 호출 실험 자동 등록 및 Model Registry 연동 시도 ✅ 결과적으로 3가지 에러 순차 발생 🔥 에러 1. PermissionError: [Errno 13] Permission denied: &#39;/mlflow&#39; 🧠 원인 분석 증상 원인 /mlflow 경로 접근 실패 Airflow 컨테이너에 mount되지 않음 mlruns 쓰기 실패 공유 볼륨 누락 → 쓰기 권한 없음 실험 생성 실패 artifact 저장소 지정 실패 ✅ 해결 방법 Airflow 컨테이너에 공유 볼륨 추가 volumes: - ./mlflow:/mlflow - ./mlruns:/mlflow/mlruns 초기 실험 수동 생성 스크립트 실행 # init_experiments.py from mlflow.tracking import MlflowClient mlflow.set_tracking_uri("http://localhost:5000") client = MlflowClient() if not client.get_experiment_by_name("Iris_Model_Registry_Go"): client.create_experiment( name="Iris_Model_Registry_Go", artifact_location="file:///mlflow/mlruns/Iris_Model_Registry_Go" ) docker exec -it airflow_mlflow_1 python3 /mlflow/init_experiments.py Airflow DAG 내에서 동일한 이름 지정 mlflow.set_experiment("Iris_Model_Registry_Go") 💥 에러 2. 404 Not Found on /api/2.0/mlflow/logged-models 🧠 원인 분석 핵심 문제 상세 설명 Model Registry API 미탑재 mlflow ui 또는 mlflow server의 옵션 누락 /logged-models 경로 없음 기본 실행 시에는 Registry 관련 API가 비활성화 ✅ 해결 방법 정상 작동 조건: 실행 방식 Registry API mlflow ui ❌ 없음 mlflow server ⚠️ 일부 없음 mlflow server --serve-artifacts ✅ 모두 활성화 mlflow[extras] 패키지 ✅ 커스텀 이미지 사용 필요 📌 Dockerfile.mlflow 예시 (커스텀 구성)'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-06-13T21:06:20+09:00"><meta property="article:modified_time" content="2025-06-13T21:06:20+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI"><meta name=twitter:description content='
+Airflow + MLflow 연동 실습 중 발생한 실전 에러 3종 정리
+발생 원인 분석 + 즉시 적용 가능한 해결 방법까지 포함
+
+🧩 배경
+
+Airflow DAG 내부에서 mlflow.sklearn.log_model() 호출
+실험 자동 등록 및 Model Registry 연동 시도
+✅ 결과적으로 3가지 에러 순차 발생
+
+
+🔥 에러 1. PermissionError: [Errno 13] Permission denied: &#39;/mlflow&#39;
+🧠 원인 분석
+
+  
+      
+          증상
+          원인
+      
+  
+  
+      
+          /mlflow 경로 접근 실패
+          Airflow 컨테이너에 mount되지 않음
+      
+      
+          mlruns 쓰기 실패
+          공유 볼륨 누락 → 쓰기 권한 없음
+      
+      
+          실험 생성 실패
+          artifact 저장소 지정 실패
+      
+  
+
+✅ 해결 방법
+
+Airflow 컨테이너에 공유 볼륨 추가
+
+volumes:
+  - ./mlflow:/mlflow
+  - ./mlruns:/mlflow/mlruns
+
+초기 실험 수동 생성 스크립트 실행
+
+# init_experiments.py
+from mlflow.tracking import MlflowClient
+
+mlflow.set_tracking_uri("http://localhost:5000")
+client = MlflowClient()
+
+if not client.get_experiment_by_name("Iris_Model_Registry_Go"):
+    client.create_experiment(
+        name="Iris_Model_Registry_Go",
+        artifact_location="file:///mlflow/mlruns/Iris_Model_Registry_Go"
+    )
+docker exec -it airflow_mlflow_1 python3 /mlflow/init_experiments.py
+
+Airflow DAG 내에서 동일한 이름 지정
+
+mlflow.set_experiment("Iris_Model_Registry_Go")
+
+💥 에러 2. 404 Not Found on /api/2.0/mlflow/logged-models
+🧠 원인 분석
+
+  
+      
+          핵심 문제
+          상세 설명
+      
+  
+  
+      
+          Model Registry API 미탑재
+          mlflow ui 또는 mlflow server의 옵션 누락
+      
+      
+          /logged-models 경로 없음
+          기본 실행 시에는 Registry 관련 API가 비활성화
+      
+  
+
+✅ 해결 방법
+
+정상 작동 조건:
+
+
+  
+      
+          실행 방식
+          Registry API
+      
+  
+  
+      
+          mlflow ui
+          ❌ 없음
+      
+      
+          mlflow server
+          ⚠️ 일부 없음
+      
+      
+          mlflow server --serve-artifacts
+          ✅ 모두 활성화
+      
+      
+          mlflow[extras] 패키지
+          ✅ 커스텀 이미지 사용 필요
+      
+  
+
+📌 Dockerfile.mlflow 예시 (커스텀 구성)'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI","item":"https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI","name":"[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI","description":" Airflow + MLflow 연동 실습 중 발생한 실전 에러 3종 정리\n발생 원인 분석 + 즉시 적용 가능한 해결 방법까지 포함\n🧩 배경 Airflow DAG 내부에서 mlflow.sklearn.log_model() 호출 실험 자동 등록 및 Model Registry 연동 시도 ✅ 결과적으로 3가지 에러 순차 발생 🔥 에러 1. PermissionError: [Errno 13] Permission denied: '/mlflow' 🧠 원인 분석 증상 원인 /mlflow 경로 접근 실패 Airflow 컨테이너에 mount되지 않음 mlruns 쓰기 실패 공유 볼륨 누락 → 쓰기 권한 없음 실험 생성 실패 artifact 저장소 지정 실패 ✅ 해결 방법 Airflow 컨테이너에 공유 볼륨 추가 volumes: - ./mlflow:/mlflow - ./mlruns:/mlflow/mlruns 초기 실험 수동 생성 스크립트 실행 # init_experiments.py from mlflow.tracking import MlflowClient mlflow.set_tracking_uri(\u0026#34;http://localhost:5000\u0026#34;) client = MlflowClient() if not client.get_experiment_by_name(\u0026#34;Iris_Model_Registry_Go\u0026#34;): client.create_experiment( name=\u0026#34;Iris_Model_Registry_Go\u0026#34;, artifact_location=\u0026#34;file:///mlflow/mlruns/Iris_Model_Registry_Go\u0026#34; ) docker exec -it airflow_mlflow_1 python3 /mlflow/init_experiments.py Airflow DAG 내에서 동일한 이름 지정 mlflow.set_experiment(\u0026#34;Iris_Model_Registry_Go\u0026#34;) 💥 에러 2. 404 Not Found on /api/2.0/mlflow/logged-models 🧠 원인 분석 핵심 문제 상세 설명 Model Registry API 미탑재 mlflow ui 또는 mlflow server의 옵션 누락 /logged-models 경로 없음 기본 실행 시에는 Registry 관련 API가 비활성화 ✅ 해결 방법 정상 작동 조건: 실행 방식 Registry API mlflow ui ❌ 없음 mlflow server ⚠️ 일부 없음 mlflow server --serve-artifacts ✅ 모두 활성화 mlflow[extras] 패키지 ✅ 커스텀 이미지 사용 필요 📌 Dockerfile.mlflow 예시 (커스텀 구성)\n","keywords":[],"articleBody":" Airflow + MLflow 연동 실습 중 발생한 실전 에러 3종 정리\n발생 원인 분석 + 즉시 적용 가능한 해결 방법까지 포함\n🧩 배경 Airflow DAG 내부에서 mlflow.sklearn.log_model() 호출 실험 자동 등록 및 Model Registry 연동 시도 ✅ 결과적으로 3가지 에러 순차 발생 🔥 에러 1. PermissionError: [Errno 13] Permission denied: '/mlflow' 🧠 원인 분석 증상 원인 /mlflow 경로 접근 실패 Airflow 컨테이너에 mount되지 않음 mlruns 쓰기 실패 공유 볼륨 누락 → 쓰기 권한 없음 실험 생성 실패 artifact 저장소 지정 실패 ✅ 해결 방법 Airflow 컨테이너에 공유 볼륨 추가 volumes: - ./mlflow:/mlflow - ./mlruns:/mlflow/mlruns 초기 실험 수동 생성 스크립트 실행 # init_experiments.py from mlflow.tracking import MlflowClient mlflow.set_tracking_uri(\"http://localhost:5000\") client = MlflowClient() if not client.get_experiment_by_name(\"Iris_Model_Registry_Go\"): client.create_experiment( name=\"Iris_Model_Registry_Go\", artifact_location=\"file:///mlflow/mlruns/Iris_Model_Registry_Go\" ) docker exec -it airflow_mlflow_1 python3 /mlflow/init_experiments.py Airflow DAG 내에서 동일한 이름 지정 mlflow.set_experiment(\"Iris_Model_Registry_Go\") 💥 에러 2. 404 Not Found on /api/2.0/mlflow/logged-models 🧠 원인 분석 핵심 문제 상세 설명 Model Registry API 미탑재 mlflow ui 또는 mlflow server의 옵션 누락 /logged-models 경로 없음 기본 실행 시에는 Registry 관련 API가 비활성화 ✅ 해결 방법 정상 작동 조건: 실행 방식 Registry API mlflow ui ❌ 없음 mlflow server ⚠️ 일부 없음 mlflow server --serve-artifacts ✅ 모두 활성화 mlflow[extras] 패키지 ✅ 커스텀 이미지 사용 필요 📌 Dockerfile.mlflow 예시 (커스텀 구성)\nFROM python:3.10-slim RUN pip install mlflow[extras] CMD [\"mlflow\", \"server\", \"--serve-artifacts\", \"--host\", \"0.0.0.0\", \"--port\", \"5000\"] ⚠️ 에러 3. Airflow CLI 오류: the following arguments are required: GROUP_OR_COMMAND 🧠 원인 분석 증상 원인 Airflow 컨테이너 실행 직후 종료 명령어 없이 airflow 실행됨 GROUP_OR_COMMAND 요구 CMD, ENTRYPOINT 누락 ✅ 해결 방법 개발/테스트 용도: standalone 모드 사용 command: standalone 실무 구성: webserver, scheduler 분리 실행 command: webserver # 또는 command: scheduler 📦 공유 볼륨 구조 요약 Host 디렉토리 MLflow 컨테이너 Airflow 컨테이너 ./mlflow /mlflow /mlflow ./mlruns /mlflow/mlruns /mlflow/mlruns 📌 공통 저장소 구조 필수! → 실험 로깅, 모델 추론, 등록 경로 통일\n✅ 핵심 요약 문제 원인 해결 포인트 PermissionError Airflow 컨테이너에 mount 누락 volumes:로 경로 공유 404 Not Found Registry API 미활성화 --serve-artifacts 옵션 필수 GROUP_OR_COMMAND Airflow 명령 미지정 command: standalone 또는 webserver ✨ 팁 Docker 공유 경로는 컨테이너 간 절대 동일하게 설정해야 함 mlflow.set_experiment()은 DAG마다 정확히 설정해야 함 실험 디렉토리 생성은 로깅 전에 미리 지정 or 수동 생성 테스트 중에는 Airflow를 standalone 모드로 실행하는 게 편함 ","wordCount":"366","inLanguage":"en","datePublished":"2025-06-13T21:06:20+09:00","dateModified":"2025-06-13T21:06:20+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI</h1><div class=post-meta><span title='2025-06-13 21:06:20 +0900 +0900'>June 13, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><blockquote><p>Airflow + MLflow 연동 실습 중 발생한 실전 에러 3종 정리</p><p>발생 원인 분석 + 즉시 적용 가능한 해결 방법까지 포함</p></blockquote><hr><h2 id=-배경>🧩 배경<a hidden class=anchor aria-hidden=true href=#-배경>#</a></h2><ul><li>Airflow DAG 내부에서 <code>mlflow.sklearn.log_model()</code> 호출</li><li>실험 자동 등록 및 Model Registry 연동 시도</li><li>✅ 결과적으로 <strong>3가지 에러</strong> 순차 발생</li></ul><hr><h2 id=-에러-1-permissionerror-errno-13-permission-denied-mlflow>🔥 에러 1. <code>PermissionError: [Errno 13] Permission denied: '/mlflow'</code><a hidden class=anchor aria-hidden=true href=#-에러-1-permissionerror-errno-13-permission-denied-mlflow>#</a></h2><h3 id=-원인-분석>🧠 원인 분석<a hidden class=anchor aria-hidden=true href=#-원인-분석>#</a></h3><table><thead><tr><th>증상</th><th>원인</th></tr></thead><tbody><tr><td><code>/mlflow</code> 경로 접근 실패</td><td>Airflow 컨테이너에 mount되지 않음</td></tr><tr><td><code>mlruns</code> 쓰기 실패</td><td>공유 볼륨 누락 → 쓰기 권한 없음</td></tr><tr><td>실험 생성 실패</td><td>artifact 저장소 지정 실패</td></tr></tbody></table><h3 id=-해결-방법>✅ 해결 방법<a hidden class=anchor aria-hidden=true href=#-해결-방법>#</a></h3><ol><li><strong>Airflow 컨테이너에 공유 볼륨 추가</strong></li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>volumes</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#ae81ff>./mlflow:/mlflow</span>
+</span></span><span style=display:flex><span>  - <span style=color:#ae81ff>./mlruns:/mlflow/mlruns</span>
+</span></span></code></pre></div><ol><li><strong>초기 실험 수동 생성 스크립트 실행</strong></li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># init_experiments.py</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> mlflow.tracking <span style=color:#f92672>import</span> MlflowClient
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>mlflow<span style=color:#f92672>.</span>set_tracking_uri(<span style=color:#e6db74>&#34;http://localhost:5000&#34;</span>)
+</span></span><span style=display:flex><span>client <span style=color:#f92672>=</span> MlflowClient()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> client<span style=color:#f92672>.</span>get_experiment_by_name(<span style=color:#e6db74>&#34;Iris_Model_Registry_Go&#34;</span>):
+</span></span><span style=display:flex><span>    client<span style=color:#f92672>.</span>create_experiment(
+</span></span><span style=display:flex><span>        name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;Iris_Model_Registry_Go&#34;</span>,
+</span></span><span style=display:flex><span>        artifact_location<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;file:///mlflow/mlruns/Iris_Model_Registry_Go&#34;</span>
+</span></span><span style=display:flex><span>    )
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>docker exec -it airflow_mlflow_1 python3 /mlflow/init_experiments.py
+</span></span></code></pre></div><ol><li><strong>Airflow DAG 내에서 동일한 이름 지정</strong></li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>mlflow<span style=color:#f92672>.</span>set_experiment(<span style=color:#e6db74>&#34;Iris_Model_Registry_Go&#34;</span>)
+</span></span></code></pre></div><hr><h2 id=-에러-2-404-not-found-on-api20mlflowlogged-models>💥 에러 2. <code>404 Not Found</code> on <code>/api/2.0/mlflow/logged-models</code><a hidden class=anchor aria-hidden=true href=#-에러-2-404-not-found-on-api20mlflowlogged-models>#</a></h2><h3 id=-원인-분석-1>🧠 원인 분석<a hidden class=anchor aria-hidden=true href=#-원인-분석-1>#</a></h3><table><thead><tr><th>핵심 문제</th><th>상세 설명</th></tr></thead><tbody><tr><td>Model Registry API 미탑재</td><td><code>mlflow ui</code> 또는 <code>mlflow server</code>의 옵션 누락</td></tr><tr><td><code>/logged-models</code> 경로 없음</td><td>기본 실행 시에는 Registry 관련 API가 비활성화</td></tr></tbody></table><h3 id=-해결-방법-1>✅ 해결 방법<a hidden class=anchor aria-hidden=true href=#-해결-방법-1>#</a></h3><ul><li><strong>정상 작동 조건</strong>:</li></ul><table><thead><tr><th>실행 방식</th><th>Registry API</th></tr></thead><tbody><tr><td><code>mlflow ui</code></td><td>❌ 없음</td></tr><tr><td><code>mlflow server</code></td><td>⚠️ 일부 없음</td></tr><tr><td><code>mlflow server --serve-artifacts</code></td><td>✅ 모두 활성화</td></tr><tr><td><code>mlflow[extras]</code> 패키지</td><td>✅ 커스텀 이미지 사용 필요</td></tr></tbody></table><p>📌 <strong>Dockerfile.mlflow 예시</strong> (커스텀 구성)</p><pre tabindex=0><code>FROM python:3.10-slim
+RUN pip install mlflow[extras]
+CMD [&#34;mlflow&#34;, &#34;server&#34;, &#34;--serve-artifacts&#34;, &#34;--host&#34;, &#34;0.0.0.0&#34;, &#34;--port&#34;, &#34;5000&#34;]
+</code></pre><hr><h2 id=-에러-3-airflow-cli-오류-the-following-arguments-are-required-group_or_command>⚠️ 에러 3. Airflow CLI 오류: <code>the following arguments are required: GROUP_OR_COMMAND</code><a hidden class=anchor aria-hidden=true href=#-에러-3-airflow-cli-오류-the-following-arguments-are-required-group_or_command>#</a></h2><h3 id=-원인-분석-2>🧠 원인 분석<a hidden class=anchor aria-hidden=true href=#-원인-분석-2>#</a></h3><table><thead><tr><th>증상</th><th>원인</th></tr></thead><tbody><tr><td>Airflow 컨테이너 실행 직후 종료</td><td>명령어 없이 airflow 실행됨</td></tr><tr><td><code>GROUP_OR_COMMAND</code> 요구</td><td><code>CMD</code>, <code>ENTRYPOINT</code> 누락</td></tr></tbody></table><h3 id=-해결-방법-2>✅ 해결 방법<a hidden class=anchor aria-hidden=true href=#-해결-방법-2>#</a></h3><ul><li><strong>개발/테스트 용도</strong>: <code>standalone</code> 모드 사용</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>command</span>: <span style=color:#ae81ff>standalone</span>
+</span></span></code></pre></div><ul><li><strong>실무 구성</strong>: <code>webserver</code>, <code>scheduler</code> 분리 실행</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>command</span>: <span style=color:#ae81ff>webserver</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 또는</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>command</span>: <span style=color:#ae81ff>scheduler</span>
+</span></span></code></pre></div><hr><h2 id=-공유-볼륨-구조-요약>📦 공유 볼륨 구조 요약<a hidden class=anchor aria-hidden=true href=#-공유-볼륨-구조-요약>#</a></h2><table><thead><tr><th>Host 디렉토리</th><th>MLflow 컨테이너</th><th>Airflow 컨테이너</th></tr></thead><tbody><tr><td><code>./mlflow</code></td><td><code>/mlflow</code></td><td><code>/mlflow</code></td></tr><tr><td><code>./mlruns</code></td><td><code>/mlflow/mlruns</code></td><td><code>/mlflow/mlruns</code></td></tr></tbody></table><p>📌 <strong>공통 저장소 구조 필수!</strong> → 실험 로깅, 모델 추론, 등록 경로 통일</p><hr><h2 id=-핵심-요약>✅ 핵심 요약<a hidden class=anchor aria-hidden=true href=#-핵심-요약>#</a></h2><table><thead><tr><th>문제</th><th>원인</th><th>해결 포인트</th></tr></thead><tbody><tr><td><code>PermissionError</code></td><td>Airflow 컨테이너에 mount 누락</td><td><code>volumes:</code>로 경로 공유</td></tr><tr><td><code>404 Not Found</code></td><td>Registry API 미활성화</td><td><code>--serve-artifacts</code> 옵션 필수</td></tr><tr><td><code>GROUP_OR_COMMAND</code></td><td>Airflow 명령 미지정</td><td><code>command: standalone</code> 또는 <code>webserver</code></td></tr></tbody></table><hr><h3 id=-팁>✨ 팁<a hidden class=anchor aria-hidden=true href=#-팁>#</a></h3><ul><li>Docker 공유 경로는 컨테이너 간 <strong>절대 동일하게 설정</strong>해야 함</li><li><code>mlflow.set_experiment()</code>은 DAG마다 정확히 설정해야 함</li><li>실험 디렉토리 생성은 로깅 전에 미리 지정 or 수동 생성</li><li>테스트 중에는 Airflow를 <code>standalone</code> 모드로 실행하는 게 편함</li></ul></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/airflow/05/><span class=title>Next »</span><br><span>[Airflow - 5단계: PythonOperator + MLflow Tracking 연동]</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

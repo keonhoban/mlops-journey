@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Trouble Shoot on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/trouble-shoot/</link><description>Recent content in Trouble Shoot on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 13 Jun 2025 21:06:20 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/trouble-shoot/index.xml" rel="self" type="application/rss+xml"/><item><title>[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI</title><link>https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/</link><pubDate>Fri, 13 Jun 2025 21:06:20 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/</guid><description>&lt;blockquote>
+&lt;p>Airflow + MLflow 연동 실습 중 발생한 실전 에러 3종 정리&lt;/p>
+&lt;p>발생 원인 분석 + 즉시 적용 가능한 해결 방법까지 포함&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-배경">🧩 배경&lt;/h2>
+&lt;ul>
+&lt;li>Airflow DAG 내부에서 &lt;code>mlflow.sklearn.log_model()&lt;/code> 호출&lt;/li>
+&lt;li>실험 자동 등록 및 Model Registry 연동 시도&lt;/li>
+&lt;li>✅ 결과적으로 &lt;strong>3가지 에러&lt;/strong> 순차 발생&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-에러-1-permissionerror-errno-13-permission-denied-mlflow">🔥 에러 1. &lt;code>PermissionError: [Errno 13] Permission denied: '/mlflow'&lt;/code>&lt;/h2>
+&lt;h3 id="-원인-분석">🧠 원인 분석&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>증상&lt;/th>
+&lt;th>원인&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>/mlflow&lt;/code> 경로 접근 실패&lt;/td>
+&lt;td>Airflow 컨테이너에 mount되지 않음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>mlruns&lt;/code> 쓰기 실패&lt;/td>
+&lt;td>공유 볼륨 누락 → 쓰기 권한 없음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>실험 생성 실패&lt;/td>
+&lt;td>artifact 저장소 지정 실패&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="-해결-방법">✅ 해결 방법&lt;/h3>
+&lt;ol>
+&lt;li>&lt;strong>Airflow 컨테이너에 공유 볼륨 추가&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">volumes&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./mlflow:/mlflow&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./mlruns:/mlflow/mlruns&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ol>
+&lt;li>&lt;strong>초기 실험 수동 생성 스크립트 실행&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># init_experiments.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> mlflow.tracking &lt;span style="color:#f92672">import&lt;/span> MlflowClient
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mlflow&lt;span style="color:#f92672">.&lt;/span>set_tracking_uri(&lt;span style="color:#e6db74">&amp;#34;http://localhost:5000&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>client &lt;span style="color:#f92672">=&lt;/span> MlflowClient()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">not&lt;/span> client&lt;span style="color:#f92672">.&lt;/span>get_experiment_by_name(&lt;span style="color:#e6db74">&amp;#34;Iris_Model_Registry_Go&amp;#34;&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client&lt;span style="color:#f92672">.&lt;/span>create_experiment(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Iris_Model_Registry_Go&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> artifact_location&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;file:///mlflow/mlruns/Iris_Model_Registry_Go&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>docker exec -it airflow_mlflow_1 python3 /mlflow/init_experiments.py
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ol>
+&lt;li>&lt;strong>Airflow DAG 내에서 동일한 이름 지정&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>mlflow&lt;span style="color:#f92672">.&lt;/span>set_experiment(&lt;span style="color:#e6db74">&amp;#34;Iris_Model_Registry_Go&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-에러-2-404-not-found-on-api20mlflowlogged-models">💥 에러 2. &lt;code>404 Not Found&lt;/code> on &lt;code>/api/2.0/mlflow/logged-models&lt;/code>&lt;/h2>
+&lt;h3 id="-원인-분석-1">🧠 원인 분석&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>핵심 문제&lt;/th>
+&lt;th>상세 설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Model Registry API 미탑재&lt;/td>
+&lt;td>&lt;code>mlflow ui&lt;/code> 또는 &lt;code>mlflow server&lt;/code>의 옵션 누락&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>/logged-models&lt;/code> 경로 없음&lt;/td>
+&lt;td>기본 실행 시에는 Registry 관련 API가 비활성화&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="-해결-방법-1">✅ 해결 방법&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>정상 작동 조건&lt;/strong>:&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>실행 방식&lt;/th>
+&lt;th>Registry API&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>mlflow ui&lt;/code>&lt;/td>
+&lt;td>❌ 없음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>mlflow server&lt;/code>&lt;/td>
+&lt;td>⚠️ 일부 없음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>mlflow server --serve-artifacts&lt;/code>&lt;/td>
+&lt;td>✅ 모두 활성화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>mlflow[extras]&lt;/code> 패키지&lt;/td>
+&lt;td>✅ 커스텀 이미지 사용 필요&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>📌 &lt;strong>Dockerfile.mlflow 예시&lt;/strong> (커스텀 구성)&lt;/p></description></item></channel></rss>

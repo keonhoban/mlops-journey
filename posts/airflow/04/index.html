@@ -1,0 +1,145 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='
+목표
+
+train.py 모델 학습 스크립트를 별도 파일로 작성
+Airflow DAG에서 해당 스크립트를 BashOperator로 실행
+모델 학습 및 결과 확인
+
+👉 실습 코드는 🔗 GitHub (Mlflow - Tracking + FastAPI)
+
+🧭 실습 전체 흐름 요약
+[1단계] 학습 스크립트 작성
+[2단계] BashOperator로 스크립트 실행 DAG 구성
+[3단계] Airflow 웹 UI에서 실행 및 로그 확인
+
+📁 디렉토리 구조
+airflow/
+├── dags/
+│   └── run_train_script.py   ← DAG 파일
+├── ml_code/
+│   ├── train.py              ← 모델 학습 스크립트
+│   └── model.pkl             ← 학습된 모델 파일
+
+🧪 [1단계] 학습 스크립트 작성 (train.py)
+# airflow/ml_code/train.py
+
+import pickle
+from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
+
+# 데이터 로딩
+data = load_iris()
+X, y = data.data, data.target
+
+# 모델 학습
+model = RandomForestClassifier()
+model.fit(X, y)
+
+# 모델 저장
+model_path = "/opt/airflow/ml_code/model.pkl"
+with open(model_path, "wb") as f:
+    pickle.dump(model, f)
+
+모델은 /opt/airflow/ml_code/model.pkl 경로에 저장됩니다.'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/airflow/04/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/airflow/04/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/airflow/04/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행]"><meta property="og:description" content=' 목표
+train.py 모델 학습 스크립트를 별도 파일로 작성 Airflow DAG에서 해당 스크립트를 BashOperator로 실행 모델 학습 및 결과 확인 👉 실습 코드는 🔗 GitHub (Mlflow - Tracking + FastAPI)
+🧭 실습 전체 흐름 요약 [1단계] 학습 스크립트 작성 [2단계] BashOperator로 스크립트 실행 DAG 구성 [3단계] Airflow 웹 UI에서 실행 및 로그 확인 📁 디렉토리 구조 airflow/ ├── dags/ │ └── run_train_script.py ← DAG 파일 ├── ml_code/ │ ├── train.py ← 모델 학습 스크립트 │ └── model.pkl ← 학습된 모델 파일 🧪 [1단계] 학습 스크립트 작성 (train.py) # airflow/ml_code/train.py import pickle from sklearn.datasets import load_iris from sklearn.ensemble import RandomForestClassifier # 데이터 로딩 data = load_iris() X, y = data.data, data.target # 모델 학습 model = RandomForestClassifier() model.fit(X, y) # 모델 저장 model_path = "/opt/airflow/ml_code/model.pkl" with open(model_path, "wb") as f: pickle.dump(model, f) 모델은 /opt/airflow/ml_code/model.pkl 경로에 저장됩니다.'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-06-10T19:49:27+09:00"><meta property="article:modified_time" content="2025-06-10T19:49:27+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행]"><meta name=twitter:description content='
+목표
+
+train.py 모델 학습 스크립트를 별도 파일로 작성
+Airflow DAG에서 해당 스크립트를 BashOperator로 실행
+모델 학습 및 결과 확인
+
+👉 실습 코드는 🔗 GitHub (Mlflow - Tracking + FastAPI)
+
+🧭 실습 전체 흐름 요약
+[1단계] 학습 스크립트 작성
+[2단계] BashOperator로 스크립트 실행 DAG 구성
+[3단계] Airflow 웹 UI에서 실행 및 로그 확인
+
+📁 디렉토리 구조
+airflow/
+├── dags/
+│   └── run_train_script.py   ← DAG 파일
+├── ml_code/
+│   ├── train.py              ← 모델 학습 스크립트
+│   └── model.pkl             ← 학습된 모델 파일
+
+🧪 [1단계] 학습 스크립트 작성 (train.py)
+# airflow/ml_code/train.py
+
+import pickle
+from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
+
+# 데이터 로딩
+data = load_iris()
+X, y = data.data, data.target
+
+# 모델 학습
+model = RandomForestClassifier()
+model.fit(X, y)
+
+# 모델 저장
+model_path = "/opt/airflow/ml_code/model.pkl"
+with open(model_path, "wb") as f:
+    pickle.dump(model, f)
+
+모델은 /opt/airflow/ml_code/model.pkl 경로에 저장됩니다.'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행]","item":"https://keonhoban.github.io/mlops-journey/posts/airflow/04/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행]","name":"[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행]","description":" 목표\ntrain.py 모델 학습 스크립트를 별도 파일로 작성 Airflow DAG에서 해당 스크립트를 BashOperator로 실행 모델 학습 및 결과 확인 👉 실습 코드는 🔗 GitHub (Mlflow - Tracking + FastAPI)\n🧭 실습 전체 흐름 요약 [1단계] 학습 스크립트 작성 [2단계] BashOperator로 스크립트 실행 DAG 구성 [3단계] Airflow 웹 UI에서 실행 및 로그 확인 📁 디렉토리 구조 airflow/ ├── dags/ │ └── run_train_script.py ← DAG 파일 ├── ml_code/ │ ├── train.py ← 모델 학습 스크립트 │ └── model.pkl ← 학습된 모델 파일 🧪 [1단계] 학습 스크립트 작성 (train.py) # airflow/ml_code/train.py import pickle from sklearn.datasets import load_iris from sklearn.ensemble import RandomForestClassifier # 데이터 로딩 data = load_iris() X, y = data.data, data.target # 모델 학습 model = RandomForestClassifier() model.fit(X, y) # 모델 저장 model_path = \u0026#34;/opt/airflow/ml_code/model.pkl\u0026#34; with open(model_path, \u0026#34;wb\u0026#34;) as f: pickle.dump(model, f) 모델은 /opt/airflow/ml_code/model.pkl 경로에 저장됩니다.\n","keywords":[],"articleBody":" 목표\ntrain.py 모델 학습 스크립트를 별도 파일로 작성 Airflow DAG에서 해당 스크립트를 BashOperator로 실행 모델 학습 및 결과 확인 👉 실습 코드는 🔗 GitHub (Mlflow - Tracking + FastAPI)\n🧭 실습 전체 흐름 요약 [1단계] 학습 스크립트 작성 [2단계] BashOperator로 스크립트 실행 DAG 구성 [3단계] Airflow 웹 UI에서 실행 및 로그 확인 📁 디렉토리 구조 airflow/ ├── dags/ │ └── run_train_script.py ← DAG 파일 ├── ml_code/ │ ├── train.py ← 모델 학습 스크립트 │ └── model.pkl ← 학습된 모델 파일 🧪 [1단계] 학습 스크립트 작성 (train.py) # airflow/ml_code/train.py import pickle from sklearn.datasets import load_iris from sklearn.ensemble import RandomForestClassifier # 데이터 로딩 data = load_iris() X, y = data.data, data.target # 모델 학습 model = RandomForestClassifier() model.fit(X, y) # 모델 저장 model_path = \"/opt/airflow/ml_code/model.pkl\" with open(model_path, \"wb\") as f: pickle.dump(model, f) 모델은 /opt/airflow/ml_code/model.pkl 경로에 저장됩니다.\n🧪 [2단계] DAG 작성 (run_train_script.py) # airflow/dags/run_train_script.py from airflow import DAG from airflow.operators.bash import BashOperator from datetime import datetime with DAG( dag_id='bash_run_train', start_date=datetime(2023, 1, 1), schedule_interval=None, catchup=False, ) as dag: run_training = BashOperator( task_id='run_train_script', bash_command='python3 /opt/airflow/ml_code/train.py' ) train.py는 Airflow 컨테이너 내 /opt/airflow/ml_code/ 경로에 위치해야 합니다.\n✅ [3단계] Airflow 컨테이너 진입 및 확인 docker exec -it airflow-airflow-webserver-1 bash cd /opt/airflow/ml_code ls -l train.py와 model.pkl 파일이 보이면 성공!\n🔧 추가 설정: requirements.txt와 Docker 재빌드 requirements.txt 작성 (Airflow 루트 디렉토리): scikit-learn Dockerfile 작성 (같은 디렉토리): FROM apache/airflow:2.8.2 COPY requirements.txt /requirements.txt USER airflow RUN pip install --no-cache-dir -r /requirements.txt Docker Compose 재빌드 docker-compose down docker-compose build docker-compose up -d ✅ 실행 절차 train.py 스크립트 저장 run_train_script.py DAG 등록 Airflow 웹 UI에서 DAG 실행 로그에서 \"📥 데이터 로딩 중...\", \"🧠 모델 학습 중...\", \"💾 모델 저장 완료!\" 확인 🔍 확인 포인트 항목 확인 방법 모델 파일 생성 airflow/ml_code/model.pkl 존재 확인 로그 출력 DAG \u003e Task Logs에서 출력 메시지 확인 🧩 실무 팁 항목 설명 BashOperator 외부 스크립트 호출 시 사용 (.sh, .py 등) PythonOperator DAG 내부 함수 호출 및 실행 실무 연계 python train.py → python predict.py → upload_to_s3.sh 등으로 워크플로우 구성 가능 🔧 MLOps 실전 연결 이 흐름은 MLflow Tracking → 모델 등록 → S3 업로드 → SageMaker 배포 흐름으로 이어질 수 있음 Airflow DAG를 통해 ML 실험 자동화, 모델 학습 및 배포 파이프라인 구축이 가능함 ","wordCount":"356","inLanguage":"en","datePublished":"2025-06-10T19:49:27+09:00","dateModified":"2025-06-10T19:49:27+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/airflow/04/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행]</h1><div class=post-meta><span title='2025-06-10 19:49:27 +0900 +0900'>June 10, 2025</span>&nbsp;·&nbsp;2 min</div></header><div class=post-content><blockquote><p>목표</p><ol><li><code>train.py</code> 모델 학습 스크립트를 별도 파일로 작성</li><li>Airflow DAG에서 해당 스크립트를 <code>BashOperator</code>로 실행</li><li>모델 학습 및 결과 확인</li></ol></blockquote><p>👉 실습 코드는 <a href=https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow/04_BashOperator_and_Python_ML_Script>🔗 GitHub (Mlflow - Tracking + FastAPI)</a></p><hr><h2 id=-실습-전체-흐름-요약>🧭 실습 전체 흐름 요약<a hidden class=anchor aria-hidden=true href=#-실습-전체-흐름-요약>#</a></h2><pre tabindex=0><code>[1단계] 학습 스크립트 작성
+[2단계] BashOperator로 스크립트 실행 DAG 구성
+[3단계] Airflow 웹 UI에서 실행 및 로그 확인
+</code></pre><hr><h2 id=-디렉토리-구조>📁 디렉토리 구조<a hidden class=anchor aria-hidden=true href=#-디렉토리-구조>#</a></h2><pre tabindex=0><code>airflow/
+├── dags/
+│   └── run_train_script.py   ← DAG 파일
+├── ml_code/
+│   ├── train.py              ← 모델 학습 스크립트
+│   └── model.pkl             ← 학습된 모델 파일
+</code></pre><hr><h2 id=-1단계-학습-스크립트-작성-trainpy>🧪 [1단계] 학습 스크립트 작성 (<code>train.py</code>)<a hidden class=anchor aria-hidden=true href=#-1단계-학습-스크립트-작성-trainpy>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># airflow/ml_code/train.py</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> pickle
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sklearn.datasets <span style=color:#f92672>import</span> load_iris
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sklearn.ensemble <span style=color:#f92672>import</span> RandomForestClassifier
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 데이터 로딩</span>
+</span></span><span style=display:flex><span>data <span style=color:#f92672>=</span> load_iris()
+</span></span><span style=display:flex><span>X, y <span style=color:#f92672>=</span> data<span style=color:#f92672>.</span>data, data<span style=color:#f92672>.</span>target
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 모델 학습</span>
+</span></span><span style=display:flex><span>model <span style=color:#f92672>=</span> RandomForestClassifier()
+</span></span><span style=display:flex><span>model<span style=color:#f92672>.</span>fit(X, y)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 모델 저장</span>
+</span></span><span style=display:flex><span>model_path <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;/opt/airflow/ml_code/model.pkl&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>with</span> open(model_path, <span style=color:#e6db74>&#34;wb&#34;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>    pickle<span style=color:#f92672>.</span>dump(model, f)
+</span></span></code></pre></div><blockquote><p>모델은 /opt/airflow/ml_code/model.pkl 경로에 저장됩니다.</p></blockquote><hr><h2 id=-2단계-dag-작성-run_train_scriptpy>🧪 [2단계] DAG 작성 (<code>run_train_script.py</code>)<a hidden class=anchor aria-hidden=true href=#-2단계-dag-작성-run_train_scriptpy>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># airflow/dags/run_train_script.py</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> airflow <span style=color:#f92672>import</span> DAG
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> airflow.operators.bash <span style=color:#f92672>import</span> BashOperator
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> datetime <span style=color:#f92672>import</span> datetime
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>with</span> DAG(
+</span></span><span style=display:flex><span>    dag_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;bash_run_train&#39;</span>,
+</span></span><span style=display:flex><span>    start_date<span style=color:#f92672>=</span>datetime(<span style=color:#ae81ff>2023</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>1</span>),
+</span></span><span style=display:flex><span>    schedule_interval<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>,
+</span></span><span style=display:flex><span>    catchup<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>,
+</span></span><span style=display:flex><span>) <span style=color:#66d9ef>as</span> dag:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    run_training <span style=color:#f92672>=</span> BashOperator(
+</span></span><span style=display:flex><span>        task_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;run_train_script&#39;</span>,
+</span></span><span style=display:flex><span>        bash_command<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;python3 /opt/airflow/ml_code/train.py&#39;</span>
+</span></span><span style=display:flex><span>    )
+</span></span></code></pre></div><blockquote><p>train.py는 Airflow 컨테이너 내 /opt/airflow/ml_code/ 경로에 위치해야 합니다.</p></blockquote><hr><h2 id=-3단계-airflow-컨테이너-진입-및-확인>✅ [3단계] Airflow 컨테이너 진입 및 확인<a hidden class=anchor aria-hidden=true href=#-3단계-airflow-컨테이너-진입-및-확인>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>docker exec -it airflow-airflow-webserver-1 bash
+</span></span><span style=display:flex><span>cd /opt/airflow/ml_code
+</span></span><span style=display:flex><span>ls -l
+</span></span></code></pre></div><blockquote><p>train.py와 model.pkl 파일이 보이면 성공!</p></blockquote><hr><h2 id=-추가-설정-requirementstxt와-docker-재빌드>🔧 추가 설정: <code>requirements.txt</code>와 Docker 재빌드<a hidden class=anchor aria-hidden=true href=#-추가-설정-requirementstxt와-docker-재빌드>#</a></h2><ol><li><strong>requirements.txt</strong> 작성 (Airflow 루트 디렉토리):</li></ol><pre tabindex=0><code>scikit-learn
+</code></pre><ol><li><strong>Dockerfile</strong> 작성 (같은 디렉토리):</li></ol><pre tabindex=0><code>FROM apache/airflow:2.8.2
+COPY requirements.txt /requirements.txt
+USER airflow
+RUN pip install --no-cache-dir -r /requirements.txt
+</code></pre><ol><li><strong>Docker Compose</strong> 재빌드</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>docker-compose down
+</span></span><span style=display:flex><span>docker-compose build
+</span></span><span style=display:flex><span>docker-compose up -d
+</span></span></code></pre></div><hr><h2 id=-실행-절차>✅ 실행 절차<a hidden class=anchor aria-hidden=true href=#-실행-절차>#</a></h2><ol><li><code>train.py</code> 스크립트 저장</li><li><code>run_train_script.py</code> DAG 등록</li><li>Airflow 웹 UI에서 DAG 실행</li><li>로그에서 <code>"📥 데이터 로딩 중..."</code>, <code>"🧠 모델 학습 중..."</code>, <code>"💾 모델 저장 완료!"</code> 확인</li></ol><hr><h2 id=-확인-포인트>🔍 확인 포인트<a hidden class=anchor aria-hidden=true href=#-확인-포인트>#</a></h2><table><thead><tr><th>항목</th><th>확인 방법</th></tr></thead><tbody><tr><td>모델 파일 생성</td><td><code>airflow/ml_code/model.pkl</code> 존재 확인</td></tr><tr><td>로그 출력</td><td>DAG > Task Logs에서 출력 메시지 확인</td></tr></tbody></table><hr><h2 id=-실무-팁>🧩 실무 팁<a hidden class=anchor aria-hidden=true href=#-실무-팁>#</a></h2><table><thead><tr><th>항목</th><th>설명</th></tr></thead><tbody><tr><td>BashOperator</td><td>외부 스크립트 호출 시 사용 (<code>.sh</code>, <code>.py</code> 등)</td></tr><tr><td>PythonOperator</td><td>DAG 내부 함수 호출 및 실행</td></tr><tr><td>실무 연계</td><td><code>python train.py</code> → <code>python predict.py</code> → <code>upload_to_s3.sh</code> 등으로 워크플로우 구성 가능</td></tr></tbody></table><hr><h2 id=-mlops-실전-연결>🔧 MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#-mlops-실전-연결>#</a></h2><ul><li>이 흐름은 <strong>MLflow Tracking → 모델 등록 → S3 업로드 → SageMaker 배포</strong> 흐름으로 이어질 수 있음</li><li><strong>Airflow DAG</strong>를 통해 <strong>ML 실험 자동화</strong>, <strong>모델 학습 및 배포 파이프라인 구축</strong>이 가능함</li></ul></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/airflow/05/><span class=title>« Prev</span><br><span>[Airflow - 5단계: PythonOperator + MLflow Tracking 연동]</span>
+</a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/airflow/03/><span class=title>Next »</span><br><span>[Airflow - 3단계: ML 파이프라인 DAG 구성]</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

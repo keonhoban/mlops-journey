@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Airflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/airflow/</link><description>Recent content in Airflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 10 Jun 2025 19:49:29 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/airflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow - 5단계: PythonOperator + MLflow Tracking 연동]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/05/</link><pubDate>Tue, 10 Jun 2025 19:49:29 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/05/</guid><description>&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Airflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/airflow/</link><description>Recent content in Airflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 10 Jun 2025 19:49:29 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/airflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow - 5단계: PythonOperator + MLflow Tracking 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</link><pubDate>Tue, 10 Jun 2025 19:49:29 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;p>PythonOperator를 사용하여 MLflow로 실험(모델 학습)을 자동화하고, 파라미터, 메트릭, 모델을 기록하는 방법을 학습합니다.&lt;/p>&lt;/blockquote>
 &lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow/05_Airflow_and_MLflow">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>
@@ -83,7 +83,7 @@
 &lt;h2 id="모듈-에러가-발생하면">❓모듈 에러가 발생하면?&lt;/h2>
 &lt;ol>
 &lt;li>
-&lt;p>&lt;code>docker-compose.yaml&lt;/code>에서 &lt;code>volumes:&lt;/code> 항목 확인&lt;/p></description></item><item><title>[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/04/</link><pubDate>Tue, 10 Jun 2025 19:49:27 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/04/</guid><description>&lt;blockquote>
+&lt;p>&lt;code>docker-compose.yaml&lt;/code>에서 &lt;code>volumes:&lt;/code> 항목 확인&lt;/p></description></item><item><title>[Airflow - 4단계: BashOperator로 외부 Python 학습 스크립트 실행]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/04/</link><pubDate>Tue, 10 Jun 2025 19:49:27 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/04/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>&lt;code>train.py&lt;/code> 모델 학습 스크립트를 별도 파일로 작성&lt;/li>
@@ -125,7 +125,7 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> open(model_path, &lt;span style="color:#e6db74">&amp;#34;wb&amp;#34;&lt;/span>) &lt;span style="color:#66d9ef">as&lt;/span> f:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pickle&lt;span style="color:#f92672">.&lt;/span>dump(model, f)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>모델은 /opt/airflow/ml_code/model.pkl 경로에 저장됩니다.&lt;/p></description></item><item><title>[Airflow - 3단계: ML 파이프라인 DAG 구성]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/03/</link><pubDate>Sat, 07 Jun 2025 19:30:16 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/03/</guid><description>&lt;blockquote>
+&lt;p>모델은 /opt/airflow/ml_code/model.pkl 경로에 저장됩니다.&lt;/p></description></item><item><title>[Airflow - 3단계: ML 파이프라인 DAG 구성]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/03/</link><pubDate>Sat, 07 Jun 2025 19:30:16 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/03/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;p>ML 워크플로우를 DAG 형태로 구성하여&lt;/p>
 &lt;p>데이터 준비 → 모델 학습 → 모델 저장 흐름을 시뮬레이션함&lt;/p>&lt;/blockquote>
@@ -175,7 +175,7 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> t1 &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> t2 &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> t3
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>✅ 저장 경로: dags/ml_simulation.py&lt;/p></description></item><item><title>[Airflow - 2단계: Python &amp; Bash Operator + XCom 데이터 전달]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/02/</link><pubDate>Sat, 07 Jun 2025 19:30:15 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/02/</guid><description>&lt;blockquote>
+&lt;p>✅ 저장 경로: dags/ml_simulation.py&lt;/p></description></item><item><title>[Airflow - 2단계: Python &amp; Bash Operator + XCom 데이터 전달]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/02/</link><pubDate>Sat, 07 Jun 2025 19:30:15 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/02/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>Python 함수와 Bash 스크립트를 하나의 DAG으로 구성&lt;/li>
@@ -295,7 +295,7 @@
 &lt;td>BashOperator로 배포 스크립트 실행 등 자동화 가능&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>[Airflow - 1단계: 로컬 환경에서 기본 DAG 실행]</title><link>https://keonhoban.github.io/mlops-journey/projects/airflow/01/</link><pubDate>Sat, 07 Jun 2025 19:29:36 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/airflow/01/</guid><description>&lt;blockquote>
+&lt;/table></description></item><item><title>[Airflow - 1단계: 로컬 환경에서 기본 DAG 실행]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/01/</link><pubDate>Sat, 07 Jun 2025 19:29:36 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/01/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>Docker 기반 Airflow 환경 구성&lt;/li>
