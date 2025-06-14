@@ -2,7 +2,7 @@
 date = '2025-06-13T20:58:51+09:00'
 draft = false
 title = '[Airflow 기초 자동화 - Airflow → MLflow → FastAPI]'
-categories = 'MLOps Pipeline'
+categories = ['MLOps Pipeline', 'Airflow', 'MLflow', 'FastAPI']
 +++
 
 ## 🧭 전체 흐름 예시
@@ -22,10 +22,7 @@ categories = 'MLOps Pipeline'
    - models:/IrisModel/Production → 실시간 예측
 ```
 
-> 👉 실습 코드는 [🔗 GitHub (Airflow → MLflow → FastAPI)](https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi)
->
-> 👉 Trouble Shoot은 [🔗 Trouble_Shoot (Airflow 기초 자동화)](https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/)
->
+👉 실습 코드는 [🔗 GitHub (Airflow + MLflow + FastAPI)](https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi)
 
 ---
 
@@ -62,7 +59,7 @@ mlops_project/
 │
 ├── docker-compose.yaml    🧩 전체 서비스 구성 정의
 ├── .env                   🔐 민감 정보 (.env로 분리)
-├── README.md              📝 전체 프로젝트 문서화 (작성 예정)
+├── README.md              📝 전체 프로젝트 문서화
 ├── .gitignore
 └── .dockerignore
 
@@ -110,7 +107,9 @@ services:
       context: ./airflow           # → Airflow 전용 Dockerfile 경로
       dockerfile: Dockerfile.airflow
     container_name: airflow
-    command: standalone           # → 로컬 테스트용 간단 실행 명령
+    command: standalone           # → 로컬 테스트용 간단 실행 명령 
+                      # (- Scheduler + Webserver + DB 초기화까지 자동으로 한번에 실행)
+                      # (- 실무/운영에서는 airflow-webserver, airflow-scheduler 필드 분리)
     ports:
       - "8080:8080"               # → Airflow 웹 UI (localhost:8080)
     depends_on:
@@ -118,8 +117,10 @@ services:
     env_file:
       - .env
     environment:
+      # Airflow 메타데이터 DB 연결 주소
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
-      AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES}
+      # Airflow 예제 DAG 불러올지 여부
+      AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES}  
       MLFLOW_TRACKING_URI: http://mlflow:5000  # → DAG 코드에서 MLflow 연동
     volumes:
       - ./airflow/dags:/opt/airflow/dags     # DAG 파일 mount
@@ -186,7 +187,7 @@ airflow users create \
 | `./mlflow_store:/mlflow` (Airflow) | 학습 후 모델 저장 위치 공유 |
 | `./mlflow_store:/mlflow` (FastAPI) | 모델 추론 시 로드 경로 공유 |
 
-➡ **경로 통일성**이 매우 중요함! 지금은 모두 `./mlflow`로 공유
+➡ **경로 통일성**이 매우 중요함! 지금은 모두 `./mlflow`로 공유 (./mlflow 하위에 /mlruns 존재)
 
 ---
 
@@ -252,7 +253,36 @@ pandas
 
 ---
 
-### 🚀 2. `Dockerfile.api` (FastAPI 컨테이너)
+### 🚀 2. `Dockerfile.mlflow` (FastAPI 컨테이너)
+
+📄 **`mlflow_store/Dockerfile.mlflow`**
+
+```
+FROM python:3.10-slim
+
+# 시스템 도구 설치
+RUN apt update && apt install -y curl sqlite3 git
+
+# MLflow 설치
+RUN pip install mlflow[extras] scikit-learn
+
+# 작업 디렉토리
+WORKDIR /mlflow
+
+CMD ["mlflow", "server", \
+     "--backend-store-uri=sqlite:///mlflow.db", \
+     "--default-artifact-root=/mlflow/artifacts", \
+     "--host=0.0.0.0", \
+     "--port=5000", \
+     "--serve-artifacts"]
+```
+
+> ❗ docker-compose.yaml 의 command 에서 진행안될시 사용
+> 
+
+---
+
+### 🚀 3. `Dockerfile.api` (FastAPI 컨테이너)
 
 📄 **`fastapi/Dockerfile.api`**
 
@@ -273,6 +303,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # FastAPI 앱 실행 (uvicorn)
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
+
+> ❗ 패키지 개수가 많다면 requirement를 COPY 하여 사용도 가능
+> 
 
 ---
 
@@ -328,10 +361,10 @@ def home():
 # 🔮 예측 요청 처리 엔드포인트
 @app.post("/predict")
 def predict(data: List[IrisInput]):
-    # 1️⃣ 입력 데이터 → pandas DataFrame 변환
+    # 1️⃣ 입력 데이터 → pandas DataFrame 변환 (= 2차원 구조 / 현재 1행 4열)
     input_df = pd.DataFrame([item.dict() for item in data])
 
-    # 2️⃣ 모델 학습 시 사용했던 컬럼명으로 정렬 (스키마 맞춤)
+    # 2️⃣ 모델 학습 시 사용했던 컬럼명으로 변경 및 데이터 순서 정렬 (스키마 맞춤)
     input_df.columns = [
         "sepal length (cm)",
         "sepal width (cm)",
@@ -339,7 +372,7 @@ def predict(data: List[IrisInput]):
         "petal width (cm)"
     ]
 
-    # 3️⃣ MLflow로부터 로드된 모델을 활용한 예측 수행
+    # 3️⃣ MLflow로부터 로드된 모델을 활용한 예측 수행 (= serving)
     preds = model.predict(input_df)
 
     # 4️⃣ 결과를 JSON 형태로 반환
@@ -372,8 +405,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
 def run_experiment():
-    # 📍 MLflow 서버 주소 설정 (Tracking URI)
-    mlflow.set_tracking_uri("http://mlflow:5000")
+  # 📍 MLflow 서버 주소 설정 (Tracking URI) 
+  # (- docker-compose.yaml의 airflow에 environment로 MLFLOW_TRACKING_URI 존재시 생략 가능)
+    mlflow.set_tracking_uri("http://mlflow:5000")  # 단, 로컬에서 진행시 필요
 
     # 🧪 실험 이름 설정 (없으면 자동 생성)
     mlflow.set_experiment("iris_experiment")
@@ -424,6 +458,7 @@ from mlflow.tracking import MlflowClient
 
 def promote_model():
     # 🧭 MLflow 클라이언트 인스턴스 생성 (서버와 직접 통신)
+    # (- docker-compose.yaml의 airflow에 environment로 MLFLOW_TRACKING_URI 존재함)
     client = MlflowClient()
 
     # 🔍 "IrisModel"의 등록된 모델 중 현재 어떤 Stage에도 배정되지 않은 최신 버전 가져오기
@@ -433,7 +468,7 @@ def promote_model():
         print("❗ 등록된 모델이 없습니다.")
         return
 
-    # ⏫ 가장 최신 버전 선택
+    # ⏫ 가장 최신 버전 선택 (= .version 을 통해 속성 값 추출 / .name or .stage 등 가능)
     latest_version = latest_versions[0].version
 
     # 🚀 해당 버전을 Production 단계로 전환
@@ -527,8 +562,7 @@ Airflow 웹 UI에서 `train_with_mlflow` DAG 실행 →
 ✅ `/mlflow/mlruns/`에 artifact가 저장되며
 
 ✅ `IrisModel`이 **Model Registry**에 등록됨
-
-✅ promote_mlflow.py 실행을 통해, 등록된 모델을 Staging 또는 Production 단계로 자동 승격함
+✅ `promote_mlflow.py` 실행을 통해, 등록된 모델을 **Staging** 또는 **Production** 단계로 자동 승격함
 
 ---
 
