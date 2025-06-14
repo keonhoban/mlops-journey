@@ -122,9 +122,7 @@
 ↓
 [FastAPI]
 - models:/IrisModel/Production → 실시간 예측
-&lt;/code>&lt;/pre>&lt;blockquote>
-&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi">🔗 GitHub (Airflow → MLflow → FastAPI)&lt;/a>&lt;/p>
-&lt;p>👉 Trouble Shoot은 &lt;a href="https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/">🔗 Trouble_Shoot (Airflow 기초 자동화)&lt;/a>&lt;/p>&lt;/blockquote>
+&lt;/code>&lt;/pre>&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi">🔗 GitHub (Airflow + MLflow + FastAPI)&lt;/a>&lt;/p>
 &lt;hr>
 &lt;h2 id="-1단계-프로젝트-기본-폴더-구조-설계">✅ [1단계] 프로젝트 기본 폴더 구조 설계&lt;/h2>
 &lt;h3 id="-1-전체-디렉토리-구성도">📁 1. 전체 디렉토리 구성도&lt;/h3>
@@ -156,7 +154,7 @@
 │
 ├── docker-compose.yaml 🧩 전체 서비스 구성 정의
 ├── .env 🔐 민감 정보 (.env로 분리)
-├── README.md 📝 전체 프로젝트 문서화 (작성 예정)
+├── README.md 📝 전체 프로젝트 문서화
 ├── .gitignore
 └── .dockerignore
 &lt;/code>&lt;/pre>&lt;hr>
@@ -220,7 +218,9 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">context&lt;/span>: &lt;span style="color:#ae81ff">./airflow &lt;/span> &lt;span style="color:#75715e"># → Airflow 전용 Dockerfile 경로&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">dockerfile&lt;/span>: &lt;span style="color:#ae81ff">Dockerfile.airflow&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">container_name&lt;/span>: &lt;span style="color:#ae81ff">airflow&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">command&lt;/span>: &lt;span style="color:#ae81ff">standalone &lt;/span> &lt;span style="color:#75715e"># → 로컬 테스트용 간단 실행 명령&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">command&lt;/span>: &lt;span style="color:#ae81ff">standalone &lt;/span> &lt;span style="color:#75715e"># → 로컬 테스트용 간단 실행 명령 &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># (- Scheduler + Webserver + DB 초기화까지 자동으로 한번에 실행)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># (- 실무/운영에서는 airflow-webserver, airflow-scheduler 필드 분리)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#e6db74">&amp;#34;8080:8080&amp;#34;&lt;/span> &lt;span style="color:#75715e"># → Airflow 웹 UI (localhost:8080)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">depends_on&lt;/span>:
@@ -228,8 +228,10 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">env_file&lt;/span>:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">.env&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">environment&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Airflow 메타데이터 DB 연결 주소&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">AIRFLOW__CORE__SQL_ALCHEMY_CONN&lt;/span>: &lt;span style="color:#ae81ff">${AIRFLOW__CORE__SQL_ALCHEMY_CONN}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">AIRFLOW__CORE__LOAD_EXAMPLES&lt;/span>: &lt;span style="color:#ae81ff">${AIRFLOW__CORE__LOAD_EXAMPLES}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Airflow 예제 DAG 불러올지 여부&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">AIRFLOW__CORE__LOAD_EXAMPLES&lt;/span>: &lt;span style="color:#ae81ff">${AIRFLOW__CORE__LOAD_EXAMPLES} &lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">MLFLOW_TRACKING_URI&lt;/span>: &lt;span style="color:#ae81ff">http://mlflow:5000 &lt;/span> &lt;span style="color:#75715e"># → DAG 코드에서 MLflow 연동&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">volumes&lt;/span>:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./airflow/dags:/opt/airflow/dags &lt;/span> &lt;span style="color:#75715e"># DAG 파일 mount&lt;/span>
@@ -304,7 +306,7 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 매우 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유&lt;/p></description></item><item><title>[Airflow - 5단계: PythonOperator + MLflow Tracking 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</link><pubDate>Tue, 10 Jun 2025 19:49:29 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</guid><description>&lt;blockquote>
+&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 매우 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item><item><title>[Airflow - 5단계: PythonOperator + MLflow Tracking 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</link><pubDate>Tue, 10 Jun 2025 19:49:29 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;p>PythonOperator를 사용하여 MLflow로 실험(모델 학습)을 자동화하고, 파라미터, 메트릭, 모델을 기록하는 방법을 학습합니다.&lt;/p>&lt;/blockquote>
 &lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow/05_Airflow_and_MLflow">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>

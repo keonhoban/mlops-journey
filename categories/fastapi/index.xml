@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>MLOps Pipeline on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/</link><description>Recent content in MLOps Pipeline on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 13 Jun 2025 20:58:51 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow 기초 자동화 - Airflow → MLflow → FastAPI]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</link><pubDate>Fri, 13 Jun 2025 20:58:51 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</guid><description>&lt;h2 id="-전체-흐름-예시">🧭 전체 흐름 예시&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>FastAPI on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/fastapi/</link><description>Recent content in FastAPI on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 13 Jun 2025 20:58:51 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/fastapi/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow 기초 자동화 - Airflow → MLflow → FastAPI]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</link><pubDate>Fri, 13 Jun 2025 20:58:51 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</guid><description>&lt;h2 id="-전체-흐름-예시">🧭 전체 흐름 예시&lt;/h2>
 &lt;pre tabindex="0">&lt;code>[AIRFLOW DAG 실행]
 ↓
 [train_mlflow.py]
@@ -195,4 +195,76 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 매우 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item></channel></rss>
+&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 매우 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item><item><title>[MLflow : Tracking + FastAPI 연동]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</link><pubDate>Fri, 06 Jun 2025 15:14:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</guid><description>&lt;blockquote>
+&lt;p>목표&lt;/p>
+&lt;ol>
+&lt;li>MLflow Tracking Server 구성&lt;/li>
+&lt;li>실험(Experiment), 파라미터, 메트릭, 아티팩트 기록&lt;/li>
+&lt;li>모델 등록 → Stage 이동 → API 연동까지&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/mlflow">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-실습-전체-흐름-요약">🧭 실습 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[1단계] MLflow Tracking Server 구성 (로컬 환경에서 실행)
+[2단계] 실험 실행 (train.py) → 모델 학습, 기록
+[3단계] 모델 등록 및 Stage 설정 (Production 이동)
+[4단계] FastAPI 연동 → 예측 API 서비스
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-실습-디렉토리-예시">🧩 실습 디렉토리 예시&lt;/h2>
+&lt;pre tabindex="0">&lt;code>mlops-mlflow/
+├── app/
+│ ├── train.py # 모델 훈련 및 실험 기록
+│ └── model.pkl # 저장된 모델
+├── mlruns/ # 실험 데이터 자동 생성
+├── fastapi_app/
+│ └── app.py # FastAPI 예측 API
+├── Dockerfile (선택)
+└── README.md
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-1단계-mlflow-설치--실행">✅ [1단계] MLflow 설치 &amp;amp; 실행&lt;/h2>
+&lt;h3 id="-가상-환경-설정">🛠️ 가상 환경 설정&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 1. venv 설치&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install python3-venv -y
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 2. 가상환경 생성&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>python3 -m venv .venv
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 3. 가상환경 활성화&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source .venv/bin/activate
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 4. 패키지 설치&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pip install mlflow scikit-learn pandas fastapi uvicorn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 5. 나갈 때&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>deactivate
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="-mlflow-서버-실행">🔧 MLflow 서버 실행&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>mlflow ui --port &lt;span style="color:#ae81ff">5000&lt;/span> &lt;span style="color:#75715e"># http://localhost:5000 에서 UI 확인&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-2단계-실험-실행-trainpy">🧪 [2단계] 실험 실행 (train.py)&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># app/train.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow.sklearn
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.ensemble &lt;span style="color:#f92672">import&lt;/span> RandomForestClassifier
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.datasets &lt;span style="color:#f92672">import&lt;/span> load_iris
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.model_selection &lt;span style="color:#f92672">import&lt;/span> train_test_split
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># MLflow 설정&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mlflow&lt;span style="color:#f92672">.&lt;/span>set_tracking_uri(&lt;span style="color:#e6db74">&amp;#34;http://localhost:5000&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mlflow&lt;span style="color:#f92672">.&lt;/span>set_experiment(&lt;span style="color:#e6db74">&amp;#34;iris-rf-exp&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> mlflow&lt;span style="color:#f92672">.&lt;/span>start_run():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> iris &lt;span style="color:#f92672">=&lt;/span> load_iris()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> X_train, X_test, y_train, y_test &lt;span style="color:#f92672">=&lt;/span> train_test_split(iris&lt;span style="color:#f92672">.&lt;/span>data, iris&lt;span style="color:#f92672">.&lt;/span>target, test_size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0.2&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clf &lt;span style="color:#f92672">=&lt;/span> RandomForestClassifier(n_estimators&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">100&lt;/span>, max_depth&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clf&lt;span style="color:#f92672">.&lt;/span>fit(X_train, y_train)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc &lt;span style="color:#f92672">=&lt;/span> clf&lt;span style="color:#f92672">.&lt;/span>score(X_test, y_test)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_param(&lt;span style="color:#e6db74">&amp;#34;n_estimators&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">100&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_param(&lt;span style="color:#e6db74">&amp;#34;max_depth&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_metric(&lt;span style="color:#e6db74">&amp;#34;accuracy&amp;#34;&lt;/span>, acc)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>sklearn&lt;span style="color:#f92672">.&lt;/span>log_model(clf, &lt;span style="color:#e6db74">&amp;#34;model&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 실험 실행&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>python app/train.py
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>실험이 끝나면 mlruns/ 폴더에 실험 기록 및 모델이 저장&lt;/p></description></item></channel></rss>

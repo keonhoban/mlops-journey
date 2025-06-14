@@ -1,4 +1,201 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Airflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/airflow/</link><description>Recent content in Airflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 10 Jun 2025 19:49:29 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/airflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow - 5단계: PythonOperator + MLflow Tracking 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</link><pubDate>Tue, 10 Jun 2025 19:49:29 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</guid><description>&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Airflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/airflow/</link><description>Recent content in Airflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 13 Jun 2025 20:58:51 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/airflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow 기초 자동화 - Airflow → MLflow → FastAPI]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</link><pubDate>Fri, 13 Jun 2025 20:58:51 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</guid><description>&lt;h2 id="-전체-흐름-예시">🧭 전체 흐름 예시&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[AIRFLOW DAG 실행]
+↓
+[train_mlflow.py]
+- iris 모델 학습
+- 파라미터/메트릭 로깅
+- 모델 Registry 등록
+↓
+[promote_mlflow.py]
+- 최신 모델을 Production으로 전환
+↓
+[FastAPI]
+- models:/IrisModel/Production → 실시간 예측
+&lt;/code>&lt;/pre>&lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi">🔗 GitHub (Airflow + MLflow + FastAPI)&lt;/a>&lt;/p>
+&lt;hr>
+&lt;h2 id="-1단계-프로젝트-기본-폴더-구조-설계">✅ [1단계] 프로젝트 기본 폴더 구조 설계&lt;/h2>
+&lt;h3 id="-1-전체-디렉토리-구성도">📁 1. 전체 디렉토리 구성도&lt;/h3>
+&lt;pre tabindex="0">&lt;code>mlops_project/
+├── airflow/ 🛫 Airflow 설정 및 DAG 스케줄러
+│ ├── dags/ ← DAG 정의 디렉토리
+│ │ └── train_with_mlflow.py ← 학습 DAG (MLflow 연동)
+│ ├── Dockerfile.airflow ← Airflow용 Dockerfile
+│ ├── requirements.txt ← Airflow 의존성
+│ └── .dockerignore
+│
+├── fastapi/ ⚡ FastAPI 예측 API 서버
+│ ├── app/
+│ │ └── main.py ← 모델 서빙 엔드포인트
+│ ├── Dockerfile.api ← FastAPI용 Dockerfile
+│ ├── requirements.txt ← FastAPI 의존성
+│ └── .dockerignore
+│
+├── ml_code/ 🧠 ML 학습 및 프로모션 코드
+│ ├── train_mlflow.py ← 모델 학습 및 MLflow 로깅
+│ └── promte_mlflow.py ← 모델 프로모션 (Staging → Production)
+│
+├── mlflow_store/ 🗂️ MLflow 저장소 경로 (볼륨)
+│ ├── Dockerfile.mlflow ← MLflow 서버 커스터마이징
+│ ├── mlflow.db ← Model Registry DB (sqlite)
+│ ├── mlruns/ ← 실험 로그 디렉토리
+│ ├── artifacts/ ← 모델 아티팩트 저장소
+│ └── .dockerignore
+│
+├── docker-compose.yaml 🧩 전체 서비스 구성 정의
+├── .env 🔐 민감 정보 (.env로 분리)
+├── README.md 📝 전체 프로젝트 문서화
+├── .gitignore
+└── .dockerignore
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-2단계-docker-composeyaml-통합-구성">✅ [2단계] &lt;code>docker-compose.yaml&lt;/code> 통합 구성&lt;/h2>
+&lt;h3 id="-구성-목표">🧭 구성 목표&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>서비스명&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;th>포트&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>airflow&lt;/code>&lt;/td>
+&lt;td>DAG 실행 환경 (webserver/scheduler)&lt;/td>
+&lt;td>&lt;code>8080&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>postgres&lt;/code>&lt;/td>
+&lt;td>Airflow 메타데이터 저장용 DB&lt;/td>
+&lt;td>내부 통신&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>mlflow&lt;/code>&lt;/td>
+&lt;td>MLflow UI + Registry 기능&lt;/td>
+&lt;td>&lt;code>5000&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>fastapi&lt;/code>&lt;/td>
+&lt;td>추론 API 서버 (모델 로딩)&lt;/td>
+&lt;td>&lt;code>8000&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;ul>
+&lt;li>이미지 사용시 주의 (UI만 제공하는 이미지 존재)&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="-docker-composeyaml-전체-예시">📄 &lt;code>docker-compose.yaml&lt;/code> 전체 예시&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">version&lt;/span>: &lt;span style="color:#e6db74">&amp;#39;3.8&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">services&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 📦 PostgreSQL: Airflow 메타데이터 저장용 DB&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">postgres&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">image&lt;/span>: &lt;span style="color:#ae81ff">postgres:13&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">container_name&lt;/span>: &lt;span style="color:#ae81ff">postgres&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">env_file&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">.env &lt;/span> &lt;span style="color:#75715e"># ← 민감정보 분리 (아이디/비번)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">environment&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">POSTGRES_USER&lt;/span>: &lt;span style="color:#ae81ff">${POSTGRES_USER}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">POSTGRES_PASSWORD&lt;/span>: &lt;span style="color:#ae81ff">${POSTGRES_PASSWORD}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">POSTGRES_DB&lt;/span>: &lt;span style="color:#ae81ff">${POSTGRES_DB}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">volumes&lt;/span>: &lt;span style="color:#75715e"># ← 코드/데이터 공유 및 영속성 보장&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">postgres_data:/var/lib/postgresql/data &lt;/span> &lt;span style="color:#75715e"># ← DB 데이터 유지 (재시작 대비)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 🛫 Airflow: DAG 스케줄러 및 태스크 실행&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">airflow&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">build&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">context&lt;/span>: &lt;span style="color:#ae81ff">./airflow &lt;/span> &lt;span style="color:#75715e"># → Airflow 전용 Dockerfile 경로&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">dockerfile&lt;/span>: &lt;span style="color:#ae81ff">Dockerfile.airflow&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">container_name&lt;/span>: &lt;span style="color:#ae81ff">airflow&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">command&lt;/span>: &lt;span style="color:#ae81ff">standalone &lt;/span> &lt;span style="color:#75715e"># → 로컬 테스트용 간단 실행 명령 &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># (- Scheduler + Webserver + DB 초기화까지 자동으로 한번에 실행)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># (- 실무/운영에서는 airflow-webserver, airflow-scheduler 필드 분리)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#e6db74">&amp;#34;8080:8080&amp;#34;&lt;/span> &lt;span style="color:#75715e"># → Airflow 웹 UI (localhost:8080)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">depends_on&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">postgres &lt;/span> &lt;span style="color:#75715e"># → DB가 먼저 올라와야 Airflow 시작 가능&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">env_file&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">.env&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">environment&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Airflow 메타데이터 DB 연결 주소&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">AIRFLOW__CORE__SQL_ALCHEMY_CONN&lt;/span>: &lt;span style="color:#ae81ff">${AIRFLOW__CORE__SQL_ALCHEMY_CONN}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Airflow 예제 DAG 불러올지 여부&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">AIRFLOW__CORE__LOAD_EXAMPLES&lt;/span>: &lt;span style="color:#ae81ff">${AIRFLOW__CORE__LOAD_EXAMPLES} &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">MLFLOW_TRACKING_URI&lt;/span>: &lt;span style="color:#ae81ff">http://mlflow:5000 &lt;/span> &lt;span style="color:#75715e"># → DAG 코드에서 MLflow 연동&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">volumes&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./airflow/dags:/opt/airflow/dags &lt;/span> &lt;span style="color:#75715e"># DAG 파일 mount&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./ml_code:/opt/airflow/ml_code &lt;/span> &lt;span style="color:#75715e"># 학습 코드 공유&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./mlflow_store:/mlflow &lt;/span> &lt;span style="color:#75715e"># 모델 저장소 공유&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 🔬 MLflow: 실험 추적 + 모델 레지스트리 서버&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">mlflow&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">build&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">context&lt;/span>: &lt;span style="color:#ae81ff">./mlflow_store &lt;/span> &lt;span style="color:#75715e"># 커스텀 Dockerfile 위치&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">dockerfile&lt;/span>: &lt;span style="color:#ae81ff">Dockerfile.mlflow&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#e6db74">&amp;#34;5000:5000&amp;#34;&lt;/span> &lt;span style="color:#75715e"># → MLflow UI (localhost:5000)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">volumes&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./mlflow_store:/mlflow &lt;/span> &lt;span style="color:#75715e"># 실험 로그 + DB + artifacts 저장&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">environment&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">MLFLOW_TRACKING_URI=http://0.0.0.0:5000 &lt;/span> &lt;span style="color:#75715e"># 내부 컨테이너 기준 URI&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># ⚡ FastAPI: 모델 서빙 API&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">fastapi&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">build&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">context&lt;/span>: &lt;span style="color:#ae81ff">./fastapi&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">dockerfile&lt;/span>: &lt;span style="color:#ae81ff">Dockerfile.api&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">container_name&lt;/span>: &lt;span style="color:#ae81ff">fastapi&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#e6db74">&amp;#34;8000:8000&amp;#34;&lt;/span> &lt;span style="color:#75715e"># → 예측 API 엔드포인트 (localhost:8000)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">volumes&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./fastapi/app:/app/app &lt;/span> &lt;span style="color:#75715e"># FastAPI app 디렉토리 mount&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./ml_code:/app/ml_code &lt;/span> &lt;span style="color:#75715e"># 학습/모델 코드 공유&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#ae81ff">./mlflow_store:/mlflow &lt;/span> &lt;span style="color:#75715e"># 저장된 모델 불러오기 위한 mount&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 🗂️ 볼륨 정의 (Postgres DB 영속성 유지)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">volumes&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">postgres_data&lt;/span>:
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h2 id="-추가로-해야-할-것">🎁 추가로 해야 할 것&lt;/h2>
+&lt;ul>
+&lt;li>Airflow 첫 실행 후엔 보통 &lt;strong>관리자 계정 생성&lt;/strong>도 해줘야 함:&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># airflow 컨테이너 접속&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>docker exec -it airflow bash
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 관리자 계정 생성&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>airflow users create &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --username airflow &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --password airflow &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --firstname Keoho &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --lastname Ban &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --role Admin &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --email airflow@example.com
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;h3 id="-구축-tip-airflow-fastapi-mlflow-간-공유-볼륨-구조-확인">🔁 [구축 Tip] &lt;strong>Airflow, FastAPI, MLflow 간 공유 볼륨 구조 확인&lt;/strong>&lt;/h3>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>공유 리소스&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>./mlflow_store:/mlflow&lt;/code> (MLflow)&lt;/td>
+&lt;td>MLflow 서버가 쓰는 로그/모델 저장소&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>./mlflow_store:/mlflow&lt;/code> (Airflow)&lt;/td>
+&lt;td>학습 후 모델 저장 위치 공유&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>./mlflow_store:/mlflow&lt;/code> (FastAPI)&lt;/td>
+&lt;td>모델 추론 시 로드 경로 공유&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 매우 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item><item><title>[Airflow - 5단계: PythonOperator + MLflow Tracking 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</link><pubDate>Tue, 10 Jun 2025 19:49:29 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/05/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;p>PythonOperator를 사용하여 MLflow로 실험(모델 학습)을 자동화하고, 파라미터, 메트릭, 모델을 기록하는 방법을 학습합니다.&lt;/p>&lt;/blockquote>
 &lt;p>👉 실습 코드는 &lt;a href="https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow/05_Airflow_and_MLflow">🔗 GitHub (Mlflow - Tracking + FastAPI)&lt;/a>&lt;/p>
