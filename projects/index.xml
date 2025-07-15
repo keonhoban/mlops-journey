@@ -9,7 +9,7 @@
 &lt;tbody>
 &lt;tr>
 &lt;td>1&lt;/td>
-&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/">🔗 실습을 위한 인프라 사전 구성 (Kubernetes, NFS, PostgreSQL, S3 등)&lt;/a>&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/">🔗 인프라 사전 구성 (Kubernetes, NFS, PostgreSQL, S3 등)&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>2&lt;/td>
@@ -35,7 +35,82 @@
 &lt;/table>
 &lt;hr>
 &lt;h2 id="-지금까지-구현한-아키텍처-요약">💡 지금까지 구현한 아키텍처 요약&lt;/h2>
-&lt;p>&lt;img alt="07" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/07.png">&lt;/p></description></item><item><title>[Airflow 기초 자동화 - Airflow → MLflow → FastAPI]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</link><pubDate>Fri, 13 Jun 2025 20:58:51 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</guid><description>&lt;h2 id="-전체-흐름-예시">🧭 전체 흐름 예시&lt;/h2>
+&lt;p>&lt;img alt="07" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/07.png">&lt;/p>
+&lt;h2 id="-실무-관점에서-강점">🎯 실무 관점에서 강점&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>내용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 실험 자동화&lt;/td>
+&lt;td>Airflow DAG + MLflow 연동으로 다양한 모델 버전 학습 자동화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>서빙 안정성&lt;/td>
+&lt;td>FastAPI가 &lt;code>Production&lt;/code> Stage 기준으로 모델 로드 → 무중단 핫스왑 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>보안 구성&lt;/td>
+&lt;td>AWS 인증 정보 및 DB 정보는 Secret으로 주입&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>인프라 이식성&lt;/td>
+&lt;td>Helm + Docker + Kubernetes 기반 → 어디서든 이식 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>실시간 추론 확인&lt;/td>
+&lt;td>Ingress 기반 UI/Endpoint 연결 → 바로 curl 테스트 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-회고">🔍 회고&lt;/h2>
+&lt;h3 id="-프로덕션-환경-고려">✅ 프로덕션 환경 고려&lt;/h3>
+&lt;ul>
+&lt;li>운영 가능한 MLOps 구조로 설계 (유지보수/보안 고려)&lt;/li>
+&lt;li>AWS S3, PostgreSQL, Kubernetes, GitOps까지 현실 환경 가정하고 구성&lt;/li>
+&lt;li>Secret 설계, Volume 마운트, GitSync, 커스텀 이미지 등 세세한 부분까지 설계 주도&lt;/li>
+&lt;/ul>
+&lt;h3 id="-자동화-기반-설계">✅ 자동화 기반 설계&lt;/h3>
+&lt;ul>
+&lt;li>Airflow를 통해 모델 학습 → Registry 등록 → 서빙까지 자동화&lt;/li>
+&lt;li>모델 핫스왑 실험까지 성공적으로 구현&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-부족했던-점--보완-계획">🧱 부족했던 점 &amp;amp; 보완 계획&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>개선 포인트&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모니터링&lt;/td>
+&lt;td>Prometheus + Grafana로 서빙/실험 성능 모니터링 추가 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>모델 테스트 자동화&lt;/td>
+&lt;td>pytest + CI 파이프라인 구성으로 품질 확보 고려&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Kubeflow 연계&lt;/td>
+&lt;td>Kubeflow Pipelines 및 Katib 등과의 비교 분석 예정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Terraform 기반 전환&lt;/td>
+&lt;td>Helm 구성 요소를 코드로 관리하는 Terraform 인프라 전환 계획&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-마치며">✨ 마치며&lt;/h2>
+&lt;p>이번 시리즈는 단순한 학습이 아니라, 설계에 대해 고민하며&lt;/p></description></item><item><title>[Airflow 기초 자동화 - Airflow → MLflow → FastAPI]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</link><pubDate>Fri, 13 Jun 2025 20:58:51 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/basic/</guid><description>&lt;h2 id="-전체-흐름-예시">🧭 전체 흐름 예시&lt;/h2>
 &lt;pre tabindex="0">&lt;code>[AIRFLOW DAG 실행]
 ↓
 [train_mlflow.py]
