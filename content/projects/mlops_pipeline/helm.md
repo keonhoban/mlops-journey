@@ -9,7 +9,7 @@ categories = ['MLOps Pipeline', 'Airflow', 'MLflow', 'FastAPI', 'NFS', 'PostgreS
 
 | 순서 | 주제 |
 | --- | --- |
-| 1 | [🔗 실습을 위한 인프라 사전 구성 (Kubernetes, NFS, PostgreSQL, S3 등)](https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/) |
+| 1 | [🔗 인프라 사전 구성 (Kubernetes, NFS, PostgreSQL, S3 등)](https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/) |
 | 2 | [🔗 Secret/보안 구성 및 Kubernetes 연동](https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/) |
 | 3 | [🔗 MLflow Tracking 서버 및 Registry 구축](https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/) |
 | 4 | [🔗 Airflow DAG Git 연동 및 Secret 기반 구성](https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/) |
@@ -57,17 +57,6 @@ categories = ['MLOps Pipeline', 'Airflow', 'MLflow', 'FastAPI', 'NFS', 'PostgreS
 | 모델 테스트 자동화 | pytest + CI 파이프라인 구성으로 품질 확보 고려 |
 | Kubeflow 연계 | Kubeflow Pipelines 및 Katib 등과의 비교 분석 예정 |
 | Terraform 기반 전환 | Helm 구성 요소를 코드로 관리하는 Terraform 인프라 전환 계획 |
-
----
-
-## 📈 다음 단계 설계
-
-| 기간 | 목표 |
-| --- | --- |
-| 2025년 8월 | Kubeflow 기반 재구성 + 모델 자동 튜닝 실험 |
-| 2025년 9월 | Triton Inference Server 연동 + GPU 서빙 실습 |
-| 2025년 10월 | ScyllaDB & LLM 서빙 구조 실험 |
-| 연말 | MLOps 포트폴리오 정리 및 지원서 작성 |
 
 ---
 
