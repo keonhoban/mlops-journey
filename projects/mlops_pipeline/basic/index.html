@@ -406,7 +406,7 @@ airflow users create \
    ↓
 [FastAPI]
    - models:/IrisModel/Production → 실시간 예측
-</code></pre><p>👉 실습 코드는 <a href=https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi>🔗 GitHub (Airflow + MLflow + FastAPI)</a></p><hr><h2 id=-1단계-프로젝트-기본-폴더-구조-설계>✅ [1단계] 프로젝트 기본 폴더 구조 설계<a hidden class=anchor aria-hidden=true href=#-1단계-프로젝트-기본-폴더-구조-설계>#</a></h2><h3 id=-1-전체-디렉토리-구성도>📁 1. 전체 디렉토리 구성도<a hidden class=anchor aria-hidden=true href=#-1-전체-디렉토리-구성도>#</a></h3><pre tabindex=0><code>mlops_project/
+</code></pre><p>👉 실습 코드는 <a href=https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi_dockerCompose>🔗 GitHub (Airflow + MLflow + FastAPI)</a></p><hr><h2 id=-1단계-프로젝트-기본-폴더-구조-설계>✅ [1단계] 프로젝트 기본 폴더 구조 설계<a hidden class=anchor aria-hidden=true href=#-1단계-프로젝트-기본-폴더-구조-설계>#</a></h2><h3 id=-1-전체-디렉토리-구성도>📁 1. 전체 디렉토리 구성도<a hidden class=anchor aria-hidden=true href=#-1-전체-디렉토리-구성도>#</a></h3><pre tabindex=0><code>mlops_project/
 ├── airflow/                       🛫 Airflow 설정 및 DAG 스케줄러
 │   ├── dags/                      ← DAG 정의 디렉토리
 │   │   └── train_with_mlflow.py   ← 학습 DAG (MLflow 연동)

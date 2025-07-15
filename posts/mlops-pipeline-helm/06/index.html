@@ -1,0 +1,280 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='✅ TL;DR
+
+Airflow에서 선택한 모델 버전에 따라 학습 스크립트를 다르게 실행
+학습된 모델을 MLflow Model Registry에 등록 → Production 단계로 자동 승격
+FastAPI 서버는 Production 모델을 다시 로드 → 별도 코드 수정 없이 핫스왑 완료
+실무에서 모델 검증/배포 사이클 자동화에 바로 응용 가능
+
+
+🧠 구조 다이어그램 (핫스왑 흐름)
+flowchart TD
+  A1[Airflow DAG: 모델 학습 스크립트 실행] --> B1[MLflow 모델 등록 - 버전 선택]
+  B1 --> C1[모델 Production 승격]
+  C1 --> D1[FastAPI 서버 재시작]
+  D1 --> E1[FastAPI → 최신 모델 로드]
+  E1 --> F1[추론 API 서빙]
+
+  subgraph 실험 관리
+    B1
+    C1
+  end
+
+  subgraph 추론 서비스
+    D1
+    E1
+    F1
+  end
+
+🧩 핵심 구성 요소
+1. Airflow DAG - 모델 버전 선택
+# dags/train_promote_pipeline_share.py
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from airflow.models import Variable
+from datetime import datetime
+
+default_args = {
+    &#39;start_date&#39;: datetime(2023, 1, 1),
+}
+
+with DAG(
+    dag_id=&#39;train_promote_pipeline_share&#39;,
+    default_args=default_args,
+    schedule=None,
+    catchup=False,
+    tags=["ml", "train"]
+) as dag:
+
+    # moedel_version 변수 default_var 지정
+    model_version = Variable.get("model_version", default_var="v1")
+
+    debug_aws = BashOperator(
+    task_id=&#39;debug_aws_credentials&#39;,
+    bash_command=&#39;echo $HOME && ls -al $HOME/.aws && cat $HOME/.aws/credentials&#39;,
+    env={"HOME": "/home/airflow"},
+    )
+
+    run_train_script = BashOperator(
+        task_id=&#39;run_train_script&#39;,
+        # merdel_version 변수화
+        bash_command=f&#39;python /opt/airflow/dags/repo/ml_code/train_model_{model_version}.py&#39;,
+        env={"HOME": "/home/airflow"},
+    )
+
+    promote_model = BashOperator(
+        task_id=&#39;promote_model_to_production&#39;,
+        bash_command=&#39;python /opt/airflow/dags/repo/ml_code/promote_model.py&#39;,
+        env={"HOME": "/home/airflow"},
+    )
+
+    debug_aws >> run_train_script >> promote_model
+→ Airflow UI > Admin > Variables 에서 model_version = v1 또는 v2 설정 가능'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]"><meta property="og:description" content='✅ TL;DR Airflow에서 선택한 모델 버전에 따라 학습 스크립트를 다르게 실행 학습된 모델을 MLflow Model Registry에 등록 → Production 단계로 자동 승격 FastAPI 서버는 Production 모델을 다시 로드 → 별도 코드 수정 없이 핫스왑 완료 실무에서 모델 검증/배포 사이클 자동화에 바로 응용 가능 🧠 구조 다이어그램 (핫스왑 흐름) flowchart TD A1[Airflow DAG: 모델 학습 스크립트 실행] --> B1[MLflow 모델 등록 - 버전 선택] B1 --> C1[모델 Production 승격] C1 --> D1[FastAPI 서버 재시작] D1 --> E1[FastAPI → 최신 모델 로드] E1 --> F1[추론 API 서빙] subgraph 실험 관리 B1 C1 end subgraph 추론 서비스 D1 E1 F1 end 🧩 핵심 구성 요소 1. Airflow DAG - 모델 버전 선택 # dags/train_promote_pipeline_share.py from airflow import DAG from airflow.operators.bash import BashOperator from airflow.models import Variable from datetime import datetime default_args = { &#39;start_date&#39;: datetime(2023, 1, 1), } with DAG( dag_id=&#39;train_promote_pipeline_share&#39;, default_args=default_args, schedule=None, catchup=False, tags=["ml", "train"] ) as dag: # moedel_version 변수 default_var 지정 model_version = Variable.get("model_version", default_var="v1") debug_aws = BashOperator( task_id=&#39;debug_aws_credentials&#39;, bash_command=&#39;echo $HOME && ls -al $HOME/.aws && cat $HOME/.aws/credentials&#39;, env={"HOME": "/home/airflow"}, ) run_train_script = BashOperator( task_id=&#39;run_train_script&#39;, # merdel_version 변수화 bash_command=f&#39;python /opt/airflow/dags/repo/ml_code/train_model_{model_version}.py&#39;, env={"HOME": "/home/airflow"}, ) promote_model = BashOperator( task_id=&#39;promote_model_to_production&#39;, bash_command=&#39;python /opt/airflow/dags/repo/ml_code/promote_model.py&#39;, env={"HOME": "/home/airflow"}, ) debug_aws >> run_train_script >> promote_model → Airflow UI > Admin > Variables 에서 model_version = v1 또는 v2 설정 가능'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-07-10T17:12:00+09:00"><meta property="article:modified_time" content="2025-07-10T17:12:00+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]"><meta name=twitter:description content='✅ TL;DR
+
+Airflow에서 선택한 모델 버전에 따라 학습 스크립트를 다르게 실행
+학습된 모델을 MLflow Model Registry에 등록 → Production 단계로 자동 승격
+FastAPI 서버는 Production 모델을 다시 로드 → 별도 코드 수정 없이 핫스왑 완료
+실무에서 모델 검증/배포 사이클 자동화에 바로 응용 가능
+
+
+🧠 구조 다이어그램 (핫스왑 흐름)
+flowchart TD
+  A1[Airflow DAG: 모델 학습 스크립트 실행] --> B1[MLflow 모델 등록 - 버전 선택]
+  B1 --> C1[모델 Production 승격]
+  C1 --> D1[FastAPI 서버 재시작]
+  D1 --> E1[FastAPI → 최신 모델 로드]
+  E1 --> F1[추론 API 서빙]
+
+  subgraph 실험 관리
+    B1
+    C1
+  end
+
+  subgraph 추론 서비스
+    D1
+    E1
+    F1
+  end
+
+🧩 핵심 구성 요소
+1. Airflow DAG - 모델 버전 선택
+# dags/train_promote_pipeline_share.py
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from airflow.models import Variable
+from datetime import datetime
+
+default_args = {
+    &#39;start_date&#39;: datetime(2023, 1, 1),
+}
+
+with DAG(
+    dag_id=&#39;train_promote_pipeline_share&#39;,
+    default_args=default_args,
+    schedule=None,
+    catchup=False,
+    tags=["ml", "train"]
+) as dag:
+
+    # moedel_version 변수 default_var 지정
+    model_version = Variable.get("model_version", default_var="v1")
+
+    debug_aws = BashOperator(
+    task_id=&#39;debug_aws_credentials&#39;,
+    bash_command=&#39;echo $HOME && ls -al $HOME/.aws && cat $HOME/.aws/credentials&#39;,
+    env={"HOME": "/home/airflow"},
+    )
+
+    run_train_script = BashOperator(
+        task_id=&#39;run_train_script&#39;,
+        # merdel_version 변수화
+        bash_command=f&#39;python /opt/airflow/dags/repo/ml_code/train_model_{model_version}.py&#39;,
+        env={"HOME": "/home/airflow"},
+    )
+
+    promote_model = BashOperator(
+        task_id=&#39;promote_model_to_production&#39;,
+        bash_command=&#39;python /opt/airflow/dags/repo/ml_code/promote_model.py&#39;,
+        env={"HOME": "/home/airflow"},
+    )
+
+    debug_aws >> run_train_script >> promote_model
+→ Airflow UI > Admin > Variables 에서 model_version = v1 또는 v2 설정 가능'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]","name":"[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]","description":"✅ TL;DR Airflow에서 선택한 모델 버전에 따라 학습 스크립트를 다르게 실행 학습된 모델을 MLflow Model Registry에 등록 → Production 단계로 자동 승격 FastAPI 서버는 Production 모델을 다시 로드 → 별도 코드 수정 없이 핫스왑 완료 실무에서 모델 검증/배포 사이클 자동화에 바로 응용 가능 🧠 구조 다이어그램 (핫스왑 흐름) flowchart TD A1[Airflow DAG: 모델 학습 스크립트 실행] --\u0026gt; B1[MLflow 모델 등록 - 버전 선택] B1 --\u0026gt; C1[모델 Production 승격] C1 --\u0026gt; D1[FastAPI 서버 재시작] D1 --\u0026gt; E1[FastAPI → 최신 모델 로드] E1 --\u0026gt; F1[추론 API 서빙] subgraph 실험 관리 B1 C1 end subgraph 추론 서비스 D1 E1 F1 end 🧩 핵심 구성 요소 1. Airflow DAG - 모델 버전 선택 # dags/train_promote_pipeline_share.py from airflow import DAG from airflow.operators.bash import BashOperator from airflow.models import Variable from datetime import datetime default_args = { \u0026#39;start_date\u0026#39;: datetime(2023, 1, 1), } with DAG( dag_id=\u0026#39;train_promote_pipeline_share\u0026#39;, default_args=default_args, schedule=None, catchup=False, tags=[\u0026#34;ml\u0026#34;, \u0026#34;train\u0026#34;] ) as dag: # moedel_version 변수 default_var 지정 model_version = Variable.get(\u0026#34;model_version\u0026#34;, default_var=\u0026#34;v1\u0026#34;) debug_aws = BashOperator( task_id=\u0026#39;debug_aws_credentials\u0026#39;, bash_command=\u0026#39;echo $HOME \u0026amp;\u0026amp; ls -al $HOME/.aws \u0026amp;\u0026amp; cat $HOME/.aws/credentials\u0026#39;, env={\u0026#34;HOME\u0026#34;: \u0026#34;/home/airflow\u0026#34;}, ) run_train_script = BashOperator( task_id=\u0026#39;run_train_script\u0026#39;, # merdel_version 변수화 bash_command=f\u0026#39;python /opt/airflow/dags/repo/ml_code/train_model_{model_version}.py\u0026#39;, env={\u0026#34;HOME\u0026#34;: \u0026#34;/home/airflow\u0026#34;}, ) promote_model = BashOperator( task_id=\u0026#39;promote_model_to_production\u0026#39;, bash_command=\u0026#39;python /opt/airflow/dags/repo/ml_code/promote_model.py\u0026#39;, env={\u0026#34;HOME\u0026#34;: \u0026#34;/home/airflow\u0026#34;}, ) debug_aws \u0026gt;\u0026gt; run_train_script \u0026gt;\u0026gt; promote_model → Airflow UI \u0026gt; Admin \u0026gt; Variables 에서 model_version = v1 또는 v2 설정 가능\n","keywords":[],"articleBody":"✅ TL;DR Airflow에서 선택한 모델 버전에 따라 학습 스크립트를 다르게 실행 학습된 모델을 MLflow Model Registry에 등록 → Production 단계로 자동 승격 FastAPI 서버는 Production 모델을 다시 로드 → 별도 코드 수정 없이 핫스왑 완료 실무에서 모델 검증/배포 사이클 자동화에 바로 응용 가능 🧠 구조 다이어그램 (핫스왑 흐름) flowchart TD A1[Airflow DAG: 모델 학습 스크립트 실행] --\u003e B1[MLflow 모델 등록 - 버전 선택] B1 --\u003e C1[모델 Production 승격] C1 --\u003e D1[FastAPI 서버 재시작] D1 --\u003e E1[FastAPI → 최신 모델 로드] E1 --\u003e F1[추론 API 서빙] subgraph 실험 관리 B1 C1 end subgraph 추론 서비스 D1 E1 F1 end 🧩 핵심 구성 요소 1. Airflow DAG - 모델 버전 선택 # dags/train_promote_pipeline_share.py from airflow import DAG from airflow.operators.bash import BashOperator from airflow.models import Variable from datetime import datetime default_args = { 'start_date': datetime(2023, 1, 1), } with DAG( dag_id='train_promote_pipeline_share', default_args=default_args, schedule=None, catchup=False, tags=[\"ml\", \"train\"] ) as dag: # moedel_version 변수 default_var 지정 model_version = Variable.get(\"model_version\", default_var=\"v1\") debug_aws = BashOperator( task_id='debug_aws_credentials', bash_command='echo $HOME \u0026\u0026 ls -al $HOME/.aws \u0026\u0026 cat $HOME/.aws/credentials', env={\"HOME\": \"/home/airflow\"}, ) run_train_script = BashOperator( task_id='run_train_script', # merdel_version 변수화 bash_command=f'python /opt/airflow/dags/repo/ml_code/train_model_{model_version}.py', env={\"HOME\": \"/home/airflow\"}, ) promote_model = BashOperator( task_id='promote_model_to_production', bash_command='python /opt/airflow/dags/repo/ml_code/promote_model.py', env={\"HOME\": \"/home/airflow\"}, ) debug_aws \u003e\u003e run_train_script \u003e\u003e promote_model → Airflow UI \u003e Admin \u003e Variables 에서 model_version = v1 또는 v2 설정 가능\n2. 모델 학습 스크립트 (v1 \u0026 v2 비교) # train_model_v1.py import mlflow import mlflow.sklearn from sklearn.linear_model import LogisticRegression from sklearn.datasets import load_iris from sklearn.model_selection import train_test_split X, y = load_iris(return_X_y=True) X_train, X_test, y_train, y_test = train_test_split(X, y) model = LogisticRegression(max_iter=10, C=0.1) # underfit 유도 model.fit(X_train, y_train) mlflow.set_tracking_uri(\"http://mlflow-service.mlflow.svc.cluster.local:5000\") mlflow.set_experiment(\"train_model_to_s3_and_promote_exp\") with mlflow.start_run() as run: mlflow.log_param(\"model_type\", \"logistic_regression\") mlflow.log_metric(\"accuracy\", model.score(X_test, y_test)) mlflow.sklearn.log_model( sk_model=model, artifact_path=\"model\", registered_model_name=\"my_model\" ) print(f\"Logged data and model in run {run.info.run_id}\") # train_model_v2.py import mlflow from sklearn.datasets import load_iris from sklearn.linear_model import LogisticRegression from sklearn.model_selection import train_test_split mlflow.set_tracking_uri(\"http://mlflow-service.mlflow.svc.cluster.local:5000\") mlflow.set_experiment(\"train_model_to_s3_and_promote_exp\") X, y = load_iris(return_X_y=True) X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42) model = LogisticRegression(max_iter=500, C=10.0, solver=\"liblinear\") # well-trained model.fit(X_train, y_train) with mlflow.start_run() as run: accuracy = model.score(X_test, y_test) mlflow.log_param(\"model_type\", \"logistic_regression\") mlflow.log_metric(\"accuracy\", accuracy) mlflow.sklearn.log_model( sk_model=model, artifact_path=\"model\", registered_model_name=\"my_model\" # 🔁 같은 모델 이름으로 등록 → v2로 올라감 ) print(f\"✅ New version logged with accuracy: {accuracy}\") print(f\"📦 Run ID: {run.info.run_id}\") → 두 스크립트는 성능 차이가 확실히 나도록 설정 (핫스왑 검증을 위한 의도적 설계)\n3. 모델 등록 및 승격 mlflow.sklearn.log_model( sk_model=model, artifact_path=\"model\", registered_model_name=\"my_model\" # 동일한 이름으로 등록 → 버전만 올라감 ) → 같은 모델 이름(my_model)으로 등록되기 때문에 버전만 올라가고\n→ Stage: Production으로 바로 승격됨\n4. FastAPI - 모델 로딩 # 모델 정보 확인 curl http://fastapi.local/model-info | jq { \"model_name\": \"my_model\", \"stage\": \"Production\", \"version\": \"1\", \"run_id\": \"4e35d28e73474542b01bad641f603b88\", \"model_uri\": \"models:/my_model/Production\" } → model_uri = models:/my_model/Production 이므로 자동으로 최신 버전을 가져옴\n5. FastAPI 재시작만으로 핫스왑 적용 kubectl rollout restart deployment/fastapi-server -n fastapi → 코드 수정 없이도 새로운 모델 버전이 적용됨\n🔄 새로운 모델 버전 확인 curl http://fastapi.local/model-info | jq 출력 예시:\n{ \"model_name\": \"my_model\", \"stage\": \"Production\", \"version\": \"2\", \"run_id\": \"01bf8cf78cd64b759c9f5469c65708a4\", \"model_uri\": \"models:/my_model/Production\" } 🔧 MLOps 실전 연결 항목 실무 활용 포인트 Airflow Variable 파라미터 튜닝 실험 자동화 모델 버전 관리 실험 버전 기록 + 리그레이션 테스트 FastAPI 재시작 블루그린 or 롤링 서빙 방식 연계 가능 MLflow + FastAPI 연결 코드 변경 없이도 최신 모델 반영 (모델 URI 활용) 🧩 Tip FastAPI는 models:/model_name/Production URI만 유지후 재시작시 신규 모델 버전 적용됨 Airflow Variable을 통해 실시간 실험 환경 구성 가능 → 배포 코드 재작성 필요 없음 train_model_v1.py, train_model_v2.py를 통합하고 싶다면 Jinja 템플릿 or 파라미터화 가능 CI/CD와 연결 시 model_version → Git 커밋 태그 등으로 연동하여 버전 자동 추적 가능 🚨 트러블슈팅 이슈 해결 방법 FastAPI에서 500 오류 모델 로드 실패 여부 로그 확인 (kubectl logs) 모델 버전이 안 바뀜 MLflow 등록 후 Production 승격 확인 필요 FastAPI 재시작 효과 없음 kubectl rollout restart 명령으로 강제 적용 권장 ","wordCount":"607","inLanguage":"en","datePublished":"2025-07-10T17:12:00+09:00","dateModified":"2025-07-10T17:12:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]</h1><div class=post-meta><span title='2025-07-10 17:12:00 +0900 +0900'>July 10, 2025</span>&nbsp;·&nbsp;3 min</div></header><div class=post-content><h2 id=-tldr>✅ TL;DR<a hidden class=anchor aria-hidden=true href=#-tldr>#</a></h2><ul><li><code>Airflow</code>에서 선택한 모델 버전에 따라 학습 스크립트를 다르게 실행</li><li>학습된 모델을 <code>MLflow Model Registry</code>에 등록 → Production 단계로 자동 승격</li><li><code>FastAPI</code> 서버는 <code>Production 모델</code>을 다시 로드 → 별도 코드 수정 없이 핫스왑 완료</li><li>실무에서 모델 검증/배포 사이클 자동화에 바로 응용 가능</li></ul><hr><h2 id=-구조-다이어그램-핫스왑-흐름>🧠 구조 다이어그램 (핫스왑 흐름)<a hidden class=anchor aria-hidden=true href=#-구조-다이어그램-핫스왑-흐름>#</a></h2><pre tabindex=0><code class=language-mermaid data-lang=mermaid>flowchart TD
+  A1[Airflow DAG: 모델 학습 스크립트 실행] --&gt; B1[MLflow 모델 등록 - 버전 선택]
+  B1 --&gt; C1[모델 Production 승격]
+  C1 --&gt; D1[FastAPI 서버 재시작]
+  D1 --&gt; E1[FastAPI → 최신 모델 로드]
+  E1 --&gt; F1[추론 API 서빙]
+
+  subgraph 실험 관리
+    B1
+    C1
+  end
+
+  subgraph 추론 서비스
+    D1
+    E1
+    F1
+  end
+</code></pre><hr><h2 id=-핵심-구성-요소>🧩 핵심 구성 요소<a hidden class=anchor aria-hidden=true href=#-핵심-구성-요소>#</a></h2><h3 id=1-airflow-dag---모델-버전-선택>1. Airflow DAG - 모델 버전 선택<a hidden class=anchor aria-hidden=true href=#1-airflow-dag---모델-버전-선택>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># dags/train_promote_pipeline_share.py</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> airflow <span style=color:#f92672>import</span> DAG
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> airflow.operators.bash <span style=color:#f92672>import</span> BashOperator
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> airflow.models <span style=color:#f92672>import</span> Variable
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> datetime <span style=color:#f92672>import</span> datetime
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>default_args <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;start_date&#39;</span>: datetime(<span style=color:#ae81ff>2023</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>1</span>),
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>with</span> DAG(
+</span></span><span style=display:flex><span>    dag_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;train_promote_pipeline_share&#39;</span>,
+</span></span><span style=display:flex><span>    default_args<span style=color:#f92672>=</span>default_args,
+</span></span><span style=display:flex><span>    schedule<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>,
+</span></span><span style=display:flex><span>    catchup<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>,
+</span></span><span style=display:flex><span>    tags<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#34;ml&#34;</span>, <span style=color:#e6db74>&#34;train&#34;</span>]
+</span></span><span style=display:flex><span>) <span style=color:#66d9ef>as</span> dag:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># moedel_version 변수 default_var 지정</span>
+</span></span><span style=display:flex><span>    model_version <span style=color:#f92672>=</span> Variable<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;model_version&#34;</span>, default_var<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;v1&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    debug_aws <span style=color:#f92672>=</span> BashOperator(
+</span></span><span style=display:flex><span>    task_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;debug_aws_credentials&#39;</span>,
+</span></span><span style=display:flex><span>    bash_command<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;echo $HOME &amp;&amp; ls -al $HOME/.aws &amp;&amp; cat $HOME/.aws/credentials&#39;</span>,
+</span></span><span style=display:flex><span>    env<span style=color:#f92672>=</span>{<span style=color:#e6db74>&#34;HOME&#34;</span>: <span style=color:#e6db74>&#34;/home/airflow&#34;</span>},
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    run_train_script <span style=color:#f92672>=</span> BashOperator(
+</span></span><span style=display:flex><span>        task_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;run_train_script&#39;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#75715e># merdel_version 변수화</span>
+</span></span><span style=display:flex><span>        bash_command<span style=color:#f92672>=</span><span style=color:#e6db74>f</span><span style=color:#e6db74>&#39;python /opt/airflow/dags/repo/ml_code/train_model_</span><span style=color:#e6db74>{</span>model_version<span style=color:#e6db74>}</span><span style=color:#e6db74>.py&#39;</span>,
+</span></span><span style=display:flex><span>        env<span style=color:#f92672>=</span>{<span style=color:#e6db74>&#34;HOME&#34;</span>: <span style=color:#e6db74>&#34;/home/airflow&#34;</span>},
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    promote_model <span style=color:#f92672>=</span> BashOperator(
+</span></span><span style=display:flex><span>        task_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;promote_model_to_production&#39;</span>,
+</span></span><span style=display:flex><span>        bash_command<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;python /opt/airflow/dags/repo/ml_code/promote_model.py&#39;</span>,
+</span></span><span style=display:flex><span>        env<span style=color:#f92672>=</span>{<span style=color:#e6db74>&#34;HOME&#34;</span>: <span style=color:#e6db74>&#34;/home/airflow&#34;</span>},
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    debug_aws <span style=color:#f92672>&gt;&gt;</span> run_train_script <span style=color:#f92672>&gt;&gt;</span> promote_model
+</span></span></code></pre></div><p>→ <code>Airflow UI > Admin > Variables</code> 에서 <code>model_version = v1</code> 또는 <code>v2</code> 설정 가능</p><hr><h3 id=2-모델-학습-스크립트-v1--v2-비교>2. 모델 학습 스크립트 (v1 & v2 비교)<a hidden class=anchor aria-hidden=true href=#2-모델-학습-스크립트-v1--v2-비교>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># train_model_v1.py</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> mlflow
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> mlflow.sklearn
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sklearn.linear_model <span style=color:#f92672>import</span> LogisticRegression
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sklearn.datasets <span style=color:#f92672>import</span> load_iris
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sklearn.model_selection <span style=color:#f92672>import</span> train_test_split
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>X, y <span style=color:#f92672>=</span> load_iris(return_X_y<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</span></span><span style=display:flex><span>X_train, X_test, y_train, y_test <span style=color:#f92672>=</span> train_test_split(X, y)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>model <span style=color:#f92672>=</span> LogisticRegression(max_iter<span style=color:#f92672>=</span><span style=color:#ae81ff>10</span>, C<span style=color:#f92672>=</span><span style=color:#ae81ff>0.1</span>)  <span style=color:#75715e># underfit 유도</span>
+</span></span><span style=display:flex><span>model<span style=color:#f92672>.</span>fit(X_train, y_train)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>mlflow<span style=color:#f92672>.</span>set_tracking_uri(<span style=color:#e6db74>&#34;http://mlflow-service.mlflow.svc.cluster.local:5000&#34;</span>)
+</span></span><span style=display:flex><span>mlflow<span style=color:#f92672>.</span>set_experiment(<span style=color:#e6db74>&#34;train_model_to_s3_and_promote_exp&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>with</span> mlflow<span style=color:#f92672>.</span>start_run() <span style=color:#66d9ef>as</span> run:
+</span></span><span style=display:flex><span>    mlflow<span style=color:#f92672>.</span>log_param(<span style=color:#e6db74>&#34;model_type&#34;</span>, <span style=color:#e6db74>&#34;logistic_regression&#34;</span>)
+</span></span><span style=display:flex><span>    mlflow<span style=color:#f92672>.</span>log_metric(<span style=color:#e6db74>&#34;accuracy&#34;</span>, model<span style=color:#f92672>.</span>score(X_test, y_test))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    mlflow<span style=color:#f92672>.</span>sklearn<span style=color:#f92672>.</span>log_model(
+</span></span><span style=display:flex><span>        sk_model<span style=color:#f92672>=</span>model,
+</span></span><span style=display:flex><span>        artifact_path<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;model&#34;</span>,
+</span></span><span style=display:flex><span>        registered_model_name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;my_model&#34;</span>
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Logged data and model in run </span><span style=color:#e6db74>{</span>run<span style=color:#f92672>.</span>info<span style=color:#f92672>.</span>run_id<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># train_model_v2.py</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> mlflow
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sklearn.datasets <span style=color:#f92672>import</span> load_iris
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sklearn.linear_model <span style=color:#f92672>import</span> LogisticRegression
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> sklearn.model_selection <span style=color:#f92672>import</span> train_test_split
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>mlflow<span style=color:#f92672>.</span>set_tracking_uri(<span style=color:#e6db74>&#34;http://mlflow-service.mlflow.svc.cluster.local:5000&#34;</span>)
+</span></span><span style=display:flex><span>mlflow<span style=color:#f92672>.</span>set_experiment(<span style=color:#e6db74>&#34;train_model_to_s3_and_promote_exp&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>X, y <span style=color:#f92672>=</span> load_iris(return_X_y<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</span></span><span style=display:flex><span>X_train, X_test, y_train, y_test <span style=color:#f92672>=</span> train_test_split(X, y, random_state<span style=color:#f92672>=</span><span style=color:#ae81ff>42</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>model <span style=color:#f92672>=</span> LogisticRegression(max_iter<span style=color:#f92672>=</span><span style=color:#ae81ff>500</span>, C<span style=color:#f92672>=</span><span style=color:#ae81ff>10.0</span>, solver<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;liblinear&#34;</span>)  <span style=color:#75715e># well-trained</span>
+</span></span><span style=display:flex><span>model<span style=color:#f92672>.</span>fit(X_train, y_train)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>with</span> mlflow<span style=color:#f92672>.</span>start_run() <span style=color:#66d9ef>as</span> run:
+</span></span><span style=display:flex><span>    accuracy <span style=color:#f92672>=</span> model<span style=color:#f92672>.</span>score(X_test, y_test)
+</span></span><span style=display:flex><span>    mlflow<span style=color:#f92672>.</span>log_param(<span style=color:#e6db74>&#34;model_type&#34;</span>, <span style=color:#e6db74>&#34;logistic_regression&#34;</span>)
+</span></span><span style=display:flex><span>    mlflow<span style=color:#f92672>.</span>log_metric(<span style=color:#e6db74>&#34;accuracy&#34;</span>, accuracy)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    mlflow<span style=color:#f92672>.</span>sklearn<span style=color:#f92672>.</span>log_model(
+</span></span><span style=display:flex><span>        sk_model<span style=color:#f92672>=</span>model,
+</span></span><span style=display:flex><span>        artifact_path<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;model&#34;</span>,
+</span></span><span style=display:flex><span>        registered_model_name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;my_model&#34;</span>  <span style=color:#75715e># 🔁 같은 모델 이름으로 등록 → v2로 올라감</span>
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;✅ New version logged with accuracy: </span><span style=color:#e6db74>{</span>accuracy<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;📦 Run ID: </span><span style=color:#e6db74>{</span>run<span style=color:#f92672>.</span>info<span style=color:#f92672>.</span>run_id<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span></code></pre></div><p>→ 두 스크립트는 성능 차이가 확실히 나도록 설정 (핫스왑 검증을 위한 의도적 설계)</p><hr><h3 id=3-모델-등록-및-승격>3. 모델 등록 및 승격<a hidden class=anchor aria-hidden=true href=#3-모델-등록-및-승격>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>mlflow<span style=color:#f92672>.</span>sklearn<span style=color:#f92672>.</span>log_model(
+</span></span><span style=display:flex><span>    sk_model<span style=color:#f92672>=</span>model,
+</span></span><span style=display:flex><span>    artifact_path<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;model&#34;</span>,
+</span></span><span style=display:flex><span>    registered_model_name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;my_model&#34;</span>  <span style=color:#75715e># 동일한 이름으로 등록 → 버전만 올라감</span>
+</span></span><span style=display:flex><span>)
+</span></span></code></pre></div><p>→ 같은 모델 이름(<code>my_model</code>)으로 등록되기 때문에 버전만 올라가고</p><p>→ <code>Stage: Production</code>으로 바로 승격됨</p><hr><h3 id=4-fastapi---모델-로딩>4. FastAPI - 모델 로딩<a hidden class=anchor aria-hidden=true href=#4-fastapi---모델-로딩>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># 모델 정보 확인</span>
+</span></span><span style=display:flex><span>curl http:<span style=color:#f92672>//</span>fastapi<span style=color:#f92672>.</span>local<span style=color:#f92672>/</span>model<span style=color:#f92672>-</span>info <span style=color:#f92672>|</span> jq
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;model_name&#34;</span>: <span style=color:#e6db74>&#34;my_model&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;stage&#34;</span>: <span style=color:#e6db74>&#34;Production&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;version&#34;</span>: <span style=color:#e6db74>&#34;1&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;run_id&#34;</span>: <span style=color:#e6db74>&#34;4e35d28e73474542b01bad641f603b88&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;model_uri&#34;</span>: <span style=color:#e6db74>&#34;models:/my_model/Production&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>→ <code>model_uri = models:/my_model/Production</code> 이므로 자동으로 최신 버전을 가져옴</p><hr><h3 id=5-fastapi-재시작만으로-핫스왑-적용>5. FastAPI 재시작만으로 핫스왑 적용<a hidden class=anchor aria-hidden=true href=#5-fastapi-재시작만으로-핫스왑-적용>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>kubectl rollout restart deployment/fastapi-server -n fastapi
+</span></span></code></pre></div><p>→ 코드 수정 없이도 새로운 모델 버전이 적용됨</p><hr><h3 id=-새로운-모델-버전-확인>🔄 <strong>새로운 모델 버전 확인</strong><a hidden class=anchor aria-hidden=true href=#-새로운-모델-버전-확인>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>curl http://fastapi.local/model-info | jq
+</span></span></code></pre></div><ul><li><p><strong>출력 예시</strong>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;model_name&#34;</span>: <span style=color:#e6db74>&#34;my_model&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;stage&#34;</span>: <span style=color:#e6db74>&#34;Production&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;version&#34;</span>: <span style=color:#e6db74>&#34;2&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;run_id&#34;</span>: <span style=color:#e6db74>&#34;01bf8cf78cd64b759c9f5469c65708a4&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;model_uri&#34;</span>: <span style=color:#e6db74>&#34;models:/my_model/Production&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></li></ul><hr><h2 id=-mlops-실전-연결>🔧 MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#-mlops-실전-연결>#</a></h2><table><thead><tr><th>항목</th><th>실무 활용 포인트</th></tr></thead><tbody><tr><td>Airflow Variable</td><td>파라미터 튜닝 실험 자동화</td></tr><tr><td>모델 버전 관리</td><td>실험 버전 기록 + 리그레이션 테스트</td></tr><tr><td>FastAPI 재시작</td><td>블루그린 or 롤링 서빙 방식 연계 가능</td></tr><tr><td>MLflow + FastAPI 연결</td><td>코드 변경 없이도 최신 모델 반영 (모델 URI 활용)</td></tr></tbody></table><hr><h2 id=-tip>🧩 Tip<a hidden class=anchor aria-hidden=true href=#-tip>#</a></h2><ul><li>FastAPI는 <code>models:/model_name/Production</code> URI만 유지후 재시작시 신규 모델 버전 적용됨</li><li><code>Airflow Variable</code>을 통해 실시간 실험 환경 구성 가능 → 배포 코드 재작성 필요 없음</li><li><code>train_model_v1.py</code>, <code>train_model_v2.py</code>를 통합하고 싶다면 Jinja 템플릿 or 파라미터화 가능</li><li>CI/CD와 연결 시 <code>model_version</code> → Git 커밋 태그 등으로 연동하여 버전 자동 추적 가능</li></ul><hr><h2 id=-트러블슈팅>🚨 트러블슈팅<a hidden class=anchor aria-hidden=true href=#-트러블슈팅>#</a></h2><table><thead><tr><th>이슈</th><th>해결 방법</th></tr></thead><tbody><tr><td>FastAPI에서 500 오류</td><td>모델 로드 실패 여부 로그 확인 (<code>kubectl logs</code>)</td></tr><tr><td>모델 버전이 안 바뀜</td><td>MLflow 등록 후 <code>Production</code> 승격 확인 필요</td></tr><tr><td>FastAPI 재시작 효과 없음</td><td><code>kubectl rollout restart</code> 명령으로 강제 적용 권장</td></tr></tbody></table></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/><span class=title>Next »</span><br><span>[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

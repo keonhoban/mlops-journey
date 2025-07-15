@@ -1,0 +1,211 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL + S3 연동 기반 Helm 구성] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='✨ TL;DR
+
+MLflow를 도입시 PostgreSQL, S3, 인증 정보 주입, Helm 배포, Ingress 연동 등 설계
+MLflow를 Helm으로 배포하면서 고려한 항목(보안, 아티팩트 저장소, UI 접근 등) 구성
+커스텀 Docker 이미지로 psycopg2 설치, Helm chart 구성, Secret 연결까지 포함
+
+
+📐 아키텍처 구성도 (with Secret & 연동 흐름)
+flowchart TD
+
+subgraph K8s_Cluster["Kubernetes Cluster"]
+  MLflowPod[(MLflow Pod)]
+end
+
+subgraph External["External Systems"]
+  S3[(S3: Artifact 저장소)]
+  PG[(PostgreSQL: Tracking DB)]
+end
+
+subgraph Config["Helm Values + Secrets"]
+  SecretDB[(mlflow-db-secret)]
+  SecretAWS[(aws-credentials-secret)]
+  ConfigMapDB[(mlflow-db-config)]
+end
+
+SecretDB --> MLflowPod
+SecretAWS --> MLflowPod
+ConfigMapDB --> MLflowPod
+
+MLflowPod --> S3
+MLflowPod --> PG
+
+🐳 커스텀 MLflow Docker 이미지 제작
+공식 MLflow 이미지는 PostgreSQL 드라이버(psycopg2)가 포함되어 있지 않아 오류 발생'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL + S3 연동 기반 Helm 구성]"><meta property="og:description" content='✨ TL;DR MLflow를 도입시 PostgreSQL, S3, 인증 정보 주입, Helm 배포, Ingress 연동 등 설계 MLflow를 Helm으로 배포하면서 고려한 항목(보안, 아티팩트 저장소, UI 접근 등) 구성 커스텀 Docker 이미지로 psycopg2 설치, Helm chart 구성, Secret 연결까지 포함 📐 아키텍처 구성도 (with Secret & 연동 흐름) flowchart TD subgraph K8s_Cluster["Kubernetes Cluster"] MLflowPod[(MLflow Pod)] end subgraph External["External Systems"] S3[(S3: Artifact 저장소)] PG[(PostgreSQL: Tracking DB)] end subgraph Config["Helm Values + Secrets"] SecretDB[(mlflow-db-secret)] SecretAWS[(aws-credentials-secret)] ConfigMapDB[(mlflow-db-config)] end SecretDB --> MLflowPod SecretAWS --> MLflowPod ConfigMapDB --> MLflowPod MLflowPod --> S3 MLflowPod --> PG 🐳 커스텀 MLflow Docker 이미지 제작 공식 MLflow 이미지는 PostgreSQL 드라이버(psycopg2)가 포함되어 있지 않아 오류 발생'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-06-30T17:11:51+09:00"><meta property="article:modified_time" content="2025-06-30T17:11:51+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL + S3 연동 기반 Helm 구성]"><meta name=twitter:description content='✨ TL;DR
+
+MLflow를 도입시 PostgreSQL, S3, 인증 정보 주입, Helm 배포, Ingress 연동 등 설계
+MLflow를 Helm으로 배포하면서 고려한 항목(보안, 아티팩트 저장소, UI 접근 등) 구성
+커스텀 Docker 이미지로 psycopg2 설치, Helm chart 구성, Secret 연결까지 포함
+
+
+📐 아키텍처 구성도 (with Secret & 연동 흐름)
+flowchart TD
+
+subgraph K8s_Cluster["Kubernetes Cluster"]
+  MLflowPod[(MLflow Pod)]
+end
+
+subgraph External["External Systems"]
+  S3[(S3: Artifact 저장소)]
+  PG[(PostgreSQL: Tracking DB)]
+end
+
+subgraph Config["Helm Values + Secrets"]
+  SecretDB[(mlflow-db-secret)]
+  SecretAWS[(aws-credentials-secret)]
+  ConfigMapDB[(mlflow-db-config)]
+end
+
+SecretDB --> MLflowPod
+SecretAWS --> MLflowPod
+ConfigMapDB --> MLflowPod
+
+MLflowPod --> S3
+MLflowPod --> PG
+
+🐳 커스텀 MLflow Docker 이미지 제작
+공식 MLflow 이미지는 PostgreSQL 드라이버(psycopg2)가 포함되어 있지 않아 오류 발생'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL + S3 연동 기반 Helm 구성]","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL + S3 연동 기반 Helm 구성]","name":"[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL \u002b S3 연동 기반 Helm 구성]","description":"✨ TL;DR MLflow를 도입시 PostgreSQL, S3, 인증 정보 주입, Helm 배포, Ingress 연동 등 설계 MLflow를 Helm으로 배포하면서 고려한 항목(보안, 아티팩트 저장소, UI 접근 등) 구성 커스텀 Docker 이미지로 psycopg2 설치, Helm chart 구성, Secret 연결까지 포함 📐 아키텍처 구성도 (with Secret \u0026amp; 연동 흐름) flowchart TD subgraph K8s_Cluster[\u0026#34;Kubernetes Cluster\u0026#34;] MLflowPod[(MLflow Pod)] end subgraph External[\u0026#34;External Systems\u0026#34;] S3[(S3: Artifact 저장소)] PG[(PostgreSQL: Tracking DB)] end subgraph Config[\u0026#34;Helm Values + Secrets\u0026#34;] SecretDB[(mlflow-db-secret)] SecretAWS[(aws-credentials-secret)] ConfigMapDB[(mlflow-db-config)] end SecretDB --\u0026gt; MLflowPod SecretAWS --\u0026gt; MLflowPod ConfigMapDB --\u0026gt; MLflowPod MLflowPod --\u0026gt; S3 MLflowPod --\u0026gt; PG 🐳 커스텀 MLflow Docker 이미지 제작 공식 MLflow 이미지는 PostgreSQL 드라이버(psycopg2)가 포함되어 있지 않아 오류 발생\n","keywords":[],"articleBody":"✨ TL;DR MLflow를 도입시 PostgreSQL, S3, 인증 정보 주입, Helm 배포, Ingress 연동 등 설계 MLflow를 Helm으로 배포하면서 고려한 항목(보안, 아티팩트 저장소, UI 접근 등) 구성 커스텀 Docker 이미지로 psycopg2 설치, Helm chart 구성, Secret 연결까지 포함 📐 아키텍처 구성도 (with Secret \u0026 연동 흐름) flowchart TD subgraph K8s_Cluster[\"Kubernetes Cluster\"] MLflowPod[(MLflow Pod)] end subgraph External[\"External Systems\"] S3[(S3: Artifact 저장소)] PG[(PostgreSQL: Tracking DB)] end subgraph Config[\"Helm Values + Secrets\"] SecretDB[(mlflow-db-secret)] SecretAWS[(aws-credentials-secret)] ConfigMapDB[(mlflow-db-config)] end SecretDB --\u003e MLflowPod SecretAWS --\u003e MLflowPod ConfigMapDB --\u003e MLflowPod MLflowPod --\u003e S3 MLflowPod --\u003e PG 🐳 커스텀 MLflow Docker 이미지 제작 공식 MLflow 이미지는 PostgreSQL 드라이버(psycopg2)가 포함되어 있지 않아 오류 발생\n🔸 Dockerfile 예시 FROM ghcr.io/mlflow/mlflow:v2.13.0 RUN pip install psycopg2-binary boto3 🔸 빌드 \u0026 푸시 docker build -t ghcr.io/your-id/mlflow:with-psycopg2-and-s3 . docker push ghcr.io/your-id/mlflow:with-psycopg2-and-s3 🛠 Helm Chart 구성 요소 🔹 Chart.yaml apiVersion: v2 name: mlflow description: A Helm chart for deploying MLflow on Kubernetes version: 0.1.0 appVersion: \"2.13.0\" 🔹 values.yaml 예시 image: repository: hoizz/mlflow tag: with-psycopg2-and-s3 pullPolicy: IfNotPresent env: defaultArtifactRoot: s3://mlflow-artifacts-keonho service: type: ClusterIP port: 5000 ingress: enabled: true className: nginx # ✅ 반드시 명시해야 NGINX가 라우팅함 host: mlflow.local annotations: nginx.ingress.kubernetes.io/rewrite-target: / nginx.ingress.kubernetes.io/proxy-body-size: 10m nginx.ingress.kubernetes.io/ssl-redirect: \"false\" 📄 Deployment 구성 예시 containers: - name: mlflow image: {{ .Values.image.repository }}:{{ .Values.image.tag }} ports: - containerPort: 5000 command: [\"mlflow\", \"server\"] args: - \"--backend-store-uri=postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)\" - \"--default-artifact-root={{ .Values.env.defaultArtifactRoot }}\" - \"--host=0.0.0.0\" - \"--port=5000\" - \"--serve-artifacts\" # ✅ 이게 있어야 artifacts UI/REST 지원 가능 env: - name: DB_USER valueFrom: secretKeyRef: name: mlflow-db-secret key: username - name: DB_PASSWORD valueFrom: secretKeyRef: name: mlflow-db-secret key: password - name: DB_HOST valueFrom: configMapKeyRef: name: mlflow-db-config key: host - name: DB_PORT valueFrom: configMapKeyRef: name: mlflow-db-config key: port - name: DB_NAME valueFrom: configMapKeyRef: name: mlflow-db-config key: dbname envFrom: - secretRef: name: aws-credentials-secret 🌐 Ingress 구성 예시 로컬 k8s에 구성할 경우 LB 작동하지 않음 (퍼블릭 IP 없음) # Pod가 노드와 동일한 네트워크 사용하도록 ingress-nginx 커스텀 helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \\ --namespace ingress-nginx --create-namespace \\ --set controller.hostNetwork=true \\ --set controller.dnsPolicy=ClusterFirstWithHostNet \\ --set controller.kind=DaemonSet MLlflow ingress 구성 apiVersion: networking.k8s.io/v1 kind: Ingress metadata: name: mlflow-ingress namespace: mlflow annotations: nginx.ingress.kubernetes.io/rewrite-target: / spec: ingressClassName: nginx rules: - host: mlflow.local http: paths: - path: / pathType: Prefix backend: service: name: mlflow-service port: number: 5000 🚀 배포 명령어 kubectl create namespace mlflow helm install mlflow mlflow-helm/ -n mlflow 🧪 테스트 방법 항목 확인 MLflow UI http://mlflow.local 접근 확인 실험 등록 mlflow.log_param, mlflow.log_metric, log_model() S3 연동 .mlruns 폴더가 S3에 생성되는지 확인 PostgreSQL 연동 실험, run metadata가 DB에 들어가는지 확인 🧩 실무 팁 MLflow 버전과 PostgreSQL 드라이버 호환성 주의 (psycopg2-binary 사용) 모델 URI는 \"models:/my_model/Production\" 형식으로 사용하면 추후 FastAPI와 연동 용이 Helm chart에서 env vs envFrom 혼용 시 우선순위 주의 🔧 MLOps 실전 연결 연결 항목 실무 의미 PostgreSQL 실험 metadata 저장소. 추적 가능성과 DB 백업 전략 필요 S3 연동 모델/로그 저장소 → 실시간 서빙까지 이어질 핵심 포인트 Helm 구성 운영 시 반복 배포, 버전 관리, GitOps 연동의 핵심 기반 Ingress 조직 내/외부에서 MLflow UI 접근 가능하게 해줌 🚨 트러블슈팅 🔻 TS_01: psycopg2 모듈 없음 → 500 오류 ModuleNotFoundError: No module named 'psycopg2' 해결: 커스텀 Docker 이미지에서 pip install psycopg2-binary 포함\n🔻 TS_02: Calico IPIP 문제로 VM(PostgreSQL) 통신 실패 # Calico가 IPIP 터널링(Protocol 4) 을 사용해 Pod → 외부로 패킷 전송 tcpdump -i ens33 proto 4 tcpdump: verbose output suppressed, use -v[v]... for full protocol decode listening on ens33, link-type EN10MB (Ethernet), snapshot length 262144 bytes ^C 0 packets captured 0 packets received by filter 0 packets dropped by kernel 4294967281 packets dropped by interface # PostgreSQL이 설치된 VM이 IPIP 패킷을 Drop함 해결1. : SNAT 강제 적용 (로컬 테스트 환경)\niptables -t nat -A POSTROUTING -s {pod-network-CIDR} -d {DB_IP} -j MASQUERADE 해결2. : Calico IPIP 터널 비활성화 (VM ↔ Pod 직접 통신 필요시)\nkubectl edit ippool default-ipv4-ippool spec: ipipMode: Never natOutgoing: true # 이후 모든 Pod 재시작 + 노드 간 L3 라우팅 필요 🧭 다음 포스트 예고 ☁️ Airflow GitSync + DAG 연동 기반의 실무 환경 구성\n→ GitOps DAG 배포, AWS 인증 연동, Secret 마운트까지 구성 흐름을 상세히 정리합니다.\n","wordCount":"648","inLanguage":"en","datePublished":"2025-06-30T17:11:51+09:00","dateModified":"2025-06-30T17:11:51+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL + S3 연동 기반 Helm 구성]</h1><div class=post-meta><span title='2025-06-30 17:11:51 +0900 +0900'>June 30, 2025</span>&nbsp;·&nbsp;4 min</div></header><div class=post-content><h2 id=-tldr>✨ TL;DR<a hidden class=anchor aria-hidden=true href=#-tldr>#</a></h2><ul><li>MLflow를 도입시 <strong>PostgreSQL, S3, 인증 정보 주입, Helm 배포, Ingress 연동 등</strong> 설계</li><li>MLflow를 Helm으로 배포하면서 고려한 항목(보안, 아티팩트 저장소, UI 접근 등) 구성</li><li>커스텀 Docker 이미지로 <code>psycopg2</code> 설치, Helm chart 구성, Secret 연결까지 포함</li></ul><hr><h2 id=-아키텍처-구성도-with-secret--연동-흐름>📐 아키텍처 구성도 (with Secret & 연동 흐름)<a hidden class=anchor aria-hidden=true href=#-아키텍처-구성도-with-secret--연동-흐름>#</a></h2><pre tabindex=0><code class=language-mermaid data-lang=mermaid>flowchart TD
+
+subgraph K8s_Cluster[&#34;Kubernetes Cluster&#34;]
+  MLflowPod[(MLflow Pod)]
+end
+
+subgraph External[&#34;External Systems&#34;]
+  S3[(S3: Artifact 저장소)]
+  PG[(PostgreSQL: Tracking DB)]
+end
+
+subgraph Config[&#34;Helm Values + Secrets&#34;]
+  SecretDB[(mlflow-db-secret)]
+  SecretAWS[(aws-credentials-secret)]
+  ConfigMapDB[(mlflow-db-config)]
+end
+
+SecretDB --&gt; MLflowPod
+SecretAWS --&gt; MLflowPod
+ConfigMapDB --&gt; MLflowPod
+
+MLflowPod --&gt; S3
+MLflowPod --&gt; PG
+</code></pre><hr><h2 id=-커스텀-mlflow-docker-이미지-제작>🐳 커스텀 MLflow Docker 이미지 제작<a hidden class=anchor aria-hidden=true href=#-커스텀-mlflow-docker-이미지-제작>#</a></h2><p>공식 MLflow 이미지는 PostgreSQL 드라이버(<code>psycopg2</code>)가 포함되어 있지 않아 오류 발생</p><h3 id=-dockerfile-예시>🔸 Dockerfile 예시<a hidden class=anchor aria-hidden=true href=#-dockerfile-예시>#</a></h3><pre tabindex=0><code>FROM ghcr.io/mlflow/mlflow:v2.13.0
+RUN pip install psycopg2-binary boto3
+</code></pre><h3 id=-빌드--푸시>🔸 빌드 & 푸시<a hidden class=anchor aria-hidden=true href=#-빌드--푸시>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>docker build -t ghcr.io/your-id/mlflow:with-psycopg2-and-s3 .
+</span></span><span style=display:flex><span>docker push ghcr.io/your-id/mlflow:with-psycopg2-and-s3
+</span></span></code></pre></div><hr><h2 id=-helm-chart-구성-요소>🛠 Helm Chart 구성 요소<a hidden class=anchor aria-hidden=true href=#-helm-chart-구성-요소>#</a></h2><h3 id=-chartyaml>🔹 Chart.yaml<a hidden class=anchor aria-hidden=true href=#-chartyaml>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v2</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>name</span>: <span style=color:#ae81ff>mlflow</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>description</span>: <span style=color:#ae81ff>A Helm chart for deploying MLflow on Kubernetes</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>version</span>: <span style=color:#ae81ff>0.1.0</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>appVersion</span>: <span style=color:#e6db74>&#34;2.13.0&#34;</span>
+</span></span></code></pre></div><hr><h3 id=-valuesyaml-예시>🔹 values.yaml 예시<a hidden class=anchor aria-hidden=true href=#-valuesyaml-예시>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>image</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>repository</span>: <span style=color:#ae81ff>hoizz/mlflow</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>tag</span>: <span style=color:#ae81ff>with-psycopg2-and-s3</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>pullPolicy</span>: <span style=color:#ae81ff>IfNotPresent</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>env</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>defaultArtifactRoot</span>: <span style=color:#ae81ff>s3://mlflow-artifacts-keonho</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>service</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>type</span>: <span style=color:#ae81ff>ClusterIP</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>port</span>: <span style=color:#ae81ff>5000</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>ingress</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>className</span>: <span style=color:#ae81ff>nginx </span> <span style=color:#75715e># ✅ 반드시 명시해야 NGINX가 라우팅함</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>host</span>: <span style=color:#ae81ff>mlflow.local</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>annotations</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>nginx.ingress.kubernetes.io/rewrite-target</span>: <span style=color:#ae81ff>/</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>nginx.ingress.kubernetes.io/proxy-body-size</span>: <span style=color:#ae81ff>10m</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>nginx.ingress.kubernetes.io/ssl-redirect</span>: <span style=color:#e6db74>&#34;false&#34;</span>
+</span></span></code></pre></div><hr><h2 id=-deployment-구성-예시>📄 Deployment 구성 예시<a hidden class=anchor aria-hidden=true href=#-deployment-구성-예시>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>containers</span>:
+</span></span><span style=display:flex><span>  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>mlflow</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: {{ <span style=color:#ae81ff>.Values.image.repository }}:{{ .Values.image.tag }}</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>ports</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>containerPort</span>: <span style=color:#ae81ff>5000</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>command</span>: [<span style=color:#e6db74>&#34;mlflow&#34;</span>, <span style=color:#e6db74>&#34;server&#34;</span>]
+</span></span><span style=display:flex><span>    <span style=color:#f92672>args</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;--backend-store-uri=postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)&#34;</span>
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;--default-artifact-root={{ .Values.env.defaultArtifactRoot }}&#34;</span>
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;--host=0.0.0.0&#34;</span>
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;--port=5000&#34;</span>
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#34;--serve-artifacts&#34;</span>  <span style=color:#75715e># ✅ 이게 있어야 artifacts UI/REST 지원 가능</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>env</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>DB_USER</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>valueFrom</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>secretKeyRef</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>mlflow-db-secret</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>key</span>: <span style=color:#ae81ff>username</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>DB_PASSWORD</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>valueFrom</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>secretKeyRef</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>mlflow-db-secret</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>key</span>: <span style=color:#ae81ff>password</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>DB_HOST</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>valueFrom</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>configMapKeyRef</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>mlflow-db-config</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>key</span>: <span style=color:#ae81ff>host</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>DB_PORT</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>valueFrom</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>configMapKeyRef</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>mlflow-db-config</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>key</span>: <span style=color:#ae81ff>port</span>
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>DB_NAME</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>valueFrom</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>configMapKeyRef</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>mlflow-db-config</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>key</span>: <span style=color:#ae81ff>dbname</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>envFrom</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>secretRef</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>aws-credentials-secret</span>
+</span></span></code></pre></div><hr><h2 id=-ingress-구성-예시>🌐 Ingress 구성 예시<a hidden class=anchor aria-hidden=true href=#-ingress-구성-예시>#</a></h2><ul><li>로컬 k8s에 구성할 경우 LB 작동하지 않음 (퍼블릭 IP 없음)</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Pod가 노드와 동일한 네트워크 사용하도록 ingress-nginx 커스텀</span>
+</span></span><span style=display:flex><span>helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --namespace ingress-nginx --create-namespace <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --set controller.hostNetwork<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --set controller.dnsPolicy<span style=color:#f92672>=</span>ClusterFirstWithHostNet <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --set controller.kind<span style=color:#f92672>=</span>DaemonSet
+</span></span></code></pre></div><ul><li>MLlflow ingress 구성</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>networking.k8s.io/v1</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Ingress</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>metadata</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>mlflow-ingress</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>mlflow</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>annotations</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>nginx.ingress.kubernetes.io/rewrite-target</span>: <span style=color:#ae81ff>/</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>spec</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>ingressClassName</span>: <span style=color:#ae81ff>nginx</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>rules</span>:
+</span></span><span style=display:flex><span>    - <span style=color:#f92672>host</span>: <span style=color:#ae81ff>mlflow.local</span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>http</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>paths</span>:
+</span></span><span style=display:flex><span>          - <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>pathType</span>: <span style=color:#ae81ff>Prefix</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>backend</span>:
+</span></span><span style=display:flex><span>              <span style=color:#f92672>service</span>:
+</span></span><span style=display:flex><span>                <span style=color:#f92672>name</span>: <span style=color:#ae81ff>mlflow-service</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>port</span>:
+</span></span><span style=display:flex><span>                  <span style=color:#f92672>number</span>: <span style=color:#ae81ff>5000</span>
+</span></span></code></pre></div><hr><h2 id=-배포-명령어>🚀 배포 명령어<a hidden class=anchor aria-hidden=true href=#-배포-명령어>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>kubectl create namespace mlflow
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>helm install mlflow mlflow-helm/ -n mlflow
+</span></span></code></pre></div><hr><h2 id=-테스트-방법>🧪 테스트 방법<a hidden class=anchor aria-hidden=true href=#-테스트-방법>#</a></h2><table><thead><tr><th>항목</th><th>확인</th></tr></thead><tbody><tr><td>MLflow UI</td><td><code>http://mlflow.local</code> 접근 확인</td></tr><tr><td>실험 등록</td><td><code>mlflow.log_param</code>, <code>mlflow.log_metric</code>, <code>log_model()</code></td></tr><tr><td>S3 연동</td><td><code>.mlruns</code> 폴더가 S3에 생성되는지 확인</td></tr><tr><td>PostgreSQL 연동</td><td>실험, run metadata가 DB에 들어가는지 확인</td></tr></tbody></table><hr><h2 id=-실무-팁>🧩 실무 팁<a hidden class=anchor aria-hidden=true href=#-실무-팁>#</a></h2><ul><li>MLflow 버전과 PostgreSQL 드라이버 호환성 주의 (<code>psycopg2-binary</code> 사용)</li><li>모델 URI는 <code>"models:/my_model/Production"</code> 형식으로 사용하면 추후 FastAPI와 연동 용이</li><li>Helm chart에서 <code>env</code> vs <code>envFrom</code> 혼용 시 우선순위 주의</li></ul><hr><h2 id=-mlops-실전-연결>🔧 MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#-mlops-실전-연결>#</a></h2><table><thead><tr><th>연결 항목</th><th>실무 의미</th></tr></thead><tbody><tr><td>PostgreSQL</td><td>실험 metadata 저장소. 추적 가능성과 DB 백업 전략 필요</td></tr><tr><td>S3 연동</td><td>모델/로그 저장소 → 실시간 서빙까지 이어질 핵심 포인트</td></tr><tr><td>Helm 구성</td><td>운영 시 반복 배포, 버전 관리, GitOps 연동의 핵심 기반</td></tr><tr><td>Ingress</td><td>조직 내/외부에서 MLflow UI 접근 가능하게 해줌</td></tr></tbody></table><hr><h2 id=-트러블슈팅>🚨 트러블슈팅<a hidden class=anchor aria-hidden=true href=#-트러블슈팅>#</a></h2><h3 id=-ts_01-psycopg2-모듈-없음--500-오류>🔻 TS_01: <code>psycopg2</code> 모듈 없음 → 500 오류<a hidden class=anchor aria-hidden=true href=#-ts_01-psycopg2-모듈-없음--500-오류>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ModuleNotFoundError: No module named <span style=color:#e6db74>&#39;psycopg2&#39;</span>
+</span></span></code></pre></div><p><strong>해결</strong>: 커스텀 Docker 이미지에서 <code>pip install psycopg2-binary</code> 포함</p><hr><h3 id=-ts_02-calico-ipip-문제로-vmpostgresql-통신-실패>🔻 TS_02: Calico IPIP 문제로 VM(PostgreSQL) 통신 실패<a hidden class=anchor aria-hidden=true href=#-ts_02-calico-ipip-문제로-vmpostgresql-통신-실패>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Calico가 IPIP 터널링(Protocol 4) 을 사용해 Pod → 외부로 패킷 전송</span>
+</span></span><span style=display:flex><span>tcpdump -i ens33 proto <span style=color:#ae81ff>4</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>tcpdump: verbose output suppressed, use -v<span style=color:#f92672>[</span>v<span style=color:#f92672>]</span>... <span style=color:#66d9ef>for</span> full protocol decode
+</span></span><span style=display:flex><span>listening on ens33, link-type EN10MB <span style=color:#f92672>(</span>Ethernet<span style=color:#f92672>)</span>, snapshot length <span style=color:#ae81ff>262144</span> bytes
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>^C
+</span></span><span style=display:flex><span><span style=color:#ae81ff>0</span> packets captured
+</span></span><span style=display:flex><span><span style=color:#ae81ff>0</span> packets received by filter
+</span></span><span style=display:flex><span><span style=color:#ae81ff>0</span> packets dropped by kernel
+</span></span><span style=display:flex><span><span style=color:#ae81ff>4294967281</span> packets dropped by interface  <span style=color:#75715e># PostgreSQL이 설치된 VM이 IPIP 패킷을 Drop함</span>
+</span></span></code></pre></div><p><strong>해결1.</strong> : SNAT 강제 적용 (로컬 테스트 환경)</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>iptables -t nat -A POSTROUTING -s <span style=color:#f92672>{</span>pod-network-CIDR<span style=color:#f92672>}</span> -d <span style=color:#f92672>{</span>DB_IP<span style=color:#f92672>}</span> -j MASQUERADE
+</span></span></code></pre></div><p><strong>해결2.</strong> : Calico IPIP 터널 비활성화 (VM ↔ Pod 직접 통신 필요시)</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>kubectl edit ippool default-ipv4-ippool
+</span></span><span style=display:flex><span>spec:
+</span></span><span style=display:flex><span>  ipipMode: Never
+</span></span><span style=display:flex><span>  natOutgoing: true
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#75715e># 이후 모든 Pod 재시작 + 노드 간 L3 라우팅 필요</span>
+</span></span></code></pre></div><hr><h2 id=-다음-포스트-예고>🧭 다음 포스트 예고<a hidden class=anchor aria-hidden=true href=#-다음-포스트-예고>#</a></h2><blockquote><p>☁️ Airflow GitSync + DAG 연동 기반의 실무 환경 구성</p><p>→ GitOps DAG 배포, AWS 인증 연동, Secret 마운트까지 구성 흐름을 상세히 정리합니다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/><span class=title>« Prev</span><br><span>[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]</span>
+</a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/><span class=title>Next »</span><br><span>[MLOps 플랫폼 구축 - 2단계: S3 & PostgreSQL 연동을 위한 보안 구성 및 Secret 관리 전략]</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

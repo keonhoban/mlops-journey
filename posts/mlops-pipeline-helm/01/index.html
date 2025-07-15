@@ -1,0 +1,303 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content='✨ TL;DR
+
+단순한 ML 파이프라인 구성을 넘어서, 인프라 설계부터 구축까지 진행
+MLflow, Airflow, FastAPI를 로컬 쿠버네티스 위에서  구성, 실무에서 사용 가능한 구조를 직접 설계/구현
+이번 포스팅에서는 MLOps 인프라 전체 구조, 그리고 그 기반이 되는 NFS 서버, PostgreSQL, S3 버킷, Kubernetes 클러스터 환경 공유
+
+
+🧱 아키텍처 구성도
+graph TD
+
+%% NFS 구조
+subgraph NFS_VM["NFS VM"]
+  NFS[(📂 Logs)]
+end
+
+%% PostgreSQL 구조
+subgraph DB_VM["PostgreSQL VM"]
+  airflow_db[(🗄️ airflow_db)]
+  mlflow_db[(🗄️ mlflow_db)]
+end
+
+%% AWS 구조
+subgraph AWS["AWS"]
+  S3[(🪣 S3 / MLflow_artifacts)]
+end
+
+%% 클러스터
+subgraph K8s_Cluster["📦 K8s Cluster"]
+  Airflow[Airflow Pod]
+  MLflow[MLflow Pod]
+  FastAPI[FastAPI Pod]
+end
+
+%% 외부 연동
+Airflow --> NFS
+Airflow --> airflow_db
+Airflow --> S3
+
+MLflow --> mlflow_db
+MLflow --> S3
+
+FastAPI --> S3
+FastAPI --> MLflow
+
+🔧 인프라 설계 개요
+
+  
+      
+          구성 요소
+          설명
+      
+  
+  
+      
+          Kubernetes 클러스터
+          로컬 환경 (VMware) 기반. Helm & Ingress 활용
+      
+      
+          MLflow 서버
+          외부 PostgreSQL + S3 연동. 모델 등록, 추적, 아티팩트 관리
+      
+      
+          Airflow 서버
+          DAG GitSync + S3 연동 + PostgreSQL 외부 DB 사용
+      
+      
+          FastAPI 서버
+          MLflow 모델 호출용 예측 API. Ingress로 외부 노출
+      
+      
+          NFS 서버
+          Airflow 로그 저장소로 사용. PVC로 연결됨 (S3 가능하지만, pvc 테스트)
+      
+      
+          AWS S3
+          MLflow 아티팩트 저장소로 활용
+      
+      
+          PostgreSQL
+          MLflow & Airflow의 metadata 저장소. 외부 VM에서 호스팅됨
+      
+  
+
+
+📂 NFS 서버 구성
+✅ 설치 & 공유 디렉토리 생성 (Ubuntu 기준)
+sudo apt update
+sudo apt install -y nfs-kernel-server
+
+sudo mkdir -p /mnt/nfs_share/mlops/airflow/logs
+sudo chown -R 50000:root /mnt/nfs_share/mlops/airflow  # 사용할 유저 UID, GID 확인 필요
+sudo chmod -R 775 /mnt/nfs_share/mlops/airflow
+📄 /etc/exports 설정
+# 마운트 수가 적은 경우 (프로덕션 환경 적용시 root_squash 권장)
+/mnt/nfs_share/mlops/airflow/logs  192.168.18.0/24(rw,sync,no_subtree_check,root_squash)
+
+# 마운트 수가 많은 경우 (필요시)
+/mnt/nfs_share/mlops 192.168.18.0/24(rw,sync,no_subtree_check,root_squash)
+# 적용
+sudo exportfs -rav
+sudo systemctl restart nfs-kernel-server
+📄 PV&amp;PVC 설정'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]"><meta property="og:description" content='✨ TL;DR 단순한 ML 파이프라인 구성을 넘어서, 인프라 설계부터 구축까지 진행 MLflow, Airflow, FastAPI를 로컬 쿠버네티스 위에서 구성, 실무에서 사용 가능한 구조를 직접 설계/구현 이번 포스팅에서는 MLOps 인프라 전체 구조, 그리고 그 기반이 되는 NFS 서버, PostgreSQL, S3 버킷, Kubernetes 클러스터 환경 공유 🧱 아키텍처 구성도 graph TD %% NFS 구조 subgraph NFS_VM["NFS VM"] NFS[(📂 Logs)] end %% PostgreSQL 구조 subgraph DB_VM["PostgreSQL VM"] airflow_db[(🗄️ airflow_db)] mlflow_db[(🗄️ mlflow_db)] end %% AWS 구조 subgraph AWS["AWS"] S3[(🪣 S3 / MLflow_artifacts)] end %% 클러스터 subgraph K8s_Cluster["📦 K8s Cluster"] Airflow[Airflow Pod] MLflow[MLflow Pod] FastAPI[FastAPI Pod] end %% 외부 연동 Airflow --> NFS Airflow --> airflow_db Airflow --> S3 MLflow --> mlflow_db MLflow --> S3 FastAPI --> S3 FastAPI --> MLflow 🔧 인프라 설계 개요 구성 요소 설명 Kubernetes 클러스터 로컬 환경 (VMware) 기반. Helm & Ingress 활용 MLflow 서버 외부 PostgreSQL + S3 연동. 모델 등록, 추적, 아티팩트 관리 Airflow 서버 DAG GitSync + S3 연동 + PostgreSQL 외부 DB 사용 FastAPI 서버 MLflow 모델 호출용 예측 API. Ingress로 외부 노출 NFS 서버 Airflow 로그 저장소로 사용. PVC로 연결됨 (S3 가능하지만, pvc 테스트) AWS S3 MLflow 아티팩트 저장소로 활용 PostgreSQL MLflow & Airflow의 metadata 저장소. 외부 VM에서 호스팅됨 📂 NFS 서버 구성 ✅ 설치 & 공유 디렉토리 생성 (Ubuntu 기준) sudo apt update sudo apt install -y nfs-kernel-server sudo mkdir -p /mnt/nfs_share/mlops/airflow/logs sudo chown -R 50000:root /mnt/nfs_share/mlops/airflow # 사용할 유저 UID, GID 확인 필요 sudo chmod -R 775 /mnt/nfs_share/mlops/airflow 📄 /etc/exports 설정 # 마운트 수가 적은 경우 (프로덕션 환경 적용시 root_squash 권장) /mnt/nfs_share/mlops/airflow/logs 192.168.18.0/24(rw,sync,no_subtree_check,root_squash) # 마운트 수가 많은 경우 (필요시) /mnt/nfs_share/mlops 192.168.18.0/24(rw,sync,no_subtree_check,root_squash) # 적용 sudo exportfs -rav sudo systemctl restart nfs-kernel-server 📄 PV&amp;PVC 설정'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-06-23T17:11:47+09:00"><meta property="article:modified_time" content="2025-06-23T17:11:47+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]"><meta name=twitter:description content='✨ TL;DR
+
+단순한 ML 파이프라인 구성을 넘어서, 인프라 설계부터 구축까지 진행
+MLflow, Airflow, FastAPI를 로컬 쿠버네티스 위에서  구성, 실무에서 사용 가능한 구조를 직접 설계/구현
+이번 포스팅에서는 MLOps 인프라 전체 구조, 그리고 그 기반이 되는 NFS 서버, PostgreSQL, S3 버킷, Kubernetes 클러스터 환경 공유
+
+
+🧱 아키텍처 구성도
+graph TD
+
+%% NFS 구조
+subgraph NFS_VM["NFS VM"]
+  NFS[(📂 Logs)]
+end
+
+%% PostgreSQL 구조
+subgraph DB_VM["PostgreSQL VM"]
+  airflow_db[(🗄️ airflow_db)]
+  mlflow_db[(🗄️ mlflow_db)]
+end
+
+%% AWS 구조
+subgraph AWS["AWS"]
+  S3[(🪣 S3 / MLflow_artifacts)]
+end
+
+%% 클러스터
+subgraph K8s_Cluster["📦 K8s Cluster"]
+  Airflow[Airflow Pod]
+  MLflow[MLflow Pod]
+  FastAPI[FastAPI Pod]
+end
+
+%% 외부 연동
+Airflow --> NFS
+Airflow --> airflow_db
+Airflow --> S3
+
+MLflow --> mlflow_db
+MLflow --> S3
+
+FastAPI --> S3
+FastAPI --> MLflow
+
+🔧 인프라 설계 개요
+
+  
+      
+          구성 요소
+          설명
+      
+  
+  
+      
+          Kubernetes 클러스터
+          로컬 환경 (VMware) 기반. Helm & Ingress 활용
+      
+      
+          MLflow 서버
+          외부 PostgreSQL + S3 연동. 모델 등록, 추적, 아티팩트 관리
+      
+      
+          Airflow 서버
+          DAG GitSync + S3 연동 + PostgreSQL 외부 DB 사용
+      
+      
+          FastAPI 서버
+          MLflow 모델 호출용 예측 API. Ingress로 외부 노출
+      
+      
+          NFS 서버
+          Airflow 로그 저장소로 사용. PVC로 연결됨 (S3 가능하지만, pvc 테스트)
+      
+      
+          AWS S3
+          MLflow 아티팩트 저장소로 활용
+      
+      
+          PostgreSQL
+          MLflow & Airflow의 metadata 저장소. 외부 VM에서 호스팅됨
+      
+  
+
+
+📂 NFS 서버 구성
+✅ 설치 & 공유 디렉토리 생성 (Ubuntu 기준)
+sudo apt update
+sudo apt install -y nfs-kernel-server
+
+sudo mkdir -p /mnt/nfs_share/mlops/airflow/logs
+sudo chown -R 50000:root /mnt/nfs_share/mlops/airflow  # 사용할 유저 UID, GID 확인 필요
+sudo chmod -R 775 /mnt/nfs_share/mlops/airflow
+📄 /etc/exports 설정
+# 마운트 수가 적은 경우 (프로덕션 환경 적용시 root_squash 권장)
+/mnt/nfs_share/mlops/airflow/logs  192.168.18.0/24(rw,sync,no_subtree_check,root_squash)
+
+# 마운트 수가 많은 경우 (필요시)
+/mnt/nfs_share/mlops 192.168.18.0/24(rw,sync,no_subtree_check,root_squash)
+# 적용
+sudo exportfs -rav
+sudo systemctl restart nfs-kernel-server
+📄 PV&amp;PVC 설정'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]","name":"[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]","description":"✨ TL;DR 단순한 ML 파이프라인 구성을 넘어서, 인프라 설계부터 구축까지 진행 MLflow, Airflow, FastAPI를 로컬 쿠버네티스 위에서 구성, 실무에서 사용 가능한 구조를 직접 설계/구현 이번 포스팅에서는 MLOps 인프라 전체 구조, 그리고 그 기반이 되는 NFS 서버, PostgreSQL, S3 버킷, Kubernetes 클러스터 환경 공유 🧱 아키텍처 구성도 graph TD %% NFS 구조 subgraph NFS_VM[\u0026#34;NFS VM\u0026#34;] NFS[(📂 Logs)] end %% PostgreSQL 구조 subgraph DB_VM[\u0026#34;PostgreSQL VM\u0026#34;] airflow_db[(🗄️ airflow_db)] mlflow_db[(🗄️ mlflow_db)] end %% AWS 구조 subgraph AWS[\u0026#34;AWS\u0026#34;] S3[(🪣 S3 / MLflow_artifacts)] end %% 클러스터 subgraph K8s_Cluster[\u0026#34;📦 K8s Cluster\u0026#34;] Airflow[Airflow Pod] MLflow[MLflow Pod] FastAPI[FastAPI Pod] end %% 외부 연동 Airflow --\u0026gt; NFS Airflow --\u0026gt; airflow_db Airflow --\u0026gt; S3 MLflow --\u0026gt; mlflow_db MLflow --\u0026gt; S3 FastAPI --\u0026gt; S3 FastAPI --\u0026gt; MLflow 🔧 인프라 설계 개요 구성 요소 설명 Kubernetes 클러스터 로컬 환경 (VMware) 기반. Helm \u0026amp; Ingress 활용 MLflow 서버 외부 PostgreSQL + S3 연동. 모델 등록, 추적, 아티팩트 관리 Airflow 서버 DAG GitSync + S3 연동 + PostgreSQL 외부 DB 사용 FastAPI 서버 MLflow 모델 호출용 예측 API. Ingress로 외부 노출 NFS 서버 Airflow 로그 저장소로 사용. PVC로 연결됨 (S3 가능하지만, pvc 테스트) AWS S3 MLflow 아티팩트 저장소로 활용 PostgreSQL MLflow \u0026amp; Airflow의 metadata 저장소. 외부 VM에서 호스팅됨 📂 NFS 서버 구성 ✅ 설치 \u0026amp; 공유 디렉토리 생성 (Ubuntu 기준) sudo apt update sudo apt install -y nfs-kernel-server sudo mkdir -p /mnt/nfs_share/mlops/airflow/logs sudo chown -R 50000:root /mnt/nfs_share/mlops/airflow # 사용할 유저 UID, GID 확인 필요 sudo chmod -R 775 /mnt/nfs_share/mlops/airflow 📄 /etc/exports 설정 # 마운트 수가 적은 경우 (프로덕션 환경 적용시 root_squash 권장) /mnt/nfs_share/mlops/airflow/logs 192.168.18.0/24(rw,sync,no_subtree_check,root_squash) # 마운트 수가 많은 경우 (필요시) /mnt/nfs_share/mlops 192.168.18.0/24(rw,sync,no_subtree_check,root_squash) # 적용 sudo exportfs -rav sudo systemctl restart nfs-kernel-server 📄 PV\u0026amp;PVC 설정\n","keywords":[],"articleBody":"✨ TL;DR 단순한 ML 파이프라인 구성을 넘어서, 인프라 설계부터 구축까지 진행 MLflow, Airflow, FastAPI를 로컬 쿠버네티스 위에서 구성, 실무에서 사용 가능한 구조를 직접 설계/구현 이번 포스팅에서는 MLOps 인프라 전체 구조, 그리고 그 기반이 되는 NFS 서버, PostgreSQL, S3 버킷, Kubernetes 클러스터 환경 공유 🧱 아키텍처 구성도 graph TD %% NFS 구조 subgraph NFS_VM[\"NFS VM\"] NFS[(📂 Logs)] end %% PostgreSQL 구조 subgraph DB_VM[\"PostgreSQL VM\"] airflow_db[(🗄️ airflow_db)] mlflow_db[(🗄️ mlflow_db)] end %% AWS 구조 subgraph AWS[\"AWS\"] S3[(🪣 S3 / MLflow_artifacts)] end %% 클러스터 subgraph K8s_Cluster[\"📦 K8s Cluster\"] Airflow[Airflow Pod] MLflow[MLflow Pod] FastAPI[FastAPI Pod] end %% 외부 연동 Airflow --\u003e NFS Airflow --\u003e airflow_db Airflow --\u003e S3 MLflow --\u003e mlflow_db MLflow --\u003e S3 FastAPI --\u003e S3 FastAPI --\u003e MLflow 🔧 인프라 설계 개요 구성 요소 설명 Kubernetes 클러스터 로컬 환경 (VMware) 기반. Helm \u0026 Ingress 활용 MLflow 서버 외부 PostgreSQL + S3 연동. 모델 등록, 추적, 아티팩트 관리 Airflow 서버 DAG GitSync + S3 연동 + PostgreSQL 외부 DB 사용 FastAPI 서버 MLflow 모델 호출용 예측 API. Ingress로 외부 노출 NFS 서버 Airflow 로그 저장소로 사용. PVC로 연결됨 (S3 가능하지만, pvc 테스트) AWS S3 MLflow 아티팩트 저장소로 활용 PostgreSQL MLflow \u0026 Airflow의 metadata 저장소. 외부 VM에서 호스팅됨 📂 NFS 서버 구성 ✅ 설치 \u0026 공유 디렉토리 생성 (Ubuntu 기준) sudo apt update sudo apt install -y nfs-kernel-server sudo mkdir -p /mnt/nfs_share/mlops/airflow/logs sudo chown -R 50000:root /mnt/nfs_share/mlops/airflow # 사용할 유저 UID, GID 확인 필요 sudo chmod -R 775 /mnt/nfs_share/mlops/airflow 📄 /etc/exports 설정 # 마운트 수가 적은 경우 (프로덕션 환경 적용시 root_squash 권장) /mnt/nfs_share/mlops/airflow/logs 192.168.18.0/24(rw,sync,no_subtree_check,root_squash) # 마운트 수가 많은 경우 (필요시) /mnt/nfs_share/mlops 192.168.18.0/24(rw,sync,no_subtree_check,root_squash) # 적용 sudo exportfs -rav sudo systemctl restart nfs-kernel-server 📄 PV\u0026PVC 설정\n# cat airflow-logs-pv.yaml apiVersion: v1 kind: PersistentVolume metadata: name: airflow-logs-pv spec: capacity: storage: 5Gi accessModes: - ReadWriteMany nfs: server: 192.168.18.141 path: /mnt/nfs_share/mlops/airflow/logs persistentVolumeReclaimPolicy: Retain --- apiVersion: v1 kind: PersistentVolumeClaim metadata: name: airflow-logs-pvc namespace: airflow spec: accessModes: - ReadWriteMany resources: requests: storage: 5Gi # 적용 kubectl apply -f airflow-logs-pv.yaml 🗄 PostgreSQL 외부 DB 구성 ✅ 설치 및 사용자/DB 생성 sudo apt install postgresql -y sudo -u postgres psql -- 데이터베이스 생성 CREATE DATABASE airflow_db; CREATE DATABASE mlflow_db; -- DB별 사용자 생성 CREATE USER airflow_user WITH PASSWORD 'airflow1234'; CREATE USER mlflow_user WITH PASSWORD 'mlflow1234'; -- DB별 권한 부여 GRANT ALL PRIVILEGES ON DATABASE airflow_db TO airflow_user; GRANT ALL PRIVILEGES ON DATABASE mlflow_db TO mlflow_user; 🔐 외부 접속 허용 /etc/postgresql/14/main/postgresql.conf listen_addresses = '*' /etc/postgresql/14/main/pg_hba.conf host airflow_db airflow_user 192.168.18.0/24 scram-sha-256 host mlflow_db mlflow_user 192.168.18.0/24 scram-sha-256 sudo systemctl restart postgresql 🪣 S3 버킷 준비 (MLflow 아티팩트 저장소) ✅ AWS S3 버킷 생성 버킷 이름: mlflow-artifacts-keonho 리전: ap-northeast-2 퍼블릭 차단 유지, 기본 암호화 사용 ✅ IAM 사용자 생성 및 권한 부여 이름: mlflow-airflow-user 권한: AmazonS3FullAccess (실습용) AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY 저장 🧩 Tip NFS는 여러 Pod에서 로그나 파일을 공유해야 할 때, PVC로 연결해두면 관리가 쉬움 PostgreSQL을 외부 DB로 쓰면 Helm chart 배포 때 내부 DB 설정을 꺼야 함 (enabled: false) AWS S3는 반드시 환경변수 방식 또는 마운트 방식으로 보안 설정할 것 (실무에서 .aws/credentials는 최소화) 🔧 MLOps 실전 연결 구성 요소 실전 적용 사례 NFS 서버 Airflow 로그 공유 → DAG 실패 로그 분석 가능 PostgreSQL 외부 연동 MLflow/Airflow 확장 시 DB 성능 모니터링과 연결됨 S3 아티팩트 저장 모델 버전 관리 + 대용량 저장소 활용 (모델 서빙 시 URI로 접근 가능) 🧭 다음 포스트 예고 🔐 S3 \u0026 PostgreSQL 연동을 위한 보안 구성 및 Secret 관리\n→ 실제로 AWS 키와 DB URI를 어떻게 Kubernetes 환경에서 안전하게 관리하고 주입하는지, Helm에서 어떻게 다루는지 작성할 예정입니다.\n","wordCount":"564","inLanguage":"en","datePublished":"2025-06-23T17:11:47+09:00","dateModified":"2025-06-23T17:11:47+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]</h1><div class=post-meta><span title='2025-06-23 17:11:47 +0900 +0900'>June 23, 2025</span>&nbsp;·&nbsp;3 min</div></header><div class=post-content><h2 id=-tldr>✨ TL;DR<a hidden class=anchor aria-hidden=true href=#-tldr>#</a></h2><ul><li><strong>단순한 ML 파이프라인 구성</strong>을 넘어서, <strong>인프라 설계부터 구축까지</strong> 진행</li><li>MLflow, Airflow, FastAPI를 로컬 쿠버네티스 위에서 구성, 실무에서 사용 가능한 구조를 직접 설계/구현</li><li>이번 포스팅에서는 <strong>MLOps 인프라 전체 구조</strong>, 그리고 그 기반이 되는 NFS 서버, PostgreSQL, S3 버킷, Kubernetes 클러스터 환경 공유</li></ul><hr><h2 id=-아키텍처-구성도>🧱 아키텍처 구성도<a hidden class=anchor aria-hidden=true href=#-아키텍처-구성도>#</a></h2><pre tabindex=0><code class=language-mermaid data-lang=mermaid>graph TD
+
+%% NFS 구조
+subgraph NFS_VM[&#34;NFS VM&#34;]
+  NFS[(📂 Logs)]
+end
+
+%% PostgreSQL 구조
+subgraph DB_VM[&#34;PostgreSQL VM&#34;]
+  airflow_db[(🗄️ airflow_db)]
+  mlflow_db[(🗄️ mlflow_db)]
+end
+
+%% AWS 구조
+subgraph AWS[&#34;AWS&#34;]
+  S3[(🪣 S3 / MLflow_artifacts)]
+end
+
+%% 클러스터
+subgraph K8s_Cluster[&#34;📦 K8s Cluster&#34;]
+  Airflow[Airflow Pod]
+  MLflow[MLflow Pod]
+  FastAPI[FastAPI Pod]
+end
+
+%% 외부 연동
+Airflow --&gt; NFS
+Airflow --&gt; airflow_db
+Airflow --&gt; S3
+
+MLflow --&gt; mlflow_db
+MLflow --&gt; S3
+
+FastAPI --&gt; S3
+FastAPI --&gt; MLflow
+</code></pre><hr><h2 id=-인프라-설계-개요>🔧 인프라 설계 개요<a hidden class=anchor aria-hidden=true href=#-인프라-설계-개요>#</a></h2><table><thead><tr><th>구성 요소</th><th>설명</th></tr></thead><tbody><tr><td>Kubernetes 클러스터</td><td>로컬 환경 (VMware) 기반. Helm & Ingress 활용</td></tr><tr><td>MLflow 서버</td><td>외부 PostgreSQL + S3 연동. 모델 등록, 추적, 아티팩트 관리</td></tr><tr><td>Airflow 서버</td><td>DAG GitSync + S3 연동 + PostgreSQL 외부 DB 사용</td></tr><tr><td>FastAPI 서버</td><td>MLflow 모델 호출용 예측 API. Ingress로 외부 노출</td></tr><tr><td>NFS 서버</td><td>Airflow 로그 저장소로 사용. PVC로 연결됨 (S3 가능하지만, pvc 테스트)</td></tr><tr><td>AWS S3</td><td>MLflow 아티팩트 저장소로 활용</td></tr><tr><td>PostgreSQL</td><td>MLflow & Airflow의 metadata 저장소. 외부 VM에서 호스팅됨</td></tr></tbody></table><hr><h2 id=-nfs-서버-구성>📂 NFS 서버 구성<a hidden class=anchor aria-hidden=true href=#-nfs-서버-구성>#</a></h2><h3 id=-설치--공유-디렉토리-생성-ubuntu-기준>✅ 설치 & 공유 디렉토리 생성 (Ubuntu 기준)<a hidden class=anchor aria-hidden=true href=#-설치--공유-디렉토리-생성-ubuntu-기준>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>sudo apt update
+</span></span><span style=display:flex><span>sudo apt install -y nfs-kernel-server
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>sudo mkdir -p /mnt/nfs_share/mlops/airflow/logs
+</span></span><span style=display:flex><span>sudo chown -R 50000:root /mnt/nfs_share/mlops/airflow  <span style=color:#75715e># 사용할 유저 UID, GID 확인 필요</span>
+</span></span><span style=display:flex><span>sudo chmod -R <span style=color:#ae81ff>775</span> /mnt/nfs_share/mlops/airflow
+</span></span></code></pre></div><h3 id=-etcexports-설정>📄 <code>/etc/exports</code> 설정<a hidden class=anchor aria-hidden=true href=#-etcexports-설정>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># 마운트 수가 적은 경우 (프로덕션 환경 적용시 root_squash 권장)</span>
+</span></span><span style=display:flex><span>/mnt/nfs_share/mlops/airflow/logs  192.168.18.0/24<span style=color:#f92672>(</span>rw,sync,no_subtree_check,root_squash<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 마운트 수가 많은 경우 (필요시)</span>
+</span></span><span style=display:flex><span>/mnt/nfs_share/mlops 192.168.18.0/24<span style=color:#f92672>(</span>rw,sync,no_subtree_check,root_squash<span style=color:#f92672>)</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># 적용</span>
+</span></span><span style=display:flex><span>sudo exportfs -rav
+</span></span><span style=display:flex><span>sudo systemctl restart nfs-kernel-server
+</span></span></code></pre></div><p>📄 PV&amp;PVC 설정</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># cat airflow-logs-pv.yaml</span>
+</span></span><span style=display:flex><span>apiVersion: v1
+</span></span><span style=display:flex><span>kind: PersistentVolume
+</span></span><span style=display:flex><span>metadata:
+</span></span><span style=display:flex><span>  name: airflow-logs-pv
+</span></span><span style=display:flex><span>spec:
+</span></span><span style=display:flex><span>  capacity:
+</span></span><span style=display:flex><span>    storage: 5Gi
+</span></span><span style=display:flex><span>  accessModes:
+</span></span><span style=display:flex><span>    - ReadWriteMany
+</span></span><span style=display:flex><span>  nfs:
+</span></span><span style=display:flex><span>    server: 192.168.18.141
+</span></span><span style=display:flex><span>    path: /mnt/nfs_share/mlops/airflow/logs
+</span></span><span style=display:flex><span>  persistentVolumeReclaimPolicy: Retain
+</span></span><span style=display:flex><span>---
+</span></span><span style=display:flex><span>apiVersion: v1
+</span></span><span style=display:flex><span>kind: PersistentVolumeClaim
+</span></span><span style=display:flex><span>metadata:
+</span></span><span style=display:flex><span>  name: airflow-logs-pvc
+</span></span><span style=display:flex><span>  namespace: airflow
+</span></span><span style=display:flex><span>spec:
+</span></span><span style=display:flex><span>  accessModes:
+</span></span><span style=display:flex><span>    - ReadWriteMany
+</span></span><span style=display:flex><span>  resources:
+</span></span><span style=display:flex><span>    requests:
+</span></span><span style=display:flex><span>      storage: 5Gi
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 적용</span>
+</span></span><span style=display:flex><span>kubectl apply -f airflow-logs-pv.yaml
+</span></span></code></pre></div><hr><h2 id=-postgresql-외부-db-구성>🗄 PostgreSQL 외부 DB 구성<a hidden class=anchor aria-hidden=true href=#-postgresql-외부-db-구성>#</a></h2><h3 id=-설치-및-사용자db-생성>✅ 설치 및 사용자/DB 생성<a hidden class=anchor aria-hidden=true href=#-설치-및-사용자db-생성>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>sudo apt install postgresql -y
+</span></span><span style=display:flex><span>sudo -u postgres psql
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=display:flex><span><span style=color:#75715e>-- 데이터베이스 생성
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>DATABASE</span> airflow_db;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>DATABASE</span> mlflow_db;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>-- DB별 사용자 생성
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>USER</span> airflow_user <span style=color:#66d9ef>WITH</span> PASSWORD <span style=color:#e6db74>&#39;airflow1234&#39;</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>USER</span> mlflow_user <span style=color:#66d9ef>WITH</span> PASSWORD <span style=color:#e6db74>&#39;mlflow1234&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>-- DB별 권한 부여
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>GRANT</span> <span style=color:#66d9ef>ALL</span> <span style=color:#66d9ef>PRIVILEGES</span> <span style=color:#66d9ef>ON</span> <span style=color:#66d9ef>DATABASE</span> airflow_db <span style=color:#66d9ef>TO</span> airflow_user;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>GRANT</span> <span style=color:#66d9ef>ALL</span> <span style=color:#66d9ef>PRIVILEGES</span> <span style=color:#66d9ef>ON</span> <span style=color:#66d9ef>DATABASE</span> mlflow_db <span style=color:#66d9ef>TO</span> mlflow_user;
+</span></span></code></pre></div><h3 id=-외부-접속-허용>🔐 외부 접속 허용<a hidden class=anchor aria-hidden=true href=#-외부-접속-허용>#</a></h3><ul><li><code>/etc/postgresql/14/main/postgresql.conf</code></li></ul><pre tabindex=0><code>listen_addresses = &#39;*&#39;
+</code></pre><ul><li><code>/etc/postgresql/14/main/pg_hba.conf</code></li></ul><pre tabindex=0><code>host    airflow_db     airflow_user     192.168.18.0/24   scram-sha-256
+host    mlflow_db      mlflow_user      192.168.18.0/24   scram-sha-256
+</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>sudo systemctl restart postgresql
+</span></span></code></pre></div><hr><h2 id=-s3-버킷-준비-mlflow-아티팩트-저장소>🪣 S3 버킷 준비 (MLflow 아티팩트 저장소)<a hidden class=anchor aria-hidden=true href=#-s3-버킷-준비-mlflow-아티팩트-저장소>#</a></h2><h3 id=-aws-s3-버킷-생성>✅ AWS S3 버킷 생성<a hidden class=anchor aria-hidden=true href=#-aws-s3-버킷-생성>#</a></h3><ul><li>버킷 이름: <code>mlflow-artifacts-keonho</code></li><li>리전: <code>ap-northeast-2</code></li><li>퍼블릭 차단 유지, 기본 암호화 사용</li></ul><h3 id=-iam-사용자-생성-및-권한-부여>✅ IAM 사용자 생성 및 권한 부여<a hidden class=anchor aria-hidden=true href=#-iam-사용자-생성-및-권한-부여>#</a></h3><ul><li>이름: <code>mlflow-airflow-user</code></li><li>권한: <code>AmazonS3FullAccess</code> (실습용)</li><li><code>AWS_ACCESS_KEY_ID</code> / <code>AWS_SECRET_ACCESS_KEY</code> 저장</li></ul><hr><h2 id=-tip>🧩 Tip<a hidden class=anchor aria-hidden=true href=#-tip>#</a></h2><ul><li><code>NFS</code>는 여러 Pod에서 로그나 파일을 공유해야 할 때, PVC로 연결해두면 관리가 쉬움</li><li><code>PostgreSQL</code>을 외부 DB로 쓰면 Helm chart 배포 때 내부 DB 설정을 꺼야 함 (<code>enabled: false</code>)</li><li><code>AWS S3</code>는 반드시 <strong>환경변수 방식</strong> 또는 <strong>마운트 방식</strong>으로 보안 설정할 것 (실무에서 <code>.aws/credentials</code>는 최소화)</li></ul><hr><h2 id=-mlops-실전-연결>🔧 MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#-mlops-실전-연결>#</a></h2><table><thead><tr><th>구성 요소</th><th>실전 적용 사례</th></tr></thead><tbody><tr><td>NFS 서버</td><td>Airflow 로그 공유 → DAG 실패 로그 분석 가능</td></tr><tr><td>PostgreSQL 외부 연동</td><td>MLflow/Airflow 확장 시 <strong>DB 성능 모니터링</strong>과 연결됨</td></tr><tr><td>S3 아티팩트 저장</td><td>모델 버전 관리 + 대용량 저장소 활용 (모델 서빙 시 URI로 접근 가능)</td></tr></tbody></table><hr><h2 id=-다음-포스트-예고>🧭 다음 포스트 예고<a hidden class=anchor aria-hidden=true href=#-다음-포스트-예고>#</a></h2><blockquote><p>🔐 S3 & PostgreSQL 연동을 위한 보안 구성 및 Secret 관리</p><p>→ 실제로 AWS 키와 DB URI를 어떻게 Kubernetes 환경에서 안전하게 관리하고 주입하는지, Helm에서 어떻게 다루는지 작성할 예정입니다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/><span class=title>« Prev</span><br><span>[MLOps 플랫폼 구축 - 2단계: S3 & PostgreSQL 연동을 위한 보안 구성 및 Secret 관리 전략]</span>
+</a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/><span class=title>Next »</span><br><span>[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

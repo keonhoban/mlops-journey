@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>PostgreSQL on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/postgresql/</link><description>Recent content in PostgreSQL on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 15 Jul 2025 17:55:05 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/postgresql/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-전체-시리즈-요약">📌 전체 시리즈 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>순서&lt;/th>
+&lt;th>주제&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/">🔗 실습을 위한 인프라 사전 구성 (Kubernetes, NFS, PostgreSQL, S3 등)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/">🔗 Secret/보안 구성 및 Kubernetes 연동&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/">🔗 MLflow Tracking 서버 및 Registry 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/">🔗 Airflow DAG Git 연동 및 Secret 기반 구성&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/">🔗 FastAPI 모델 서빙 &amp;amp; MLflow 모델 자동 로딩&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/">🔗 Airflow + MLflow + FastAPI 연결을 통해 모델 핫스왑&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-지금까지-구현한-아키텍처-요약">💡 지금까지 구현한 아키텍처 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">graph TD
+%% 클러스터 구성
+subgraph &amp;#34;Kubernetes Cluster&amp;#34;
+subgraph &amp;#34;Namespace: mlflow&amp;#34;
+MLflow[📦 MLflow Pod]
+end
+subgraph &amp;#34;Namespace: airflow&amp;#34;
+Airflow[📦 Airflow Pod]
+end
+subgraph &amp;#34;Namespace: fastapi&amp;#34;
+FastAPI[📦 FastAPI Pod]
+end
+end
+%% 외부 시스템
+subgraph &amp;#34;External Systems&amp;#34;
+S3[🪣 S3 Bucket]
+DB_PostgreSQL[🗄️ PostgreSQL DB]
+end
+%% Secret 구성
+subgraph &amp;#34;Kubernetes Secrets&amp;#34;
+AWS_Secret[🔐 aws-credentials-secret]
+MLflow_DB_Secret[🔐 mlflow-db-secret]
+Airflow_DB_Secret[🔐 airflow-db-secret]
+end
+%% MLflow 연동
+MLflow --&amp;gt;|&amp;#34;모델 메타데이터 저장&amp;#34;| DB_PostgreSQL
+MLflow --&amp;gt;|&amp;#34;모델 아티팩트 저장&amp;#34;| S3
+AWS_Secret --&amp;gt; MLflow
+MLflow_DB_Secret --&amp;gt; MLflow
+%% Airflow 연동
+Airflow --&amp;gt;|&amp;#34;모델 학습 후 등록&amp;#34;| MLflow
+Airflow --&amp;gt;|&amp;#34;추론 결과 저장&amp;#34;| DB_PostgreSQL
+AWS_Secret --&amp;gt; Airflow
+Airflow_DB_Secret --&amp;gt; Airflow
+%% FastAPI 연동
+FastAPI --&amp;gt;|&amp;#34;모델 메타정보 조회&amp;#34;| MLflow
+FastAPI --&amp;gt;|&amp;#34;모델 파일 다운로드&amp;#34;| S3
+FastAPI --&amp;gt;|&amp;#34;추론 입력 데이터 접근&amp;#34;| S3
+AWS_Secret --&amp;gt; FastAPI
+%% 서비스 흐름 강조
+style FastAPI fill:#d1f7c4,stroke:#3fa34d,stroke-width:2px
+style Airflow fill:#cfe2ff,stroke:#2c6ecb,stroke-width:2px
+style MLflow fill:#fce2c8,stroke:#e09100,stroke-width:2px
+&lt;/code>&lt;/pre>&lt;ul>
+&lt;li>&lt;strong>Kubernetes 기반 Pod로 모든 구성 요소 운영&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Secret 기반 AWS 인증 정보 및 DB 정보 주입&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Ingress 기반 접근 (ex. airflow.local, mlflow.local, fastapi.local)&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>MLflow + Airflow + FastAPI 연계로 실시간 모델 관리/서빙 자동화&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-실무-관점에서-강점">🎯 실무 관점에서 강점&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>내용&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 실험 자동화&lt;/td>
+&lt;td>Airflow DAG + MLflow 연동으로 다양한 모델 버전 학습 자동화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>서빙 안정성&lt;/td>
+&lt;td>FastAPI가 &lt;code>Production&lt;/code> Stage 기준으로 모델 로드 → 무중단 핫스왑 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>보안 구성&lt;/td>
+&lt;td>AWS 인증 정보 및 DB 정보는 Secret으로 주입&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>인프라 이식성&lt;/td>
+&lt;td>Helm + Docker + Kubernetes 기반 → 어디서든 이식 가능&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>실시간 추론 확인&lt;/td>
+&lt;td>Ingress 기반 UI/Endpoint 연결 → 바로 curl 테스트 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-회고">🔍 회고&lt;/h2>
+&lt;h3 id="-프로덕션-환경-고려">✅ 프로덕션 환경 고려&lt;/h3>
+&lt;ul>
+&lt;li>운영 가능한 MLOps 구조로 설계 (유지보수/보안 고려)&lt;/li>
+&lt;li>AWS S3, PostgreSQL, Kubernetes, GitOps까지 현실 환경 가정하고 구성&lt;/li>
+&lt;li>Secret 설계, Volume 마운트, GitSync, 커스텀 이미지 등 세세한 부분까지 설계 주도&lt;/li>
+&lt;/ul>
+&lt;h3 id="-자동화-기반-설계">✅ 자동화 기반 설계&lt;/h3>
+&lt;ul>
+&lt;li>Airflow를 통해 모델 학습 → Registry 등록 → 서빙까지 자동화&lt;/li>
+&lt;li>모델 핫스왑 실험까지 성공적으로 구현&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-부족했던-점--보완-계획">🧱 부족했던 점 &amp;amp; 보완 계획&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>개선 포인트&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모니터링&lt;/td>
+&lt;td>Prometheus + Grafana로 서빙/실험 성능 모니터링 추가 필요&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>모델 테스트 자동화&lt;/td>
+&lt;td>pytest + CI 파이프라인 구성으로 품질 확보 고려&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Kubeflow 연계&lt;/td>
+&lt;td>Kubeflow Pipelines 및 Katib 등과의 비교 분석 예정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Terraform 기반 전환&lt;/td>
+&lt;td>Helm 구성 요소를 코드로 관리하는 Terraform 인프라 전환 계획&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-다음-단계-설계">📈 다음 단계 설계&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>기간&lt;/th>
+&lt;th>목표&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>2025년 8월&lt;/td>
+&lt;td>Kubeflow 기반 재구성 + 모델 자동 튜닝 실험&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2025년 9월&lt;/td>
+&lt;td>Triton Inference Server 연동 + GPU 서빙 실습&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2025년 10월&lt;/td>
+&lt;td>ScyllaDB &amp;amp; LLM 서빙 구조 실험&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>연말&lt;/td>
+&lt;td>MLOps 포트폴리오 정리 및 지원서 작성&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-마치며">✨ 마치며&lt;/h2>
+&lt;p>이번 시리즈는 단순한 학습이 아니라, 설계에 대해 고민하며&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</link><pubDate>Thu, 10 Jul 2025 17:12:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</guid><description>&lt;h2 id="-tldr">✅ TL;DR&lt;/h2>
+&lt;ul>
+&lt;li>&lt;code>Airflow&lt;/code>에서 선택한 모델 버전에 따라 학습 스크립트를 다르게 실행&lt;/li>
+&lt;li>학습된 모델을 &lt;code>MLflow Model Registry&lt;/code>에 등록 → Production 단계로 자동 승격&lt;/li>
+&lt;li>&lt;code>FastAPI&lt;/code> 서버는 &lt;code>Production 모델&lt;/code>을 다시 로드 → 별도 코드 수정 없이 핫스왑 완료&lt;/li>
+&lt;li>실무에서 모델 검증/배포 사이클 자동화에 바로 응용 가능&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-구조-다이어그램-핫스왑-흐름">🧠 구조 다이어그램 (핫스왑 흐름)&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart TD
+A1[Airflow DAG: 모델 학습 스크립트 실행] --&amp;gt; B1[MLflow 모델 등록 - 버전 선택]
+B1 --&amp;gt; C1[모델 Production 승격]
+C1 --&amp;gt; D1[FastAPI 서버 재시작]
+D1 --&amp;gt; E1[FastAPI → 최신 모델 로드]
+E1 --&amp;gt; F1[추론 API 서빙]
+subgraph 실험 관리
+B1
+C1
+end
+subgraph 추론 서비스
+D1
+E1
+F1
+end
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-핵심-구성-요소">🧩 핵심 구성 요소&lt;/h2>
+&lt;h3 id="1-airflow-dag---모델-버전-선택">1. Airflow DAG - 모델 버전 선택&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># dags/train_promote_pipeline_share.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow &lt;span style="color:#f92672">import&lt;/span> DAG
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.bash &lt;span style="color:#f92672">import&lt;/span> BashOperator
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.models &lt;span style="color:#f92672">import&lt;/span> Variable
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> datetime &lt;span style="color:#f92672">import&lt;/span> datetime
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>default_args &lt;span style="color:#f92672">=&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#39;start_date&amp;#39;&lt;/span>: datetime(&lt;span style="color:#ae81ff">2023&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> DAG(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dag_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;train_promote_pipeline_share&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> default_args&lt;span style="color:#f92672">=&lt;/span>default_args,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> schedule&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> catchup&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tags&lt;span style="color:#f92672">=&lt;/span>[&lt;span style="color:#e6db74">&amp;#34;ml&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;train&amp;#34;&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>) &lt;span style="color:#66d9ef">as&lt;/span> dag:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># moedel_version 변수 default_var 지정&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_version &lt;span style="color:#f92672">=&lt;/span> Variable&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;model_version&amp;#34;&lt;/span>, default_var&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;v1&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> debug_aws &lt;span style="color:#f92672">=&lt;/span> BashOperator(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;debug_aws_credentials&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bash_command&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;echo $HOME &amp;amp;&amp;amp; ls -al $HOME/.aws &amp;amp;&amp;amp; cat $HOME/.aws/credentials&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> env&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;HOME&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;/home/airflow&amp;#34;&lt;/span>},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> run_train_script &lt;span style="color:#f92672">=&lt;/span> BashOperator(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;run_train_script&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># merdel_version 변수화&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bash_command&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#39;python /opt/airflow/dags/repo/ml_code/train_model_&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">.py&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> env&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;HOME&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;/home/airflow&amp;#34;&lt;/span>},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> promote_model &lt;span style="color:#f92672">=&lt;/span> BashOperator(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;promote_model_to_production&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bash_command&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;python /opt/airflow/dags/repo/ml_code/promote_model.py&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> env&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;HOME&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;/home/airflow&amp;#34;&lt;/span>},
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> debug_aws &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> run_train_script &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> promote_model
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>→ &lt;code>Airflow UI &amp;gt; Admin &amp;gt; Variables&lt;/code> 에서 &lt;code>model_version = v1&lt;/code> 또는 &lt;code>v2&lt;/code> 설정 가능&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</link><pubDate>Thu, 03 Jul 2025 17:11:53 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</guid><description>&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
+&lt;ul>
+&lt;li>Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계&lt;/li>
+&lt;li>GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성&lt;/li>
+&lt;li>UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-아키텍처-구성도">📐 아키텍처 구성도&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart TD
+subgraph K8s_Cluster[&amp;#34;Kubernetes Cluster&amp;#34;]
+Scheduler[(Airflow Scheduler Pod)]
+Worker[(Airflow Worker Pod)]
+Webserver[(Airflow Webserver Pod)]
+end
+subgraph DAG_Repo[&amp;#34;Git Repository&amp;#34;]
+DAG[(airflow-dags.git)]
+end
+subgraph Secrets[&amp;#34;K8s Secrets + Configs&amp;#34;]
+SecretAWS[(aws-credentials-secret)]
+SecretDB[(airflow-db-secret)]
+end
+subgraph External[&amp;#34;External Systems&amp;#34;]
+PG[(PostgreSQL: External Metadata DB)]
+NFS[(NFS: airflow-logs-pvc)]
+end
+%% GitSync
+DAG --&amp;gt; Scheduler
+DAG --&amp;gt; Worker
+DAG --&amp;gt; Webserver
+%% Secret 주입
+SecretAWS --&amp;gt; Scheduler
+SecretAWS --&amp;gt; Worker
+SecretAWS --&amp;gt; Webserver
+SecretDB --&amp;gt; Scheduler
+%% 외부 연동
+Scheduler --&amp;gt; PG
+Scheduler --&amp;gt; NFS
+Worker --&amp;gt; NFS
+Webserver --&amp;gt; NFS
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-커스텀-airflow-이미지-구성">🐳 커스텀 Airflow 이미지 구성&lt;/h2>
+&lt;p>GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL + S3 연동 기반 Helm 구성]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/</link><pubDate>Mon, 30 Jun 2025 17:11:51 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/</guid><description>&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
+&lt;ul>
+&lt;li>MLflow를 도입시 &lt;strong>PostgreSQL, S3, 인증 정보 주입, Helm 배포, Ingress 연동 등&lt;/strong> 설계&lt;/li>
+&lt;li>MLflow를 Helm으로 배포하면서 고려한 항목(보안, 아티팩트 저장소, UI 접근 등) 구성&lt;/li>
+&lt;li>커스텀 Docker 이미지로 &lt;code>psycopg2&lt;/code> 설치, Helm chart 구성, Secret 연결까지 포함&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-아키텍처-구성도-with-secret--연동-흐름">📐 아키텍처 구성도 (with Secret &amp;amp; 연동 흐름)&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart TD
+subgraph K8s_Cluster[&amp;#34;Kubernetes Cluster&amp;#34;]
+MLflowPod[(MLflow Pod)]
+end
+subgraph External[&amp;#34;External Systems&amp;#34;]
+S3[(S3: Artifact 저장소)]
+PG[(PostgreSQL: Tracking DB)]
+end
+subgraph Config[&amp;#34;Helm Values + Secrets&amp;#34;]
+SecretDB[(mlflow-db-secret)]
+SecretAWS[(aws-credentials-secret)]
+ConfigMapDB[(mlflow-db-config)]
+end
+SecretDB --&amp;gt; MLflowPod
+SecretAWS --&amp;gt; MLflowPod
+ConfigMapDB --&amp;gt; MLflowPod
+MLflowPod --&amp;gt; S3
+MLflowPod --&amp;gt; PG
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-커스텀-mlflow-docker-이미지-제작">🐳 커스텀 MLflow Docker 이미지 제작&lt;/h2>
+&lt;p>공식 MLflow 이미지는 PostgreSQL 드라이버(&lt;code>psycopg2&lt;/code>)가 포함되어 있지 않아 오류 발생&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 2단계: S3 &amp; PostgreSQL 연동을 위한 보안 구성 및 Secret 관리 전략]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/</link><pubDate>Thu, 26 Jun 2025 17:11:49 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/</guid><description>&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
+&lt;ul>
+&lt;li>외부 리소스(AWS S3, DB 등)와 연결할 때, 인증 정보를 직접 코드나 YAML에 노출하는 건 보안상 위험&lt;/li>
+&lt;li>Kubernetes에서는 &lt;code>Secret&lt;/code>과 &lt;code>ConfigMap&lt;/code>, 그리고 &lt;code>envFrom&lt;/code>, &lt;code>volumeMount&lt;/code> 방식을 조합하여 사용 가능&lt;/li>
+&lt;li>이번 포스팅에서는 MLflow, Airflow, FastAPI와 AWS S3 &amp;amp; PostgreSQL을 연동할 때 사용한 &lt;strong>Secret 구성 전략&lt;/strong>과 마주친 이슈 및 해결책 공유&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-아키텍처-구성도">🧱 아키텍처 구성도&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">graph TD
+subgraph Kubernetes Cluster
+MLflow[MLflow Pod]
+Airflow[Airflow Pod]
+FastAPI[FastAPI Pod]
+end
+subgraph Kubernetes Secrets
+Secret_AWS[(aws-credentials-secret)]
+Secret_DB_MLFLOW[(mlflow-db-secret)]
+Secret_DB_AIRFLOW[(airflow-db-secret)]
+end
+subgraph External Systems
+S3[(AWS S3)]
+DB[(PostgreSQL VM)]
+end
+%% Secret 주입
+Secret_AWS --&amp;gt; MLflow
+Secret_DB_MLFLOW --&amp;gt; MLflow
+Secret_AWS --&amp;gt; FastAPI
+Secret_AWS --&amp;gt; Airflow
+Secret_DB_AIRFLOW --&amp;gt; Airflow
+%% 외부 연동
+MLflow --&amp;gt; S3
+MLflow --&amp;gt; DB
+FastAPI --&amp;gt; S3
+FastAPI --&amp;gt; MLflow
+Airflow --&amp;gt; S3
+Airflow --&amp;gt; DB
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-왜-secret-처리가-중요한가">🔐 왜 Secret 처리가 중요한가?&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>이유&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>AWS Access Key&lt;/td>
+&lt;td>노출 시 데이터 삭제/탈취 위험 있음&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PostgreSQL 접속 URI&lt;/td>
+&lt;td>내부망 DB 구조 노출 + Credential 유출 위험&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>MLflow Tracking URI&lt;/td>
+&lt;td>내부 시스템 구조 노출 가능&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;blockquote>
+&lt;p>✅ 실무에선 반드시 인증정보를 Git에 노출하지 않고, 환경에 안전하게 주입할 수 있어야 함&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</link><pubDate>Mon, 23 Jun 2025 17:11:47 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</guid><description>&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>단순한 ML 파이프라인 구성&lt;/strong>을 넘어서, &lt;strong>인프라 설계부터 구축까지&lt;/strong> 진행&lt;/li>
+&lt;li>MLflow, Airflow, FastAPI를 로컬 쿠버네티스 위에서 구성, 실무에서 사용 가능한 구조를 직접 설계/구현&lt;/li>
+&lt;li>이번 포스팅에서는 &lt;strong>MLOps 인프라 전체 구조&lt;/strong>, 그리고 그 기반이 되는 NFS 서버, PostgreSQL, S3 버킷, Kubernetes 클러스터 환경 공유&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-아키텍처-구성도">🧱 아키텍처 구성도&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">graph TD
+%% NFS 구조
+subgraph NFS_VM[&amp;#34;NFS VM&amp;#34;]
+NFS[(📂 Logs)]
+end
+%% PostgreSQL 구조
+subgraph DB_VM[&amp;#34;PostgreSQL VM&amp;#34;]
+airflow_db[(🗄️ airflow_db)]
+mlflow_db[(🗄️ mlflow_db)]
+end
+%% AWS 구조
+subgraph AWS[&amp;#34;AWS&amp;#34;]
+S3[(🪣 S3 / MLflow_artifacts)]
+end
+%% 클러스터
+subgraph K8s_Cluster[&amp;#34;📦 K8s Cluster&amp;#34;]
+Airflow[Airflow Pod]
+MLflow[MLflow Pod]
+FastAPI[FastAPI Pod]
+end
+%% 외부 연동
+Airflow --&amp;gt; NFS
+Airflow --&amp;gt; airflow_db
+Airflow --&amp;gt; S3
+MLflow --&amp;gt; mlflow_db
+MLflow --&amp;gt; S3
+FastAPI --&amp;gt; S3
+FastAPI --&amp;gt; MLflow
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="-인프라-설계-개요">🔧 인프라 설계 개요&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>구성 요소&lt;/th>
+&lt;th>설명&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Kubernetes 클러스터&lt;/td>
+&lt;td>로컬 환경 (VMware) 기반. Helm &amp;amp; Ingress 활용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>MLflow 서버&lt;/td>
+&lt;td>외부 PostgreSQL + S3 연동. 모델 등록, 추적, 아티팩트 관리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Airflow 서버&lt;/td>
+&lt;td>DAG GitSync + S3 연동 + PostgreSQL 외부 DB 사용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>FastAPI 서버&lt;/td>
+&lt;td>MLflow 모델 호출용 예측 API. Ingress로 외부 노출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>NFS 서버&lt;/td>
+&lt;td>Airflow 로그 저장소로 사용. PVC로 연결됨 (S3 가능하지만, pvc 테스트)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>AWS S3&lt;/td>
+&lt;td>MLflow 아티팩트 저장소로 활용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PostgreSQL&lt;/td>
+&lt;td>MLflow &amp;amp; Airflow의 metadata 저장소. 외부 VM에서 호스팅됨&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-nfs-서버-구성">📂 NFS 서버 구성&lt;/h2>
+&lt;h3 id="-설치--공유-디렉토리-생성-ubuntu-기준">✅ 설치 &amp;amp; 공유 디렉토리 생성 (Ubuntu 기준)&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>sudo apt update
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install -y nfs-kernel-server
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo mkdir -p /mnt/nfs_share/mlops/airflow/logs
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo chown -R 50000:root /mnt/nfs_share/mlops/airflow &lt;span style="color:#75715e"># 사용할 유저 UID, GID 확인 필요&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo chmod -R &lt;span style="color:#ae81ff">775&lt;/span> /mnt/nfs_share/mlops/airflow
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="-etcexports-설정">📄 &lt;code>/etc/exports&lt;/code> 설정&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 마운트 수가 적은 경우 (프로덕션 환경 적용시 root_squash 권장)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>/mnt/nfs_share/mlops/airflow/logs 192.168.18.0/24&lt;span style="color:#f92672">(&lt;/span>rw,sync,no_subtree_check,root_squash&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 마운트 수가 많은 경우 (필요시)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>/mnt/nfs_share/mlops 192.168.18.0/24&lt;span style="color:#f92672">(&lt;/span>rw,sync,no_subtree_check,root_squash&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 적용&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo exportfs -rav
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo systemctl restart nfs-kernel-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>📄 PV&amp;amp;PVC 설정&lt;/p></description></item></channel></rss>
