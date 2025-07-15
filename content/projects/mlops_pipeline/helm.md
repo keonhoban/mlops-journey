@@ -20,67 +20,7 @@ categories = ['MLOps Pipeline', 'Airflow', 'MLflow', 'FastAPI', 'NFS', 'PostgreS
 
 ## 💡 지금까지 구현한 아키텍처 요약
 
-```mermaid
-graph TD
-
-%% 클러스터 구성
-subgraph "Kubernetes Cluster"
-  subgraph "Namespace: mlflow"
-    MLflow[📦 MLflow Pod]
-  end
-
-  subgraph "Namespace: airflow"
-    Airflow[📦 Airflow Pod]
-  end
-
-  subgraph "Namespace: fastapi"
-    FastAPI[📦 FastAPI Pod]
-  end
-end
-
-%% 외부 시스템
-subgraph "External Systems"
-  S3[🪣 S3 Bucket]
-  DB_PostgreSQL[🗄️ PostgreSQL DB]
-end
-
-%% Secret 구성
-subgraph "Kubernetes Secrets"
-  AWS_Secret[🔐 aws-credentials-secret]
-  MLflow_DB_Secret[🔐 mlflow-db-secret]
-  Airflow_DB_Secret[🔐 airflow-db-secret]
-end
-
-%% MLflow 연동
-MLflow -->|"모델 메타데이터 저장"| DB_PostgreSQL
-MLflow -->|"모델 아티팩트 저장"| S3
-AWS_Secret --> MLflow
-MLflow_DB_Secret --> MLflow
-
-%% Airflow 연동
-Airflow -->|"모델 학습 후 등록"| MLflow
-Airflow -->|"추론 결과 저장"| DB_PostgreSQL
-AWS_Secret --> Airflow
-Airflow_DB_Secret --> Airflow
-
-%% FastAPI 연동
-FastAPI -->|"모델 메타정보 조회"| MLflow
-FastAPI -->|"모델 파일 다운로드"| S3
-FastAPI -->|"추론 입력 데이터 접근"| S3
-AWS_Secret --> FastAPI
-
-%% 서비스 흐름 강조
-style FastAPI fill:#d1f7c4,stroke:#3fa34d,stroke-width:2px
-style Airflow fill:#cfe2ff,stroke:#2c6ecb,stroke-width:2px
-style MLflow fill:#fce2c8,stroke:#e09100,stroke-width:2px
-```
-
-- **Kubernetes 기반 Pod로 모든 구성 요소 운영**
-- **Secret 기반 AWS 인증 정보 및 DB 정보 주입**
-- **Ingress 기반 접근 (ex. airflow.local, mlflow.local, fastapi.local)**
-- **MLflow + Airflow + FastAPI 연계로 실시간 모델 관리/서빙 자동화**
-
----
+![07](/mlops-journey/images/07.png)
 
 ## 🎯 실무 관점에서 강점
 

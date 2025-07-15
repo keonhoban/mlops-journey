@@ -18,7 +18,6 @@ theme = "PaperMod"
     hideCopyright = true
     customText = "© 2025 Keonho Ban | <a href=\"https://github.com/keonhoban\" target=\"_blank\">GitHub</a> | <a href=\"mailto:keonho0510@naver.com\">Email</a>"
 
-
 [menu]
 
   [[menu.main]]
