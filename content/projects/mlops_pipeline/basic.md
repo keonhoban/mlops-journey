@@ -2,7 +2,7 @@
 date = '2025-06-13T20:58:51+09:00'
 draft = false
 title = '[Airflow 기초 자동화 - Airflow → MLflow → FastAPI]'
-categories = ['MLOps Pipeline', 'Airflow', 'MLflow', 'FastAPI']
+categories = ['MLOps Pipeline', 'Airflow', 'MLflow', 'FastAPI', 'Docker Compose']
 +++
 
 ## 🧭 전체 흐름 예시
@@ -22,7 +22,7 @@ categories = ['MLOps Pipeline', 'Airflow', 'MLflow', 'FastAPI']
    - models:/IrisModel/Production → 실시간 예측
 ```
 
-👉 실습 코드는 [🔗 GitHub (Airflow + MLflow + FastAPI)](https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi)
+👉 실습 코드는 [🔗 GitHub (Airflow + MLflow + FastAPI)](https://github.com/keonhoban/mlops-infra-labs/tree/main/airflow_mlflow_fastapi_dockerCompose)
 
 ---
 
