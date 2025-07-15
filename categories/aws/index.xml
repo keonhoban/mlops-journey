@@ -1,116 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>AWS on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/aws/</link><description>Recent content in AWS on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 15 Jul 2025 17:55:05 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/aws/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-전체-시리즈-요약">📌 전체 시리즈 요약&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>순서&lt;/th>
-&lt;th>주제&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>1&lt;/td>
-&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/">🔗 인프라 사전 구성 (Kubernetes, NFS, PostgreSQL, S3 등)&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>2&lt;/td>
-&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/">🔗 Secret/보안 구성 및 Kubernetes 연동&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3&lt;/td>
-&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/">🔗 MLflow Tracking 서버 및 Registry 구축&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>4&lt;/td>
-&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/">🔗 Airflow DAG Git 연동 및 Secret 기반 구성&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>5&lt;/td>
-&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/">🔗 FastAPI 모델 서빙 &amp;amp; MLflow 모델 자동 로딩&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>6&lt;/td>
-&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/">🔗 Airflow + MLflow + FastAPI 연결을 통해 모델 핫스왑&lt;/a>&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-지금까지-구현한-아키텍처-요약">💡 지금까지 구현한 아키텍처 요약&lt;/h2>
-&lt;p>&lt;img alt="07" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/07.png">&lt;/p>
-&lt;h2 id="-실무-관점에서-강점">🎯 실무 관점에서 강점&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>내용&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>모델 실험 자동화&lt;/td>
-&lt;td>Airflow DAG + MLflow 연동으로 다양한 모델 버전 학습 자동화&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>서빙 안정성&lt;/td>
-&lt;td>FastAPI가 &lt;code>Production&lt;/code> Stage 기준으로 모델 로드 → 무중단 핫스왑 가능&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>보안 구성&lt;/td>
-&lt;td>AWS 인증 정보 및 DB 정보는 Secret으로 주입&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>인프라 이식성&lt;/td>
-&lt;td>Helm + Docker + Kubernetes 기반 → 어디서든 이식 가능&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>실시간 추론 확인&lt;/td>
-&lt;td>Ingress 기반 UI/Endpoint 연결 → 바로 curl 테스트 가능&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-회고">🔍 회고&lt;/h2>
-&lt;h3 id="-프로덕션-환경-고려">✅ 프로덕션 환경 고려&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>AWS on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/aws/</link><description>Recent content in AWS on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 15 Jul 2025 17:55:05 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/aws/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-실전-시나리오-기반-구성-배경">🧩 실전 시나리오 기반 구성 배경&lt;/h2>
+&lt;blockquote>
+&lt;p>이 프로젝트는 단순 실습을 넘어서, 실제 발생하는 다음과 같은 문제들을 해결하기 위한 MLOps 인프라 구축을 목표로 설계되었습니다.&lt;/p>&lt;/blockquote>
 &lt;ul>
-&lt;li>운영 가능한 MLOps 구조로 설계 (유지보수/보안 고려)&lt;/li>
-&lt;li>AWS S3, PostgreSQL, Kubernetes, GitOps까지 현실 환경 가정하고 구성&lt;/li>
-&lt;li>Secret 설계, Volume 마운트, GitSync, 커스텀 이미지 등 세세한 부분까지 설계 주도&lt;/li>
-&lt;/ul>
-&lt;h3 id="-자동화-기반-설계">✅ 자동화 기반 설계&lt;/h3>
+&lt;li>
+&lt;p>&lt;strong>여러 모델 실험 결과가 뒤섞여 추적이 어려운 문제&lt;/strong>&lt;br>
+→ MLflow Tracking 서버 + PostgreSQL 메타데이터 저장소 구성&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>모델 파일 및 로그가 로컬에만 저장되어 협업 및 재현성이 떨어지는 문제&lt;/strong>&lt;br>
+→ S3 기반 artifact store 구성 + pyfunc 기반 모델 서빙 구조 설계&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>수작업 DAG 등록, 모델 배포 등의 비효율적 운영 문제&lt;/strong>&lt;br>
+→ Airflow + GitSync 연동으로 파이프라인 자동화 및 버전 관리 가능&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</link><pubDate>Thu, 10 Jul 2025 17:12:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</guid><description>&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델 배포 시 실무에서는 새 모델이 학습된 뒤,&lt;/p>
+&lt;p>기존 모델과 교체되는 과정을 자동화할 필요가 있습니다.&lt;/p>
+&lt;p>Airflow에서 학습 DAG 실행 → MLflow 등록 → FastAPI가 새 모델 로딩 구조는,&lt;/p>
+&lt;p>초기 핫스왑 형태를 실험한 예제입니다.”&lt;/p>&lt;/blockquote>
 &lt;ul>
-&lt;li>Airflow를 통해 모델 학습 → Registry 등록 → 서빙까지 자동화&lt;/li>
-&lt;li>모델 핫스왑 실험까지 성공적으로 구현&lt;/li>
+&lt;li>DAG로 train_model_v1/v2 학습 → MLflow에 등록&lt;/li>
+&lt;li>FastAPI 재시작으로 모델 핫스왑 → 수동 초기 구조지만 &lt;strong>배포 자동화 실험&lt;/strong>의 기반&lt;/li>
+&lt;li>추후엔 A/B Test, Canary, Zero-Downtime 구성으로 확장 가능&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="-부족했던-점--보완-계획">🧱 부족했던 점 &amp;amp; 보완 계획&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>개선 포인트&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>모니터링&lt;/td>
-&lt;td>Prometheus + Grafana로 서빙/실험 성능 모니터링 추가 필요&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>모델 테스트 자동화&lt;/td>
-&lt;td>pytest + CI 파이프라인 구성으로 품질 확보 고려&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>Kubeflow 연계&lt;/td>
-&lt;td>Kubeflow Pipelines 및 Katib 등과의 비교 분석 예정&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>Terraform 기반 전환&lt;/td>
-&lt;td>Helm 구성 요소를 코드로 관리하는 Terraform 인프라 전환 계획&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-마치며">✨ 마치며&lt;/h2>
-&lt;p>이번 시리즈는 단순한 학습이 아니라, 설계에 대해 고민하며&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</link><pubDate>Thu, 10 Jul 2025 17:12:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</guid><description>&lt;h2 id="-tldr">✅ TL;DR&lt;/h2>
+&lt;h2 id="-tldr">✅ TL;DR&lt;/h2>
 &lt;ul>
 &lt;li>&lt;code>Airflow&lt;/code>에서 선택한 모델 버전에 따라 학습 스크립트를 다르게 실행&lt;/li>
 &lt;li>학습된 모델을 &lt;code>MLflow Model Registry&lt;/code>에 등록 → Production 단계로 자동 승격&lt;/li>
@@ -119,52 +33,18 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="-구조-다이어그램-핫스왑-흐름">🧠 구조 다이어그램 (핫스왑 흐름)&lt;/h2>
-&lt;p>&lt;img alt="06" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/06.png">&lt;/p>
+&lt;p>&lt;img alt="06" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/06.png">&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/</link><pubDate>Mon, 07 Jul 2025 17:11:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/</guid><description>&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“ 모델을 수동으로 넣는 것이 아니라,&lt;/p>
+&lt;p>MLflow에 등록된 Production 모델을 서빙 API에서 &lt;strong>자동 로딩&lt;/strong>하는 구조를 지향합니다.”&lt;/p>&lt;/blockquote>
+&lt;ul>
+&lt;li>FastAPI는 경량화된 서빙 서버로서 적합&lt;/li>
+&lt;li>MLflow &lt;code>pyfunc.load_model()&lt;/code>을 통해 자동 로딩 → CI/CD 및 모델 자동화 가능&lt;/li>
+&lt;li>S3와 연결되므로, “로컬 복사본 관리 X”, 재현성 유지&lt;/li>
+&lt;li>API 호출을 통해 실제 추론 결과 확인 가능&lt;/li>
+&lt;/ul>
 &lt;hr>
-&lt;h2 id="-핵심-구성-요소">🧩 핵심 구성 요소&lt;/h2>
-&lt;h3 id="1-airflow-dag---모델-버전-선택">1. Airflow DAG - 모델 버전 선택&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># dags/train_promote_pipeline_share.py&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow &lt;span style="color:#f92672">import&lt;/span> DAG
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.bash &lt;span style="color:#f92672">import&lt;/span> BashOperator
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.models &lt;span style="color:#f92672">import&lt;/span> Variable
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> datetime &lt;span style="color:#f92672">import&lt;/span> datetime
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>default_args &lt;span style="color:#f92672">=&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#39;start_date&amp;#39;&lt;/span>: datetime(&lt;span style="color:#ae81ff">2023&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>),
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> DAG(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dag_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;train_promote_pipeline_share&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> default_args&lt;span style="color:#f92672">=&lt;/span>default_args,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> schedule&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> catchup&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tags&lt;span style="color:#f92672">=&lt;/span>[&lt;span style="color:#e6db74">&amp;#34;ml&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;train&amp;#34;&lt;/span>]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>) &lt;span style="color:#66d9ef">as&lt;/span> dag:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># moedel_version 변수 default_var 지정&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_version &lt;span style="color:#f92672">=&lt;/span> Variable&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;model_version&amp;#34;&lt;/span>, default_var&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;v1&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> debug_aws &lt;span style="color:#f92672">=&lt;/span> BashOperator(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;debug_aws_credentials&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bash_command&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;echo $HOME &amp;amp;&amp;amp; ls -al $HOME/.aws &amp;amp;&amp;amp; cat $HOME/.aws/credentials&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> env&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;HOME&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;/home/airflow&amp;#34;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> run_train_script &lt;span style="color:#f92672">=&lt;/span> BashOperator(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;run_train_script&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># merdel_version 변수화&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bash_command&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#39;python /opt/airflow/dags/repo/ml_code/train_model_&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">.py&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> env&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;HOME&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;/home/airflow&amp;#34;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> promote_model &lt;span style="color:#f92672">=&lt;/span> BashOperator(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;promote_model_to_production&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bash_command&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;python /opt/airflow/dags/repo/ml_code/promote_model.py&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> env&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;HOME&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;/home/airflow&amp;#34;&lt;/span>},
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> debug_aws &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> run_train_script &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> promote_model
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>→ &lt;code>Airflow UI &amp;gt; Admin &amp;gt; Variables&lt;/code> 에서 &lt;code>model_version = v1&lt;/code> 또는 &lt;code>v2&lt;/code> 설정 가능&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/</link><pubDate>Mon, 07 Jul 2025 17:11:55 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/</guid><description>&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
+&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
 &lt;ul>
 &lt;li>MLflow에서 등록한 모델을 &lt;strong>FastAPI 기반 REST API&lt;/strong>로 서빙합니다.&lt;/li>
 &lt;li>&lt;code>mlflow.pyfunc.load_model()&lt;/code>을 통해 &lt;strong>Stage별 버전 관리&lt;/strong>, &lt;strong>핫스왑&lt;/strong>, &lt;strong>모델 정보 조회&lt;/strong>가 가능합니다.&lt;/li>
@@ -172,201 +52,18 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="-아키텍처-구성도">📐 아키텍처 구성도&lt;/h2>
-&lt;p>&lt;img alt="05" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/05.png">&lt;/p>
-&lt;hr>
-&lt;h2 id="-fastapi-커스텀-이미지">🐳 FastAPI 커스텀 이미지&lt;/h2>
-&lt;h3 id="-dockerfile">📦 Dockerfile&lt;/h3>
-&lt;pre tabindex="0">&lt;code>FROM python:3.12
-WORKDIR /app
-COPY app /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-CMD [&amp;#34;uvicorn&amp;#34;, &amp;#34;main:app&amp;#34;, &amp;#34;--host&amp;#34;, &amp;#34;0.0.0.0&amp;#34;, &amp;#34;--port&amp;#34;, &amp;#34;8000&amp;#34;]
-&lt;/code>&lt;/pre>&lt;h3 id="-requirementstxt">📄 requirements.txt&lt;/h3>
-&lt;pre tabindex="0">&lt;code>fastapi==0.110.2
-uvicorn==0.29.0
-mlflow==2.13.0
-pandas==2.1.4
-scikit-learn==1.6.1
-pydantic==2.7.1
-boto3==1.34.113
-numpy==1.26.4
-packaging==24.2
-psutil==7.0.0
-scipy==1.15.3
-setuptools==69.5.1
-&lt;/code>&lt;/pre>&lt;h3 id="-빌드--푸시">🚀 빌드 &amp;amp; 푸시&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>docker build -t ghcr.io/hoizz/fastapi-ml:mlflow-model-info .
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>docker push ghcr.io/hoizz/fastapi-ml:mlflow-model-info
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-helm-배포-구성">🛠️ Helm 배포 구성&lt;/h2>
-&lt;h3 id="-valuesyaml">🧾 values.yaml&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">replicaCount&lt;/span>: &lt;span style="color:#ae81ff">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">image&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repository&lt;/span>: &lt;span style="color:#ae81ff">hoizz/fastapi-ml&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">tag&lt;/span>: &lt;span style="color:#ae81ff">mlflow-model-info&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">pullPolicy&lt;/span>: &lt;span style="color:#ae81ff">IfNotPresent&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">service&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">fastapi-service&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">ClusterIP&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">port&lt;/span>: &lt;span style="color:#ae81ff">80&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">ingress&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">enabled&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">className&lt;/span>: &lt;span style="color:#ae81ff">nginx&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">host&lt;/span>: &lt;span style="color:#ae81ff">fastapi.local&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">annotations&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">nginx.ingress.kubernetes.io/rewrite-target&lt;/span>: &lt;span style="color:#ae81ff">/&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">env&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">MLFLOW_TRACKING_URI&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;http://mlflow-service.mlflow.svc.cluster.local:5000&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">MODEL_NAME&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;my_model&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">MODEL_STAGE&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Production&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">envFrom&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">secretRef&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-핵심-템플릿">📄 핵심 템플릿&lt;/h2>
-&lt;h3 id="fastapi-deploymentyaml">fastapi-deployment.yaml&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">apps/v1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Deployment&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">fastapi-server&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">namespace&lt;/span>: &lt;span style="color:#ae81ff">fastapi&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">replicas&lt;/span>: &lt;span style="color:#ae81ff">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">selector&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">matchLabels&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">app&lt;/span>: &lt;span style="color:#ae81ff">fastapi&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">template&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">metadata&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">labels&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">app&lt;/span>: &lt;span style="color:#ae81ff">fastapi&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">spec&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">containers&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">fastapi&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">image&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.image.repository }}:{{ .Values.image.tag }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">containerPort&lt;/span>: &lt;span style="color:#ae81ff">8000&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">env&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">MLFLOW_TRACKING_URI&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">value&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.env.MLFLOW_TRACKING_URI }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">MODEL_NAME&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">value&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.env.MODEL_NAME }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">MODEL_STAGE&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">value&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.env.MODEL_STAGE }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">envFrom&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">secretRef&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="fastapi-serviceyaml">fastapi-service.yaml&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">v1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Service&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">fastapi-service&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">namespace&lt;/span>: &lt;span style="color:#ae81ff">fastapi&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.service.type }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">selector&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">app&lt;/span>: &lt;span style="color:#ae81ff">fastapi&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">port&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.service.port }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">targetPort&lt;/span>: &lt;span style="color:#ae81ff">8000&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="fastapi-ingressyaml">fastapi-ingress.yaml&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">networking.k8s.io/v1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Ingress&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">fastapi-ingress&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">namespace&lt;/span>: &lt;span style="color:#ae81ff">fastapi&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">annotations&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {{- &lt;span style="color:#ae81ff">range $key, $value := .Values.ingress.annotations }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {{ &lt;span style="color:#f92672">$key }}&lt;/span>: {{ &lt;span style="color:#ae81ff">$value | quote }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {{- &lt;span style="color:#ae81ff">end }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ingressClassName&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.ingress.className }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">rules&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">host&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.ingress.host }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">http&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">paths&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">path&lt;/span>: &lt;span style="color:#ae81ff">/&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">pathType&lt;/span>: &lt;span style="color:#ae81ff">Prefix&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">backend&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">service&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">fastapi-service&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">port&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">number&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.service.port }}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-배포">⏱ 배포&lt;/h2>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl create namespace fastapi
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm install fastapi fastapi-helm -n fastapi
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># hosts 수정&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>node_ip&lt;span style="color:#f92672">}&lt;/span> fastapi.local
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 접근 url&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>http://fastapi.local&lt;span style="color:#f92672">](&lt;/span>http://fastapi.local/&lt;span style="color:#f92672">)&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-tip">🧩 Tip&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>팁&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>모델 핫스왑&lt;/td>
-&lt;td>&lt;code>/model-info&lt;/code> API 제공 → 운영 시 버전 추적 필수&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>모델 미존재&lt;/td>
-&lt;td>load_model 시 &lt;code>MlflowException&lt;/code> 발생 → FastAPI가 죽지 않도록 예외 처리&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>Ingress 설정&lt;/td>
-&lt;td>&lt;code>/etc/hosts&lt;/code>, className, rewrite-target 필수 확인&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>리소스 할당&lt;/td>
-&lt;td>배포 시 CPU/RAM 제한 설정으로 예측 지연 방지&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-mlops-실전-연결">🔧 MLOps 실전 연결&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>실제 의미&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>FastAPI REST 서빙&lt;/td>
-&lt;td>실시간 추론 API 운영에 적합&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>mlflow Stage 사용&lt;/td>
-&lt;td>운영과 실험 모델 분리 및 핫스왑 가능&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>boto3 연동&lt;/td>
-&lt;td>S3 객체 접근, 로그 추적, 리포트 저장 자동화&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>Helm 기반 배포&lt;/td>
-&lt;td>팀 내 재사용 가능한 마이크로서비스 패턴 완성&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-다음-포스트-예고">🧭 다음 포스트 예고&lt;/h2>
+&lt;p>&lt;img alt="05" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/05.png">&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</link><pubDate>Thu, 03 Jul 2025 17:11:53 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</guid><description>&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
-&lt;p>🧠 실시간 모델 핫스왑 구조 실험&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</link><pubDate>Thu, 03 Jul 2025 17:11:53 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</guid><description>&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
+&lt;p>“실무에서는 데이터 파이프라인이나 모델 학습 작업을 수시로 업데이트하게 되며,&lt;/p>
+&lt;p>이를 수동으로 업로드하지 않고 Git 기반으로 관리하는 것이 필수입니다.&lt;/p>
+&lt;p>Airflow는 GitSync 기능을 통해 DAG를 자동 동기화할 수 있습니다.”&lt;/p>&lt;/blockquote>
+&lt;ul>
+&lt;li>DAG 코드가 Git으로 관리되어야 리뷰, 히스토리, 협업 가능&lt;/li>
+&lt;li>GitSync → DAG 자동 배포 (CI/CD 개념 적용)&lt;/li>
+&lt;li>Secret으로 Git 인증 → 조직 내 GitOps 문화와 연계&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
 &lt;ul>
 &lt;li>Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계&lt;/li>
 &lt;li>GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성&lt;/li>
@@ -374,255 +71,24 @@ setuptools==69.5.1
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="-아키텍처-구성도">📐 아키텍처 구성도&lt;/h2>
-&lt;p>&lt;img alt="04" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/04.png">&lt;/p>
-&lt;hr>
-&lt;h2 id="-커스텀-airflow-이미지-구성">🐳 커스텀 Airflow 이미지 구성&lt;/h2>
-&lt;p>GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요&lt;/p>
-&lt;h3 id="-dockerfile">🔸 Dockerfile&lt;/h3>
-&lt;pre tabindex="0">&lt;code>FROM apache/airflow:3.0.2-python3.12
-COPY requirements.txt /tmp/requirements.txt
-USER airflow
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
-&lt;/code>&lt;/pre>&lt;h3 id="-requirementstxt">🔸 requirements.txt&lt;/h3>
-&lt;pre tabindex="0">&lt;code>mlflow==2.13.0
-pandas
-scikit-learn
-boto3
-&lt;/code>&lt;/pre>&lt;h3 id="-빌드--푸시">🔸 빌드 &amp;amp; 푸시&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>docker build -t hoizz/airflow-custom:v5-mlflow .
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>docker push hoizz/airflow-custom:v5-mlflow
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-helm-구성">🛠 Helm 구성&lt;/h2>
-&lt;h3 id="-valuesyaml">🔹 values.yaml&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 실행 엔진 설정&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">executor&lt;/span>: &lt;span style="color:#ae81ff">KubernetesExecutor&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 이미지 설정&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">images&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">airflow&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repository&lt;/span>: &lt;span style="color:#ae81ff">hoizz/airflow-custom &lt;/span> &lt;span style="color:#75715e"># 커스텀 이미지&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">tag&lt;/span>: &lt;span style="color:#ae81ff">v5-mlflow-20240712 &lt;/span> &lt;span style="color:#75715e"># 태그 &lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">pullPolicy&lt;/span>: &lt;span style="color:#ae81ff">IfNotPresent&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 생성한 fernetKey 고정 (helm delete &amp;amp; install 이후에도 이전 variables 등 데이터 sync 가능)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">fernetKeySecretName&lt;/span>: &lt;span style="color:#ae81ff">my-fernet-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># DAG GitSync 설정 (GitOps 기반)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">dags&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">gitSync&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">enabled&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@github.com:keonhoban/airflow-dags.git&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">main&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">subPath&lt;/span>: &lt;span style="color:#ae81ff">dags&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">depth&lt;/span>: &lt;span style="color:#ae81ff">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">wait&lt;/span>: &lt;span style="color:#ae81ff">10&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">rev&lt;/span>: &lt;span style="color:#ae81ff">HEAD&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">sshKeySecret&lt;/span>: &lt;span style="color:#ae81ff">airflow-git-ssh-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># DB 연동 (외부 PostgreSQL 사용)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">postgresql&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">enabled&lt;/span>: &lt;span style="color:#66d9ef">false&lt;/span> &lt;span style="color:#75715e"># 내부 Postgres 비활성화&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">data&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">metadataSecretName&lt;/span>: &lt;span style="color:#ae81ff">airflow-db-secret &lt;/span> &lt;span style="color:#75715e"># Secret 안의 base64된 connection 값 참조&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Airflow 환경 설정&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">config&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">AIRFLOW__CORE__LOAD_EXAMPLES&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">value&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;False&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">value&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;False&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">AIRFLOW__WEBSERVER__EXPOSE_CONFIG&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">value&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;True&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 리소스 설정 (권장)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">scheduler&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">resources&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">requests&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">cpu&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;500m&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">memory&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;512Mi&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">limits&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">cpu&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">memory&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;1Gi&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">extraVolumes&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">secret&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">secretName&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">extraVolumeMounts&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">mountPath&lt;/span>: &lt;span style="color:#ae81ff">/home/airflow/.aws&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">readOnly&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">workers&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">resources&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">requests&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">cpu&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;500m&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">memory&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;512Mi&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">limits&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">cpu&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">memory&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;1Gi&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">extraVolumes&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">secret&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">secretName&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">extraVolumeMounts&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">mountPath&lt;/span>: &lt;span style="color:#ae81ff">/home/airflow/.aws&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">readOnly&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">dagProcessor&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">extraVolumes&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">secret&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">secretName&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">extraVolumeMounts&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">mountPath&lt;/span>: &lt;span style="color:#ae81ff">/home/airflow/.aws&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">readOnly&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Ingress 설정 (Ingress Controller 기반 접근)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">ingress&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">enabled&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">apiServer&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">enabled&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ingressClassName&lt;/span>: &lt;span style="color:#ae81ff">nginx&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">hosts&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">airflow.local&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">tls&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">enabled&lt;/span>: &lt;span style="color:#66d9ef">false&lt;/span> &lt;span style="color:#75715e"># 실무에서는 true + cert-manager 연동 필요&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Web UI 서비스 타입 설정&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiServer&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">service&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">ClusterIP &lt;/span> &lt;span style="color:#75715e"># 외부 접근은 Ingress 경유&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 로그 PVC 설정&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">logs&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">persistence&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">enabled&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">existingClaim&lt;/span>: &lt;span style="color:#ae81ff">airflow-logs-pvc&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># (선택) remote 로그 저장소 설정 (예: S3)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># config:&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># AIRFLOW__LOGGING__REMOTE_LOGGING: &amp;#34;True&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: &amp;#34;s3://your-bucket-name/airflow-logs&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: &amp;#34;aws_default&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-fernet_key-생성-및-구성">✅ &lt;code>fernet_key&lt;/code> 생성 및 구성&lt;/h2>
-&lt;ul>
-&lt;li>&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 생성&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>python -c &lt;span style="color:#e6db74">&amp;#34;from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># secret 적용 (파일 생성 후 kubectl apply 가능)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># (git에 필요한 경우 SealedSecret or SOPS or .gitignore)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>apiVersion: v1
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kind: Secret
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>metadata:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name: my-fernet-secret
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> namespace: airflow
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>type: Opaque
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>stringData:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fernet-key: &lt;span style="color:#e6db74">&amp;#34;xZ69xLVkiCfJQ23fXa8oubANRIJRHZLrIeANlHhPGmQ=&amp;#34;&lt;/span> &lt;span style="color:#75715e"># 생성한 값으로 수정&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-gitsync-ssh-key--secret-구성">🔐 GitSync SSH Key &amp;amp; Secret 구성&lt;/h2>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># SSH 키 생성&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ssh-keygen -t rsa -b &lt;span style="color:#ae81ff">4096&lt;/span> -C &lt;span style="color:#e6db74">&amp;#34;testuser@mlops.com&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># GitHub UI에서 Deploy Key 등록 (공개키)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># K8s Secret 생성 (비공개 키)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kubectl create secret generic airflow-git-ssh-secret --from-file&lt;span style="color:#f92672">=&lt;/span>gitSshKey&lt;span style="color:#f92672">=&lt;/span>/root/.ssh/id_rsa -n airflow
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-배포-명령어">🚀 배포 명령어&lt;/h2>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl create namespace airflow
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm install airflow apache-airflow/airflow -n airflow -f values.yaml
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-접속-확인">🌐 접속 확인&lt;/h2>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># /etc/hosts 수정&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>NodeIP&lt;span style="color:#f92672">}&lt;/span> airflow.local
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 브라우저 접속&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>http://airflow.local
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-확인-사항">🧪 확인 사항&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>확인 방법&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>Airflow UI 접근&lt;/td>
-&lt;td>&lt;code>http://airflow.local&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>DAG GitSync&lt;/td>
-&lt;td>GitHub push → 자동 반영 여부 확인&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>PostgreSQL 연결&lt;/td>
-&lt;td>metadata DB에 연결 로그 확인&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>AWS 인증 연동&lt;/td>
-&lt;td>&lt;code>boto3.client()&lt;/code> 호출 시 에러 없는지 확인&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-tip">🧩 Tip&lt;/h2>
-&lt;ul>
-&lt;li>GitSync는 &lt;code>depth: 1&lt;/code>, &lt;code>wait&lt;/code>, &lt;code>rev: HEAD&lt;/code> 옵션 설정으로 최적화 필요&lt;/li>
-&lt;li>&lt;code>metadataSecretName&lt;/code>에는 &lt;code>AIRFLOW__DATABASE__SQL_ALCHEMY_CONN&lt;/code>이 base64 인코딩되어 있어야 함&lt;/li>
-&lt;li>각 Pod (&lt;code>scheduler&lt;/code>, &lt;code>worker&lt;/code>, &lt;code>dagProcessor&lt;/code>)마다 AWS credential 마운트 필요&lt;/li>
-&lt;li>Ingress 접근을 위해선 hosts 파일에 수동 등록 필요 (로컬 클러스터인 경우)&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="-mlops-실전-연결">🔧 MLOps 실전 연결&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>연결 항목&lt;/th>
-&lt;th>실무 의미&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>DAG GitSync&lt;/td>
-&lt;td>GitOps 기반으로 실험/운영 동기화 자동화&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>External PostgreSQL&lt;/td>
-&lt;td>운영 DB와 통합, 백업/모니터링 가능&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>boto3 연동&lt;/td>
-&lt;td>DAG 내 S3 접근 가능 (모델 or raw 데이터 연동)&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>mlflow API 사용&lt;/td>
-&lt;td>실험 자동화 가능 (training, promotion 포함)&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-트러블슈팅">🚨 트러블슈팅&lt;/h2>
-&lt;h3 id="-gitsync-dag-미반영시-체크-리스트">🔻 GitSync DAG 미반영시 체크 리스트&lt;/h3>
-&lt;ul>
-&lt;li>&lt;code>subPath&lt;/code> 경로 오류&lt;/li>
-&lt;li>Secret에 등록된 SSH key 권한 문제&lt;/li>
-&lt;li>GitHub deploy key에 write 권한 누락&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="-다음-포스트-예고">🧭 다음 포스트 예고&lt;/h2>
+&lt;p>&lt;img alt="04" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/04.png">&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL + S3 연동 기반 Helm 구성]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/</link><pubDate>Mon, 30 Jun 2025 17:11:51 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/</guid><description>&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
-&lt;p>⚙️ FastAPI 서빙 + MLflow 모델 연동&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 3단계: MLflow : PostgreSQL + S3 연동 기반 Helm 구성]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/</link><pubDate>Mon, 30 Jun 2025 17:11:51 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/</guid><description>&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
+&lt;p>“MLflow Tracking 서버는 단순 모델 학습이 아닌 모델의 실험 이력, 하이퍼파라미터, 성능 지표 등을 추적하는 역할을 합니다.&lt;/p>
+&lt;p>따라서 단일 머신/로컬 환경이 아닌, &lt;strong>서버 기반 Tracking 환경이 필요합니다.&lt;/strong>”&lt;/p>&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>한 프로젝트에 여러 버전의 모델이 등장하고,&lt;/p>
+&lt;p>각각 어떤 실험으로부터 나왔는지 **‘회고 가능한 로그’**가 필요함&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>MLflow Tracking Server + PostgreSQL → 모델 실험 로그 저장&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>S3 연동 → 모델 파일 저장 위치 분리 (서빙, 재사용 대비)&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
 &lt;ul>
 &lt;li>MLflow를 도입시 &lt;strong>PostgreSQL, S3, 인증 정보 주입, Helm 배포, Ingress 연동 등&lt;/strong> 설계&lt;/li>
 &lt;li>MLflow를 Helm으로 배포하면서 고려한 항목(보안, 아티팩트 저장소, UI 접근 등) 구성&lt;/li>
@@ -630,196 +96,17 @@ boto3
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="-아키텍처-구성도-with-secret--연동-흐름">📐 아키텍처 구성도 (with Secret &amp;amp; 연동 흐름)&lt;/h2>
-&lt;p>&lt;img alt="03" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/03.png">&lt;/p>
-&lt;hr>
-&lt;h2 id="-커스텀-mlflow-docker-이미지-제작">🐳 커스텀 MLflow Docker 이미지 제작&lt;/h2>
-&lt;p>공식 MLflow 이미지는 PostgreSQL 드라이버(&lt;code>psycopg2&lt;/code>)가 포함되어 있지 않아 오류 발생&lt;/p>
-&lt;h3 id="-dockerfile-예시">🔸 Dockerfile 예시&lt;/h3>
-&lt;pre tabindex="0">&lt;code>FROM ghcr.io/mlflow/mlflow:v2.13.0
-RUN pip install psycopg2-binary boto3
-&lt;/code>&lt;/pre>&lt;h3 id="-빌드--푸시">🔸 빌드 &amp;amp; 푸시&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>docker build -t ghcr.io/your-id/mlflow:with-psycopg2-and-s3 .
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>docker push ghcr.io/your-id/mlflow:with-psycopg2-and-s3
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-helm-chart-구성-요소">🛠 Helm Chart 구성 요소&lt;/h2>
-&lt;h3 id="-chartyaml">🔹 Chart.yaml&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">v2&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">mlflow&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">description&lt;/span>: &lt;span style="color:#ae81ff">A Helm chart for deploying MLflow on Kubernetes&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">version&lt;/span>: &lt;span style="color:#ae81ff">0.1.0&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">appVersion&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;2.13.0&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h3 id="-valuesyaml-예시">🔹 values.yaml 예시&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">image&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repository&lt;/span>: &lt;span style="color:#ae81ff">hoizz/mlflow&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">tag&lt;/span>: &lt;span style="color:#ae81ff">with-psycopg2-and-s3&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">pullPolicy&lt;/span>: &lt;span style="color:#ae81ff">IfNotPresent&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">env&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">defaultArtifactRoot&lt;/span>: &lt;span style="color:#ae81ff">s3://mlflow-artifacts-keonho&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">service&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">ClusterIP&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">port&lt;/span>: &lt;span style="color:#ae81ff">5000&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">ingress&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">enabled&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">className&lt;/span>: &lt;span style="color:#ae81ff">nginx &lt;/span> &lt;span style="color:#75715e"># ✅ 반드시 명시해야 NGINX가 라우팅함&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">host&lt;/span>: &lt;span style="color:#ae81ff">mlflow.local&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">annotations&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">nginx.ingress.kubernetes.io/rewrite-target&lt;/span>: &lt;span style="color:#ae81ff">/&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">nginx.ingress.kubernetes.io/proxy-body-size&lt;/span>: &lt;span style="color:#ae81ff">10m&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">nginx.ingress.kubernetes.io/ssl-redirect&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;false&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-deployment-구성-예시">📄 Deployment 구성 예시&lt;/h2>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">containers&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">mlflow&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">image&lt;/span>: {{ &lt;span style="color:#ae81ff">.Values.image.repository }}:{{ .Values.image.tag }}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ports&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">containerPort&lt;/span>: &lt;span style="color:#ae81ff">5000&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">command&lt;/span>: [&lt;span style="color:#e6db74">&amp;#34;mlflow&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;server&amp;#34;&lt;/span>]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">args&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#e6db74">&amp;#34;--backend-store-uri=postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#e6db74">&amp;#34;--default-artifact-root={{ .Values.env.defaultArtifactRoot }}&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#e6db74">&amp;#34;--host=0.0.0.0&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#e6db74">&amp;#34;--port=5000&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#e6db74">&amp;#34;--serve-artifacts&amp;#34;&lt;/span> &lt;span style="color:#75715e"># ✅ 이게 있어야 artifacts UI/REST 지원 가능&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">env&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">DB_USER&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">valueFrom&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">secretKeyRef&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">mlflow-db-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">key&lt;/span>: &lt;span style="color:#ae81ff">username&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">DB_PASSWORD&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">valueFrom&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">secretKeyRef&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">mlflow-db-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">key&lt;/span>: &lt;span style="color:#ae81ff">password&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">DB_HOST&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">valueFrom&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">configMapKeyRef&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">mlflow-db-config&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">key&lt;/span>: &lt;span style="color:#ae81ff">host&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">DB_PORT&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">valueFrom&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">configMapKeyRef&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">mlflow-db-config&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">key&lt;/span>: &lt;span style="color:#ae81ff">port&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">DB_NAME&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">valueFrom&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">configMapKeyRef&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">mlflow-db-config&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">key&lt;/span>: &lt;span style="color:#ae81ff">dbname&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">envFrom&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">secretRef&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">aws-credentials-secret&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-ingress-구성-예시">🌐 Ingress 구성 예시&lt;/h2>
+&lt;p>&lt;img alt="03" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/03.png">&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 2단계: S3 &amp; PostgreSQL 연동을 위한 구성 및 Secret 관리 전략]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/</link><pubDate>Thu, 26 Jun 2025 17:11:49 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/</guid><description>&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모든 구성 요소가 외부 DB, GitHub, S3 등 민감한 리소스와 연동되기 때문에,&lt;/p>
+&lt;p>API 키 및 비밀번호를 직접 넣는 건 보안상 위험합니다.&lt;/p>
+&lt;p>따라서 Kubernetes Secret을 활용해 민감한 정보 노출을 최소화합니다.”&lt;/p>&lt;/blockquote>
 &lt;ul>
-&lt;li>로컬 k8s에 구성할 경우 LB 작동하지 않음 (퍼블릭 IP 없음)&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Pod가 노드와 동일한 네트워크 사용하도록 ingress-nginx 커스텀&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx &lt;span style="color:#ae81ff">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --namespace ingress-nginx --create-namespace &lt;span style="color:#ae81ff">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --set controller.hostNetwork&lt;span style="color:#f92672">=&lt;/span>true &lt;span style="color:#ae81ff">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --set controller.dnsPolicy&lt;span style="color:#f92672">=&lt;/span>ClusterFirstWithHostNet &lt;span style="color:#ae81ff">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> --set controller.kind&lt;span style="color:#f92672">=&lt;/span>DaemonSet
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
-&lt;li>MLlflow ingress 구성&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">apiVersion&lt;/span>: &lt;span style="color:#ae81ff">networking.k8s.io/v1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">kind&lt;/span>: &lt;span style="color:#ae81ff">Ingress&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">metadata&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">mlflow-ingress&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">namespace&lt;/span>: &lt;span style="color:#ae81ff">mlflow&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">annotations&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">nginx.ingress.kubernetes.io/rewrite-target&lt;/span>: &lt;span style="color:#ae81ff">/&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">spec&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">ingressClassName&lt;/span>: &lt;span style="color:#ae81ff">nginx&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">rules&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">host&lt;/span>: &lt;span style="color:#ae81ff">mlflow.local&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">http&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">paths&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">path&lt;/span>: &lt;span style="color:#ae81ff">/&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">pathType&lt;/span>: &lt;span style="color:#ae81ff">Prefix&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">backend&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">service&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">mlflow-service&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">port&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">number&lt;/span>: &lt;span style="color:#ae81ff">5000&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-배포-명령어">🚀 배포 명령어&lt;/h2>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl create namespace mlflow
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>helm install mlflow mlflow-helm/ -n mlflow
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-테스트-방법">🧪 테스트 방법&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>확인&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>MLflow UI&lt;/td>
-&lt;td>&lt;code>http://mlflow.local&lt;/code> 접근 확인&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>실험 등록&lt;/td>
-&lt;td>&lt;code>mlflow.log_param&lt;/code>, &lt;code>mlflow.log_metric&lt;/code>, &lt;code>log_model()&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>S3 연동&lt;/td>
-&lt;td>&lt;code>.mlruns&lt;/code> 폴더가 S3에 생성되는지 확인&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>PostgreSQL 연동&lt;/td>
-&lt;td>실험, run metadata가 DB에 들어가는지 확인&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-실무-팁">🧩 실무 팁&lt;/h2>
-&lt;ul>
-&lt;li>MLflow 버전과 PostgreSQL 드라이버 호환성 주의 (&lt;code>psycopg2-binary&lt;/code> 사용)&lt;/li>
-&lt;li>모델 URI는 &lt;code>&amp;quot;models:/my_model/Production&amp;quot;&lt;/code> 형식으로 사용하면 추후 FastAPI와 연동 용이&lt;/li>
-&lt;li>Helm chart에서 &lt;code>env&lt;/code> vs &lt;code>envFrom&lt;/code> 혼용 시 우선순위 주의&lt;/li>
+&lt;li>GitSync용 &lt;strong>SSH Key&lt;/strong>를 Secret으로 주입 → GitHub 인증&lt;/li>
+&lt;li>Airflow DAG 내에서 DB 접속을 위한 커넥션 정보도 Secret 처리&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="-mlops-실전-연결">🔧 MLOps 실전 연결&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>연결 항목&lt;/th>
-&lt;th>실무 의미&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>PostgreSQL&lt;/td>
-&lt;td>실험 metadata 저장소. 추적 가능성과 DB 백업 전략 필요&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>S3 연동&lt;/td>
-&lt;td>모델/로그 저장소 → 실시간 서빙까지 이어질 핵심 포인트&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>Helm 구성&lt;/td>
-&lt;td>운영 시 반복 배포, 버전 관리, GitOps 연동의 핵심 기반&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>Ingress&lt;/td>
-&lt;td>조직 내/외부에서 MLflow UI 접근 가능하게 해줌&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-트러블슈팅">🚨 트러블슈팅&lt;/h2>
-&lt;h3 id="-ts_01-psycopg2-모듈-없음--500-오류">🔻 TS_01: &lt;code>psycopg2&lt;/code> 모듈 없음 → 500 오류&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>ModuleNotFoundError: No module named &lt;span style="color:#e6db74">&amp;#39;psycopg2&amp;#39;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>해결&lt;/strong>: 커스텀 Docker 이미지에서 &lt;code>pip install psycopg2-binary&lt;/code> 포함&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 2단계: S3 &amp; PostgreSQL 연동을 위한 구성 및 Secret 관리 전략]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/</link><pubDate>Thu, 26 Jun 2025 17:11:49 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/02/</guid><description>&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
+&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
 &lt;ul>
 &lt;li>외부 리소스(AWS S3, DB 등)와 연결할 때, 인증 정보를 직접 코드나 YAML에 노출하는 건 보안상 위험&lt;/li>
 &lt;li>Kubernetes에서는 &lt;code>Secret&lt;/code>과 &lt;code>ConfigMap&lt;/code>, 그리고 &lt;code>envFrom&lt;/code>, &lt;code>volumeMount&lt;/code> 방식을 조합하여 사용 가능&lt;/li>
@@ -827,100 +114,22 @@ RUN pip install psycopg2-binary boto3
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="-아키텍처-구성도">🧱 아키텍처 구성도&lt;/h2>
-&lt;p>&lt;img alt="02" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/02.png">&lt;/p>
-&lt;hr>
-&lt;h2 id="-왜-secret-처리가-중요한가">🔐 왜 Secret 처리가 중요한가?&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>이유&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>AWS Access Key&lt;/td>
-&lt;td>노출 시 데이터 삭제/탈취 위험 있음&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>PostgreSQL 접속 URI&lt;/td>
-&lt;td>내부망 DB 구조 노출 + Credential 유출 위험&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>MLflow Tracking URI&lt;/td>
-&lt;td>내부 시스템 구조 노출 가능&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
+&lt;p>&lt;img alt="02" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/02.png">&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</link><pubDate>Mon, 23 Jun 2025 17:11:47 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</guid><description>&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
-&lt;p>✅ 실무에선 반드시 인증정보를 Git에 노출하지 않고, 환경에 안전하게 주입할 수 있어야 함&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</link><pubDate>Mon, 23 Jun 2025 17:11:47 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</guid><description>&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
+&lt;p>“ML 모델을 실험하고 추적하려면 단순 Jupyter Notebook으론 부족합니다.&lt;/p>
+&lt;p>Kubernetes 기반의 인프라를 선택한 이유는 다음과 같습니다.”&lt;/p>&lt;/blockquote>
 &lt;ul>
-&lt;li>&lt;strong>단순한 ML 파이프라인 구성&lt;/strong>을 넘어서, &lt;strong>인프라 설계부터 구축까지&lt;/strong> 진행&lt;/li>
-&lt;li>MLflow, Airflow, FastAPI를 로컬 쿠버네티스 위에서 구성, 실무에서 사용 가능한 구조를 직접 설계/구현&lt;/li>
-&lt;li>이번 포스팅에서는 &lt;strong>MLOps 인프라 전체 구조&lt;/strong>, 그리고 그 기반이 되는 NFS 서버, PostgreSQL, S3 버킷, Kubernetes 클러스터 환경 공유&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="-아키텍처-구성도">🧱 아키텍처 구성도&lt;/h2>
-&lt;p>&lt;img alt="01" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/01.png">&lt;/p>
-&lt;hr>
-&lt;h2 id="-인프라-설계-개요">🔧 인프라 설계 개요&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>구성 요소&lt;/th>
-&lt;th>설명&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>Kubernetes 클러스터&lt;/td>
-&lt;td>로컬 환경 (VMware) 기반. Helm &amp;amp; Ingress 활용&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>MLflow 서버&lt;/td>
-&lt;td>외부 PostgreSQL + S3 연동. 모델 등록, 추적, 아티팩트 관리&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>Airflow 서버&lt;/td>
-&lt;td>DAG GitSync + S3 연동 + PostgreSQL 외부 DB 사용&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>FastAPI 서버&lt;/td>
-&lt;td>MLflow 모델 호출용 예측 API. Ingress로 외부 노출&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>NFS 서버&lt;/td>
-&lt;td>Airflow 로그 저장소로 사용. PVC로 연결됨 (S3 가능하지만, pvc 테스트)&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>AWS S3&lt;/td>
-&lt;td>MLflow 아티팩트 저장소로 활용&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>PostgreSQL&lt;/td>
-&lt;td>MLflow &amp;amp; Airflow의 metadata 저장소. 외부 VM에서 호스팅됨&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h2 id="-nfs-서버-구성">📂 NFS 서버 구성&lt;/h2>
-&lt;h3 id="-설치--공유-디렉토리-생성-ubuntu-기준">✅ 설치 &amp;amp; 공유 디렉토리 생성 (Ubuntu 기준)&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>sudo apt update
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install -y nfs-kernel-server
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo mkdir -p /mnt/nfs_share/mlops/airflow/logs
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo chown -R 50000:root /mnt/nfs_share/mlops/airflow &lt;span style="color:#75715e"># 사용할 유저 UID, GID 확인 필요&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo chmod -R &lt;span style="color:#ae81ff">775&lt;/span> /mnt/nfs_share/mlops/airflow
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="-etcexports-설정">📄 &lt;code>/etc/exports&lt;/code> 설정&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 마운트 수가 적은 경우 (프로덕션 환경 적용시 root_squash 권장)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>/mnt/nfs_share/mlops/airflow/logs 192.168.18.0/24&lt;span style="color:#f92672">(&lt;/span>rw,sync,no_subtree_check,root_squash&lt;span style="color:#f92672">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 마운트 수가 많은 경우 (필요시)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>/mnt/nfs_share/mlops 192.168.18.0/24&lt;span style="color:#f92672">(&lt;/span>rw,sync,no_subtree_check,root_squash&lt;span style="color:#f92672">)&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 적용&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo exportfs -rav
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo systemctl restart nfs-kernel-server
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>📄 PV&amp;amp;PVC 설정&lt;/p></description></item><item><title>AWS SAP-C02 합격 후기</title><link>https://keonhoban.github.io/mlops-journey/posts/aws/01/</link><pubDate>Mon, 02 Jun 2025 12:09:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/aws/01/</guid><description>&lt;h2 id="1--왜-sap를-준비했을까">1. 📌 왜 SAP를 준비했을까?&lt;/h2>
+&lt;li>
+&lt;p>&lt;strong>Kubernetes&lt;/strong>:&lt;/p>
+&lt;p>👉 ML 모델 학습 및 서빙이 점점 컨테이너 기반으로 이뤄지고 있으며,&lt;/p>
+&lt;p>자원 할당, 스케일링, 리소스 격리를 위한 플랫폼으로 &lt;strong>사실상 표준&lt;/strong>이 되었음&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>NFS 구성&lt;/strong>:&lt;/p>
+&lt;p>👉 MLflow UI 내의 로그, 메타데이터 등 &lt;strong>파일 기반 공유 스토리지 필요&lt;/strong>,&lt;/p>
+&lt;p>로컬 볼륨은 Pod가 재시작되거나 이동하면 휘발되므로,&lt;/p>
+&lt;p>&lt;strong>여러 Pod 간 공유가 가능한 파일 스토리지가 필수&lt;/strong>&lt;/p>
+&lt;p>(※ 실무에서는 AWS EFS, GCP Filestore 등을 대체로 사용)&lt;/p></description></item><item><title>AWS SAP-C02 합격 후기</title><link>https://keonhoban.github.io/mlops-journey/posts/aws/01/</link><pubDate>Mon, 02 Jun 2025 12:09:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/aws/01/</guid><description>&lt;h2 id="1--왜-sap를-준비했을까">1. 📌 왜 SAP를 준비했을까?&lt;/h2>
 &lt;ul>
 &lt;li>현재 MLOps 엔지니어를 목표로 하며,&lt;/li>
 &lt;li>&lt;strong>AWS 기반 인프라 설계 및 운영 능력 강화&lt;/strong>가 필요하다고 판단했습니다.&lt;/li>
