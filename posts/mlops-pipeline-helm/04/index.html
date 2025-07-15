@@ -7,47 +7,257 @@ UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설�
 
 
 📐 아키텍처 구성도
-flowchart TD
 
-subgraph K8s_Cluster["Kubernetes Cluster"]
-  Scheduler[(Airflow Scheduler Pod)]
-  Worker[(Airflow Worker Pod)]
-  Webserver[(Airflow Webserver Pod)]
-end
-
-subgraph DAG_Repo["Git Repository"]
-  DAG[(airflow-dags.git)]
-end
-
-subgraph Secrets["K8s Secrets + Configs"]
-  SecretAWS[(aws-credentials-secret)]
-  SecretDB[(airflow-db-secret)]
-end
-
-subgraph External["External Systems"]
-  PG[(PostgreSQL: External Metadata DB)]
-  NFS[(NFS: airflow-logs-pvc)]
-end
-
-%% GitSync
-DAG --> Scheduler
-DAG --> Worker
-DAG --> Webserver
-
-%% Secret 주입
-SecretAWS --> Scheduler
-SecretAWS --> Worker
-SecretAWS --> Webserver
-SecretDB --> Scheduler
-
-%% 외부 연동
-Scheduler --> PG
-Scheduler --> NFS
-Worker --> NFS
-Webserver --> NFS
 
 🐳 커스텀 Airflow 이미지 구성
-GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]"><meta property="og:description" content='✨ TL;DR Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계 GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성 UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능 📐 아키텍처 구성도 flowchart TD subgraph K8s_Cluster["Kubernetes Cluster"] Scheduler[(Airflow Scheduler Pod)] Worker[(Airflow Worker Pod)] Webserver[(Airflow Webserver Pod)] end subgraph DAG_Repo["Git Repository"] DAG[(airflow-dags.git)] end subgraph Secrets["K8s Secrets + Configs"] SecretAWS[(aws-credentials-secret)] SecretDB[(airflow-db-secret)] end subgraph External["External Systems"] PG[(PostgreSQL: External Metadata DB)] NFS[(NFS: airflow-logs-pvc)] end %% GitSync DAG --> Scheduler DAG --> Worker DAG --> Webserver %% Secret 주입 SecretAWS --> Scheduler SecretAWS --> Worker SecretAWS --> Webserver SecretDB --> Scheduler %% 외부 연동 Scheduler --> PG Scheduler --> NFS Worker --> NFS Webserver --> NFS 🐳 커스텀 Airflow 이미지 구성 GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-07-03T17:11:53+09:00"><meta property="article:modified_time" content="2025-07-03T17:11:53+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]"><meta name=twitter:description content='✨ TL;DR
+GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요
+🔸 Dockerfile
+FROM apache/airflow:3.0.2-python3.12
+
+COPY requirements.txt /tmp/requirements.txt
+USER airflow
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+🔸 requirements.txt
+mlflow==2.13.0
+pandas
+scikit-learn
+boto3
+🔸 빌드 & 푸시
+docker build -t hoizz/airflow-custom:v5-mlflow .
+docker push hoizz/airflow-custom:v5-mlflow
+
+🛠 Helm 구성
+🔹 values.yaml
+# 실행 엔진 설정
+executor: KubernetesExecutor
+
+# 이미지 설정
+images:
+  airflow:
+    repository: hoizz/airflow-custom  # 커스텀 이미지
+    tag: v5-mlflow-20240712           # 태그 
+    pullPolicy: IfNotPresent
+
+# 생성한 fernetKey 고정 (helm delete & install 이후에도 이전 variables 등 데이터 sync 가능)
+fernetKeySecretName: my-fernet-secret
+
+# DAG GitSync 설정 (GitOps 기반)
+dags:
+  gitSync:
+    enabled: true
+    repo: git@github.com:keonhoban/airflow-dags.git
+    branch: main
+    subPath: dags
+    depth: 1
+    wait: 10
+    rev: HEAD
+    sshKeySecret: airflow-git-ssh-secret
+
+# DB 연동 (외부 PostgreSQL 사용)
+postgresql:
+  enabled: false  # 내부 Postgres 비활성화
+
+data:
+  metadataSecretName: airflow-db-secret  # Secret 안의 base64된 connection 값 참조
+
+# Airflow 환경 설정
+config:
+  AIRFLOW__CORE__LOAD_EXAMPLES:
+    value: "False"
+  AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION:
+    value: "False"
+  AIRFLOW__WEBSERVER__EXPOSE_CONFIG:
+    value: "True"
+
+# 리소스 설정 (권장)
+scheduler:
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+  extraVolumes:
+    - name: aws-credentials
+      secret:
+        secretName: aws-credentials-secret
+  extraVolumeMounts:
+    - name: aws-credentials
+      mountPath: /home/airflow/.aws
+      readOnly: true
+
+workers:
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+  extraVolumes:
+    - name: aws-credentials
+      secret:
+        secretName: aws-credentials-secret
+  extraVolumeMounts:
+    - name: aws-credentials
+      mountPath: /home/airflow/.aws
+      readOnly: true
+
+dagProcessor:
+  extraVolumes:
+    - name: aws-credentials
+      secret:
+        secretName: aws-credentials-secret
+  extraVolumeMounts:
+    - name: aws-credentials
+      mountPath: /home/airflow/.aws
+      readOnly: true
+
+# Ingress 설정 (Ingress Controller 기반 접근)
+ingress:
+  enabled: true
+
+  apiServer:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - name: airflow.local
+    tls:
+      enabled: false  # 실무에서는 true + cert-manager 연동 필요
+
+# Web UI 서비스 타입 설정
+apiServer:
+  service:
+    type: ClusterIP  # 외부 접근은 Ingress 경유
+
+# 로그 PVC 설정
+logs:
+  persistence:
+    enabled: true
+    existingClaim: airflow-logs-pvc
+
+# (선택) remote 로그 저장소 설정 (예: S3)
+# config:
+#   AIRFLOW__LOGGING__REMOTE_LOGGING: "True"
+#   AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: "s3://your-bucket-name/airflow-logs"
+#   AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: "aws_default"
+
+✅ fernet_key 생성 및 구성
+
+
+
+# 생성
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+
+# secret 적용 (파일 생성 후 kubectl apply 가능)
+# (git에 필요한 경우 SealedSecret or SOPS or .gitignore)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-fernet-secret
+  namespace: airflow
+type: Opaque
+stringData:
+  fernet-key: "xZ69xLVkiCfJQ23fXa8oubANRIJRHZLrIeANlHhPGmQ="  # 생성한 값으로 수정
+
+🔐 GitSync SSH Key & Secret 구성
+# SSH 키 생성
+ssh-keygen -t rsa -b 4096 -C "testuser@mlops.com"
+
+# GitHub UI에서 Deploy Key 등록 (공개키)
+
+# K8s Secret 생성 (비공개 키)
+kubectl create secret generic airflow-git-ssh-secret --from-file=gitSshKey=/root/.ssh/id_rsa -n airflow
+
+🚀 배포 명령어
+kubectl create namespace airflow
+
+helm install airflow apache-airflow/airflow -n airflow -f values.yaml
+
+🌐 접속 확인
+# /etc/hosts 수정
+{NodeIP} airflow.local
+
+# 브라우저 접속
+http://airflow.local
+
+🧪 확인 사항
+
+  
+      
+          항목
+          확인 방법
+      
+  
+  
+      
+          Airflow UI 접근
+          http://airflow.local
+      
+      
+          DAG GitSync
+          GitHub push → 자동 반영 여부 확인
+      
+      
+          PostgreSQL 연결
+          metadata DB에 연결 로그 확인
+      
+      
+          AWS 인증 연동
+          boto3.client() 호출 시 에러 없는지 확인
+      
+  
+
+
+🧩 Tip
+
+GitSync는 depth: 1, wait, rev: HEAD 옵션 설정으로 최적화 필요
+metadataSecretName에는 AIRFLOW__DATABASE__SQL_ALCHEMY_CONN이 base64 인코딩되어 있어야 함
+각 Pod (scheduler, worker, dagProcessor)마다 AWS credential 마운트 필요
+Ingress 접근을 위해선 hosts 파일에 수동 등록 필요 (로컬 클러스터인 경우)
+
+
+🔧 MLOps 실전 연결
+
+  
+      
+          연결 항목
+          실무 의미
+      
+  
+  
+      
+          DAG GitSync
+          GitOps 기반으로 실험/운영 동기화 자동화
+      
+      
+          External PostgreSQL
+          운영 DB와 통합, 백업/모니터링 가능
+      
+      
+          boto3 연동
+          DAG 내 S3 접근 가능 (모델 or raw 데이터 연동)
+      
+      
+          mlflow API 사용
+          실험 자동화 가능 (training, promotion 포함)
+      
+  
+
+
+🚨 트러블슈팅
+🔻 GitSync DAG 미반영시 체크 리스트
+
+subPath 경로 오류
+Secret에 등록된 SSH key 권한 문제
+GitHub deploy key에 write 권한 누락
+
+
+🧭 다음 포스트 예고
+
+⚙️ FastAPI 서빙 + MLflow 모델 연동'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]"><meta property="og:description" content='✨ TL;DR Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계 GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성 UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능 📐 아키텍처 구성도 🐳 커스텀 Airflow 이미지 구성 GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요
+🔸 Dockerfile FROM apache/airflow:3.0.2-python3.12 COPY requirements.txt /tmp/requirements.txt USER airflow RUN pip install --no-cache-dir -r /tmp/requirements.txt 🔸 requirements.txt mlflow==2.13.0 pandas scikit-learn boto3 🔸 빌드 & 푸시 docker build -t hoizz/airflow-custom:v5-mlflow . docker push hoizz/airflow-custom:v5-mlflow 🛠 Helm 구성 🔹 values.yaml # 실행 엔진 설정 executor: KubernetesExecutor # 이미지 설정 images: airflow: repository: hoizz/airflow-custom # 커스텀 이미지 tag: v5-mlflow-20240712 # 태그 pullPolicy: IfNotPresent # 생성한 fernetKey 고정 (helm delete & install 이후에도 이전 variables 등 데이터 sync 가능) fernetKeySecretName: my-fernet-secret # DAG GitSync 설정 (GitOps 기반) dags: gitSync: enabled: true repo: git@github.com:keonhoban/airflow-dags.git branch: main subPath: dags depth: 1 wait: 10 rev: HEAD sshKeySecret: airflow-git-ssh-secret # DB 연동 (외부 PostgreSQL 사용) postgresql: enabled: false # 내부 Postgres 비활성화 data: metadataSecretName: airflow-db-secret # Secret 안의 base64된 connection 값 참조 # Airflow 환경 설정 config: AIRFLOW__CORE__LOAD_EXAMPLES: value: "False" AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: value: "False" AIRFLOW__WEBSERVER__EXPOSE_CONFIG: value: "True" # 리소스 설정 (권장) scheduler: resources: requests: cpu: "500m" memory: "512Mi" limits: cpu: "1" memory: "1Gi" extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true workers: resources: requests: cpu: "500m" memory: "512Mi" limits: cpu: "1" memory: "1Gi" extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true dagProcessor: extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true # Ingress 설정 (Ingress Controller 기반 접근) ingress: enabled: true apiServer: enabled: true ingressClassName: nginx hosts: - name: airflow.local tls: enabled: false # 실무에서는 true + cert-manager 연동 필요 # Web UI 서비스 타입 설정 apiServer: service: type: ClusterIP # 외부 접근은 Ingress 경유 # 로그 PVC 설정 logs: persistence: enabled: true existingClaim: airflow-logs-pvc # (선택) remote 로그 저장소 설정 (예: S3) # config: # AIRFLOW__LOGGING__REMOTE_LOGGING: "True" # AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: "s3://your-bucket-name/airflow-logs" # AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: "aws_default" ✅ fernet_key 생성 및 구성 # 생성 python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())" # secret 적용 (파일 생성 후 kubectl apply 가능) # (git에 필요한 경우 SealedSecret or SOPS or .gitignore) apiVersion: v1 kind: Secret metadata: name: my-fernet-secret namespace: airflow type: Opaque stringData: fernet-key: "xZ69xLVkiCfJQ23fXa8oubANRIJRHZLrIeANlHhPGmQ=" # 생성한 값으로 수정 🔐 GitSync SSH Key & Secret 구성 # SSH 키 생성 ssh-keygen -t rsa -b 4096 -C "testuser@mlops.com" # GitHub UI에서 Deploy Key 등록 (공개키) # K8s Secret 생성 (비공개 키) kubectl create secret generic airflow-git-ssh-secret --from-file=gitSshKey=/root/.ssh/id_rsa -n airflow 🚀 배포 명령어 kubectl create namespace airflow helm install airflow apache-airflow/airflow -n airflow -f values.yaml 🌐 접속 확인 # /etc/hosts 수정 {NodeIP} airflow.local # 브라우저 접속 http://airflow.local 🧪 확인 사항 항목 확인 방법 Airflow UI 접근 http://airflow.local DAG GitSync GitHub push → 자동 반영 여부 확인 PostgreSQL 연결 metadata DB에 연결 로그 확인 AWS 인증 연동 boto3.client() 호출 시 에러 없는지 확인 🧩 Tip GitSync는 depth: 1, wait, rev: HEAD 옵션 설정으로 최적화 필요 metadataSecretName에는 AIRFLOW__DATABASE__SQL_ALCHEMY_CONN이 base64 인코딩되어 있어야 함 각 Pod (scheduler, worker, dagProcessor)마다 AWS credential 마운트 필요 Ingress 접근을 위해선 hosts 파일에 수동 등록 필요 (로컬 클러스터인 경우) 🔧 MLOps 실전 연결 연결 항목 실무 의미 DAG GitSync GitOps 기반으로 실험/운영 동기화 자동화 External PostgreSQL 운영 DB와 통합, 백업/모니터링 가능 boto3 연동 DAG 내 S3 접근 가능 (모델 or raw 데이터 연동) mlflow API 사용 실험 자동화 가능 (training, promotion 포함) 🚨 트러블슈팅 🔻 GitSync DAG 미반영시 체크 리스트 subPath 경로 오류 Secret에 등록된 SSH key 권한 문제 GitHub deploy key에 write 권한 누락 🧭 다음 포스트 예고 ⚙️ FastAPI 서빙 + MLflow 모델 연동'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-07-03T17:11:53+09:00"><meta property="article:modified_time" content="2025-07-03T17:11:53+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]"><meta name=twitter:description content='✨ TL;DR
 
 Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계
 GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성
@@ -55,85 +265,256 @@ UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설�
 
 
 📐 아키텍처 구성도
-flowchart TD
 
-subgraph K8s_Cluster["Kubernetes Cluster"]
-  Scheduler[(Airflow Scheduler Pod)]
-  Worker[(Airflow Worker Pod)]
-  Webserver[(Airflow Webserver Pod)]
-end
-
-subgraph DAG_Repo["Git Repository"]
-  DAG[(airflow-dags.git)]
-end
-
-subgraph Secrets["K8s Secrets + Configs"]
-  SecretAWS[(aws-credentials-secret)]
-  SecretDB[(airflow-db-secret)]
-end
-
-subgraph External["External Systems"]
-  PG[(PostgreSQL: External Metadata DB)]
-  NFS[(NFS: airflow-logs-pvc)]
-end
-
-%% GitSync
-DAG --> Scheduler
-DAG --> Worker
-DAG --> Webserver
-
-%% Secret 주입
-SecretAWS --> Scheduler
-SecretAWS --> Worker
-SecretAWS --> Webserver
-SecretDB --> Scheduler
-
-%% 외부 연동
-Scheduler --> PG
-Scheduler --> NFS
-Worker --> NFS
-Webserver --> NFS
 
 🐳 커스텀 Airflow 이미지 구성
-GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]","name":"[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync \u002b 외부 PostgreSQL \u002b Secret 연동]","description":"✨ TL;DR Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계 GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성 UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능 📐 아키텍처 구성도 flowchart TD subgraph K8s_Cluster[\u0026#34;Kubernetes Cluster\u0026#34;] Scheduler[(Airflow Scheduler Pod)] Worker[(Airflow Worker Pod)] Webserver[(Airflow Webserver Pod)] end subgraph DAG_Repo[\u0026#34;Git Repository\u0026#34;] DAG[(airflow-dags.git)] end subgraph Secrets[\u0026#34;K8s Secrets + Configs\u0026#34;] SecretAWS[(aws-credentials-secret)] SecretDB[(airflow-db-secret)] end subgraph External[\u0026#34;External Systems\u0026#34;] PG[(PostgreSQL: External Metadata DB)] NFS[(NFS: airflow-logs-pvc)] end %% GitSync DAG --\u0026gt; Scheduler DAG --\u0026gt; Worker DAG --\u0026gt; Webserver %% Secret 주입 SecretAWS --\u0026gt; Scheduler SecretAWS --\u0026gt; Worker SecretAWS --\u0026gt; Webserver SecretDB --\u0026gt; Scheduler %% 외부 연동 Scheduler --\u0026gt; PG Scheduler --\u0026gt; NFS Worker --\u0026gt; NFS Webserver --\u0026gt; NFS 🐳 커스텀 Airflow 이미지 구성 GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요\n","keywords":[],"articleBody":"✨ TL;DR Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계 GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성 UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능 📐 아키텍처 구성도 flowchart TD subgraph K8s_Cluster[\"Kubernetes Cluster\"] Scheduler[(Airflow Scheduler Pod)] Worker[(Airflow Worker Pod)] Webserver[(Airflow Webserver Pod)] end subgraph DAG_Repo[\"Git Repository\"] DAG[(airflow-dags.git)] end subgraph Secrets[\"K8s Secrets + Configs\"] SecretAWS[(aws-credentials-secret)] SecretDB[(airflow-db-secret)] end subgraph External[\"External Systems\"] PG[(PostgreSQL: External Metadata DB)] NFS[(NFS: airflow-logs-pvc)] end %% GitSync DAG --\u003e Scheduler DAG --\u003e Worker DAG --\u003e Webserver %% Secret 주입 SecretAWS --\u003e Scheduler SecretAWS --\u003e Worker SecretAWS --\u003e Webserver SecretDB --\u003e Scheduler %% 외부 연동 Scheduler --\u003e PG Scheduler --\u003e NFS Worker --\u003e NFS Webserver --\u003e NFS 🐳 커스텀 Airflow 이미지 구성 GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요\n🔸 Dockerfile FROM apache/airflow:3.0.2-python3.12 COPY requirements.txt /tmp/requirements.txt USER airflow RUN pip install --no-cache-dir -r /tmp/requirements.txt 🔸 requirements.txt mlflow==2.13.0 pandas scikit-learn boto3 🔸 빌드 \u0026 푸시 docker build -t hoizz/airflow-custom:v5-mlflow . docker push hoizz/airflow-custom:v5-mlflow 🛠 Helm 구성 🔹 values.yaml # 실행 엔진 설정 executor: KubernetesExecutor # 이미지 설정 images: airflow: repository: hoizz/airflow-custom # 커스텀 이미지 tag: v5-mlflow-20240712 # 태그 pullPolicy: IfNotPresent # 생성한 fernetKey 고정 (helm delete \u0026 install 이후에도 이전 variables 등 데이터 sync 가능) fernetKeySecretName: my-fernet-secret # DAG GitSync 설정 (GitOps 기반) dags: gitSync: enabled: true repo: git@github.com:keonhoban/airflow-dags.git branch: main subPath: dags depth: 1 wait: 10 rev: HEAD sshKeySecret: airflow-git-ssh-secret # DB 연동 (외부 PostgreSQL 사용) postgresql: enabled: false # 내부 Postgres 비활성화 data: metadataSecretName: airflow-db-secret # Secret 안의 base64된 connection 값 참조 # Airflow 환경 설정 config: AIRFLOW__CORE__LOAD_EXAMPLES: value: \"False\" AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: value: \"False\" AIRFLOW__WEBSERVER__EXPOSE_CONFIG: value: \"True\" # 리소스 설정 (권장) scheduler: resources: requests: cpu: \"500m\" memory: \"512Mi\" limits: cpu: \"1\" memory: \"1Gi\" extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true workers: resources: requests: cpu: \"500m\" memory: \"512Mi\" limits: cpu: \"1\" memory: \"1Gi\" extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true dagProcessor: extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true # Ingress 설정 (Ingress Controller 기반 접근) ingress: enabled: true apiServer: enabled: true ingressClassName: nginx hosts: - name: airflow.local tls: enabled: false # 실무에서는 true + cert-manager 연동 필요 # Web UI 서비스 타입 설정 apiServer: service: type: ClusterIP # 외부 접근은 Ingress 경유 # 로그 PVC 설정 logs: persistence: enabled: true existingClaim: airflow-logs-pvc # (선택) remote 로그 저장소 설정 (예: S3) # config: # AIRFLOW__LOGGING__REMOTE_LOGGING: \"True\" # AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: \"s3://your-bucket-name/airflow-logs\" # AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: \"aws_default\" ✅ fernet_key 생성 및 구성 # 생성 python -c \"from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())\" # secret 적용 (파일 생성 후 kubectl apply 가능) # (git에 필요한 경우 SealedSecret or SOPS or .gitignore) apiVersion: v1 kind: Secret metadata: name: my-fernet-secret namespace: airflow type: Opaque stringData: fernet-key: \"xZ69xLVkiCfJQ23fXa8oubANRIJRHZLrIeANlHhPGmQ=\" # 생성한 값으로 수정 🔐 GitSync SSH Key \u0026 Secret 구성 # SSH 키 생성 ssh-keygen -t rsa -b 4096 -C \"testuser@mlops.com\" # GitHub UI에서 Deploy Key 등록 (공개키) # K8s Secret 생성 (비공개 키) kubectl create secret generic airflow-git-ssh-secret --from-file=gitSshKey=/root/.ssh/id_rsa -n airflow 🚀 배포 명령어 kubectl create namespace airflow helm install airflow apache-airflow/airflow -n airflow -f values.yaml 🌐 접속 확인 # /etc/hosts 수정 {NodeIP} airflow.local # 브라우저 접속 http://airflow.local 🧪 확인 사항 항목 확인 방법 Airflow UI 접근 http://airflow.local DAG GitSync GitHub push → 자동 반영 여부 확인 PostgreSQL 연결 metadata DB에 연결 로그 확인 AWS 인증 연동 boto3.client() 호출 시 에러 없는지 확인 🧩 Tip GitSync는 depth: 1, wait, rev: HEAD 옵션 설정으로 최적화 필요 metadataSecretName에는 AIRFLOW__DATABASE__SQL_ALCHEMY_CONN이 base64 인코딩되어 있어야 함 각 Pod (scheduler, worker, dagProcessor)마다 AWS credential 마운트 필요 Ingress 접근을 위해선 hosts 파일에 수동 등록 필요 (로컬 클러스터인 경우) 🔧 MLOps 실전 연결 연결 항목 실무 의미 DAG GitSync GitOps 기반으로 실험/운영 동기화 자동화 External PostgreSQL 운영 DB와 통합, 백업/모니터링 가능 boto3 연동 DAG 내 S3 접근 가능 (모델 or raw 데이터 연동) mlflow API 사용 실험 자동화 가능 (training, promotion 포함) 🚨 트러블슈팅 🔻 GitSync DAG 미반영시 체크 리스트 subPath 경로 오류 Secret에 등록된 SSH key 권한 문제 GitHub deploy key에 write 권한 누락 🧭 다음 포스트 예고 ⚙️ FastAPI 서빙 + MLflow 모델 연동\n→ 모델 핫스왑, REST API 구성, Stage/Version 자동 적용까지 진행 예정입니다.\n","wordCount":"699","inLanguage":"en","datePublished":"2025-07-03T17:11:53+09:00","dateModified":"2025-07-03T17:11:53+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]</h1><div class=post-meta><span title='2025-07-03 17:11:53 +0900 +0900'>July 3, 2025</span>&nbsp;·&nbsp;4 min</div></header><div class=post-content><h2 id=-tldr>✨ TL;DR<a hidden class=anchor aria-hidden=true href=#-tldr>#</a></h2><ul><li>Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계</li><li>GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성</li><li>UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능</li></ul><hr><h2 id=-아키텍처-구성도>📐 아키텍처 구성도<a hidden class=anchor aria-hidden=true href=#-아키텍처-구성도>#</a></h2><pre tabindex=0><code class=language-mermaid data-lang=mermaid>flowchart TD
+GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요
+🔸 Dockerfile
+FROM apache/airflow:3.0.2-python3.12
 
-subgraph K8s_Cluster[&#34;Kubernetes Cluster&#34;]
-  Scheduler[(Airflow Scheduler Pod)]
-  Worker[(Airflow Worker Pod)]
-  Webserver[(Airflow Webserver Pod)]
-end
+COPY requirements.txt /tmp/requirements.txt
+USER airflow
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+🔸 requirements.txt
+mlflow==2.13.0
+pandas
+scikit-learn
+boto3
+🔸 빌드 & 푸시
+docker build -t hoizz/airflow-custom:v5-mlflow .
+docker push hoizz/airflow-custom:v5-mlflow
 
-subgraph DAG_Repo[&#34;Git Repository&#34;]
-  DAG[(airflow-dags.git)]
-end
+🛠 Helm 구성
+🔹 values.yaml
+# 실행 엔진 설정
+executor: KubernetesExecutor
 
-subgraph Secrets[&#34;K8s Secrets + Configs&#34;]
-  SecretAWS[(aws-credentials-secret)]
-  SecretDB[(airflow-db-secret)]
-end
+# 이미지 설정
+images:
+  airflow:
+    repository: hoizz/airflow-custom  # 커스텀 이미지
+    tag: v5-mlflow-20240712           # 태그 
+    pullPolicy: IfNotPresent
 
-subgraph External[&#34;External Systems&#34;]
-  PG[(PostgreSQL: External Metadata DB)]
-  NFS[(NFS: airflow-logs-pvc)]
-end
+# 생성한 fernetKey 고정 (helm delete & install 이후에도 이전 variables 등 데이터 sync 가능)
+fernetKeySecretName: my-fernet-secret
 
-%% GitSync
-DAG --&gt; Scheduler
-DAG --&gt; Worker
-DAG --&gt; Webserver
+# DAG GitSync 설정 (GitOps 기반)
+dags:
+  gitSync:
+    enabled: true
+    repo: git@github.com:keonhoban/airflow-dags.git
+    branch: main
+    subPath: dags
+    depth: 1
+    wait: 10
+    rev: HEAD
+    sshKeySecret: airflow-git-ssh-secret
 
-%% Secret 주입
-SecretAWS --&gt; Scheduler
-SecretAWS --&gt; Worker
-SecretAWS --&gt; Webserver
-SecretDB --&gt; Scheduler
+# DB 연동 (외부 PostgreSQL 사용)
+postgresql:
+  enabled: false  # 내부 Postgres 비활성화
 
-%% 외부 연동
-Scheduler --&gt; PG
-Scheduler --&gt; NFS
-Worker --&gt; NFS
-Webserver --&gt; NFS
-</code></pre><hr><h2 id=-커스텀-airflow-이미지-구성>🐳 커스텀 Airflow 이미지 구성<a hidden class=anchor aria-hidden=true href=#-커스텀-airflow-이미지-구성>#</a></h2><p>GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요</p><h3 id=-dockerfile>🔸 Dockerfile<a hidden class=anchor aria-hidden=true href=#-dockerfile>#</a></h3><pre tabindex=0><code>FROM apache/airflow:3.0.2-python3.12
+data:
+  metadataSecretName: airflow-db-secret  # Secret 안의 base64된 connection 값 참조
+
+# Airflow 환경 설정
+config:
+  AIRFLOW__CORE__LOAD_EXAMPLES:
+    value: "False"
+  AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION:
+    value: "False"
+  AIRFLOW__WEBSERVER__EXPOSE_CONFIG:
+    value: "True"
+
+# 리소스 설정 (권장)
+scheduler:
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+  extraVolumes:
+    - name: aws-credentials
+      secret:
+        secretName: aws-credentials-secret
+  extraVolumeMounts:
+    - name: aws-credentials
+      mountPath: /home/airflow/.aws
+      readOnly: true
+
+workers:
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+  extraVolumes:
+    - name: aws-credentials
+      secret:
+        secretName: aws-credentials-secret
+  extraVolumeMounts:
+    - name: aws-credentials
+      mountPath: /home/airflow/.aws
+      readOnly: true
+
+dagProcessor:
+  extraVolumes:
+    - name: aws-credentials
+      secret:
+        secretName: aws-credentials-secret
+  extraVolumeMounts:
+    - name: aws-credentials
+      mountPath: /home/airflow/.aws
+      readOnly: true
+
+# Ingress 설정 (Ingress Controller 기반 접근)
+ingress:
+  enabled: true
+
+  apiServer:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - name: airflow.local
+    tls:
+      enabled: false  # 실무에서는 true + cert-manager 연동 필요
+
+# Web UI 서비스 타입 설정
+apiServer:
+  service:
+    type: ClusterIP  # 외부 접근은 Ingress 경유
+
+# 로그 PVC 설정
+logs:
+  persistence:
+    enabled: true
+    existingClaim: airflow-logs-pvc
+
+# (선택) remote 로그 저장소 설정 (예: S3)
+# config:
+#   AIRFLOW__LOGGING__REMOTE_LOGGING: "True"
+#   AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: "s3://your-bucket-name/airflow-logs"
+#   AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: "aws_default"
+
+✅ fernet_key 생성 및 구성
+
+
+
+# 생성
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+
+# secret 적용 (파일 생성 후 kubectl apply 가능)
+# (git에 필요한 경우 SealedSecret or SOPS or .gitignore)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-fernet-secret
+  namespace: airflow
+type: Opaque
+stringData:
+  fernet-key: "xZ69xLVkiCfJQ23fXa8oubANRIJRHZLrIeANlHhPGmQ="  # 생성한 값으로 수정
+
+🔐 GitSync SSH Key & Secret 구성
+# SSH 키 생성
+ssh-keygen -t rsa -b 4096 -C "testuser@mlops.com"
+
+# GitHub UI에서 Deploy Key 등록 (공개키)
+
+# K8s Secret 생성 (비공개 키)
+kubectl create secret generic airflow-git-ssh-secret --from-file=gitSshKey=/root/.ssh/id_rsa -n airflow
+
+🚀 배포 명령어
+kubectl create namespace airflow
+
+helm install airflow apache-airflow/airflow -n airflow -f values.yaml
+
+🌐 접속 확인
+# /etc/hosts 수정
+{NodeIP} airflow.local
+
+# 브라우저 접속
+http://airflow.local
+
+🧪 확인 사항
+
+  
+      
+          항목
+          확인 방법
+      
+  
+  
+      
+          Airflow UI 접근
+          http://airflow.local
+      
+      
+          DAG GitSync
+          GitHub push → 자동 반영 여부 확인
+      
+      
+          PostgreSQL 연결
+          metadata DB에 연결 로그 확인
+      
+      
+          AWS 인증 연동
+          boto3.client() 호출 시 에러 없는지 확인
+      
+  
+
+
+🧩 Tip
+
+GitSync는 depth: 1, wait, rev: HEAD 옵션 설정으로 최적화 필요
+metadataSecretName에는 AIRFLOW__DATABASE__SQL_ALCHEMY_CONN이 base64 인코딩되어 있어야 함
+각 Pod (scheduler, worker, dagProcessor)마다 AWS credential 마운트 필요
+Ingress 접근을 위해선 hosts 파일에 수동 등록 필요 (로컬 클러스터인 경우)
+
+
+🔧 MLOps 실전 연결
+
+  
+      
+          연결 항목
+          실무 의미
+      
+  
+  
+      
+          DAG GitSync
+          GitOps 기반으로 실험/운영 동기화 자동화
+      
+      
+          External PostgreSQL
+          운영 DB와 통합, 백업/모니터링 가능
+      
+      
+          boto3 연동
+          DAG 내 S3 접근 가능 (모델 or raw 데이터 연동)
+      
+      
+          mlflow API 사용
+          실험 자동화 가능 (training, promotion 포함)
+      
+  
+
+
+🚨 트러블슈팅
+🔻 GitSync DAG 미반영시 체크 리스트
+
+subPath 경로 오류
+Secret에 등록된 SSH key 권한 문제
+GitHub deploy key에 write 권한 누락
+
+
+🧭 다음 포스트 예고
+
+⚙️ FastAPI 서빙 + MLflow 모델 연동'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]","name":"[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync \u002b 외부 PostgreSQL \u002b Secret 연동]","description":"✨ TL;DR Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계 GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성 UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능 📐 아키텍처 구성도 🐳 커스텀 Airflow 이미지 구성 GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요\n🔸 Dockerfile FROM apache/airflow:3.0.2-python3.12 COPY requirements.txt /tmp/requirements.txt USER airflow RUN pip install --no-cache-dir -r /tmp/requirements.txt 🔸 requirements.txt mlflow==2.13.0 pandas scikit-learn boto3 🔸 빌드 \u0026amp; 푸시 docker build -t hoizz/airflow-custom:v5-mlflow . docker push hoizz/airflow-custom:v5-mlflow 🛠 Helm 구성 🔹 values.yaml # 실행 엔진 설정 executor: KubernetesExecutor # 이미지 설정 images: airflow: repository: hoizz/airflow-custom # 커스텀 이미지 tag: v5-mlflow-20240712 # 태그 pullPolicy: IfNotPresent # 생성한 fernetKey 고정 (helm delete \u0026amp; install 이후에도 이전 variables 등 데이터 sync 가능) fernetKeySecretName: my-fernet-secret # DAG GitSync 설정 (GitOps 기반) dags: gitSync: enabled: true repo: git@github.com:keonhoban/airflow-dags.git branch: main subPath: dags depth: 1 wait: 10 rev: HEAD sshKeySecret: airflow-git-ssh-secret # DB 연동 (외부 PostgreSQL 사용) postgresql: enabled: false # 내부 Postgres 비활성화 data: metadataSecretName: airflow-db-secret # Secret 안의 base64된 connection 값 참조 # Airflow 환경 설정 config: AIRFLOW__CORE__LOAD_EXAMPLES: value: \u0026#34;False\u0026#34; AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: value: \u0026#34;False\u0026#34; AIRFLOW__WEBSERVER__EXPOSE_CONFIG: value: \u0026#34;True\u0026#34; # 리소스 설정 (권장) scheduler: resources: requests: cpu: \u0026#34;500m\u0026#34; memory: \u0026#34;512Mi\u0026#34; limits: cpu: \u0026#34;1\u0026#34; memory: \u0026#34;1Gi\u0026#34; extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true workers: resources: requests: cpu: \u0026#34;500m\u0026#34; memory: \u0026#34;512Mi\u0026#34; limits: cpu: \u0026#34;1\u0026#34; memory: \u0026#34;1Gi\u0026#34; extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true dagProcessor: extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true # Ingress 설정 (Ingress Controller 기반 접근) ingress: enabled: true apiServer: enabled: true ingressClassName: nginx hosts: - name: airflow.local tls: enabled: false # 실무에서는 true + cert-manager 연동 필요 # Web UI 서비스 타입 설정 apiServer: service: type: ClusterIP # 외부 접근은 Ingress 경유 # 로그 PVC 설정 logs: persistence: enabled: true existingClaim: airflow-logs-pvc # (선택) remote 로그 저장소 설정 (예: S3) # config: # AIRFLOW__LOGGING__REMOTE_LOGGING: \u0026#34;True\u0026#34; # AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: \u0026#34;s3://your-bucket-name/airflow-logs\u0026#34; # AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: \u0026#34;aws_default\u0026#34; ✅ fernet_key 생성 및 구성 # 생성 python -c \u0026#34;from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())\u0026#34; # secret 적용 (파일 생성 후 kubectl apply 가능) # (git에 필요한 경우 SealedSecret or SOPS or .gitignore) apiVersion: v1 kind: Secret metadata: name: my-fernet-secret namespace: airflow type: Opaque stringData: fernet-key: \u0026#34;xZ69xLVkiCfJQ23fXa8oubANRIJRHZLrIeANlHhPGmQ=\u0026#34; # 생성한 값으로 수정 🔐 GitSync SSH Key \u0026amp; Secret 구성 # SSH 키 생성 ssh-keygen -t rsa -b 4096 -C \u0026#34;testuser@mlops.com\u0026#34; # GitHub UI에서 Deploy Key 등록 (공개키) # K8s Secret 생성 (비공개 키) kubectl create secret generic airflow-git-ssh-secret --from-file=gitSshKey=/root/.ssh/id_rsa -n airflow 🚀 배포 명령어 kubectl create namespace airflow helm install airflow apache-airflow/airflow -n airflow -f values.yaml 🌐 접속 확인 # /etc/hosts 수정 {NodeIP} airflow.local # 브라우저 접속 http://airflow.local 🧪 확인 사항 항목 확인 방법 Airflow UI 접근 http://airflow.local DAG GitSync GitHub push → 자동 반영 여부 확인 PostgreSQL 연결 metadata DB에 연결 로그 확인 AWS 인증 연동 boto3.client() 호출 시 에러 없는지 확인 🧩 Tip GitSync는 depth: 1, wait, rev: HEAD 옵션 설정으로 최적화 필요 metadataSecretName에는 AIRFLOW__DATABASE__SQL_ALCHEMY_CONN이 base64 인코딩되어 있어야 함 각 Pod (scheduler, worker, dagProcessor)마다 AWS credential 마운트 필요 Ingress 접근을 위해선 hosts 파일에 수동 등록 필요 (로컬 클러스터인 경우) 🔧 MLOps 실전 연결 연결 항목 실무 의미 DAG GitSync GitOps 기반으로 실험/운영 동기화 자동화 External PostgreSQL 운영 DB와 통합, 백업/모니터링 가능 boto3 연동 DAG 내 S3 접근 가능 (모델 or raw 데이터 연동) mlflow API 사용 실험 자동화 가능 (training, promotion 포함) 🚨 트러블슈팅 🔻 GitSync DAG 미반영시 체크 리스트 subPath 경로 오류 Secret에 등록된 SSH key 권한 문제 GitHub deploy key에 write 권한 누락 🧭 다음 포스트 예고 ⚙️ FastAPI 서빙 + MLflow 모델 연동\n","keywords":[],"articleBody":"✨ TL;DR Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계 GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성 UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능 📐 아키텍처 구성도 🐳 커스텀 Airflow 이미지 구성 GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요\n🔸 Dockerfile FROM apache/airflow:3.0.2-python3.12 COPY requirements.txt /tmp/requirements.txt USER airflow RUN pip install --no-cache-dir -r /tmp/requirements.txt 🔸 requirements.txt mlflow==2.13.0 pandas scikit-learn boto3 🔸 빌드 \u0026 푸시 docker build -t hoizz/airflow-custom:v5-mlflow . docker push hoizz/airflow-custom:v5-mlflow 🛠 Helm 구성 🔹 values.yaml # 실행 엔진 설정 executor: KubernetesExecutor # 이미지 설정 images: airflow: repository: hoizz/airflow-custom # 커스텀 이미지 tag: v5-mlflow-20240712 # 태그 pullPolicy: IfNotPresent # 생성한 fernetKey 고정 (helm delete \u0026 install 이후에도 이전 variables 등 데이터 sync 가능) fernetKeySecretName: my-fernet-secret # DAG GitSync 설정 (GitOps 기반) dags: gitSync: enabled: true repo: git@github.com:keonhoban/airflow-dags.git branch: main subPath: dags depth: 1 wait: 10 rev: HEAD sshKeySecret: airflow-git-ssh-secret # DB 연동 (외부 PostgreSQL 사용) postgresql: enabled: false # 내부 Postgres 비활성화 data: metadataSecretName: airflow-db-secret # Secret 안의 base64된 connection 값 참조 # Airflow 환경 설정 config: AIRFLOW__CORE__LOAD_EXAMPLES: value: \"False\" AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: value: \"False\" AIRFLOW__WEBSERVER__EXPOSE_CONFIG: value: \"True\" # 리소스 설정 (권장) scheduler: resources: requests: cpu: \"500m\" memory: \"512Mi\" limits: cpu: \"1\" memory: \"1Gi\" extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true workers: resources: requests: cpu: \"500m\" memory: \"512Mi\" limits: cpu: \"1\" memory: \"1Gi\" extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true dagProcessor: extraVolumes: - name: aws-credentials secret: secretName: aws-credentials-secret extraVolumeMounts: - name: aws-credentials mountPath: /home/airflow/.aws readOnly: true # Ingress 설정 (Ingress Controller 기반 접근) ingress: enabled: true apiServer: enabled: true ingressClassName: nginx hosts: - name: airflow.local tls: enabled: false # 실무에서는 true + cert-manager 연동 필요 # Web UI 서비스 타입 설정 apiServer: service: type: ClusterIP # 외부 접근은 Ingress 경유 # 로그 PVC 설정 logs: persistence: enabled: true existingClaim: airflow-logs-pvc # (선택) remote 로그 저장소 설정 (예: S3) # config: # AIRFLOW__LOGGING__REMOTE_LOGGING: \"True\" # AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: \"s3://your-bucket-name/airflow-logs\" # AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: \"aws_default\" ✅ fernet_key 생성 및 구성 # 생성 python -c \"from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())\" # secret 적용 (파일 생성 후 kubectl apply 가능) # (git에 필요한 경우 SealedSecret or SOPS or .gitignore) apiVersion: v1 kind: Secret metadata: name: my-fernet-secret namespace: airflow type: Opaque stringData: fernet-key: \"xZ69xLVkiCfJQ23fXa8oubANRIJRHZLrIeANlHhPGmQ=\" # 생성한 값으로 수정 🔐 GitSync SSH Key \u0026 Secret 구성 # SSH 키 생성 ssh-keygen -t rsa -b 4096 -C \"testuser@mlops.com\" # GitHub UI에서 Deploy Key 등록 (공개키) # K8s Secret 생성 (비공개 키) kubectl create secret generic airflow-git-ssh-secret --from-file=gitSshKey=/root/.ssh/id_rsa -n airflow 🚀 배포 명령어 kubectl create namespace airflow helm install airflow apache-airflow/airflow -n airflow -f values.yaml 🌐 접속 확인 # /etc/hosts 수정 {NodeIP} airflow.local # 브라우저 접속 http://airflow.local 🧪 확인 사항 항목 확인 방법 Airflow UI 접근 http://airflow.local DAG GitSync GitHub push → 자동 반영 여부 확인 PostgreSQL 연결 metadata DB에 연결 로그 확인 AWS 인증 연동 boto3.client() 호출 시 에러 없는지 확인 🧩 Tip GitSync는 depth: 1, wait, rev: HEAD 옵션 설정으로 최적화 필요 metadataSecretName에는 AIRFLOW__DATABASE__SQL_ALCHEMY_CONN이 base64 인코딩되어 있어야 함 각 Pod (scheduler, worker, dagProcessor)마다 AWS credential 마운트 필요 Ingress 접근을 위해선 hosts 파일에 수동 등록 필요 (로컬 클러스터인 경우) 🔧 MLOps 실전 연결 연결 항목 실무 의미 DAG GitSync GitOps 기반으로 실험/운영 동기화 자동화 External PostgreSQL 운영 DB와 통합, 백업/모니터링 가능 boto3 연동 DAG 내 S3 접근 가능 (모델 or raw 데이터 연동) mlflow API 사용 실험 자동화 가능 (training, promotion 포함) 🚨 트러블슈팅 🔻 GitSync DAG 미반영시 체크 리스트 subPath 경로 오류 Secret에 등록된 SSH key 권한 문제 GitHub deploy key에 write 권한 누락 🧭 다음 포스트 예고 ⚙️ FastAPI 서빙 + MLflow 모델 연동\n→ 모델 핫스왑, REST API 구성, Stage/Version 자동 적용까지 진행 예정입니다.\n","wordCount":"620","inLanguage":"en","datePublished":"2025-07-03T17:11:53+09:00","dateModified":"2025-07-03T17:11:53+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]</h1><div class=post-meta><span title='2025-07-03 17:11:53 +0900 +0900'>July 3, 2025</span>&nbsp;·&nbsp;3 min</div></header><div class=post-content><h2 id=-tldr>✨ TL;DR<a hidden class=anchor aria-hidden=true href=#-tldr>#</a></h2><ul><li>Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계</li><li>GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성</li><li>UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능</li></ul><hr><h2 id=-아키텍처-구성도>📐 아키텍처 구성도<a hidden class=anchor aria-hidden=true href=#-아키텍처-구성도>#</a></h2><p><img alt=04 loading=lazy src=/mlops-journey/images/04.png></p><hr><h2 id=-커스텀-airflow-이미지-구성>🐳 커스텀 Airflow 이미지 구성<a hidden class=anchor aria-hidden=true href=#-커스텀-airflow-이미지-구성>#</a></h2><p>GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치 필요</p><h3 id=-dockerfile>🔸 Dockerfile<a hidden class=anchor aria-hidden=true href=#-dockerfile>#</a></h3><pre tabindex=0><code>FROM apache/airflow:3.0.2-python3.12
 
 COPY requirements.txt /tmp/requirements.txt
 USER airflow
