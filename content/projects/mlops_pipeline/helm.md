@@ -19,7 +19,7 @@ categories = ['MLOps Pipeline', 'Airflow', 'MLflow', 'FastAPI', 'NFS', 'PostgreS
   → Airflow + GitSync 연동으로 파이프라인 자동화 및 버전 관리 가능
 
 - **모델 버전 업데이트 시 수동 재배포로 인한 운영 오류 발생 가능성**  
-  → MLflow 모델 등록 → FastAPI에서 자동 로딩 + 핫스왑 테스트 구조 구현
+  → MLflow 모델 등록 → FastAPI에서 자동 로딩 + 핫스왑 구조 구현
 
 - **로컬 개발 환경에 의존적인 ML 워크플로우**  
   → Kubernetes 기반 컨테이너 환경으로 전환하여 확장성과 유지보수성 확보
@@ -51,7 +51,7 @@ categories = ['MLOps Pipeline', 'Airflow', 'MLflow', 'FastAPI', 'NFS', 'PostgreS
 | 항목 | 내용 |
 | --- | --- |
 | 모델 실험 자동화 | Airflow DAG + MLflow 연동으로 다양한 모델 버전 학습 자동화 |
-| 서빙 안정성 | FastAPI가 `Production` Stage 기준으로 모델 로드 → 무중단 핫스왑 가능 |
+| 서빙 안정성 | FastAPI가 `Staging` Stage 기준으로 모델 로드 → 무중단 핫스왑 가능 |
 | 보안 구성 | AWS 인증 정보 및 DB 정보는 Secret으로 주입 |
 | 인프라 이식성 | Helm + Docker + Kubernetes 기반 → 어디서든 이식 가능 |
 | 실시간 추론 확인 | Ingress 기반 UI/Endpoint 연결 → 바로 curl 테스트 가능 |
