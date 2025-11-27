@@ -2,255 +2,62 @@
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
-&lt;h1 id="-목차">🧭 목차&lt;/h1>
+&lt;h1 id="-목차-핵심만">🧭 목차 (핵심만)&lt;/h1>
 &lt;table>
 &lt;thead>
 &lt;tr>
 &lt;th>#&lt;/th>
 &lt;th>섹션&lt;/th>
-&lt;th>하위 항목&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
 &lt;tr>
 &lt;td>0&lt;/td>
-&lt;td>🧰 준비 (한 번만)&lt;/td>
-&lt;td>—&lt;/td>
+&lt;td>준비 (CI/CD·GitOps·Secrets 기본 세팅)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>1&lt;/td>
-&lt;td>🧪 CI 진입 (GitHub Actions)&lt;/td>
-&lt;td>—&lt;/td>
+&lt;td>CI 실행 (GitHub Actions)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>2&lt;/td>
-&lt;td>🔁 ArgoCD 동기화 (ApplicationSet)&lt;/td>
-&lt;td>—&lt;/td>
+&lt;td>ArgoCD 자동 동기화&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>3&lt;/td>
-&lt;td>🎯 Airflow 학습→등록→READY 흐름&lt;/td>
-&lt;td>3.1 Variables 설정&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.2 MLflow 연동 결과(FAIL)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.3 FAIL Slack 알림&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.4 SUCCESS(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.5 FastAPI 모델 로드(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.6 등록/핫스왑 Slack(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.7 Self-Heal 테스트&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>Airflow 학습→등록→READY (FAIL/SUCCESS + Slack)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>4&lt;/td>
-&lt;td>🗂️ MLflow 등록/별칭/아티팩트&lt;/td>
-&lt;td>4.1 Variables의 별칭/롤백 파라미터&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>4.2 Registry 별칭 바인딩(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>4.3 S3 아티팩트(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>MLflow 모델 등록·별칭·아티팩트&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>5&lt;/td>
-&lt;td>⚡ FastAPI 핫스왑&lt;/td>
-&lt;td>5.1 &lt;code>/variant/{alias}/reload&lt;/code>(dev/prod)&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>5.2 핫스왑 Slack 알림(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>FastAPI 핫스왑 (/reload)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>6&lt;/td>
-&lt;td>🔄 수동 롤백(운영 복구 레일)&lt;/td>
-&lt;td>6.1 롤백 변수 설정&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>6.2 롤백 전 상태&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>6.3 롤백 DAG 결과(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>6.4 롤백 후 상태&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>수동 롤백 (운영 복구 가드레일)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>7&lt;/td>
-&lt;td>📑 로그 스토리지(S3+NFS)&lt;/td>
-&lt;td>7.1 Airflow 로그 S3&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>7.2 FastAPI 로그 NFS&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>로그 계층 (Airflow=S3 / FastAPI=NFS)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>8&lt;/td>
-&lt;td>🛰️ ArgoCD↔️Slack 관제 루프&lt;/td>
-&lt;td>—&lt;/td>
+&lt;td>ArgoCD↔Slack 운영 관제&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>9&lt;/td>
-&lt;td>🔐 보안 자동화(크리덴셜/시크릿)&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1 AWS Credentials Secret Rotation&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.2 SealedSecret Controller &amp;amp; Re-seal&lt;/td>
-&lt;td>9.1.a Before 상태&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1.b 이전 키 중복 감지 실패 사례&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1.c 회전 및 ArgoCD 반영 완료&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1.d 리소스 버전 비교 증명&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1.e ArgoCD 최종 상태 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.2.a 컨트롤러키 재발급 및 fingerprint 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.2.b ArgoCD 반영 확인&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>보안 자동화 (AWS Rotation + SealedSecrets Re-seal)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>10&lt;/td>
-&lt;td>🚦 트래픽 실험 (A/B·Canary·Blue-Green)&lt;/td>
-&lt;td>스크립트 &lt;code>/ops/ab_test.sh&lt;/code>, &lt;code>/ops/capture_test.sh&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>10.1 A/B 테스트&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>10.2 Canary 테스트(예: 30%)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>10.3 Blue-Green 전환&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>트래픽 실험 (A/B · Canary · Blue-Green)&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>11&lt;/td>
-&lt;td>🔗 One-Commit Flow 전체 체인&lt;/td>
-&lt;td>11.1 준비&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.2 브랜치/PR 트리거&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.3 CI/CD 통합 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.4 PR 머지 &amp;amp; 자동 Sync&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.5 Variables 자동 반영&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.6 학습→등록→핫스왑→Slack&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.7 Canary 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.8 Blue-Green 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.9 로그 계층 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.10 AWS 회전 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.11 SealedSecrets 키 회전&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.12 롤백 변수 설정&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.13 롤백 실행 &amp;amp; Slack&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>One-Commit Flow 전체 체인 검증&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>

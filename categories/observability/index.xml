@@ -1,4 +1,75 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Observability on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/observability/</link><description>Recent content in Observability on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 13 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/observability/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</link><pubDate>Mon, 13 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</guid><description>&lt;h2 id="에필로그--한-번의-커밋으로-끝까지-가는-자율형-mlops-플랫폼">에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼”&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Observability on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/observability/</link><description>Recent content in Observability on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 06 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/observability/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Mon, 06 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+&lt;blockquote>
+&lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h1 id="-목차-핵심만">🧭 목차 (핵심만)&lt;/h1>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>#&lt;/th>
+&lt;th>섹션&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>준비 (CI/CD·GitOps·Secrets 기본 세팅)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>CI 실행 (GitHub Actions)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>ArgoCD 자동 동기화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>Airflow 학습→등록→READY (FAIL/SUCCESS + Slack)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>MLflow 모델 등록·별칭·아티팩트&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>FastAPI 핫스왑 (/reload)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>수동 롤백 (운영 복구 가드레일)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>로그 계층 (Airflow=S3 / FastAPI=NFS)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>ArgoCD↔Slack 운영 관제&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9&lt;/td>
+&lt;td>보안 자동화 (AWS Rotation + SealedSecrets Re-seal)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10&lt;/td>
+&lt;td>트래픽 실험 (A/B · Canary · Blue-Green)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11&lt;/td>
+&lt;td>One-Commit Flow 전체 체인 검증&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h1 id="0--준비-한-번만">0) 🧰 준비 (한 번만)&lt;/h1>
+&lt;ul>
+&lt;li>(GitOps) &lt;code>charts/fastapi/values/{dev,prod}.yaml&lt;/code>에서 &lt;strong>ALIAS_SELECTION_MODE/DEFAULT_ALIAS/CANARY_PERCENT&lt;/strong> 값을 시나리오별로 수정 → &lt;code>git commit&lt;/code> → &lt;code>git push&lt;/code>&lt;/li>
+&lt;li>(테스트 스크립트) &lt;code>/ops/ab_test.sh&lt;/code> 저장 (아래 제공)&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h1 id="1--ci-진입-github-actions">&lt;strong>1) 🧪 CI 진입 (GitHub Actions)&lt;/strong>&lt;/h1>
+&lt;p>&lt;img alt="CI_진입.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-ci.png">&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</link><pubDate>Fri, 03 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</guid><description>&lt;h2 id="에필로그--한-번의-커밋으로-끝까지-가는-자율형-mlops-플랫폼">에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼”&lt;/h2>
 &lt;hr>
 &lt;h2 id="-전체-경로-요약">📌 전체 경로 요약&lt;/h2>
 &lt;table>
@@ -49,11 +120,15 @@
 &lt;td>9&lt;/td>
 &lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/">🔗 시크릿 관리 &amp;amp; 키 회전 자동화 (AWS·SealedSecret)&lt;/a>&lt;/td>
 &lt;/tr>
+&lt;tr>
+&lt;td>10&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/">🔗 검증 (Proof of Automation)&lt;/a>&lt;/td>
+&lt;/tr>
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
 &lt;hr>
-&lt;h2 id="-전체-내용-요약-09단계">🎯 전체 내용 요약 (0~9단계)&lt;/h2>
+&lt;h2 id="-전체-회고-요약-09단계">🎯 전체 회고 요약 (0~9단계)&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -66,348 +141,54 @@
 &lt;tr>
 &lt;td>0&lt;/td>
 &lt;td>FastAPI 리뉴얼&lt;/td>
-&lt;td>&lt;code>/predict&lt;/code>(자동) · &lt;code>/variant/{alias}/predict&lt;/code>(수동) · &lt;code>/variant/{alias}/reload&lt;/code>(핫스왑)&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>→ &lt;strong>A/B·Canary·Blue-Green 통합 라우팅 구조&lt;/strong>&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>&lt;code>/predict&lt;/code>·&lt;code>/variant&lt;/code>·&lt;code>/reload&lt;/code>로 A/B·Canary·Blue-Green 공용 라우팅&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>1&lt;/td>
 &lt;td>핫스왑 보안/자동화&lt;/td>
-&lt;td>&lt;code>/reload&lt;/code> 토큰 인증 + Ingress 화이트리스트 + TLS,&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;strong>Airflow Sensor READY 후 Reload 트리거&lt;/strong>&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>토큰 인증 &lt;code>/reload&lt;/code> + Ingress 화이트리스트/TLS&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>2&lt;/td>
 &lt;td>Slack Alert 통합&lt;/td>
-&lt;td>&lt;strong>FastAPI/Airflow 공용 &lt;code>send_slack_alert()&lt;/code>&lt;/strong>, Airflow 실패 콜백 Slack 알림&lt;/td>
+&lt;td>FastAPI·Airflow 공용 알림 함수 + 실패 콜백 Slack 연동&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>3&lt;/td>
 &lt;td>롤백 자동화&lt;/td>
-&lt;td>등록 실패 시 &lt;strong>before_version&lt;/strong> 명시 롤백, READY 검증 + FastAPI &lt;code>/reload&lt;/code> 자동 반영&lt;/td>
+&lt;td>등록 실패 시 이전 버전 롤백 + READY 후 자동 &lt;code>/reload&lt;/code>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>4&lt;/td>
 &lt;td>로그 안정화&lt;/td>
-&lt;td>&lt;strong>FastAPI=Loguru+NFS(PV/PVC)&lt;/strong> / &lt;strong>Airflow=S3 업로드&lt;/strong>,&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>권한(fsGroup/runAsUser)·보관 주기 표준화&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>FastAPI=NFS, Airflow=S3 로그 계층 분리·표준화&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>5&lt;/td>
 &lt;td>Airflow 안정화·HTTPS&lt;/td>
-&lt;td>&lt;code>PythonSensor(reschedule)&lt;/code>·&lt;code>ALL_SUCCESS&lt;/code>·XCom Key 고정,&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;strong>cert-manager 기반 TLS 자동화 (내부 CA)&lt;/strong>&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>Sensor/의존성 정리 + cert-manager 기반 TLS&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>6&lt;/td>
 &lt;td>GitOps 전환&lt;/td>
-&lt;td>&lt;strong>MetalLB + SealedSecret + ApplicationSet&lt;/strong> 기반 자동 배포 체계 구축&lt;/td>
+&lt;td>MetalLB + SealedSecret + ApplicationSet 배포 구조&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>7&lt;/td>
 &lt;td>GitOps 모니터링&lt;/td>
-&lt;td>&lt;strong>ArgoCD Notifications → Slack&lt;/strong> 실시간 Sync/Health 관제&lt;/td>
+&lt;td>ArgoCD → Slack Sync/Health 상태 알림&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>8&lt;/td>
 &lt;td>CI/CD 고도화&lt;/td>
-&lt;td>&lt;strong>Helm Lint(strict) + kubeconform + yamllint&lt;/strong> 매트릭스 검증,&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>“PR→Merge→Auto Deploy→실험” 자동화&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>Helm Lint + kubeconform + yamllint PR/머지 파이프라인&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>9&lt;/td>
 &lt;td>SecretOps 표준화&lt;/td>
-&lt;td>&lt;strong>AWS Key Rotation / Re-Seal 반자동화(스크립트 기반)&lt;/strong>, GitOps 기반&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;strong>“Secrets as Code” 운영 체계&lt;/strong>&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>AWS Key Rotation + SealedSecret Re-seal 자동화&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
 &lt;blockquote>
-&lt;p>🔄 핵심&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Mon, 06 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
-&lt;blockquote>
-&lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h1 id="-목차">🧭 목차&lt;/h1>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>#&lt;/th>
-&lt;th>섹션&lt;/th>
-&lt;th>하위 항목&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>0&lt;/td>
-&lt;td>🧰 준비 (한 번만)&lt;/td>
-&lt;td>—&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>1&lt;/td>
-&lt;td>🧪 CI 진입 (GitHub Actions)&lt;/td>
-&lt;td>—&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>2&lt;/td>
-&lt;td>🔁 ArgoCD 동기화 (ApplicationSet)&lt;/td>
-&lt;td>—&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3&lt;/td>
-&lt;td>🎯 Airflow 학습→등록→READY 흐름&lt;/td>
-&lt;td>3.1 Variables 설정&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.2 MLflow 연동 결과(FAIL)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.3 FAIL Slack 알림&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.4 SUCCESS(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.5 FastAPI 모델 로드(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.6 등록/핫스왑 Slack(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>3.7 Self-Heal 테스트&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>4&lt;/td>
-&lt;td>🗂️ MLflow 등록/별칭/아티팩트&lt;/td>
-&lt;td>4.1 Variables의 별칭/롤백 파라미터&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>4.2 Registry 별칭 바인딩(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>4.3 S3 아티팩트(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>5&lt;/td>
-&lt;td>⚡ FastAPI 핫스왑&lt;/td>
-&lt;td>5.1 &lt;code>/variant/{alias}/reload&lt;/code>(dev/prod)&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>5.2 핫스왑 Slack 알림(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>6&lt;/td>
-&lt;td>🔄 수동 롤백(운영 복구 레일)&lt;/td>
-&lt;td>6.1 롤백 변수 설정&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>6.2 롤백 전 상태&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>6.3 롤백 DAG 결과(dev/prod)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>6.4 롤백 후 상태&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>7&lt;/td>
-&lt;td>📑 로그 스토리지(S3+NFS)&lt;/td>
-&lt;td>7.1 Airflow 로그 S3&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>7.2 FastAPI 로그 NFS&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>8&lt;/td>
-&lt;td>🛰️ ArgoCD↔️Slack 관제 루프&lt;/td>
-&lt;td>—&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9&lt;/td>
-&lt;td>🔐 보안 자동화(크리덴셜/시크릿)&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1 AWS Credentials Secret Rotation&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.2 SealedSecret Controller &amp;amp; Re-seal&lt;/td>
-&lt;td>9.1.a Before 상태&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1.b 이전 키 중복 감지 실패 사례&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1.c 회전 및 ArgoCD 반영 완료&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1.d 리소스 버전 비교 증명&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.1.e ArgoCD 최종 상태 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.2.a 컨트롤러키 재발급 및 fingerprint 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>9.2.b ArgoCD 반영 확인&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>10&lt;/td>
-&lt;td>🚦 트래픽 실험 (A/B·Canary·Blue-Green)&lt;/td>
-&lt;td>스크립트 &lt;code>/ops/ab_test.sh&lt;/code>, &lt;code>/ops/capture_test.sh&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>10.1 A/B 테스트&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>10.2 Canary 테스트(예: 30%)&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>10.3 Blue-Green 전환&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11&lt;/td>
-&lt;td>🔗 One-Commit Flow 전체 체인&lt;/td>
-&lt;td>11.1 준비&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.2 브랜치/PR 트리거&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.3 CI/CD 통합 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.4 PR 머지 &amp;amp; 자동 Sync&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.5 Variables 자동 반영&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.6 학습→등록→핫스왑→Slack&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.7 Canary 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.8 Blue-Green 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.9 로그 계층 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.10 AWS 회전 검증&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.11 SealedSecrets 키 회전&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.12 롤백 변수 설정&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>11.13 롤백 실행 &amp;amp; Slack&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h1 id="0--준비-한-번만">0) 🧰 준비 (한 번만)&lt;/h1>
-&lt;ul>
-&lt;li>(GitOps) &lt;code>charts/fastapi/values/{dev,prod}.yaml&lt;/code>에서 &lt;strong>ALIAS_SELECTION_MODE/DEFAULT_ALIAS/CANARY_PERCENT&lt;/strong> 값을 시나리오별로 수정 → &lt;code>git commit&lt;/code> → &lt;code>git push&lt;/code>&lt;/li>
-&lt;li>(테스트 스크립트) &lt;code>/ops/ab_test.sh&lt;/code> 저장 (아래 제공)&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h1 id="1--ci-진입-github-actions">&lt;strong>1) 🧪 CI 진입 (GitHub Actions)&lt;/strong>&lt;/h1>
-&lt;p>&lt;img alt="CI_진입.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-ci.png">&lt;/p></description></item></channel></rss>
+&lt;p>🔄 핵심&lt;/p></description></item></channel></rss>

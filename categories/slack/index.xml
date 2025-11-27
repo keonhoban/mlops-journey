@@ -17,25 +17,7 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="1-전체-흐름-요약">1️⃣ 전체 흐름 요약&lt;/h2>
-&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart LR
-G[&amp;#34;Git Commit (main)&amp;#34;] --&amp;gt; A[&amp;#34;Argo CD&amp;lt;br/&amp;gt;Sync/Health 감지&amp;#34;]
-A --&amp;gt; N[&amp;#34;Notifications Controller&amp;lt;br/&amp;gt;(Templates · Triggers)&amp;#34;]
-N --&amp;gt; S[&amp;#34;Slack Webhook&amp;#34;]
-classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:1px,color:#0b318f;
-class G,A,N,S node;
-&lt;/code>&lt;/pre>&lt;hr>
-&lt;h2 id="2-폴더리소스-구조레포-반영-상태">2️⃣ 폴더/리소스 구조(레포 반영 상태)&lt;/h2>
-&lt;pre tabindex="0">&lt;code>mlops-infra/
-├─ bootstrap/
-│ └─ notifications/
-│ ├─ cm.yaml # 템플릿/트리거/구독 선언
-│ ├─ secret-sealed.yaml # Slack Webhook(SealedSecret)
-│ └─ kustomization.yaml # (선택) 동일 디렉터리 리소스 묶음
-└─ apps/
-├─ project-notifications.yaml
-└─ notifications.yaml
-&lt;/code>&lt;/pre>&lt;blockquote>
-&lt;p>이미 동일 경로가 레포에 존재하므로 정합성만 확인하면 됩니다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 2단계: Slack Alert 통합 (FastAPI·Airflow 공용)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</link><pubDate>Sat, 26 Jul 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</guid><description>&lt;h2 id="slack-alert-통합-fastapiairflow-공용-구조--템플릿-확장-기반">Slack Alert 통합: FastAPI·Airflow 공용 구조 + 템플릿 확장 기반&lt;/h2>
+&lt;p>&lt;img alt="mermaid-07.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/mermaid-07.png">&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 2단계: Slack Alert 통합 (FastAPI·Airflow 공용)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</link><pubDate>Sat, 26 Jul 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</guid><description>&lt;h2 id="slack-alert-통합-fastapiairflow-공용-구조--템플릿-확장-기반">Slack Alert 통합: FastAPI·Airflow 공용 구조 + 템플릿 확장 기반&lt;/h2>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
@@ -83,39 +65,4 @@ class G,A,N,S node;
 &lt;/table>
 &lt;hr>
 &lt;h2 id="2-시스템-흐름도">2️⃣ 시스템 흐름도&lt;/h2>
-&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart LR
-subgraph Apps[&amp;#34;🧩 Application Layer&amp;#34;]
-FA[&amp;#34;FastAPI&amp;#34;]
-AF[&amp;#34;Airflow&amp;#34;]
-end
-subgraph Alerts[&amp;#34;🔔 Alerts Interface&amp;#34;]
-SSA[&amp;#34;send_slack_alert(text)&amp;#34;]
-FAIL[&amp;#34;alert_slack(context)&amp;#34;]
-end
-FA --&amp;gt; SSA
-AF --&amp;gt; SSA
-AF --&amp;gt; FAIL
-Alerts --&amp;gt; Slack[&amp;#34;📜 Slack Webhook&amp;#34;]
-classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:1px,color:#0b318f;
-classDef sub fill:#eef5ff,stroke:#7aa7ff,stroke-width:1px,color:#0b318f;
-class Apps,Alerts sub;
-class FA,AF,SSA,FAIL,Slack node;
-&lt;/code>&lt;/pre>&lt;hr>
-&lt;h2 id="3-fastapi-알림-모듈">3️⃣ FastAPI 알림 모듈&lt;/h2>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># charts/fastapi/app/utils/slack_alerts.py&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> requests
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">send_slack_alert&lt;/span>(text: str):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> slack_url &lt;span style="color:#f92672">=&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>environ&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;SLACK_WEBHOOK_URL&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">not&lt;/span> slack_url:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;[Slack Alert] SKIP: SLACK_WEBHOOK_URL not set&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> res &lt;span style="color:#f92672">=&lt;/span> requests&lt;span style="color:#f92672">.&lt;/span>post(slack_url, json&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;text&amp;#34;&lt;/span>: text}, timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> res&lt;span style="color:#f92672">.&lt;/span>raise_for_status()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[Slack Alert Error] &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
-&lt;p>사용 예시:&lt;/p></description></item></channel></rss>
+&lt;p>&lt;img alt="mermaid-02.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/mermaid-02.png">&lt;/p></description></item></channel></rss>
