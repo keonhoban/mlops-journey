@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Slack on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/slack/</link><description>Recent content in Slack on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 05 Sep 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/slack/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 7단계: Argo CD Notifications 자동화 (Slack 연동)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/</link><pubDate>Fri, 05 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/</guid><description>&lt;h2 id="argo-cd-notifications--gitops-모니터링-자동화-slack-webhook--sealedsecret">Argo CD Notifications – GitOps 모니터링 자동화 (Slack Webhook &amp;amp; SealedSecret)&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“GitOps는 자동으로 잘 돌아가도,&lt;/p>
+&lt;p>&lt;strong>지금 무슨 일이 일어나는지 모르면 운영자는 항상 불안합니다.&lt;/strong>”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 Argo CD의 Sync/Health 변화를&lt;/p>
+&lt;p>즉시 Slack으로 받아보는 &lt;strong>GitOps 모니터링 루프&lt;/strong>를 만들었습니다.&lt;/p>
+&lt;p>커밋 이후 어떤 일이 일어나는지 ‘실시간으로 보이게’ 만드는 단계입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>Argo CD Notifications Controller&lt;/strong>로 &lt;strong>Sync/Health&lt;/strong> 이벤트를 &lt;strong>Slack&lt;/strong>에 실시간 전송&lt;/li>
+&lt;li>&lt;strong>Webhook URL → SealedSecret → 환경변수 참조&lt;/strong>로 안전 관리(레포 커밋 OK)&lt;/li>
+&lt;li>템플릿/트리거/구독을 &lt;strong>ConfigMap 한 곳&lt;/strong>에서 선언적으로 관리&lt;/li>
+&lt;li>&lt;strong>Git 커밋 → Argo Sync → Slack 알림&lt;/strong>의 자동 루프 완성&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-전체-흐름-요약">1️⃣ 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart LR
+G[&amp;#34;Git Commit (main)&amp;#34;] --&amp;gt; A[&amp;#34;Argo CD&amp;lt;br/&amp;gt;Sync/Health 감지&amp;#34;]
+A --&amp;gt; N[&amp;#34;Notifications Controller&amp;lt;br/&amp;gt;(Templates · Triggers)&amp;#34;]
+N --&amp;gt; S[&amp;#34;Slack Webhook&amp;#34;]
+classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:1px,color:#0b318f;
+class G,A,N,S node;
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="2-폴더리소스-구조레포-반영-상태">2️⃣ 폴더/리소스 구조(레포 반영 상태)&lt;/h2>
+&lt;pre tabindex="0">&lt;code>mlops-infra/
+├─ bootstrap/
+│ └─ notifications/
+│ ├─ cm.yaml # 템플릿/트리거/구독 선언
+│ ├─ secret-sealed.yaml # Slack Webhook(SealedSecret)
+│ └─ kustomization.yaml # (선택) 동일 디렉터리 리소스 묶음
+└─ apps/
+├─ project-notifications.yaml
+└─ notifications.yaml
+&lt;/code>&lt;/pre>&lt;blockquote>
+&lt;p>이미 동일 경로가 레포에 존재하므로 정합성만 확인하면 됩니다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 2단계: Slack Alert 통합 (FastAPI·Airflow 공용)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</link><pubDate>Sat, 26 Jul 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</guid><description>&lt;h2 id="slack-alert-통합-fastapiairflow-공용-구조--템플릿-확장-기반">Slack Alert 통합: FastAPI·Airflow 공용 구조 + 템플릿 확장 기반&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영 환경에서 가장 무서운 건 &lt;strong>문제가 생겼는데 아무도 모르고 있는 상황&lt;/strong>입니다.”&lt;/p>
+&lt;p>“그래서 2단계에서는 FastAPI와 Airflow가 각자 흩어져 보내던 알림을&lt;/p>
+&lt;p>&lt;strong>하나의 Slack 인터페이스로 완전히 통합&lt;/strong>했습니다.”&lt;/p>
+&lt;p>“모델 학습·등록·센서·핫스왑·헬스체크까지&lt;/p>
+&lt;p>어디에서 무슨 일이 일어나도 &lt;strong>즉시 눈에 들어오도록 만드는 것&lt;/strong>,&lt;/p>
+&lt;p>그게 이 단계의 핵심 목적이었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>FastAPI와 Airflow가 공통 함수 &lt;code>send_slack_alert(text)&lt;/code>를 사용해 알림 체계를 통합&lt;/li>
+&lt;li>Airflow는 &lt;strong>전역 실패 콜백&lt;/strong> &lt;code>alert_slack(context)&lt;/code>로 DAG/Task 실패 자동 통보&lt;/li>
+&lt;li>Webhook URL은 SealedSecret → 환경변수(&lt;code>SLACK_WEBHOOK_URL&lt;/code>)로 주입&lt;/li>
+&lt;li>dev(&lt;code>.local&lt;/code>) / prod(&lt;code>.prod&lt;/code>) 환경 완전 분리: 네임스페이스·시크릿·도메인 각각 대응&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-구조-개요">1️⃣ 구조 개요&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>구성 요소&lt;/th>
+&lt;th>역할&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>공용 함수&lt;/strong>&lt;/td>
+&lt;td>&lt;code>send_slack_alert(text)&lt;/code> — FastAPI·Airflow 모두에서 호출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>Airflow 전역 콜백&lt;/strong>&lt;/td>
+&lt;td>&lt;code>alert_slack(context)&lt;/code> — DAG 실패 시 자동 호출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>환경 주입 방식&lt;/strong>&lt;/td>
+&lt;td>&lt;code>slack-webhook-{env}-secret&lt;/code> → &lt;code>SLACK_WEBHOOK_URL&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>분리 원칙&lt;/strong>&lt;/td>
+&lt;td>dev/prod 완전 분리 (네임스페이스·시크릿·도메인)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="2-시스템-흐름도">2️⃣ 시스템 흐름도&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart LR
+subgraph Apps[&amp;#34;🧩 Application Layer&amp;#34;]
+FA[&amp;#34;FastAPI&amp;#34;]
+AF[&amp;#34;Airflow&amp;#34;]
+end
+subgraph Alerts[&amp;#34;🔔 Alerts Interface&amp;#34;]
+SSA[&amp;#34;send_slack_alert(text)&amp;#34;]
+FAIL[&amp;#34;alert_slack(context)&amp;#34;]
+end
+FA --&amp;gt; SSA
+AF --&amp;gt; SSA
+AF --&amp;gt; FAIL
+Alerts --&amp;gt; Slack[&amp;#34;📜 Slack Webhook&amp;#34;]
+classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:1px,color:#0b318f;
+classDef sub fill:#eef5ff,stroke:#7aa7ff,stroke-width:1px,color:#0b318f;
+class Apps,Alerts sub;
+class FA,AF,SSA,FAIL,Slack node;
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="3-fastapi-알림-모듈">3️⃣ FastAPI 알림 모듈&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># charts/fastapi/app/utils/slack_alerts.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> requests
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">send_slack_alert&lt;/span>(text: str):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> slack_url &lt;span style="color:#f92672">=&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>environ&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;SLACK_WEBHOOK_URL&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">not&lt;/span> slack_url:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;[Slack Alert] SKIP: SLACK_WEBHOOK_URL not set&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> res &lt;span style="color:#f92672">=&lt;/span> requests&lt;span style="color:#f92672">.&lt;/span>post(slack_url, json&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;text&amp;#34;&lt;/span>: text}, timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> res&lt;span style="color:#f92672">.&lt;/span>raise_for_status()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[Slack Alert Error] &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>사용 예시:&lt;/p></description></item></channel></rss>

@@ -1,4 +1,232 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>MLflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/mlflow/</link><description>Recent content in MLflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 15 Jul 2025 17:55:05 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/mlflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-실전-시나리오-기반-구성-배경">🧩 실전 시나리오 기반 구성 배경&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>MLflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/mlflow/</link><description>Recent content in MLflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 18 Aug 2025 17:11:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/mlflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 5단계: Airflow 안정화 &amp; FastAPI HTTPS 보안]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/</link><pubDate>Mon, 18 Aug 2025 17:11:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/</guid><description>&lt;h2 id="airflow-안정화--fastapi-https-보안-적용-cert-manager-어노테이션-반영-완료">Airflow 안정화 &amp;amp; FastAPI HTTPS 보안 적용 (cert-manager 어노테이션 반영 완료)&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델을 등록하는 것보다 더 중요한 건&lt;/p>
+&lt;p>&lt;strong>언제 Reload가 실행되느냐&lt;/strong>입니다. 여기가 운영 안정성을 나누는 지점이니까요.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 Airflow 흐름을 한 번 더 단단히 조이고,&lt;/p>
+&lt;p>FastAPI 쪽은 HTTPS·화이트리스트까지 적용해&lt;/p>
+&lt;p>&lt;strong>‘안전하게 자동화된다’는 확신을 주는 구조&lt;/strong>를 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>Airflow&lt;/strong>: &lt;code>PythonSensor(mode=&amp;quot;reschedule&amp;quot;)&lt;/code>로 &lt;strong>READY 감시&lt;/strong>, &lt;code>TriggerRule.ALL_SUCCESS&lt;/code>로 &lt;strong>성공 체인에서만&lt;/strong> &lt;code>/reload&lt;/code>&lt;/li>
+&lt;li>&lt;strong>데이터/상태 꼬임 방지&lt;/strong>: Variable 검증 유틸 + XCom 키 표준&lt;/li>
+&lt;li>&lt;strong>FastAPI&lt;/strong>: Ingress &lt;strong>TLS(HTTPS) + IP 화이트리스트&lt;/strong> 강화&lt;/li>
+&lt;li>&lt;strong>cert-manager + ClusterIssuer(self-signed)&lt;/strong> 자동 발급/갱신: &lt;strong>템플릿에 어노테이션 자동 주입 반영 완료&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="5-1-airflow-안정화-sensor-리팩토링--xcomvariable-표준">5-1️⃣ Airflow 안정화: Sensor 리팩토링 &amp;amp; XCom/Variable 표준&lt;/h2>
+&lt;h3 id="1-dag-구조">1) DAG 구조&lt;/h3>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart LR
+classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:1px,color:#1e3a8a;
+A[&amp;#34;train_and_evaluate&amp;lt;br/&amp;gt;(PythonOperator)&amp;#34;] --&amp;gt; B{&amp;#34;check_result&amp;lt;br/&amp;gt;(Branch)&amp;#34;}
+B --&amp;gt;|acc &amp;gt;= threshold| C[&amp;#34;register_model&amp;lt;br/&amp;gt;(PythonOperator)&amp;#34;]
+B --&amp;gt;|acc &amp;lt; threshold| F[&amp;#34;notify_failure&amp;lt;br/&amp;gt;(PythonOperator)&amp;#34;]
+C --&amp;gt; D[&amp;#34;check_model_ready&amp;lt;br/&amp;gt;(PythonSensor)&amp;#34;]
+D --&amp;gt; E[&amp;#34;trigger_reload&amp;lt;br/&amp;gt;(PythonOperator)&amp;lt;br/&amp;gt;TriggerRule.ALL_SUCCESS&amp;#34;]
+class A,B,C,D,E,F node;
+&lt;/code>&lt;/pre>&lt;h3 id="2-ready-감시-전용-센서">2) READY 감시 전용 센서&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># dags/ml_code/sensor_model_ready.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.config &lt;span style="color:#f92672">import&lt;/span> get_mlflow_client
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.utils.log.logging_mixin &lt;span style="color:#f92672">import&lt;/span> LoggingMixin
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>logger &lt;span style="color:#f92672">=&lt;/span> LoggingMixin()&lt;span style="color:#f92672">.&lt;/span>log
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">check_model_ready&lt;/span>(model_name: str, version: str) &lt;span style="color:#f92672">-&amp;gt;&lt;/span> bool:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client &lt;span style="color:#f92672">=&lt;/span> get_mlflow_client()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mv &lt;span style="color:#f92672">=&lt;/span> client&lt;span style="color:#f92672">.&lt;/span>get_model_version(name&lt;span style="color:#f92672">=&lt;/span>model_name, version&lt;span style="color:#f92672">=&lt;/span>version)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> logger&lt;span style="color:#f92672">.&lt;/span>info(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[Sensor] 상태 체크: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_name&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> v&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> → &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>mv&lt;span style="color:#f92672">.&lt;/span>status&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> mv&lt;span style="color:#f92672">.&lt;/span>status &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;READY&amp;#34;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">elif&lt;/span> mv&lt;span style="color:#f92672">.&lt;/span>status &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;FAILED_REGISTRATION&amp;#34;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> &lt;span style="color:#a6e22e">RuntimeError&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;❌ 모델 등록 실패: 상태 FAILED_REGISTRATION&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">False&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="3-dag-본문핵심-발췌--성공-체인-보장--표준화된-변수xcom">3) DAG 본문(핵심 발췌) — &lt;strong>성공 체인 보장 &amp;amp; 표준화된 변수/XCom&lt;/strong>&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># dags/dag_ml_train_register_reload.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow &lt;span style="color:#f92672">import&lt;/span> DAG
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.python &lt;span style="color:#f92672">import&lt;/span> PythonOperator, BranchPythonOperator
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.sensors.python &lt;span style="color:#f92672">import&lt;/span> PythonSensor
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.utils.trigger_rule &lt;span style="color:#f92672">import&lt;/span> TriggerRule
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.exceptions &lt;span style="color:#f92672">import&lt;/span> AirflowSkipException
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.models &lt;span style="color:#f92672">import&lt;/span> Variable
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> datetime &lt;span style="color:#f92672">import&lt;/span> datetime, timedelta
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> pendulum &lt;span style="color:#f92672">import&lt;/span> timezone
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.train_model &lt;span style="color:#f92672">import&lt;/span> train_model
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.register_model &lt;span style="color:#f92672">import&lt;/span> register_model
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.rollback_model &lt;span style="color:#f92672">import&lt;/span> rollback_model
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.trigger_reload &lt;span style="color:#f92672">import&lt;/span> trigger_reload
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.sensor_model_ready &lt;span style="color:#f92672">import&lt;/span> check_model_ready
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> utils.slack_alerts &lt;span style="color:#f92672">import&lt;/span> send_slack_alert, alert_slack
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> mlflow.tracking &lt;span style="color:#f92672">import&lt;/span> MlflowClient
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kst &lt;span style="color:#f92672">=&lt;/span> timezone(&lt;span style="color:#e6db74">&amp;#34;Asia/Seoul&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>default_args &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;start_date&amp;#34;&lt;/span>: datetime(&lt;span style="color:#ae81ff">2025&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, tzinfo&lt;span style="color:#f92672">=&lt;/span>kst), &lt;span style="color:#e6db74">&amp;#34;retries&amp;#34;&lt;/span>: &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;retry_delay&amp;#34;&lt;/span>: timedelta(minutes&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>)}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">get_param&lt;/span>(key, default, cast_func, validate_func&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> value &lt;span style="color:#f92672">=&lt;/span> cast_func(Variable&lt;span style="color:#f92672">.&lt;/span>get(key, default&lt;span style="color:#f92672">=&lt;/span>str(default)))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> validate_func &lt;span style="color:#f92672">and&lt;/span> &lt;span style="color:#f92672">not&lt;/span> validate_func(value):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> &lt;span style="color:#a6e22e">ValueError&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Validation failed&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> value
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[Param] &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>key&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> 로딩 실패: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> → 기본값 &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>default&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> 사용&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> default
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">get_version_by_alias&lt;/span>(model_name, alias):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> MlflowClient()&lt;span style="color:#f92672">.&lt;/span>get_model_version_by_alias(model_name, alias)&lt;span style="color:#f92672">.&lt;/span>version
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">train_and_evaluate&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> C &lt;span style="color:#f92672">=&lt;/span> get_param(&lt;span style="color:#e6db74">&amp;#34;logreg_C&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">1.0&lt;/span>, float, &lt;span style="color:#66d9ef">lambda&lt;/span> x: &lt;span style="color:#ae81ff">0.001&lt;/span> &lt;span style="color:#f92672">&amp;lt;=&lt;/span> x &lt;span style="color:#f92672">&amp;lt;=&lt;/span> &lt;span style="color:#ae81ff">10.0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> max_iter &lt;span style="color:#f92672">=&lt;/span> get_param(&lt;span style="color:#e6db74">&amp;#34;logreg_max_iter&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">200&lt;/span>, int, &lt;span style="color:#66d9ef">lambda&lt;/span> x: x &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">50&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> threshold &lt;span style="color:#f92672">=&lt;/span> get_param(&lt;span style="color:#e6db74">&amp;#34;accuracy_threshold&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0.9&lt;/span>, float, &lt;span style="color:#66d9ef">lambda&lt;/span> x: &lt;span style="color:#ae81ff">0.5&lt;/span> &lt;span style="color:#f92672">&amp;lt;=&lt;/span> x &lt;span style="color:#f92672">&amp;lt;=&lt;/span> &lt;span style="color:#ae81ff">0.99&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_name &lt;span style="color:#f92672">=&lt;/span> Variable&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> alias &lt;span style="color:#f92672">=&lt;/span> Variable&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;mlflow_alias&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">not&lt;/span> (model_name &lt;span style="color:#f92672">and&lt;/span> alias):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> &lt;span style="color:#a6e22e">ValueError&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;필수 Variable 누락: model_name 또는 mlflow_alias&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc, run_id &lt;span style="color:#f92672">=&lt;/span> train_model(C&lt;span style="color:#f92672">=&lt;/span>C, max_iter&lt;span style="color:#f92672">=&lt;/span>max_iter)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">not&lt;/span> run_id:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> &lt;span style="color:#a6e22e">ValueError&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;run_id 없음 → 학습 실패&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> k, v &lt;span style="color:#f92672">in&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;run_id&amp;#34;&lt;/span>: run_id, &lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>: model_name, &lt;span style="color:#e6db74">&amp;#34;alias&amp;#34;&lt;/span>: alias, &lt;span style="color:#e6db74">&amp;#34;acc&amp;#34;&lt;/span>: acc, &lt;span style="color:#e6db74">&amp;#34;threshold&amp;#34;&lt;/span>: threshold}&lt;span style="color:#f92672">.&lt;/span>items():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_push(key&lt;span style="color:#f92672">=&lt;/span>k, value&lt;span style="color:#f92672">=&lt;/span>v)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">check_result&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;acc&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> thr &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;threshold&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> acc &lt;span style="color:#f92672">is&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span> &lt;span style="color:#f92672">or&lt;/span> thr &lt;span style="color:#f92672">is&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">&amp;#34;❌ check_result → XCom 누락&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> AirflowSkipException()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#34;register_model&amp;#34;&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> acc &lt;span style="color:#f92672">&amp;gt;=&lt;/span> thr &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#e6db74">&amp;#34;notify_failure&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">register_model_task&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> run_id &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;run_id&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_name &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> alias &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;alias&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> prev_version &lt;span style="color:#f92672">=&lt;/span> get_version_by_alias(model_name, alias)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> version &lt;span style="color:#f92672">=&lt;/span> register_model(run_id, model_name, alias)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_push(key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;version&amp;#34;&lt;/span>, value&lt;span style="color:#f92672">=&lt;/span>version)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;✅ 모델 등록 완료: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_name&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> v&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> → @&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>alias&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> msg &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;❌ 모델 등록 실패: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> prev_version:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> rollback_model(model_name, prev_version, alias)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> msg &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34; → 롤백 완료: v&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>prev_version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> msg &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#e6db74">&amp;#34; → 롤백 생략&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(msg)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">sensor_ready_func&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_name &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> version &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;register_model&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;version&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> check_model_ready(model_name, version)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">trigger_reload_task&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> alias &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;alias&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> trigger_reload(alias) &lt;span style="color:#75715e"># FastAPI 응답 {&amp;#34;status&amp;#34;:&amp;#34;success&amp;#34;, ...} 기대&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;🔁 핫스왑 완료: @&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>alias&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;❌ 핫스왑 실패: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">notify_failure&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">&amp;#34;⚠️ 기준 미달 → 등록 및 핫스왑 생략&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> DAG(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dag_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;ml_train_register_and_reload&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> default_args&lt;span style="color:#f92672">=&lt;/span>default_args,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> schedule&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> catchup&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tags&lt;span style="color:#f92672">=&lt;/span>[&lt;span style="color:#e6db74">&amp;#34;mlops&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;train&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;sensor&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;reload&amp;#34;&lt;/span>],
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> on_failure_callback&lt;span style="color:#f92672">=&lt;/span>alert_slack,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>) &lt;span style="color:#66d9ef">as&lt;/span> dag:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> train &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>train_and_evaluate)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> branch &lt;span style="color:#f92672">=&lt;/span> BranchPythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;check_result&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>check_result)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> register &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;register_model&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>register_model_task)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sensor &lt;span style="color:#f92672">=&lt;/span> PythonSensor(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;check_model_ready&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>sensor_ready_func,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> poke_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>, timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">180&lt;/span>, mode&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;reschedule&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reload &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;trigger_reload&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>trigger_reload_task,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> trigger_rule&lt;span style="color:#f92672">=&lt;/span>TriggerRule&lt;span style="color:#f92672">.&lt;/span>ALL_SUCCESS) &lt;span style="color:#75715e"># ✅ 성공 체인에서만 실행&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> failure &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;notify_failure&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>notify_failure,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> trigger_rule&lt;span style="color:#f92672">=&lt;/span>TriggerRule&lt;span style="color:#f92672">.&lt;/span>NONE_FAILED_MIN_ONE_SUCCESS)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> train &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> branch
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> branch &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> [register, failure]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> register &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> sensor &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> reload
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>운영 포인트&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 3단계: 모델 롤백 자동화 (등록 실패 대비 복구)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/04/</link><pubDate>Fri, 01 Aug 2025 12:15:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/04/</guid><description>&lt;h2 id="모델-롤백-자동화-등록-실패-대비-복구-루프-완성">모델 롤백 자동화: 등록 실패 대비 복구 루프 완성&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델 배포는 성공했을 때보다, &lt;strong>실패했을 때의 회복 속도&lt;/strong>가 운영 품질을 결정합니다.”&lt;/p>
+&lt;p>“그래서 3단계에서는 등록이 실패하는 즉시,&lt;/p>
+&lt;p>이전 안정 버전으로 돌아가 FastAPI에 자동 반영되는 &lt;strong>완전한 롤백 루프&lt;/strong>를 구축했습니다.”&lt;/p>
+&lt;p>“이 구조가 있어야 장애 상황에서도 서비스가 &lt;strong>끊기지 않고 바로 복구&lt;/strong>될 수 있습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>등록 실패 → 즉시 롤백&lt;/strong>: 시도 직전 &lt;strong>&lt;code>before_version&lt;/code>&lt;/strong>(alias가 가리키던 버전)으로 복귀&lt;/li>
+&lt;li>&lt;strong>READY 검증 → alias 재할당 → FastAPI &lt;code>/reload&lt;/code>&lt;/strong> 까지 자동 수행(실서비스 반영 보장)&lt;/li>
+&lt;li>&lt;strong>수동 롤백 전용 DAG&lt;/strong> 제공(운영자가 대상 버전 명시)&lt;/li>
+&lt;li>&lt;strong>Slack/로그 추적&lt;/strong>(성공/실패/복구 구분), 실패는 &lt;strong>re-raise&lt;/strong>로 원인 명확화&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-플로우-한-장-요약">1️⃣ 플로우 한 장 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+autonumber
+participant AF as Airflow DAG
+participant MF as MLflow Registry (Alias)
+participant FA as FastAPI (/variant/{alias}/reload)
+participant SL as Slack
+AF-&amp;gt;&amp;gt;MF: 새 버전 등록 시도 (create_model_version → set alias)
+MF--&amp;gt;&amp;gt;AF: ❌ 실패
+AF-&amp;gt;&amp;gt;AF: before_version = get_model_version_by_alias(model, alias)
+AF-&amp;gt;&amp;gt;MF: rollback_model(model, before_version, alias)
+AF-&amp;gt;&amp;gt;FA: POST /variant/{alias}/reload
+FA--&amp;gt;&amp;gt;AF: ✅ {&amp;#34;status&amp;#34;:&amp;#34;success&amp;#34;, ...}
+AF--&amp;gt;&amp;gt;SL: &amp;#34;Register 실패 → 이전 버전 복구(+reloaded)&amp;#34;
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="2-자동-롤백등록-태스크-내부--reload까지-포함">2️⃣ 자동 롤백(등록 태스크 내부) — &lt;code>/reload&lt;/code>까지 포함&lt;/h2>
+&lt;blockquote>
+&lt;p>의도: 서비스 가용성 최우선. 등록 실패 분기에서 즉시 롤백 + FastAPI 반영 후, 예외는 재전파해 원인 기록.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 1단계: 핫스왑 고도화 (/reload 보안·DAG 자동화)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/02/</link><pubDate>Tue, 22 Jul 2025 12:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/02/</guid><description>&lt;h2 id="핫스왑-고도화-reload-보안-강화--dag-자동화-연동">핫스왑 고도화: &lt;code>/reload&lt;/code> 보안 강화 + DAG 자동화 연동&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델을 잘 학습시키는 것도 중요하지만,&lt;/p>
+&lt;p>잘못된 모델이 실수로 핫스왑되는 순간이 더 치명적입니다.”&lt;/p>
+&lt;p>그래서 1단계에서는 &lt;code>/reload&lt;/code>를 확실하게 잠그고,&lt;/p>
+&lt;p>&lt;strong>학습 → 등록 → 감시 → 핫스왑&lt;/strong>까지가 Airflow에서 자동으로 흘러가도록 만들었습니다.&lt;/p>
+&lt;p>이 단계가 완성돼야 이후 단계에서 **안전한 자동 운영(MLOps)**을 구현할 수 있기 때문입니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>보안 3종&lt;/strong>: &lt;code>x-token&lt;/code>(SealedSecret) + Ingress &lt;strong>IP whitelist&lt;/strong> + &lt;strong>TLS&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>자동화&lt;/strong>: Airflow &lt;strong>Train → Register → Sensor(READY) → Reload&lt;/strong> 전체 시퀀스&lt;/li>
+&lt;li>&lt;strong>일관성&lt;/strong>: MLflow &lt;strong>Alias(@A/@B)&lt;/strong> 기반 등록·조회·핫스왑&lt;/li>
+&lt;li>&lt;strong>관제&lt;/strong>: 모든 단계 &lt;strong>성공/스킵/실패&lt;/strong> Slack 알림&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>환경 분리: dev(&lt;em>.local) / prod(&lt;/em>.prod) — 예: fastapi.local, fastapi.prod&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 0단계: FastAPI A/B·Canary·Blue-Green 서빙 베이스]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/01/</link><pubDate>Fri, 18 Jul 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/01/</guid><description>&lt;h2 id="fastapi-앱-전면-개편-ab--canary--blue-green-서빙-베이스">FastAPI 앱 전면 개편: A/B · Canary · Blue-Green 서빙 베이스&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영 환경에서 모델은 언제든 교체될 수 있고,&lt;/p>
+&lt;p>그 순간이 서비스 품질이 가장 크게 흔들리는 위험 구간입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 이후 모든 자동화(학습·등록·핫스왑·롤백)의 기반이 되는&lt;/p>
+&lt;p>&lt;strong>A/B · Canary · Blue-Green 전략을 모두 처리할 수 있는 FastAPI 서빙 구조&lt;/strong>부터 잡았습니다.”&lt;/p>
+&lt;p>“이 뼈대가 완성돼야 Airflow, MLflow, ArgoCD와 연결된&lt;/p>
+&lt;p>**진짜 ‘운영형 MLOps 파이프라인’**을 만들 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>전환 기준 = MLflow Alias(@A/@B)&lt;/strong>&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-실전-시나리오-기반-구성-배경">🧩 실전 시나리오 기반 구성 배경&lt;/h2>
 &lt;blockquote>
 &lt;p>이 프로젝트는 단순 실습을 넘어서, 실제 발생하는 다음과 같은 문제들을 해결하기 위한 MLOps 인프라 구축을 목표로 설계되었습니다.&lt;/p>&lt;/blockquote>
 &lt;ul>

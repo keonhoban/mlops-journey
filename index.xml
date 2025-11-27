@@ -1,4 +1,813 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 15 Jul 2025 17:55:05 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-실전-시나리오-기반-구성-배경">🧩 실전 시나리오 기반 구성 배경&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 13 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</link><pubDate>Mon, 13 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</guid><description>&lt;h2 id="에필로그--한-번의-커밋으로-끝까지-가는-자율형-mlops-플랫폼">에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼”&lt;/h2>
+&lt;hr>
+&lt;h2 id="-전체-경로-요약">📌 전체 경로 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>순서&lt;/th>
+&lt;th>주제&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/01/">🔗 FastAPI A/B·Canary·Blue-Green 서빙 베이스&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/02/">🔗 핫스왑 고도화 (/reload 보안·DAG 자동화)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/">🔗 Slack Alert 통합 (FastAPI·Airflow 공용)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/04/">🔗 모델 롤백 자동화 (등록 실패 대비 복구)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/">🔗 FastAPI 로그 안정화 (NFS + PV/PVC + Loguru)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/">🔗 Airflow 안정화 &amp;amp; FastAPI HTTPS 보안&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/07/">🔗 GitOps 고도화 (Argo CD·MetalLB·ApplicationSet)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/">🔗 Argo CD Notifications 자동화 (Slack 연동)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/09/">🔗 CI/CD 운영 자동화 (GitHub Actions·Helm Lint)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/">🔗 시크릿 관리 &amp;amp; 키 회전 자동화 (AWS·SealedSecret)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;hr>
+&lt;h2 id="-전체-내용-요약-09단계">🎯 전체 내용 요약 (0~9단계)&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>단계&lt;/th>
+&lt;th>핵심 목표&lt;/th>
+&lt;th>주요 개선점&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>FastAPI 리뉴얼&lt;/td>
+&lt;td>&lt;code>/predict&lt;/code>(자동) · &lt;code>/variant/{alias}/predict&lt;/code>(수동) · &lt;code>/variant/{alias}/reload&lt;/code>(핫스왑)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>→ &lt;strong>A/B·Canary·Blue-Green 통합 라우팅 구조&lt;/strong>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>핫스왑 보안/자동화&lt;/td>
+&lt;td>&lt;code>/reload&lt;/code> 토큰 인증 + Ingress 화이트리스트 + TLS,&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>Airflow Sensor READY 후 Reload 트리거&lt;/strong>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>Slack Alert 통합&lt;/td>
+&lt;td>&lt;strong>FastAPI/Airflow 공용 &lt;code>send_slack_alert()&lt;/code>&lt;/strong>, Airflow 실패 콜백 Slack 알림&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>롤백 자동화&lt;/td>
+&lt;td>등록 실패 시 &lt;strong>before_version&lt;/strong> 명시 롤백, READY 검증 + FastAPI &lt;code>/reload&lt;/code> 자동 반영&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>로그 안정화&lt;/td>
+&lt;td>&lt;strong>FastAPI=Loguru+NFS(PV/PVC)&lt;/strong> / &lt;strong>Airflow=S3 업로드&lt;/strong>,&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>권한(fsGroup/runAsUser)·보관 주기 표준화&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>Airflow 안정화·HTTPS&lt;/td>
+&lt;td>&lt;code>PythonSensor(reschedule)&lt;/code>·&lt;code>ALL_SUCCESS&lt;/code>·XCom Key 고정,&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>cert-manager 기반 TLS 자동화 (내부 CA)&lt;/strong>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>GitOps 전환&lt;/td>
+&lt;td>&lt;strong>MetalLB + SealedSecret + ApplicationSet&lt;/strong> 기반 자동 배포 체계 구축&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>GitOps 모니터링&lt;/td>
+&lt;td>&lt;strong>ArgoCD Notifications → Slack&lt;/strong> 실시간 Sync/Health 관제&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>CI/CD 고도화&lt;/td>
+&lt;td>&lt;strong>Helm Lint(strict) + kubeconform + yamllint&lt;/strong> 매트릭스 검증,&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>“PR→Merge→Auto Deploy→실험” 자동화&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9&lt;/td>
+&lt;td>SecretOps 표준화&lt;/td>
+&lt;td>&lt;strong>AWS Key Rotation / Re-Seal 반자동화(스크립트 기반)&lt;/strong>, GitOps 기반&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>“Secrets as Code” 운영 체계&lt;/strong>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;blockquote>
+&lt;p>🔄 핵심&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Mon, 06 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+&lt;blockquote>
+&lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h1 id="-목차">🧭 목차&lt;/h1>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>#&lt;/th>
+&lt;th>섹션&lt;/th>
+&lt;th>하위 항목&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>🧰 준비 (한 번만)&lt;/td>
+&lt;td>—&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>🧪 CI 진입 (GitHub Actions)&lt;/td>
+&lt;td>—&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>🔁 ArgoCD 동기화 (ApplicationSet)&lt;/td>
+&lt;td>—&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>🎯 Airflow 학습→등록→READY 흐름&lt;/td>
+&lt;td>3.1 Variables 설정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3.2 MLflow 연동 결과(FAIL)&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3.3 FAIL Slack 알림&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3.4 SUCCESS(dev/prod)&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3.5 FastAPI 모델 로드(dev/prod)&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3.6 등록/핫스왑 Slack(dev/prod)&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3.7 Self-Heal 테스트&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>🗂️ MLflow 등록/별칭/아티팩트&lt;/td>
+&lt;td>4.1 Variables의 별칭/롤백 파라미터&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4.2 Registry 별칭 바인딩(dev/prod)&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4.3 S3 아티팩트(dev/prod)&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>⚡ FastAPI 핫스왑&lt;/td>
+&lt;td>5.1 &lt;code>/variant/{alias}/reload&lt;/code>(dev/prod)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5.2 핫스왑 Slack 알림(dev/prod)&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>🔄 수동 롤백(운영 복구 레일)&lt;/td>
+&lt;td>6.1 롤백 변수 설정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6.2 롤백 전 상태&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6.3 롤백 DAG 결과(dev/prod)&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6.4 롤백 후 상태&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>📑 로그 스토리지(S3+NFS)&lt;/td>
+&lt;td>7.1 Airflow 로그 S3&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7.2 FastAPI 로그 NFS&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>🛰️ ArgoCD↔️Slack 관제 루프&lt;/td>
+&lt;td>—&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9&lt;/td>
+&lt;td>🔐 보안 자동화(크리덴셜/시크릿)&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9.1 AWS Credentials Secret Rotation&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9.2 SealedSecret Controller &amp;amp; Re-seal&lt;/td>
+&lt;td>9.1.a Before 상태&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9.1.b 이전 키 중복 감지 실패 사례&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9.1.c 회전 및 ArgoCD 반영 완료&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9.1.d 리소스 버전 비교 증명&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9.1.e ArgoCD 최종 상태 검증&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9.2.a 컨트롤러키 재발급 및 fingerprint 검증&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9.2.b ArgoCD 반영 확인&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10&lt;/td>
+&lt;td>🚦 트래픽 실험 (A/B·Canary·Blue-Green)&lt;/td>
+&lt;td>스크립트 &lt;code>/ops/ab_test.sh&lt;/code>, &lt;code>/ops/capture_test.sh&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10.1 A/B 테스트&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10.2 Canary 테스트(예: 30%)&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10.3 Blue-Green 전환&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11&lt;/td>
+&lt;td>🔗 One-Commit Flow 전체 체인&lt;/td>
+&lt;td>11.1 준비&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.2 브랜치/PR 트리거&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.3 CI/CD 통합 검증&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.4 PR 머지 &amp;amp; 자동 Sync&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.5 Variables 자동 반영&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.6 학습→등록→핫스왑→Slack&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.7 Canary 검증&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.8 Blue-Green 검증&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.9 로그 계층 검증&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.10 AWS 회전 검증&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.11 SealedSecrets 키 회전&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.12 롤백 변수 설정&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11.13 롤백 실행 &amp;amp; Slack&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h1 id="0--준비-한-번만">0) 🧰 준비 (한 번만)&lt;/h1>
+&lt;ul>
+&lt;li>(GitOps) &lt;code>charts/fastapi/values/{dev,prod}.yaml&lt;/code>에서 &lt;strong>ALIAS_SELECTION_MODE/DEFAULT_ALIAS/CANARY_PERCENT&lt;/strong> 값을 시나리오별로 수정 → &lt;code>git commit&lt;/code> → &lt;code>git push&lt;/code>&lt;/li>
+&lt;li>(테스트 스크립트) &lt;code>/ops/ab_test.sh&lt;/code> 저장 (아래 제공)&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h1 id="1--ci-진입-github-actions">&lt;strong>1) 🧪 CI 진입 (GitHub Actions)&lt;/strong>&lt;/h1>
+&lt;p>&lt;img alt="CI_진입.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-ci.png">&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 9단계: 시크릿 관리 &amp; 키 회전 자동화 (AWS·SealedSecret)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</link><pubDate>Thu, 25 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</guid><description>&lt;h2 id="시크릿-관리-및-키-회전-자동화-aws-credentials--sealedsecret-re-seal">시크릿 관리 및 키 회전 자동화: AWS Credentials · SealedSecret Re-Seal&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“MLOps에서는 모델보다 먼저, ‘비밀’이 먼저 무너집니다.”&lt;/p>
+&lt;p>“특히 AWS 키처럼 &lt;strong>주기적으로 교체해야 하는 값&lt;/strong>은 자동화가 필요하지만,&lt;/p>
+&lt;p>JWT·Slack Webhook처럼 &lt;strong>교체 시 영향이 큰 값&lt;/strong>은 운영자가 직접 결정해야 합니다.”&lt;/p>
+&lt;p>“그래서 9단계에서는&lt;/p>
+&lt;p>&lt;strong>‘자동화할 것과 사람이 확인해야 할 것을 구분한 SecretOps 체계’를 확립하는 것&lt;/strong>이 목적이었습니다.”&lt;/p>
+&lt;p>“AWS 키 회전·SealedSecret 재암호화·GitOps 반영까지는&lt;/p>
+&lt;p>&lt;strong>필요한 작업들을 스크립트로 묶어 반복을 최소화&lt;/strong>했고,&lt;/p>
+&lt;p>운영자가 ‘언제 실행할지’만 결정하면 되도록 정리했습니다.”&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 8단계: CI/CD 운영 자동화 (GitHub Actions·Helm Lint)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/09/</link><pubDate>Mon, 15 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/09/</guid><description>&lt;h2 id="cicd--운영-자동화-github-actions--helm-lint--canary-테스트">CI/CD &amp;amp; 운영 자동화: GitHub Actions · Helm Lint · Canary 테스트&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영 환경에서 사고는 대부분 &lt;strong>배포 전에 체크되지 못한 문제&lt;/strong>,&lt;/p>
+&lt;p>&lt;strong>수동 배포의 실수&lt;/strong>, &lt;strong>배포 후 검증 부재&lt;/strong>에서 시작됩니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 아예 CI 단계에서 문제를 막고,&lt;/p>
+&lt;p>CD에서는 GitOps가 원하는 상태를 자동으로 보장하며,&lt;/p>
+&lt;p>배포 직후 FastAPI alias로 &lt;strong>모델 트래픽까지 자동 검증되는 구조&lt;/strong>를 만들었습니다.”&lt;/p>
+&lt;p>“이 단계가 완성되면 하나의 커밋이&lt;/p>
+&lt;p>&lt;strong>검증 → 배포 → 실험 → 알림&lt;/strong>까지 스스로 흐르는&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 7단계: Argo CD Notifications 자동화 (Slack 연동)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/</link><pubDate>Fri, 05 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/</guid><description>&lt;h2 id="argo-cd-notifications--gitops-모니터링-자동화-slack-webhook--sealedsecret">Argo CD Notifications – GitOps 모니터링 자동화 (Slack Webhook &amp;amp; SealedSecret)&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“GitOps는 자동으로 잘 돌아가도,&lt;/p>
+&lt;p>&lt;strong>지금 무슨 일이 일어나는지 모르면 운영자는 항상 불안합니다.&lt;/strong>”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 Argo CD의 Sync/Health 변화를&lt;/p>
+&lt;p>즉시 Slack으로 받아보는 &lt;strong>GitOps 모니터링 루프&lt;/strong>를 만들었습니다.&lt;/p>
+&lt;p>커밋 이후 어떤 일이 일어나는지 ‘실시간으로 보이게’ 만드는 단계입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>Argo CD Notifications Controller&lt;/strong>로 &lt;strong>Sync/Health&lt;/strong> 이벤트를 &lt;strong>Slack&lt;/strong>에 실시간 전송&lt;/li>
+&lt;li>&lt;strong>Webhook URL → SealedSecret → 환경변수 참조&lt;/strong>로 안전 관리(레포 커밋 OK)&lt;/li>
+&lt;li>템플릿/트리거/구독을 &lt;strong>ConfigMap 한 곳&lt;/strong>에서 선언적으로 관리&lt;/li>
+&lt;li>&lt;strong>Git 커밋 → Argo Sync → Slack 알림&lt;/strong>의 자동 루프 완성&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-전체-흐름-요약">1️⃣ 전체 흐름 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart LR
+G[&amp;#34;Git Commit (main)&amp;#34;] --&amp;gt; A[&amp;#34;Argo CD&amp;lt;br/&amp;gt;Sync/Health 감지&amp;#34;]
+A --&amp;gt; N[&amp;#34;Notifications Controller&amp;lt;br/&amp;gt;(Templates · Triggers)&amp;#34;]
+N --&amp;gt; S[&amp;#34;Slack Webhook&amp;#34;]
+classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:1px,color:#0b318f;
+class G,A,N,S node;
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="2-폴더리소스-구조레포-반영-상태">2️⃣ 폴더/리소스 구조(레포 반영 상태)&lt;/h2>
+&lt;pre tabindex="0">&lt;code>mlops-infra/
+├─ bootstrap/
+│ └─ notifications/
+│ ├─ cm.yaml # 템플릿/트리거/구독 선언
+│ ├─ secret-sealed.yaml # Slack Webhook(SealedSecret)
+│ └─ kustomization.yaml # (선택) 동일 디렉터리 리소스 묶음
+└─ apps/
+├─ project-notifications.yaml
+└─ notifications.yaml
+&lt;/code>&lt;/pre>&lt;blockquote>
+&lt;p>이미 동일 경로가 레포에 존재하므로 정합성만 확인하면 됩니다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 6단계: GitOps 고도화 (Argo CD·MetalLB·ApplicationSet)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/07/</link><pubDate>Wed, 27 Aug 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/07/</guid><description>&lt;h2 id="fastapi-앱-전면-개편-ab--canary--blue-green-서빙-베이스">FastAPI 앱 전면 개편: A/B · Canary · Blue-Green 서빙 베이스&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영 환경에서 모델은 언제든 교체될 수 있고,&lt;/p>
+&lt;p>그 순간이 서비스 품질이 가장 크게 흔들리는 위험 구간입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 이후 모든 자동화(학습·등록·핫스왑·롤백)의 기반이 되는&lt;/p>
+&lt;p>&lt;strong>A/B · Canary · Blue-Green 전략을 모두 처리할 수 있는 FastAPI 서빙 구조&lt;/strong>부터 잡았습니다.”&lt;/p>
+&lt;p>“이 뼈대가 완성돼야 Airflow, MLflow, ArgoCD와 연결된&lt;/p>
+&lt;p>**진짜 ‘운영형 MLOps 파이프라인’**을 만들 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>전환 기준 = MLflow Alias(@A/@B)&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 5단계: Airflow 안정화 &amp; FastAPI HTTPS 보안]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/</link><pubDate>Mon, 18 Aug 2025 17:11:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/</guid><description>&lt;h2 id="airflow-안정화--fastapi-https-보안-적용-cert-manager-어노테이션-반영-완료">Airflow 안정화 &amp;amp; FastAPI HTTPS 보안 적용 (cert-manager 어노테이션 반영 완료)&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델을 등록하는 것보다 더 중요한 건&lt;/p>
+&lt;p>&lt;strong>언제 Reload가 실행되느냐&lt;/strong>입니다. 여기가 운영 안정성을 나누는 지점이니까요.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 Airflow 흐름을 한 번 더 단단히 조이고,&lt;/p>
+&lt;p>FastAPI 쪽은 HTTPS·화이트리스트까지 적용해&lt;/p>
+&lt;p>&lt;strong>‘안전하게 자동화된다’는 확신을 주는 구조&lt;/strong>를 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>Airflow&lt;/strong>: &lt;code>PythonSensor(mode=&amp;quot;reschedule&amp;quot;)&lt;/code>로 &lt;strong>READY 감시&lt;/strong>, &lt;code>TriggerRule.ALL_SUCCESS&lt;/code>로 &lt;strong>성공 체인에서만&lt;/strong> &lt;code>/reload&lt;/code>&lt;/li>
+&lt;li>&lt;strong>데이터/상태 꼬임 방지&lt;/strong>: Variable 검증 유틸 + XCom 키 표준&lt;/li>
+&lt;li>&lt;strong>FastAPI&lt;/strong>: Ingress &lt;strong>TLS(HTTPS) + IP 화이트리스트&lt;/strong> 강화&lt;/li>
+&lt;li>&lt;strong>cert-manager + ClusterIssuer(self-signed)&lt;/strong> 자동 발급/갱신: &lt;strong>템플릿에 어노테이션 자동 주입 반영 완료&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="5-1-airflow-안정화-sensor-리팩토링--xcomvariable-표준">5-1️⃣ Airflow 안정화: Sensor 리팩토링 &amp;amp; XCom/Variable 표준&lt;/h2>
+&lt;h3 id="1-dag-구조">1) DAG 구조&lt;/h3>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart LR
+classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:1px,color:#1e3a8a;
+A[&amp;#34;train_and_evaluate&amp;lt;br/&amp;gt;(PythonOperator)&amp;#34;] --&amp;gt; B{&amp;#34;check_result&amp;lt;br/&amp;gt;(Branch)&amp;#34;}
+B --&amp;gt;|acc &amp;gt;= threshold| C[&amp;#34;register_model&amp;lt;br/&amp;gt;(PythonOperator)&amp;#34;]
+B --&amp;gt;|acc &amp;lt; threshold| F[&amp;#34;notify_failure&amp;lt;br/&amp;gt;(PythonOperator)&amp;#34;]
+C --&amp;gt; D[&amp;#34;check_model_ready&amp;lt;br/&amp;gt;(PythonSensor)&amp;#34;]
+D --&amp;gt; E[&amp;#34;trigger_reload&amp;lt;br/&amp;gt;(PythonOperator)&amp;lt;br/&amp;gt;TriggerRule.ALL_SUCCESS&amp;#34;]
+class A,B,C,D,E,F node;
+&lt;/code>&lt;/pre>&lt;h3 id="2-ready-감시-전용-센서">2) READY 감시 전용 센서&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># dags/ml_code/sensor_model_ready.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.config &lt;span style="color:#f92672">import&lt;/span> get_mlflow_client
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.utils.log.logging_mixin &lt;span style="color:#f92672">import&lt;/span> LoggingMixin
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>logger &lt;span style="color:#f92672">=&lt;/span> LoggingMixin()&lt;span style="color:#f92672">.&lt;/span>log
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">check_model_ready&lt;/span>(model_name: str, version: str) &lt;span style="color:#f92672">-&amp;gt;&lt;/span> bool:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client &lt;span style="color:#f92672">=&lt;/span> get_mlflow_client()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mv &lt;span style="color:#f92672">=&lt;/span> client&lt;span style="color:#f92672">.&lt;/span>get_model_version(name&lt;span style="color:#f92672">=&lt;/span>model_name, version&lt;span style="color:#f92672">=&lt;/span>version)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> logger&lt;span style="color:#f92672">.&lt;/span>info(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[Sensor] 상태 체크: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_name&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> v&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> → &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>mv&lt;span style="color:#f92672">.&lt;/span>status&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> mv&lt;span style="color:#f92672">.&lt;/span>status &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;READY&amp;#34;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">elif&lt;/span> mv&lt;span style="color:#f92672">.&lt;/span>status &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;FAILED_REGISTRATION&amp;#34;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> &lt;span style="color:#a6e22e">RuntimeError&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;❌ 모델 등록 실패: 상태 FAILED_REGISTRATION&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">False&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="3-dag-본문핵심-발췌--성공-체인-보장--표준화된-변수xcom">3) DAG 본문(핵심 발췌) — &lt;strong>성공 체인 보장 &amp;amp; 표준화된 변수/XCom&lt;/strong>&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># dags/dag_ml_train_register_reload.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow &lt;span style="color:#f92672">import&lt;/span> DAG
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.python &lt;span style="color:#f92672">import&lt;/span> PythonOperator, BranchPythonOperator
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.sensors.python &lt;span style="color:#f92672">import&lt;/span> PythonSensor
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.utils.trigger_rule &lt;span style="color:#f92672">import&lt;/span> TriggerRule
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.exceptions &lt;span style="color:#f92672">import&lt;/span> AirflowSkipException
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.models &lt;span style="color:#f92672">import&lt;/span> Variable
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> datetime &lt;span style="color:#f92672">import&lt;/span> datetime, timedelta
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> pendulum &lt;span style="color:#f92672">import&lt;/span> timezone
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.train_model &lt;span style="color:#f92672">import&lt;/span> train_model
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.register_model &lt;span style="color:#f92672">import&lt;/span> register_model
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.rollback_model &lt;span style="color:#f92672">import&lt;/span> rollback_model
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.trigger_reload &lt;span style="color:#f92672">import&lt;/span> trigger_reload
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> ml_code.sensor_model_ready &lt;span style="color:#f92672">import&lt;/span> check_model_ready
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> utils.slack_alerts &lt;span style="color:#f92672">import&lt;/span> send_slack_alert, alert_slack
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> mlflow.tracking &lt;span style="color:#f92672">import&lt;/span> MlflowClient
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>kst &lt;span style="color:#f92672">=&lt;/span> timezone(&lt;span style="color:#e6db74">&amp;#34;Asia/Seoul&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>default_args &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;start_date&amp;#34;&lt;/span>: datetime(&lt;span style="color:#ae81ff">2025&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, tzinfo&lt;span style="color:#f92672">=&lt;/span>kst), &lt;span style="color:#e6db74">&amp;#34;retries&amp;#34;&lt;/span>: &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;retry_delay&amp;#34;&lt;/span>: timedelta(minutes&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>)}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">get_param&lt;/span>(key, default, cast_func, validate_func&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> value &lt;span style="color:#f92672">=&lt;/span> cast_func(Variable&lt;span style="color:#f92672">.&lt;/span>get(key, default&lt;span style="color:#f92672">=&lt;/span>str(default)))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> validate_func &lt;span style="color:#f92672">and&lt;/span> &lt;span style="color:#f92672">not&lt;/span> validate_func(value):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> &lt;span style="color:#a6e22e">ValueError&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Validation failed&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> value
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[Param] &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>key&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> 로딩 실패: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> → 기본값 &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>default&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> 사용&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> default
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">get_version_by_alias&lt;/span>(model_name, alias):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> MlflowClient()&lt;span style="color:#f92672">.&lt;/span>get_model_version_by_alias(model_name, alias)&lt;span style="color:#f92672">.&lt;/span>version
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">train_and_evaluate&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> C &lt;span style="color:#f92672">=&lt;/span> get_param(&lt;span style="color:#e6db74">&amp;#34;logreg_C&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">1.0&lt;/span>, float, &lt;span style="color:#66d9ef">lambda&lt;/span> x: &lt;span style="color:#ae81ff">0.001&lt;/span> &lt;span style="color:#f92672">&amp;lt;=&lt;/span> x &lt;span style="color:#f92672">&amp;lt;=&lt;/span> &lt;span style="color:#ae81ff">10.0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> max_iter &lt;span style="color:#f92672">=&lt;/span> get_param(&lt;span style="color:#e6db74">&amp;#34;logreg_max_iter&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">200&lt;/span>, int, &lt;span style="color:#66d9ef">lambda&lt;/span> x: x &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">50&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> threshold &lt;span style="color:#f92672">=&lt;/span> get_param(&lt;span style="color:#e6db74">&amp;#34;accuracy_threshold&amp;#34;&lt;/span>, &lt;span style="color:#ae81ff">0.9&lt;/span>, float, &lt;span style="color:#66d9ef">lambda&lt;/span> x: &lt;span style="color:#ae81ff">0.5&lt;/span> &lt;span style="color:#f92672">&amp;lt;=&lt;/span> x &lt;span style="color:#f92672">&amp;lt;=&lt;/span> &lt;span style="color:#ae81ff">0.99&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_name &lt;span style="color:#f92672">=&lt;/span> Variable&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> alias &lt;span style="color:#f92672">=&lt;/span> Variable&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;mlflow_alias&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">not&lt;/span> (model_name &lt;span style="color:#f92672">and&lt;/span> alias):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> &lt;span style="color:#a6e22e">ValueError&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;필수 Variable 누락: model_name 또는 mlflow_alias&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc, run_id &lt;span style="color:#f92672">=&lt;/span> train_model(C&lt;span style="color:#f92672">=&lt;/span>C, max_iter&lt;span style="color:#f92672">=&lt;/span>max_iter)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">not&lt;/span> run_id:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> &lt;span style="color:#a6e22e">ValueError&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;run_id 없음 → 학습 실패&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> k, v &lt;span style="color:#f92672">in&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;run_id&amp;#34;&lt;/span>: run_id, &lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>: model_name, &lt;span style="color:#e6db74">&amp;#34;alias&amp;#34;&lt;/span>: alias, &lt;span style="color:#e6db74">&amp;#34;acc&amp;#34;&lt;/span>: acc, &lt;span style="color:#e6db74">&amp;#34;threshold&amp;#34;&lt;/span>: threshold}&lt;span style="color:#f92672">.&lt;/span>items():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_push(key&lt;span style="color:#f92672">=&lt;/span>k, value&lt;span style="color:#f92672">=&lt;/span>v)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">check_result&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;acc&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> thr &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;threshold&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> acc &lt;span style="color:#f92672">is&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span> &lt;span style="color:#f92672">or&lt;/span> thr &lt;span style="color:#f92672">is&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">&amp;#34;❌ check_result → XCom 누락&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span> AirflowSkipException()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#34;register_model&amp;#34;&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> acc &lt;span style="color:#f92672">&amp;gt;=&lt;/span> thr &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#e6db74">&amp;#34;notify_failure&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">register_model_task&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> run_id &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;run_id&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_name &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> alias &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;alias&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> prev_version &lt;span style="color:#f92672">=&lt;/span> get_version_by_alias(model_name, alias)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> version &lt;span style="color:#f92672">=&lt;/span> register_model(run_id, model_name, alias)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_push(key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;version&amp;#34;&lt;/span>, value&lt;span style="color:#f92672">=&lt;/span>version)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;✅ 모델 등록 완료: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_name&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> v&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> → @&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>alias&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> msg &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;❌ 모델 등록 실패: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> prev_version:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> rollback_model(model_name, prev_version, alias)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> msg &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34; → 롤백 완료: v&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>prev_version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> msg &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#e6db74">&amp;#34; → 롤백 생략&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(msg)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">sensor_ready_func&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_name &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> version &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;register_model&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;version&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> check_model_ready(model_name, version)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">trigger_reload_task&lt;/span>(ti, &lt;span style="color:#f92672">**&lt;/span>_):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> alias &lt;span style="color:#f92672">=&lt;/span> ti&lt;span style="color:#f92672">.&lt;/span>xcom_pull(task_ids&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, key&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;alias&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> trigger_reload(alias) &lt;span style="color:#75715e"># FastAPI 응답 {&amp;#34;status&amp;#34;:&amp;#34;success&amp;#34;, ...} 기대&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;🔁 핫스왑 완료: @&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>alias&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;❌ 핫스왑 실패: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">raise&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">notify_failure&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> send_slack_alert(&lt;span style="color:#e6db74">&amp;#34;⚠️ 기준 미달 → 등록 및 핫스왑 생략&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> DAG(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dag_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;ml_train_register_and_reload&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> default_args&lt;span style="color:#f92672">=&lt;/span>default_args,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> schedule&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> catchup&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tags&lt;span style="color:#f92672">=&lt;/span>[&lt;span style="color:#e6db74">&amp;#34;mlops&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;train&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;sensor&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;reload&amp;#34;&lt;/span>],
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> on_failure_callback&lt;span style="color:#f92672">=&lt;/span>alert_slack,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>) &lt;span style="color:#66d9ef">as&lt;/span> dag:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> train &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;train_and_evaluate&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>train_and_evaluate)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> branch &lt;span style="color:#f92672">=&lt;/span> BranchPythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;check_result&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>check_result)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> register &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;register_model&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>register_model_task)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sensor &lt;span style="color:#f92672">=&lt;/span> PythonSensor(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;check_model_ready&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>sensor_ready_func,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> poke_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>, timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">180&lt;/span>, mode&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;reschedule&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reload &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;trigger_reload&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>trigger_reload_task,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> trigger_rule&lt;span style="color:#f92672">=&lt;/span>TriggerRule&lt;span style="color:#f92672">.&lt;/span>ALL_SUCCESS) &lt;span style="color:#75715e"># ✅ 성공 체인에서만 실행&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> failure &lt;span style="color:#f92672">=&lt;/span> PythonOperator(task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;notify_failure&amp;#34;&lt;/span>, python_callable&lt;span style="color:#f92672">=&lt;/span>notify_failure,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> trigger_rule&lt;span style="color:#f92672">=&lt;/span>TriggerRule&lt;span style="color:#f92672">.&lt;/span>NONE_FAILED_MIN_ONE_SUCCESS)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> train &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> branch
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> branch &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> [register, failure]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> register &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> sensor &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> reload
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>운영 포인트&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 4단계: FastAPI 로그 안정화 (NFS + PV/PVC + Loguru)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/</link><pubDate>Fri, 08 Aug 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/</guid><description>&lt;h2 id="fastapi-앱-전면-개편-ab--canary--blue-green-서빙-베이스">FastAPI 앱 전면 개편: A/B · Canary · Blue-Green 서빙 베이스&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영 환경에서 모델은 언제든 교체될 수 있고,&lt;/p>
+&lt;p>그 순간이 서비스 품질이 가장 크게 흔들리는 위험 구간입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 이후 모든 자동화(학습·등록·핫스왑·롤백)의 기반이 되는&lt;/p>
+&lt;p>&lt;strong>A/B · Canary · Blue-Green 전략을 모두 처리할 수 있는 FastAPI 서빙 구조&lt;/strong>부터 잡았습니다.”&lt;/p>
+&lt;p>“이 뼈대가 완성돼야 Airflow, MLflow, ArgoCD와 연결된&lt;/p>
+&lt;p>**진짜 ‘운영형 MLOps 파이프라인’**을 만들 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>전환 기준 = MLflow Alias(@A/@B)&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 3단계: 모델 롤백 자동화 (등록 실패 대비 복구)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/04/</link><pubDate>Fri, 01 Aug 2025 12:15:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/04/</guid><description>&lt;h2 id="모델-롤백-자동화-등록-실패-대비-복구-루프-완성">모델 롤백 자동화: 등록 실패 대비 복구 루프 완성&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델 배포는 성공했을 때보다, &lt;strong>실패했을 때의 회복 속도&lt;/strong>가 운영 품질을 결정합니다.”&lt;/p>
+&lt;p>“그래서 3단계에서는 등록이 실패하는 즉시,&lt;/p>
+&lt;p>이전 안정 버전으로 돌아가 FastAPI에 자동 반영되는 &lt;strong>완전한 롤백 루프&lt;/strong>를 구축했습니다.”&lt;/p>
+&lt;p>“이 구조가 있어야 장애 상황에서도 서비스가 &lt;strong>끊기지 않고 바로 복구&lt;/strong>될 수 있습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>등록 실패 → 즉시 롤백&lt;/strong>: 시도 직전 &lt;strong>&lt;code>before_version&lt;/code>&lt;/strong>(alias가 가리키던 버전)으로 복귀&lt;/li>
+&lt;li>&lt;strong>READY 검증 → alias 재할당 → FastAPI &lt;code>/reload&lt;/code>&lt;/strong> 까지 자동 수행(실서비스 반영 보장)&lt;/li>
+&lt;li>&lt;strong>수동 롤백 전용 DAG&lt;/strong> 제공(운영자가 대상 버전 명시)&lt;/li>
+&lt;li>&lt;strong>Slack/로그 추적&lt;/strong>(성공/실패/복구 구분), 실패는 &lt;strong>re-raise&lt;/strong>로 원인 명확화&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-플로우-한-장-요약">1️⃣ 플로우 한 장 요약&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+autonumber
+participant AF as Airflow DAG
+participant MF as MLflow Registry (Alias)
+participant FA as FastAPI (/variant/{alias}/reload)
+participant SL as Slack
+AF-&amp;gt;&amp;gt;MF: 새 버전 등록 시도 (create_model_version → set alias)
+MF--&amp;gt;&amp;gt;AF: ❌ 실패
+AF-&amp;gt;&amp;gt;AF: before_version = get_model_version_by_alias(model, alias)
+AF-&amp;gt;&amp;gt;MF: rollback_model(model, before_version, alias)
+AF-&amp;gt;&amp;gt;FA: POST /variant/{alias}/reload
+FA--&amp;gt;&amp;gt;AF: ✅ {&amp;#34;status&amp;#34;:&amp;#34;success&amp;#34;, ...}
+AF--&amp;gt;&amp;gt;SL: &amp;#34;Register 실패 → 이전 버전 복구(+reloaded)&amp;#34;
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="2-자동-롤백등록-태스크-내부--reload까지-포함">2️⃣ 자동 롤백(등록 태스크 내부) — &lt;code>/reload&lt;/code>까지 포함&lt;/h2>
+&lt;blockquote>
+&lt;p>의도: 서비스 가용성 최우선. 등록 실패 분기에서 즉시 롤백 + FastAPI 반영 후, 예외는 재전파해 원인 기록.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 2단계: Slack Alert 통합 (FastAPI·Airflow 공용)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</link><pubDate>Sat, 26 Jul 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</guid><description>&lt;h2 id="slack-alert-통합-fastapiairflow-공용-구조--템플릿-확장-기반">Slack Alert 통합: FastAPI·Airflow 공용 구조 + 템플릿 확장 기반&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영 환경에서 가장 무서운 건 &lt;strong>문제가 생겼는데 아무도 모르고 있는 상황&lt;/strong>입니다.”&lt;/p>
+&lt;p>“그래서 2단계에서는 FastAPI와 Airflow가 각자 흩어져 보내던 알림을&lt;/p>
+&lt;p>&lt;strong>하나의 Slack 인터페이스로 완전히 통합&lt;/strong>했습니다.”&lt;/p>
+&lt;p>“모델 학습·등록·센서·핫스왑·헬스체크까지&lt;/p>
+&lt;p>어디에서 무슨 일이 일어나도 &lt;strong>즉시 눈에 들어오도록 만드는 것&lt;/strong>,&lt;/p>
+&lt;p>그게 이 단계의 핵심 목적이었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>FastAPI와 Airflow가 공통 함수 &lt;code>send_slack_alert(text)&lt;/code>를 사용해 알림 체계를 통합&lt;/li>
+&lt;li>Airflow는 &lt;strong>전역 실패 콜백&lt;/strong> &lt;code>alert_slack(context)&lt;/code>로 DAG/Task 실패 자동 통보&lt;/li>
+&lt;li>Webhook URL은 SealedSecret → 환경변수(&lt;code>SLACK_WEBHOOK_URL&lt;/code>)로 주입&lt;/li>
+&lt;li>dev(&lt;code>.local&lt;/code>) / prod(&lt;code>.prod&lt;/code>) 환경 완전 분리: 네임스페이스·시크릿·도메인 각각 대응&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-구조-개요">1️⃣ 구조 개요&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>구성 요소&lt;/th>
+&lt;th>역할&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>공용 함수&lt;/strong>&lt;/td>
+&lt;td>&lt;code>send_slack_alert(text)&lt;/code> — FastAPI·Airflow 모두에서 호출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>Airflow 전역 콜백&lt;/strong>&lt;/td>
+&lt;td>&lt;code>alert_slack(context)&lt;/code> — DAG 실패 시 자동 호출&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>환경 주입 방식&lt;/strong>&lt;/td>
+&lt;td>&lt;code>slack-webhook-{env}-secret&lt;/code> → &lt;code>SLACK_WEBHOOK_URL&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>분리 원칙&lt;/strong>&lt;/td>
+&lt;td>dev/prod 완전 분리 (네임스페이스·시크릿·도메인)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="2-시스템-흐름도">2️⃣ 시스템 흐름도&lt;/h2>
+&lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">flowchart LR
+subgraph Apps[&amp;#34;🧩 Application Layer&amp;#34;]
+FA[&amp;#34;FastAPI&amp;#34;]
+AF[&amp;#34;Airflow&amp;#34;]
+end
+subgraph Alerts[&amp;#34;🔔 Alerts Interface&amp;#34;]
+SSA[&amp;#34;send_slack_alert(text)&amp;#34;]
+FAIL[&amp;#34;alert_slack(context)&amp;#34;]
+end
+FA --&amp;gt; SSA
+AF --&amp;gt; SSA
+AF --&amp;gt; FAIL
+Alerts --&amp;gt; Slack[&amp;#34;📜 Slack Webhook&amp;#34;]
+classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:1px,color:#0b318f;
+classDef sub fill:#eef5ff,stroke:#7aa7ff,stroke-width:1px,color:#0b318f;
+class Apps,Alerts sub;
+class FA,AF,SSA,FAIL,Slack node;
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="3-fastapi-알림-모듈">3️⃣ FastAPI 알림 모듈&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># charts/fastapi/app/utils/slack_alerts.py&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> requests
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">send_slack_alert&lt;/span>(text: str):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> slack_url &lt;span style="color:#f92672">=&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>environ&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;SLACK_WEBHOOK_URL&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">not&lt;/span> slack_url:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;[Slack Alert] SKIP: SLACK_WEBHOOK_URL not set&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> res &lt;span style="color:#f92672">=&lt;/span> requests&lt;span style="color:#f92672">.&lt;/span>post(slack_url, json&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;text&amp;#34;&lt;/span>: text}, timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">5&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> res&lt;span style="color:#f92672">.&lt;/span>raise_for_status()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[Slack Alert Error] &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>e&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>사용 예시:&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 1단계: 핫스왑 고도화 (/reload 보안·DAG 자동화)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/02/</link><pubDate>Tue, 22 Jul 2025 12:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/02/</guid><description>&lt;h2 id="핫스왑-고도화-reload-보안-강화--dag-자동화-연동">핫스왑 고도화: &lt;code>/reload&lt;/code> 보안 강화 + DAG 자동화 연동&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델을 잘 학습시키는 것도 중요하지만,&lt;/p>
+&lt;p>잘못된 모델이 실수로 핫스왑되는 순간이 더 치명적입니다.”&lt;/p>
+&lt;p>그래서 1단계에서는 &lt;code>/reload&lt;/code>를 확실하게 잠그고,&lt;/p>
+&lt;p>&lt;strong>학습 → 등록 → 감시 → 핫스왑&lt;/strong>까지가 Airflow에서 자동으로 흘러가도록 만들었습니다.&lt;/p>
+&lt;p>이 단계가 완성돼야 이후 단계에서 **안전한 자동 운영(MLOps)**을 구현할 수 있기 때문입니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>보안 3종&lt;/strong>: &lt;code>x-token&lt;/code>(SealedSecret) + Ingress &lt;strong>IP whitelist&lt;/strong> + &lt;strong>TLS&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>자동화&lt;/strong>: Airflow &lt;strong>Train → Register → Sensor(READY) → Reload&lt;/strong> 전체 시퀀스&lt;/li>
+&lt;li>&lt;strong>일관성&lt;/strong>: MLflow &lt;strong>Alias(@A/@B)&lt;/strong> 기반 등록·조회·핫스왑&lt;/li>
+&lt;li>&lt;strong>관제&lt;/strong>: 모든 단계 &lt;strong>성공/스킵/실패&lt;/strong> Slack 알림&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>환경 분리: dev(&lt;em>.local) / prod(&lt;/em>.prod) — 예: fastapi.local, fastapi.prod&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 0단계: FastAPI A/B·Canary·Blue-Green 서빙 베이스]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/01/</link><pubDate>Fri, 18 Jul 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/01/</guid><description>&lt;h2 id="fastapi-앱-전면-개편-ab--canary--blue-green-서빙-베이스">FastAPI 앱 전면 개편: A/B · Canary · Blue-Green 서빙 베이스&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영 환경에서 모델은 언제든 교체될 수 있고,&lt;/p>
+&lt;p>그 순간이 서비스 품질이 가장 크게 흔들리는 위험 구간입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 이후 모든 자동화(학습·등록·핫스왑·롤백)의 기반이 되는&lt;/p>
+&lt;p>&lt;strong>A/B · Canary · Blue-Green 전략을 모두 처리할 수 있는 FastAPI 서빙 구조&lt;/strong>부터 잡았습니다.”&lt;/p>
+&lt;p>“이 뼈대가 완성돼야 Airflow, MLflow, ArgoCD와 연결된&lt;/p>
+&lt;p>**진짜 ‘운영형 MLOps 파이프라인’**을 만들 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>전환 기준 = MLflow Alias(@A/@B)&lt;/strong>&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-실전-시나리오-기반-구성-배경">🧩 실전 시나리오 기반 구성 배경&lt;/h2>
 &lt;blockquote>
 &lt;p>이 프로젝트는 단순 실습을 넘어서, 실제 발생하는 다음과 같은 문제들을 해결하기 위한 MLOps 인프라 구축을 목표로 설계되었습니다.&lt;/p>&lt;/blockquote>
 &lt;ul>

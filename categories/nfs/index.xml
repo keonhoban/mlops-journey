@@ -1,4 +1,18 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>NFS on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/nfs/</link><description>Recent content in NFS on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 15 Jul 2025 17:55:05 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/nfs/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-실전-시나리오-기반-구성-배경">🧩 실전 시나리오 기반 구성 배경&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>NFS on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/nfs/</link><description>Recent content in NFS on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 08 Aug 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/nfs/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 4단계: FastAPI 로그 안정화 (NFS + PV/PVC + Loguru)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/</link><pubDate>Fri, 08 Aug 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/</guid><description>&lt;h2 id="fastapi-앱-전면-개편-ab--canary--blue-green-서빙-베이스">FastAPI 앱 전면 개편: A/B · Canary · Blue-Green 서빙 베이스&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영 환경에서 모델은 언제든 교체될 수 있고,&lt;/p>
+&lt;p>그 순간이 서비스 품질이 가장 크게 흔들리는 위험 구간입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 이후 모든 자동화(학습·등록·핫스왑·롤백)의 기반이 되는&lt;/p>
+&lt;p>&lt;strong>A/B · Canary · Blue-Green 전략을 모두 처리할 수 있는 FastAPI 서빙 구조&lt;/strong>부터 잡았습니다.”&lt;/p>
+&lt;p>“이 뼈대가 완성돼야 Airflow, MLflow, ArgoCD와 연결된&lt;/p>
+&lt;p>**진짜 ‘운영형 MLOps 파이프라인’**을 만들 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>전환 기준 = MLflow Alias(@A/@B)&lt;/strong>&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-실전-시나리오-기반-구성-배경">🧩 실전 시나리오 기반 구성 배경&lt;/h2>
 &lt;blockquote>
 &lt;p>이 프로젝트는 단순 실습을 넘어서, 실제 발생하는 다음과 같은 문제들을 해결하기 위한 MLOps 인프라 구축을 목표로 설계되었습니다.&lt;/p>&lt;/blockquote>
 &lt;ul>

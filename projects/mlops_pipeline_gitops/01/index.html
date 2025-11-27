@@ -1,0 +1,409 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[MLOps 운영 고도화 - 에필로그] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼”
+
+📌 전체 경로 요약
+
+  
+      
+          순서
+          주제
+      
+  
+  
+      
+          0
+          🔗 FastAPI A/B·Canary·Blue-Green 서빙 베이스
+      
+      
+          1
+          🔗 핫스왑 고도화 (/reload 보안·DAG 자동화)
+      
+      
+          2
+          🔗 Slack Alert 통합 (FastAPI·Airflow 공용)
+      
+      
+          3
+          🔗 모델 롤백 자동화 (등록 실패 대비 복구)
+      
+      
+          4
+          🔗 FastAPI 로그 안정화 (NFS + PV/PVC + Loguru)
+      
+      
+          5
+          🔗 Airflow 안정화 & FastAPI HTTPS 보안
+      
+      
+          6
+          🔗 GitOps 고도화 (Argo CD·MetalLB·ApplicationSet)
+      
+      
+          7
+          🔗 Argo CD Notifications 자동화 (Slack 연동)
+      
+      
+          8
+          🔗 CI/CD 운영 자동화 (GitHub Actions·Helm Lint)
+      
+      
+          9
+          🔗 시크릿 관리 & 키 회전 자동화 (AWS·SealedSecret)
+      
+  
+
+
+
+🎯 전체 내용 요약 (0~9단계)
+
+  
+      
+          단계
+          핵심 목표
+          주요 개선점
+      
+  
+  
+      
+          0
+          FastAPI 리뉴얼
+          /predict(자동) · /variant/{alias}/predict(수동) · /variant/{alias}/reload(핫스왑)
+      
+      
+          → A/B·Canary·Blue-Green 통합 라우팅 구조
+          
+          
+      
+      
+          1
+          핫스왑 보안/자동화
+          /reload 토큰 인증 + Ingress 화이트리스트 + TLS,
+      
+      
+          Airflow Sensor READY 후 Reload 트리거
+          
+          
+      
+      
+          2
+          Slack Alert 통합
+          FastAPI/Airflow 공용 send_slack_alert(), Airflow 실패 콜백 Slack 알림
+      
+      
+          3
+          롤백 자동화
+          등록 실패 시 before_version 명시 롤백, READY 검증 + FastAPI /reload 자동 반영
+      
+      
+          4
+          로그 안정화
+          FastAPI=Loguru+NFS(PV/PVC) / Airflow=S3 업로드,
+      
+      
+          권한(fsGroup/runAsUser)·보관 주기 표준화
+          
+          
+      
+      
+          5
+          Airflow 안정화·HTTPS
+          PythonSensor(reschedule)·ALL_SUCCESS·XCom Key 고정,
+      
+      
+          cert-manager 기반 TLS 자동화 (내부 CA)
+          
+          
+      
+      
+          6
+          GitOps 전환
+          MetalLB + SealedSecret + ApplicationSet 기반 자동 배포 체계 구축
+      
+      
+          7
+          GitOps 모니터링
+          ArgoCD Notifications → Slack 실시간 Sync/Health 관제
+      
+      
+          8
+          CI/CD 고도화
+          Helm Lint(strict) + kubeconform + yamllint 매트릭스 검증,
+      
+      
+          “PR→Merge→Auto Deploy→실험” 자동화
+          
+          
+      
+      
+          9
+          SecretOps 표준화
+          AWS Key Rotation / Re-Seal 반자동화(스크립트 기반), GitOps 기반
+      
+      
+          “Secrets as Code” 운영 체계
+          
+          
+      
+  
+
+
+🔄 핵심"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[MLOps 운영 고도화 - 에필로그]"><meta property="og:description" content="에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼” 📌 전체 경로 요약 순서 주제 0 🔗 FastAPI A/B·Canary·Blue-Green 서빙 베이스 1 🔗 핫스왑 고도화 (/reload 보안·DAG 자동화) 2 🔗 Slack Alert 통합 (FastAPI·Airflow 공용) 3 🔗 모델 롤백 자동화 (등록 실패 대비 복구) 4 🔗 FastAPI 로그 안정화 (NFS + PV/PVC + Loguru) 5 🔗 Airflow 안정화 & FastAPI HTTPS 보안 6 🔗 GitOps 고도화 (Argo CD·MetalLB·ApplicationSet) 7 🔗 Argo CD Notifications 자동화 (Slack 연동) 8 🔗 CI/CD 운영 자동화 (GitHub Actions·Helm Lint) 9 🔗 시크릿 관리 & 키 회전 자동화 (AWS·SealedSecret) 🎯 전체 내용 요약 (0~9단계) 단계 핵심 목표 주요 개선점 0 FastAPI 리뉴얼 /predict(자동) · /variant/{alias}/predict(수동) · /variant/{alias}/reload(핫스왑) → A/B·Canary·Blue-Green 통합 라우팅 구조 1 핫스왑 보안/자동화 /reload 토큰 인증 + Ingress 화이트리스트 + TLS, Airflow Sensor READY 후 Reload 트리거 2 Slack Alert 통합 FastAPI/Airflow 공용 send_slack_alert(), Airflow 실패 콜백 Slack 알림 3 롤백 자동화 등록 실패 시 before_version 명시 롤백, READY 검증 + FastAPI /reload 자동 반영 4 로그 안정화 FastAPI=Loguru+NFS(PV/PVC) / Airflow=S3 업로드, 권한(fsGroup/runAsUser)·보관 주기 표준화 5 Airflow 안정화·HTTPS PythonSensor(reschedule)·ALL_SUCCESS·XCom Key 고정, cert-manager 기반 TLS 자동화 (내부 CA) 6 GitOps 전환 MetalLB + SealedSecret + ApplicationSet 기반 자동 배포 체계 구축 7 GitOps 모니터링 ArgoCD Notifications → Slack 실시간 Sync/Health 관제 8 CI/CD 고도화 Helm Lint(strict) + kubeconform + yamllint 매트릭스 검증, “PR→Merge→Auto Deploy→실험” 자동화 9 SecretOps 표준화 AWS Key Rotation / Re-Seal 반자동화(스크립트 기반), GitOps 기반 “Secrets as Code” 운영 체계 🔄 핵심"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="projects"><meta property="article:published_time" content="2025-10-13T17:10:21+09:00"><meta property="article:modified_time" content="2025-10-13T17:10:21+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[MLOps 운영 고도화 - 에필로그]"><meta name=twitter:description content="에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼”
+
+📌 전체 경로 요약
+
+  
+      
+          순서
+          주제
+      
+  
+  
+      
+          0
+          🔗 FastAPI A/B·Canary·Blue-Green 서빙 베이스
+      
+      
+          1
+          🔗 핫스왑 고도화 (/reload 보안·DAG 자동화)
+      
+      
+          2
+          🔗 Slack Alert 통합 (FastAPI·Airflow 공용)
+      
+      
+          3
+          🔗 모델 롤백 자동화 (등록 실패 대비 복구)
+      
+      
+          4
+          🔗 FastAPI 로그 안정화 (NFS + PV/PVC + Loguru)
+      
+      
+          5
+          🔗 Airflow 안정화 & FastAPI HTTPS 보안
+      
+      
+          6
+          🔗 GitOps 고도화 (Argo CD·MetalLB·ApplicationSet)
+      
+      
+          7
+          🔗 Argo CD Notifications 자동화 (Slack 연동)
+      
+      
+          8
+          🔗 CI/CD 운영 자동화 (GitHub Actions·Helm Lint)
+      
+      
+          9
+          🔗 시크릿 관리 & 키 회전 자동화 (AWS·SealedSecret)
+      
+  
+
+
+
+🎯 전체 내용 요약 (0~9단계)
+
+  
+      
+          단계
+          핵심 목표
+          주요 개선점
+      
+  
+  
+      
+          0
+          FastAPI 리뉴얼
+          /predict(자동) · /variant/{alias}/predict(수동) · /variant/{alias}/reload(핫스왑)
+      
+      
+          → A/B·Canary·Blue-Green 통합 라우팅 구조
+          
+          
+      
+      
+          1
+          핫스왑 보안/자동화
+          /reload 토큰 인증 + Ingress 화이트리스트 + TLS,
+      
+      
+          Airflow Sensor READY 후 Reload 트리거
+          
+          
+      
+      
+          2
+          Slack Alert 통합
+          FastAPI/Airflow 공용 send_slack_alert(), Airflow 실패 콜백 Slack 알림
+      
+      
+          3
+          롤백 자동화
+          등록 실패 시 before_version 명시 롤백, READY 검증 + FastAPI /reload 자동 반영
+      
+      
+          4
+          로그 안정화
+          FastAPI=Loguru+NFS(PV/PVC) / Airflow=S3 업로드,
+      
+      
+          권한(fsGroup/runAsUser)·보관 주기 표준화
+          
+          
+      
+      
+          5
+          Airflow 안정화·HTTPS
+          PythonSensor(reschedule)·ALL_SUCCESS·XCom Key 고정,
+      
+      
+          cert-manager 기반 TLS 자동화 (내부 CA)
+          
+          
+      
+      
+          6
+          GitOps 전환
+          MetalLB + SealedSecret + ApplicationSet 기반 자동 배포 체계 구축
+      
+      
+          7
+          GitOps 모니터링
+          ArgoCD Notifications → Slack 실시간 Sync/Health 관제
+      
+      
+          8
+          CI/CD 고도화
+          Helm Lint(strict) + kubeconform + yamllint 매트릭스 검증,
+      
+      
+          “PR→Merge→Auto Deploy→실험” 자동화
+          
+          
+      
+      
+          9
+          SecretOps 표준화
+          AWS Key Rotation / Re-Seal 반자동화(스크립트 기반), GitOps 기반
+      
+      
+          “Secrets as Code” 운영 체계
+          
+          
+      
+  
+
+
+🔄 핵심"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Projects","item":"https://keonhoban.github.io/mlops-journey/projects/"},{"@type":"ListItem","position":2,"name":"[MLOps 운영 고도화 - 에필로그]","item":"https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[MLOps 운영 고도화 - 에필로그]","name":"[MLOps 운영 고도화 - 에필로그]","description":"에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼” 📌 전체 경로 요약 순서 주제 0 🔗 FastAPI A/B·Canary·Blue-Green 서빙 베이스 1 🔗 핫스왑 고도화 (/reload 보안·DAG 자동화) 2 🔗 Slack Alert 통합 (FastAPI·Airflow 공용) 3 🔗 모델 롤백 자동화 (등록 실패 대비 복구) 4 🔗 FastAPI 로그 안정화 (NFS + PV/PVC + Loguru) 5 🔗 Airflow 안정화 \u0026amp; FastAPI HTTPS 보안 6 🔗 GitOps 고도화 (Argo CD·MetalLB·ApplicationSet) 7 🔗 Argo CD Notifications 자동화 (Slack 연동) 8 🔗 CI/CD 운영 자동화 (GitHub Actions·Helm Lint) 9 🔗 시크릿 관리 \u0026amp; 키 회전 자동화 (AWS·SealedSecret) 🎯 전체 내용 요약 (0~9단계) 단계 핵심 목표 주요 개선점 0 FastAPI 리뉴얼 /predict(자동) · /variant/{alias}/predict(수동) · /variant/{alias}/reload(핫스왑) → A/B·Canary·Blue-Green 통합 라우팅 구조 1 핫스왑 보안/자동화 /reload 토큰 인증 + Ingress 화이트리스트 + TLS, Airflow Sensor READY 후 Reload 트리거 2 Slack Alert 통합 FastAPI/Airflow 공용 send_slack_alert(), Airflow 실패 콜백 Slack 알림 3 롤백 자동화 등록 실패 시 before_version 명시 롤백, READY 검증 + FastAPI /reload 자동 반영 4 로그 안정화 FastAPI=Loguru+NFS(PV/PVC) / Airflow=S3 업로드, 권한(fsGroup/runAsUser)·보관 주기 표준화 5 Airflow 안정화·HTTPS PythonSensor(reschedule)·ALL_SUCCESS·XCom Key 고정, cert-manager 기반 TLS 자동화 (내부 CA) 6 GitOps 전환 MetalLB + SealedSecret + ApplicationSet 기반 자동 배포 체계 구축 7 GitOps 모니터링 ArgoCD Notifications → Slack 실시간 Sync/Health 관제 8 CI/CD 고도화 Helm Lint(strict) + kubeconform + yamllint 매트릭스 검증, “PR→Merge→Auto Deploy→실험” 자동화 9 SecretOps 표준화 AWS Key Rotation / Re-Seal 반자동화(스크립트 기반), GitOps 기반 “Secrets as Code” 운영 체계 🔄 핵심\n","keywords":[],"articleBody":"에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼” 📌 전체 경로 요약 순서 주제 0 🔗 FastAPI A/B·Canary·Blue-Green 서빙 베이스 1 🔗 핫스왑 고도화 (/reload 보안·DAG 자동화) 2 🔗 Slack Alert 통합 (FastAPI·Airflow 공용) 3 🔗 모델 롤백 자동화 (등록 실패 대비 복구) 4 🔗 FastAPI 로그 안정화 (NFS + PV/PVC + Loguru) 5 🔗 Airflow 안정화 \u0026 FastAPI HTTPS 보안 6 🔗 GitOps 고도화 (Argo CD·MetalLB·ApplicationSet) 7 🔗 Argo CD Notifications 자동화 (Slack 연동) 8 🔗 CI/CD 운영 자동화 (GitHub Actions·Helm Lint) 9 🔗 시크릿 관리 \u0026 키 회전 자동화 (AWS·SealedSecret) 🎯 전체 내용 요약 (0~9단계) 단계 핵심 목표 주요 개선점 0 FastAPI 리뉴얼 /predict(자동) · /variant/{alias}/predict(수동) · /variant/{alias}/reload(핫스왑) → A/B·Canary·Blue-Green 통합 라우팅 구조 1 핫스왑 보안/자동화 /reload 토큰 인증 + Ingress 화이트리스트 + TLS, Airflow Sensor READY 후 Reload 트리거 2 Slack Alert 통합 FastAPI/Airflow 공용 send_slack_alert(), Airflow 실패 콜백 Slack 알림 3 롤백 자동화 등록 실패 시 before_version 명시 롤백, READY 검증 + FastAPI /reload 자동 반영 4 로그 안정화 FastAPI=Loguru+NFS(PV/PVC) / Airflow=S3 업로드, 권한(fsGroup/runAsUser)·보관 주기 표준화 5 Airflow 안정화·HTTPS PythonSensor(reschedule)·ALL_SUCCESS·XCom Key 고정, cert-manager 기반 TLS 자동화 (내부 CA) 6 GitOps 전환 MetalLB + SealedSecret + ApplicationSet 기반 자동 배포 체계 구축 7 GitOps 모니터링 ArgoCD Notifications → Slack 실시간 Sync/Health 관제 8 CI/CD 고도화 Helm Lint(strict) + kubeconform + yamllint 매트릭스 검증, “PR→Merge→Auto Deploy→실험” 자동화 9 SecretOps 표준화 AWS Key Rotation / Re-Seal 반자동화(스크립트 기반), GitOps 기반 “Secrets as Code” 운영 체계 🔄 핵심\n“Git 커밋 한 번으로 학습→등록→배포→실험→모니터링→복구까지 자율 순환한다.”\n⚙️ Helm 기준선 구조 (Before GitOps) %%{init: {'flowchart': {'htmlLabels': true}} }%% flowchart TD subgraph CLU[\"Kubernetes Cluster\"] subgraph NS_MF[\"Namespace: mlflow\"] MF[\"📦 MLflow\"] end subgraph NS_AF[\"Namespace: airflow\"] AF[\"📦 Airflow\"] end subgraph NS_FA[\"Namespace: fastapi\"] FA[\"📦 FastAPI\"] end end subgraph EXT[\"External Systems\"] S3[\"🪣 S3 (Artifacts \u0026 Airflow Logs)\"] PG[\"🗄️ PostgreSQL (MLflow Meta)\"] end subgraph SEC[\"Kubernetes Secrets\"] AWS[\"🔐 aws-credentials-secret\"] MF_DB[\"🔐 mlflow-db-secret\"] AF_DB[\"🔐 airflow-db-secret\"] end MF --\u003e|Artifacts| S3 MF --\u003e|Meta| PG AF --\u003e|Train/Register| MF AF --\u003e|Remote Logging| S3 FA --\u003e|Model Meta| MF FA --\u003e|Model Files| S3 AWS --\u003e MF AWS --\u003e AF AWS --\u003e FA MF_DB --\u003e MF AF_DB --\u003e AF classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:2px,color:#0b318f; Before 특징\nhelm upgrade 기반 수동 배포. Secret 수동 생성 (kubectl create secret ...). Airflow 로그는 S3 업로드, FastAPI는 NFS(PV/PVC) 보존. 인증서: prod은 letsencrypt-prod 표기를 사용했지만, 내부 hosts 기반 self-signed와 실질 동일. 🧩 GitOps 전환 후 (After) Helm 템플릿 구조를 유지하면서, ArgoCD로 배포·보안·관제를 자동화.\n%%{init: {'flowchart': {'htmlLabels': true}} }%% flowchart TD subgraph GIT[\"Git Repos\"] CH[\"mlops-infra (Helm Charts + values/base,dev,prod)\"] BOOT[\"bootstrap/* (argocd, sealed-secrets, ingress 등)\"] APPS[\"apps/* (ApplicationSet, AppProject)\"] end subgraph ARGO[\"ArgoCD\"] APPSET[\"ApplicationSet (dev/prod)\"] SYNC[\"Auto Sync + SelfHeal + Prune\"] NOTI[\"Notifications → Slack\"] end subgraph CLU[\"Kubernetes Cluster\"] MTLB[\"MetalLB (L2 LB)\"] ING[\"Ingress + TLS (cert-manager 내부 CA 기반)\"] subgraph NS_DEV[\"Namespaces: *-dev\"] MF_D[\"MLflow-dev\"] AF_D[\"Airflow-dev\"] FA_D[\"FastAPI-dev\"] end subgraph NS_PRD[\"Namespaces: *-prod\"] MF_P[\"MLflow-prod\"] AF_P[\"Airflow-prod\"] FA_P[\"FastAPI-prod\"] end end CH --\u003e APPSET --\u003e SYNC --\u003e CLU BOOT --\u003e SYNC APPS --\u003e ARGO ARGO --\u003e NOTI AF_D --\u003e|Remote Logging| S3_D[\"S3/dev (airflow-logs)\"] AF_P --\u003e|Remote Logging| S3_P[\"S3/prod (airflow-logs)\"] FA_D --\u003e|App Logs| NFS_D[\"NFS/dev (FastAPI logs)\"] FA_P --\u003e|App Logs| NFS_P[\"NFS/prod (FastAPI logs)\"] AF_D --\u003e MF_D AF_P --\u003e MF_P FA_D --\u003e MF_D FA_P --\u003e MF_P classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:2px,color:#0b318f; After 특징\nHelm values 패턴 그대로 유지 환경별 Namespace 완전 분리 → dev/prod 동시 운영 안정화 Airflow=S3 Remote Logging, FastAPI=NFS(Loguru rotation) 유지 cert-manager 내부 CA 기반 TLS 자동화 — hosts 기반 내부 신뢰망으로 외부 노출 없이 폐쇄형 TLS 운영 ArgoCD ApplicationSet 으로 dev/prod 자동 배포 + SelfHeal SealedSecret + Rotation/Re-Seal 로 Key 관리 완전 자동화 스토리지(PV/PVC) 는 워크로드와 생명주기 분리: 전용 Application(Prune=false, Replace=false) 로 관리해 데이터 보존과 안전한 드리프트 감시 🔍 Helm → GitOps 변화 요약 영역 Helm (Before) GitOps (After) 의미 배포 방식 수동 helm upgrade ArgoCD Auto Sync 자동화·SelfHeal Secret 관리 kubectl 수동 SealedSecret + Rotation/Re-Seal “Secrets as Code” 로그 FastAPI=NFS / Airflow=S3 FastAPI=NFS 유지 / Airflow=S3 일원화 이원화 표준화 인증서 체계 cert-manager + LE 표기 (실질 self-signed) cert-manager 내부 CA 기반 자동 TLS (hosts 기반 내부 신뢰망) 외부 CA 없이 자동 갱신 공격 표면 최소화 | | CI/CD | 수동 빌드 | GitHub Actions + ArgoCD Pipeline | “PR→배포→Slack” 일원화 | | 관제 | 개별 알림 | ArgoCD Notifications + Slack | 실시간 관제 일원화 | | 네임스페이스 | 단일 | 환경별 분리 | 격리·복구 용이 | | 스토리지(PV/PVC) | 수동 kubectl apply | 전용 App + prune=false + replace=false | 데이터 보존·수명주기 분리 | 수동 빌드·배포에서 벗어나, PR → CI → ArgoCD → Slack → 실험으로 이어지는 자동화된 “One Commit Flow” 완성.\n🔁 One Commit Flow %%{init: {'flowchart': {'htmlLabels': true}} }%% flowchart LR G[\"GitHub PR → Merge\"] --\u003e CI[\"CI: Helm Lint · kubeconform · yamllint\"] CI --\u003e CD[\"CD: ArgoCD Auto Sync (ApplicationSet + SelfHeal + Prune)\"] CD --\u003e AF[\"Airflow: Train → Register\"] AF --\u003e SEN[\"Sensor READY\"] SEN --\u003e RL[\"FastAPI /variant/{alias}/reload\"] RL --\u003e EXP[\"A/B · Canary · Blue-Green\"] AF -. 실패시 .-\u003e RB[\"Rollback DAG (before_version)\"] RB --\u003e RL subgraph LOGS[\"Logging Layer\"] FA_LOG[\"FastAPI → NFS(Loguru rotation)\"] AF_LOG[\"Airflow → S3(Remote Logging)\"] end CD --\u003e NOTI[\"ArgoCD Notifications → Slack\"] AF --\u003e AF_LOG RL --\u003e FA_LOG EXP --\u003e NOTI classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:2px,color:#0b318f; 🧠 운영 원칙 보안/시크릿 → AWS Key Rotation + Re-Seal 완전 자동화 배포 안정성 → Sensor READY 이후 Reload, 실패 시 롤백 자동 반영 로그 구조 → Airflow=S3 / FastAPI=NFS, 권한·보관·로테이션 일원화 TLS 체계 → cert-manager 내부 CA 자동 갱신, hosts 기반 내부 신뢰망 운영 GitOps 복원력 → ApplicationSet + SelfHeal + Prune로 OutOfSync 자동 복구 스토리지 분리 → PV/PVC는 전용 ArgoCD App으로 운영(※ Prune/Replace 비활성으로 데이터 안전성 확보) ✅ 점검 체크리스트 Airflow S3 Prefix(dev/prod) 정상 기록 FastAPI /app/logs NFS 권한 일치(fsGroup/runAsUser) cert-manager 내부 CA 기반 TLS 정상 발급 SealedSecret Rotation + Re-Seal 정상 동작 ApplicationSet dev/prod Path 정합성 Slack 알림 정상 동작 스토리지 전용 App이 prune=false, replace=false 로 설정되어 있음 🏁 회고 이제 모든 빌드·배포·관제는 GitOps 루프 안에서 자동으로 순환합니다.\n장애 시 자동 복구되고, 변경은 즉시 반영되며, 운영자는 단지 커밋 한 번으로 플랫폼 전 과정을 제어합니다.\nHelm의 구조 위에 GitOps 운영 계층을 쌓아, 자율형 MLOps를 구현했습니다.\n🙌 프로젝트 GitHub 저장소 GitHub 코드: [GitOps] mlops-platform ","wordCount":"974","inLanguage":"en","datePublished":"2025-10-13T17:10:21+09:00","dateModified":"2025-10-13T17:10:21+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/projects/>Projects</a></div><h1 class="post-title entry-hint-parent">[MLOps 운영 고도화 - 에필로그]</h1><div class=post-meta><span title='2025-10-13 17:10:21 +0900 +0900'>October 13, 2025</span>&nbsp;·&nbsp;5 min</div></header><div class=post-content><h2 id=에필로그--한-번의-커밋으로-끝까지-가는-자율형-mlops-플랫폼>에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼”<a hidden class=anchor aria-hidden=true href=#에필로그--한-번의-커밋으로-끝까지-가는-자율형-mlops-플랫폼>#</a></h2><hr><h2 id=-전체-경로-요약>📌 전체 경로 요약<a hidden class=anchor aria-hidden=true href=#-전체-경로-요약>#</a></h2><table><thead><tr><th>순서</th><th>주제</th></tr></thead><tbody><tr><td>0</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/01/>🔗 FastAPI A/B·Canary·Blue-Green 서빙 베이스</a></td></tr><tr><td>1</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/02/>🔗 핫스왑 고도화 (/reload 보안·DAG 자동화)</a></td></tr><tr><td>2</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/>🔗 Slack Alert 통합 (FastAPI·Airflow 공용)</a></td></tr><tr><td>3</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/04/>🔗 모델 롤백 자동화 (등록 실패 대비 복구)</a></td></tr><tr><td>4</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/>🔗 FastAPI 로그 안정화 (NFS + PV/PVC + Loguru)</a></td></tr><tr><td>5</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/>🔗 Airflow 안정화 & FastAPI HTTPS 보안</a></td></tr><tr><td>6</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/07/>🔗 GitOps 고도화 (Argo CD·MetalLB·ApplicationSet)</a></td></tr><tr><td>7</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/>🔗 Argo CD Notifications 자동화 (Slack 연동)</a></td></tr><tr><td>8</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/09/>🔗 CI/CD 운영 자동화 (GitHub Actions·Helm Lint)</a></td></tr><tr><td>9</td><td><a href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/>🔗 시크릿 관리 & 키 회전 자동화 (AWS·SealedSecret)</a></td></tr></tbody></table><hr><hr><h2 id=-전체-내용-요약-09단계>🎯 전체 내용 요약 (0~9단계)<a hidden class=anchor aria-hidden=true href=#-전체-내용-요약-09단계>#</a></h2><table><thead><tr><th>단계</th><th>핵심 목표</th><th>주요 개선점</th></tr></thead><tbody><tr><td>0</td><td>FastAPI 리뉴얼</td><td><code>/predict</code>(자동) · <code>/variant/{alias}/predict</code>(수동) · <code>/variant/{alias}/reload</code>(핫스왑)</td></tr><tr><td>→ <strong>A/B·Canary·Blue-Green 통합 라우팅 구조</strong></td><td></td><td></td></tr><tr><td>1</td><td>핫스왑 보안/자동화</td><td><code>/reload</code> 토큰 인증 + Ingress 화이트리스트 + TLS,</td></tr><tr><td><strong>Airflow Sensor READY 후 Reload 트리거</strong></td><td></td><td></td></tr><tr><td>2</td><td>Slack Alert 통합</td><td><strong>FastAPI/Airflow 공용 <code>send_slack_alert()</code></strong>, Airflow 실패 콜백 Slack 알림</td></tr><tr><td>3</td><td>롤백 자동화</td><td>등록 실패 시 <strong>before_version</strong> 명시 롤백, READY 검증 + FastAPI <code>/reload</code> 자동 반영</td></tr><tr><td>4</td><td>로그 안정화</td><td><strong>FastAPI=Loguru+NFS(PV/PVC)</strong> / <strong>Airflow=S3 업로드</strong>,</td></tr><tr><td>권한(fsGroup/runAsUser)·보관 주기 표준화</td><td></td><td></td></tr><tr><td>5</td><td>Airflow 안정화·HTTPS</td><td><code>PythonSensor(reschedule)</code>·<code>ALL_SUCCESS</code>·XCom Key 고정,</td></tr><tr><td><strong>cert-manager 기반 TLS 자동화 (내부 CA)</strong></td><td></td><td></td></tr><tr><td>6</td><td>GitOps 전환</td><td><strong>MetalLB + SealedSecret + ApplicationSet</strong> 기반 자동 배포 체계 구축</td></tr><tr><td>7</td><td>GitOps 모니터링</td><td><strong>ArgoCD Notifications → Slack</strong> 실시간 Sync/Health 관제</td></tr><tr><td>8</td><td>CI/CD 고도화</td><td><strong>Helm Lint(strict) + kubeconform + yamllint</strong> 매트릭스 검증,</td></tr><tr><td>“PR→Merge→Auto Deploy→실험” 자동화</td><td></td><td></td></tr><tr><td>9</td><td>SecretOps 표준화</td><td><strong>AWS Key Rotation / Re-Seal 반자동화(스크립트 기반)</strong>, GitOps 기반</td></tr><tr><td><strong>“Secrets as Code” 운영 체계</strong></td><td></td><td></td></tr></tbody></table><blockquote><p>🔄 핵심</p><p>“Git 커밋 한 번으로 학습→등록→배포→실험→모니터링→복구까지 자율 순환한다.”</p></blockquote><hr><h2 id=-helm-기준선-구조-before-gitops>⚙️ Helm 기준선 구조 (Before GitOps)<a hidden class=anchor aria-hidden=true href=#-helm-기준선-구조-before-gitops>#</a></h2><pre tabindex=0><code class=language-mermaid data-lang=mermaid>%%{init: {&#39;flowchart&#39;: {&#39;htmlLabels&#39;: true}} }%%
+flowchart TD
+  subgraph CLU[&#34;Kubernetes Cluster&#34;]
+    subgraph NS_MF[&#34;Namespace: mlflow&#34;]
+      MF[&#34;📦 MLflow&#34;]
+    end
+    subgraph NS_AF[&#34;Namespace: airflow&#34;]
+      AF[&#34;📦 Airflow&#34;]
+    end
+    subgraph NS_FA[&#34;Namespace: fastapi&#34;]
+      FA[&#34;📦 FastAPI&#34;]
+    end
+  end
+
+  subgraph EXT[&#34;External Systems&#34;]
+    S3[&#34;🪣 S3 (Artifacts &amp; Airflow Logs)&#34;]
+    PG[&#34;🗄️ PostgreSQL (MLflow Meta)&#34;]
+  end
+
+  subgraph SEC[&#34;Kubernetes Secrets&#34;]
+    AWS[&#34;🔐 aws-credentials-secret&#34;]
+    MF_DB[&#34;🔐 mlflow-db-secret&#34;]
+    AF_DB[&#34;🔐 airflow-db-secret&#34;]
+  end
+
+  MF --&gt;|Artifacts| S3
+  MF --&gt;|Meta| PG
+  AF --&gt;|Train/Register| MF
+  AF --&gt;|Remote Logging| S3
+  FA --&gt;|Model Meta| MF
+  FA --&gt;|Model Files| S3
+
+  AWS --&gt; MF
+  AWS --&gt; AF
+  AWS --&gt; FA
+  MF_DB --&gt; MF
+  AF_DB --&gt; AF
+
+  classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:2px,color:#0b318f;
+</code></pre><p><strong>Before 특징</strong></p><ul><li><code>helm upgrade</code> 기반 수동 배포.</li><li>Secret 수동 생성 (<code>kubectl create secret ...</code>).</li><li>Airflow 로그는 <strong>S3 업로드</strong>, FastAPI는 <strong>NFS(PV/PVC)</strong> 보존.</li><li>인증서: prod은 <code>letsencrypt-prod</code> 표기를 사용했지만, <strong>내부 hosts 기반 self-signed와 실질 동일</strong>.</li></ul><hr><h2 id=-gitops-전환-후-after>🧩 GitOps 전환 후 (After)<a hidden class=anchor aria-hidden=true href=#-gitops-전환-후-after>#</a></h2><blockquote><p>Helm 템플릿 구조를 유지하면서, ArgoCD로 배포·보안·관제를 자동화.</p></blockquote><pre tabindex=0><code class=language-mermaid data-lang=mermaid>%%{init: {&#39;flowchart&#39;: {&#39;htmlLabels&#39;: true}} }%%
+flowchart TD
+  subgraph GIT[&#34;Git Repos&#34;]
+    CH[&#34;mlops-infra (Helm Charts + values/base,dev,prod)&#34;]
+    BOOT[&#34;bootstrap/* (argocd, sealed-secrets, ingress 등)&#34;]
+    APPS[&#34;apps/* (ApplicationSet, AppProject)&#34;]
+  end
+
+  subgraph ARGO[&#34;ArgoCD&#34;]
+    APPSET[&#34;ApplicationSet (dev/prod)&#34;]
+    SYNC[&#34;Auto Sync + SelfHeal + Prune&#34;]
+    NOTI[&#34;Notifications → Slack&#34;]
+  end
+
+  subgraph CLU[&#34;Kubernetes Cluster&#34;]
+    MTLB[&#34;MetalLB (L2 LB)&#34;]
+    ING[&#34;Ingress + TLS (cert-manager 내부 CA 기반)&#34;]
+    subgraph NS_DEV[&#34;Namespaces: *-dev&#34;]
+      MF_D[&#34;MLflow-dev&#34;]
+      AF_D[&#34;Airflow-dev&#34;]
+      FA_D[&#34;FastAPI-dev&#34;]
+    end
+    subgraph NS_PRD[&#34;Namespaces: *-prod&#34;]
+      MF_P[&#34;MLflow-prod&#34;]
+      AF_P[&#34;Airflow-prod&#34;]
+      FA_P[&#34;FastAPI-prod&#34;]
+    end
+  end
+
+  CH --&gt; APPSET --&gt; SYNC --&gt; CLU
+  BOOT --&gt; SYNC
+  APPS --&gt; ARGO
+  ARGO --&gt; NOTI
+
+  AF_D --&gt;|Remote Logging| S3_D[&#34;S3/dev (airflow-logs)&#34;]
+  AF_P --&gt;|Remote Logging| S3_P[&#34;S3/prod (airflow-logs)&#34;]
+  FA_D --&gt;|App Logs| NFS_D[&#34;NFS/dev (FastAPI logs)&#34;]
+  FA_P --&gt;|App Logs| NFS_P[&#34;NFS/prod (FastAPI logs)&#34;]
+
+  AF_D --&gt; MF_D
+  AF_P --&gt; MF_P
+  FA_D --&gt; MF_D
+  FA_P --&gt; MF_P
+
+  classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:2px,color:#0b318f;
+</code></pre><p><strong>After 특징</strong></p><ul><li><strong>Helm values 패턴 그대로 유지</strong></li><li><strong>환경별 Namespace 완전 분리</strong> → dev/prod 동시 운영 안정화</li><li><strong>Airflow=S3 Remote Logging</strong>, <strong>FastAPI=NFS(Loguru rotation)</strong> 유지</li><li><strong>cert-manager 내부 CA 기반 TLS 자동화</strong> — hosts 기반 내부 신뢰망으로 외부 노출 없이 폐쇄형 TLS 운영</li><li><strong>ArgoCD ApplicationSet</strong> 으로 dev/prod 자동 배포 + SelfHeal</li><li><strong>SealedSecret + Rotation/Re-Seal</strong> 로 Key 관리 완전 자동화</li><li><strong>스토리지(PV/PVC)</strong> 는 워크로드와 <strong>생명주기 분리</strong>: <strong>전용 Application(Prune=false, Replace=false)</strong> 로 관리해 데이터 보존과 안전한 드리프트 감시</li></ul><hr><h2 id=-helm--gitops-변화-요약>🔍 Helm → GitOps 변화 요약<a hidden class=anchor aria-hidden=true href=#-helm--gitops-변화-요약>#</a></h2><table><thead><tr><th>영역</th><th>Helm (Before)</th><th>GitOps (After)</th><th>의미</th></tr></thead><tbody><tr><td>배포 방식</td><td>수동 <code>helm upgrade</code></td><td>ArgoCD Auto Sync</td><td>자동화·SelfHeal</td></tr><tr><td>Secret 관리</td><td>kubectl 수동</td><td>SealedSecret + Rotation/Re-Seal</td><td>“Secrets as Code”</td></tr><tr><td>로그</td><td>FastAPI=NFS / Airflow=S3</td><td>FastAPI=NFS 유지 / Airflow=S3 일원화</td><td>이원화 표준화</td></tr><tr><td>인증서 체계</td><td><code>cert-manager + LE 표기 (실질 self-signed)</code></td><td><strong>cert-manager 내부 CA 기반 자동 TLS (hosts 기반 내부 신뢰망)</strong></td><td>외부 CA 없이 자동 갱신</td></tr></tbody></table><ul><li>공격 표면 최소화 |
+| CI/CD | 수동 빌드 | GitHub Actions + ArgoCD Pipeline | “PR→배포→Slack” 일원화 |
+| 관제 | 개별 알림 | ArgoCD Notifications + Slack | 실시간 관제 일원화 |
+| 네임스페이스 | 단일 | 환경별 분리 | 격리·복구 용이 |
+| 스토리지(PV/PVC) | 수동 <code>kubectl apply</code> | 전용 App + prune=false + replace=false | 데이터 보존·수명주기 분리 |</li></ul><blockquote><p>수동 빌드·배포에서 벗어나, PR → CI → ArgoCD → Slack → 실험으로 이어지는 자동화된 “One Commit Flow” 완성.</p></blockquote><hr><h2 id=-one-commit-flow>🔁 One Commit Flow<a hidden class=anchor aria-hidden=true href=#-one-commit-flow>#</a></h2><pre tabindex=0><code class=language-mermaid data-lang=mermaid>%%{init: {&#39;flowchart&#39;: {&#39;htmlLabels&#39;: true}} }%%
+flowchart LR
+  G[&#34;GitHub PR → Merge&#34;] --&gt; CI[&#34;CI: Helm Lint · kubeconform · yamllint&#34;]
+  CI --&gt; CD[&#34;CD: ArgoCD Auto Sync (ApplicationSet + SelfHeal + Prune)&#34;]
+  CD --&gt; AF[&#34;Airflow: Train → Register&#34;]
+  AF --&gt; SEN[&#34;Sensor READY&#34;]
+  SEN --&gt; RL[&#34;FastAPI /variant/{alias}/reload&#34;]
+  RL --&gt; EXP[&#34;A/B · Canary · Blue-Green&#34;]
+  AF -. 실패시 .-&gt; RB[&#34;Rollback DAG (before_version)&#34;]
+  RB --&gt; RL
+
+  subgraph LOGS[&#34;Logging Layer&#34;]
+    FA_LOG[&#34;FastAPI → NFS(Loguru rotation)&#34;]
+    AF_LOG[&#34;Airflow → S3(Remote Logging)&#34;]
+  end
+
+  CD --&gt; NOTI[&#34;ArgoCD Notifications → Slack&#34;]
+  AF --&gt; AF_LOG
+  RL --&gt; FA_LOG
+  EXP --&gt; NOTI
+
+  classDef node fill:#f7f7ff,stroke:#7aa7ff,stroke-width:2px,color:#0b318f;
+</code></pre><hr><h2 id=-운영-원칙>🧠 운영 원칙<a hidden class=anchor aria-hidden=true href=#-운영-원칙>#</a></h2><ul><li><strong>보안/시크릿</strong> → AWS Key Rotation + Re-Seal 완전 자동화</li><li><strong>배포 안정성</strong> → Sensor READY 이후 Reload, 실패 시 롤백 자동 반영</li><li><strong>로그 구조</strong> → Airflow=S3 / FastAPI=NFS, 권한·보관·로테이션 일원화</li><li><strong>TLS 체계</strong> → cert-manager 내부 CA 자동 갱신, hosts 기반 내부 신뢰망 운영</li><li><strong>GitOps 복원력</strong> → ApplicationSet + SelfHeal + Prune로 OutOfSync 자동 복구</li><li><strong>스토리지 분리</strong> → PV/PVC는 <strong>전용 ArgoCD App</strong>으로 운영(※ <strong>Prune/Replace 비활성</strong>으로 데이터 안전성 확보)</li></ul><hr><h2 id=-점검-체크리스트>✅ 점검 체크리스트<a hidden class=anchor aria-hidden=true href=#-점검-체크리스트>#</a></h2><ul><li><input disabled type=checkbox> Airflow S3 Prefix(dev/prod) 정상 기록</li><li><input disabled type=checkbox> FastAPI <code>/app/logs</code> NFS 권한 일치(fsGroup/runAsUser)</li><li><input disabled type=checkbox> cert-manager 내부 CA 기반 TLS 정상 발급</li><li><input disabled type=checkbox> SealedSecret Rotation + Re-Seal 정상 동작</li><li><input disabled type=checkbox> ApplicationSet dev/prod Path 정합성</li><li><input disabled type=checkbox> Slack 알림 정상 동작</li><li><input disabled type=checkbox> <strong>스토리지 전용 App</strong>이 <strong><code>prune=false</code>, <code>replace=false</code></strong> 로 설정되어 있음</li></ul><hr><h2 id=--회고>🏁 회고<a hidden class=anchor aria-hidden=true href=#--회고>#</a></h2><blockquote><p>이제 모든 빌드·배포·관제는 GitOps 루프 안에서 자동으로 순환합니다.</p><p>장애 시 자동 복구되고, 변경은 즉시 반영되며, 운영자는 단지 <strong>커밋 한 번</strong>으로 플랫폼 전 과정을 제어합니다.</p><p><strong>Helm의 구조 위에 GitOps 운영 계층을 쌓아, 자율형 MLOps를 구현했습니다.</strong></p></blockquote><h2 id=-프로젝트-github-저장소>🙌 프로젝트 GitHub 저장소<a hidden class=anchor aria-hidden=true href=#-프로젝트-github-저장소>#</a></h2><ul><li>GitHub 코드: <a href=https://https://github.com/keonhoban/mlops-infra-labs/tree/main/mlops-platform>[GitOps] mlops-platform</a></li></ul></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
