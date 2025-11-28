@@ -1,4 +1,103 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Architecture on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/architecture/</link><description>Recent content in Architecture on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 06 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/architecture/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Mon, 06 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Architecture on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/architecture/</link><description>Recent content in Architecture on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 15 Nov 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/architecture/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/01/</link><pubDate>Sat, 15 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/01/</guid><description>&lt;h2 id="에필로그--관측알림데이터까지-한-번에-이어지는-mlops-운영-플랫폼">에필로그 — “관측·알림·데이터까지 한 번에 이어지는 MLOps 운영 플랫폼”&lt;/h2>
+&lt;hr>
+&lt;h2 id="-전체-경로-요약">📌 전체 경로 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>순서&lt;/th>
+&lt;th>주제&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/">🔗 kube-prometheus-stack + GitOps 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/">🔗 Alertmanager Slack &amp;amp; 트러블슈팅&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/">🔗 Prometheus/KSM/Kubelet 완전 분리 구조&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/">🔗 Loki/Promtail 로그 파이프라인 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/">🔗 운영 중 발생한 실제 이슈 &amp;amp; 해결 과정&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/">🔗 FastAPI Observability Dashboard &amp;amp; Alert Library&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/">🔗 Data Pipeline 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/">🔗 검증&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-전체-회고-요약">🎯 &lt;strong>전체 회고 요약&lt;/strong>&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>단계&lt;/th>
+&lt;th>핵심 목표&lt;/th>
+&lt;th>주요 개선점&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>모니터링 뼈대 구축&lt;/td>
+&lt;td>kube-prometheus-stack dev/prod 완전 분리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>Slack 알람 통합&lt;/td>
+&lt;td>Alertmanager configSecret 표준화 + 알람 라우팅&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>메트릭 교차 수집 제거&lt;/td>
+&lt;td>KSM/Kubelet 라벨 통일, Prometheus TSDB local-path&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>로그 파이프라인 완성&lt;/td>
+&lt;td>Loki/Promtail dev/prod 분리 + LogQL Range Query&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>실제 운영 이슈 해결&lt;/td>
+&lt;td>라벨/Secret/NFS 권한/NFS unmount 문제 일괄 해결&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>FastAPI 관측 대시보드&lt;/td>
+&lt;td>RPS·p95·ErrorRate·로그 통합 패널 + Alert Library&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>Data Pipeline 구축&lt;/td>
+&lt;td>S3 Raw → Feature ETL, Airflow DAG 기반 자동화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>검증&lt;/td>
+&lt;td>Observability 계층, Grafana 대시보드, Datapipeline&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;blockquote>
+&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Mon, 06 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
@@ -126,7 +225,6 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;hr>
 &lt;hr>
 &lt;h2 id="-전체-회고-요약-09단계">🎯 전체 회고 요약 (0~9단계)&lt;/h2>
 &lt;table>

@@ -1,4 +1,159 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>FastAPI on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/fastapi/</link><description>Recent content in FastAPI on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 18 Aug 2025 17:11:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/fastapi/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 5단계: Airflow 안정화 &amp; FastAPI HTTPS 보안]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/</link><pubDate>Mon, 18 Aug 2025 17:11:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/</guid><description>&lt;h2 id="airflow-안정화--fastapi-https-보안-적용-cert-manager-어노테이션-반영-완료">Airflow 안정화 &amp;amp; FastAPI HTTPS 보안 적용 (cert-manager 어노테이션 반영 완료)&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>FastAPI on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/fastapi/</link><description>Recent content in FastAPI on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 21 Nov 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/fastapi/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Fri, 21 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>구분&lt;/th>
+&lt;th>증명 핵심&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>A. Observability 계층&lt;/strong>&lt;/td>
+&lt;td>ArgoCD 상태 · Prometheus/Loki 정상 수집 · Slack 알람 도착&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>**B. FastAPI Observability&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;amp; Grafana 대시보드**&lt;/td>
+&lt;td>FastAPI 대시보드 동작 · 에러/지연 알람 작동&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>C. Data Pipeline (Airflow + S3)&lt;/strong>&lt;/td>
+&lt;td>Airflow DAG 성공 · S3 Raw→Feature 변환 확인&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h1 id="a-observability-계층">A. Observability 계층&lt;/h1>
+&lt;p>Observability 계층(모니터링 + 로그 수집 + 알람)이&lt;/p>
+&lt;p>&lt;strong>GitOps 기반으로 dev/prod 완전 분리 + 자동화&lt;/strong> 되어 있음을 증명합니다.&lt;/p>
+&lt;hr>
+&lt;h2 id="1-argocd-applications-gitops-기반-구성">1️⃣ ArgoCD Applications (GitOps 기반 구성)&lt;/h2>
+&lt;h3 id="-1-1-cli로-전체-application-상태-확인">✔ 1-1. CLI로 전체 Application 상태 확인&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl -n argocd get applications
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img alt="proof-01-01-argocd-all-status-cmd.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-01-argocd-all-status-cmd.png">&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/01/</link><pubDate>Sat, 15 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/01/</guid><description>&lt;h2 id="에필로그--관측알림데이터까지-한-번에-이어지는-mlops-운영-플랫폼">에필로그 — “관측·알림·데이터까지 한 번에 이어지는 MLOps 운영 플랫폼”&lt;/h2>
+&lt;hr>
+&lt;h2 id="-전체-경로-요약">📌 전체 경로 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>순서&lt;/th>
+&lt;th>주제&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/">🔗 kube-prometheus-stack + GitOps 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/">🔗 Alertmanager Slack &amp;amp; 트러블슈팅&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/">🔗 Prometheus/KSM/Kubelet 완전 분리 구조&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/">🔗 Loki/Promtail 로그 파이프라인 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/">🔗 운영 중 발생한 실제 이슈 &amp;amp; 해결 과정&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/">🔗 FastAPI Observability Dashboard &amp;amp; Alert Library&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/">🔗 Data Pipeline 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/">🔗 검증&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-전체-회고-요약">🎯 &lt;strong>전체 회고 요약&lt;/strong>&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>단계&lt;/th>
+&lt;th>핵심 목표&lt;/th>
+&lt;th>주요 개선점&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>모니터링 뼈대 구축&lt;/td>
+&lt;td>kube-prometheus-stack dev/prod 완전 분리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>Slack 알람 통합&lt;/td>
+&lt;td>Alertmanager configSecret 표준화 + 알람 라우팅&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>메트릭 교차 수집 제거&lt;/td>
+&lt;td>KSM/Kubelet 라벨 통일, Prometheus TSDB local-path&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>로그 파이프라인 완성&lt;/td>
+&lt;td>Loki/Promtail dev/prod 분리 + LogQL Range Query&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>실제 운영 이슈 해결&lt;/td>
+&lt;td>라벨/Secret/NFS 권한/NFS unmount 문제 일괄 해결&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>FastAPI 관측 대시보드&lt;/td>
+&lt;td>RPS·p95·ErrorRate·로그 통합 패널 + Alert Library&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>Data Pipeline 구축&lt;/td>
+&lt;td>S3 Raw → Feature ETL, Airflow DAG 기반 자동화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>검증&lt;/td>
+&lt;td>Observability 계층, Grafana 대시보드, Datapipeline&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;blockquote>
+&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 6단계 : FastAPI Observability Dashboard &amp; Alert Library]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/</link><pubDate>Wed, 05 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/</guid><description>&lt;h2 id="fastapi-observability-dashboard--alert-library">FastAPI Observability Dashboard &amp;amp; Alert Library&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“FastAPI는 모델을 서빙하는 ‘입구’이자,&lt;/p>
+&lt;p>장애가 나면 가장 먼저 흔들리는 지점입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 실제 운영처럼&lt;/p>
+&lt;p>&lt;strong>문제가 생기면 바로 감지되고, 원인을 바로 찾을 수 있는 관측체계&lt;/strong>를 만들었습니다.”&lt;/p>
+&lt;p>“A/B·Canary·핫스왑 구조 위에 안전망을 올리는 과정,&lt;/p>
+&lt;p>그 첫 단계가 바로 FastAPI Observability Dashboard &amp;amp; Alert Library입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 &lt;strong>핵심 요약&lt;/strong>&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>FastAPI 기반 ML Serving 환경에서&lt;/p>
+&lt;p>&lt;strong>실제 운영 가능한 수준의 관측·알람 체계&lt;/strong> 구축&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>장애 발생 시 즉시 감지하고&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 5단계: Airflow 안정화 &amp; FastAPI HTTPS 보안]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/</link><pubDate>Mon, 18 Aug 2025 17:11:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/06/</guid><description>&lt;h2 id="airflow-안정화--fastapi-https-보안-적용-cert-manager-어노테이션-반영-완료">Airflow 안정화 &amp;amp; FastAPI HTTPS 보안 적용 (cert-manager 어노테이션 반영 완료)&lt;/h2>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>

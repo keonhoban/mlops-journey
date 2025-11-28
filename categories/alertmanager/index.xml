@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>AlertManager on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/alertmanager/</link><description>Recent content in AlertManager on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 18 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/alertmanager/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델이 잘 학습되고 잘 배포되는 것보다&lt;/p>
+&lt;p>&lt;strong>문제가 생겼을 때 즉시 감지되는 것&lt;/strong>이 더 중요할 때가 많습니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 dev/prod 각각에서 알람이&lt;/p>
+&lt;p>&lt;strong>정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인&lt;/strong>을 먼저 완성했습니다.”&lt;/p>
+&lt;p>“이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은&lt;/p>
+&lt;p>운영형 MLOps 이벤트를 실시간으로 감지할 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>Prometheus → Alertmanager → Slack&lt;/code> 경로를&lt;/p>
+&lt;p>dev/prod 완전히 분리된 상태로,&lt;/p></description></item></channel></rss>

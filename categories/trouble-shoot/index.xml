@@ -1,4 +1,45 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Trouble Shoot on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/trouble-shoot/</link><description>Recent content in Trouble Shoot on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 13 Jun 2025 21:06:20 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/trouble-shoot/index.xml" rel="self" type="application/rss+xml"/><item><title>[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI</title><link>https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/</link><pubDate>Fri, 13 Jun 2025 21:06:20 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/</guid><description>&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Trouble Shoot on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/trouble-shoot/</link><description>Recent content in Trouble Shoot on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 02 Nov 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/trouble-shoot/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 5단계 : 운영 중 발생한 실제 이슈 &amp; 해결 과정]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</link><pubDate>Sun, 02 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</guid><description>&lt;h2 id="운영-중-발생한-실제-이슈--해결-과정">운영 중 발생한 실제 이슈 &amp;amp; 해결 과정&lt;/h2>
+&lt;hr>
+&lt;h1 id="-시나리오-설명">🧠 시나리오 설명&lt;/h1>
+&lt;blockquote>
+&lt;p>“관측·알림·로그 시스템은 세팅보다 운영 이후가 진짜 시작입니다.”&lt;/p>
+&lt;p>“실운영 환경에서 반드시 마주치는 문제들(div/prod 크로스 스크랩, Alertmanager 충돌, NFS 권한, TSDB 병목 등)을 정리하고&lt;/p>
+&lt;p>&lt;strong>왜 문제가 생겼는지 → 어떻게 해결했는지 → 다시는 반복되지 않도록&lt;/strong> 구조 자체를 잡아주는 단계입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>dev/prod &lt;strong>크로스 스크랩 문제&lt;/strong> 정리&lt;/li>
+&lt;li>Alertmanager configSecret / generated-secret 충돌&lt;/li>
+&lt;li>Instant Query 오류(&lt;code>log queries are not supported&lt;/code>) 원리&lt;/li>
+&lt;li>worker2 종료 지연(30~40초)&lt;/li>
+&lt;li>tmp-curl CrashLoopBackOff&lt;/li>
+&lt;li>NFS Flush / Permission / fsGroup 문제&lt;/li>
+&lt;li>SealedSecret namespace mismatch&lt;/li>
+&lt;li>Prometheus TSDB → local-path 전환 시 발생 가능한 이슈&lt;/li>
+&lt;li>&lt;strong>“문제 → 원인 → 해결 → 재발 방지” 구조로 정리&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-devprod-cross-scrape-문제">1️⃣ dev/prod Cross-Scrape 문제&lt;/h2>
+&lt;h3 id="-증상">🧩 증상&lt;/h3>
+&lt;p>&lt;code>monitoring-dev&lt;/code> Prometheus에서 &lt;code>monitoring-prod&lt;/code> 메트릭까지 보여서&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델이 잘 학습되고 잘 배포되는 것보다&lt;/p>
+&lt;p>&lt;strong>문제가 생겼을 때 즉시 감지되는 것&lt;/strong>이 더 중요할 때가 많습니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 dev/prod 각각에서 알람이&lt;/p>
+&lt;p>&lt;strong>정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인&lt;/strong>을 먼저 완성했습니다.”&lt;/p>
+&lt;p>“이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은&lt;/p>
+&lt;p>운영형 MLOps 이벤트를 실시간으로 감지할 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>Prometheus → Alertmanager → Slack&lt;/code> 경로를&lt;/p>
+&lt;p>dev/prod 완전히 분리된 상태로,&lt;/p></description></item><item><title>[TS] Airflow 기초 자동화 - Airflow → MLflow → FastAPI</title><link>https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/</link><pubDate>Fri, 13 Jun 2025 21:06:20 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/troubleshoot/01/</guid><description>&lt;blockquote>
 &lt;p>Airflow + MLflow 연동 실습 중 발생한 실전 에러 정리&lt;/p>
 &lt;p>발생 원인 분석 + 즉시 적용 가능한 해결 방법까지 포함&lt;/p>&lt;/blockquote>
 &lt;hr>

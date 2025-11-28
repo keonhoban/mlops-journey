@@ -1,4 +1,27 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Helm on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/helm/</link><description>Recent content in Helm on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 25 Sep 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/helm/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 9단계: 시크릿 관리 &amp; 키 회전 자동화 (AWS·SealedSecret)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</link><pubDate>Thu, 25 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</guid><description>&lt;h2 id="시크릿-관리-및-키-회전-자동화-aws-credentials--sealedsecret-re-seal">시크릿 관리 및 키 회전 자동화: AWS Credentials · SealedSecret Re-Seal&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Helm on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/helm/</link><description>Recent content in Helm on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Tue, 14 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/helm/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 1단계 : kube-prometheus-stack + GitOps 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</link><pubDate>Tue, 14 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</guid><description>&lt;h2 id="kube-prometheus-stack--gitops-구축">kube-prometheus-stack + GitOps 구축&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모니터링은 한 번 세팅해두고 끝나는 게 아니라,&lt;/p>
+&lt;p>클러스터를 갈아엎어도 &lt;strong>같은 모습으로 다시 살아나야 하는 인프라&lt;/strong>입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 kube-prometheus-stack을 dev/prod로 완전히 분리하고,&lt;/p>
+&lt;p>&lt;strong>모든 구성을 YAML + GitOps로 고정&lt;/strong>해서&lt;/p>
+&lt;p>새 클러스터에도 동일한 Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>클러스터를 새로 깔아도,&lt;/p>
+&lt;p>&lt;code>monitoring-dev / monitoring-prod&lt;/code> Observability 스택을&lt;/p>
+&lt;p>&lt;strong>YAML + GitOps만으로 그대로 재현&lt;/strong>할 수 있는 상태 만들기&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>구성 요소&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 9단계: 시크릿 관리 &amp; 키 회전 자동화 (AWS·SealedSecret)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</link><pubDate>Thu, 25 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</guid><description>&lt;h2 id="시크릿-관리-및-키-회전-자동화-aws-credentials--sealedsecret-re-seal">시크릿 관리 및 키 회전 자동화: AWS Credentials · SealedSecret Re-Seal&lt;/h2>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>

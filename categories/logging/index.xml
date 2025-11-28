@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Logging on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/logging/</link><description>Recent content in Logging on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 27 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/logging/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 4단계 : Loki/Promtail 로그 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</link><pubDate>Mon, 27 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</guid><description>&lt;h2 id="lokipromtail-로그-파이프라인-구축">Loki/Promtail 로그 파이프라인 구축&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영형 MLOps에서 가장 위험한 장애는 모델이 아닌 로그가 안 보이는 순간입니다.”&lt;/p>
+&lt;p>“FastAPI·MLflow·Airflow가 모두 돌아가도, 로그가 한 번 섞이거나 누락되면&lt;/p>
+&lt;p>장애 원인을 찾지 못해 운영 자체가 멈춰버립니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 dev/prod를 완전히 분리한&lt;/p>
+&lt;p>&lt;strong>Loki + Promtail 로그 파이프라인&lt;/strong>을 구축해,&lt;/p>
+&lt;p>모델 핫스왑·에러 패턴·API 이상 징후까지 한눈에 보이도록 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>로그 파이프라인 전체 구성&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>Promtail → Loki → Grafana(LogQL)&lt;/li>
+&lt;li>dev/prod 모두 완전 분리&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Ingress + TLS + GitOps 자동 적용&lt;/strong>&lt;/p></description></item></channel></rss>

@@ -1,4 +1,296 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 06 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Mon, 06 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 21 Nov 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Fri, 21 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>구분&lt;/th>
+&lt;th>증명 핵심&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>A. Observability 계층&lt;/strong>&lt;/td>
+&lt;td>ArgoCD 상태 · Prometheus/Loki 정상 수집 · Slack 알람 도착&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>**B. FastAPI Observability&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&amp;amp; Grafana 대시보드**&lt;/td>
+&lt;td>FastAPI 대시보드 동작 · 에러/지연 알람 작동&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>C. Data Pipeline (Airflow + S3)&lt;/strong>&lt;/td>
+&lt;td>Airflow DAG 성공 · S3 Raw→Feature 변환 확인&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h1 id="a-observability-계층">A. Observability 계층&lt;/h1>
+&lt;p>Observability 계층(모니터링 + 로그 수집 + 알람)이&lt;/p>
+&lt;p>&lt;strong>GitOps 기반으로 dev/prod 완전 분리 + 자동화&lt;/strong> 되어 있음을 증명합니다.&lt;/p>
+&lt;hr>
+&lt;h2 id="1-argocd-applications-gitops-기반-구성">1️⃣ ArgoCD Applications (GitOps 기반 구성)&lt;/h2>
+&lt;h3 id="-1-1-cli로-전체-application-상태-확인">✔ 1-1. CLI로 전체 Application 상태 확인&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl -n argocd get applications
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img alt="proof-01-01-argocd-all-status-cmd.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-01-argocd-all-status-cmd.png">&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/01/</link><pubDate>Sat, 15 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/01/</guid><description>&lt;h2 id="에필로그--관측알림데이터까지-한-번에-이어지는-mlops-운영-플랫폼">에필로그 — “관측·알림·데이터까지 한 번에 이어지는 MLOps 운영 플랫폼”&lt;/h2>
+&lt;hr>
+&lt;h2 id="-전체-경로-요약">📌 전체 경로 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>순서&lt;/th>
+&lt;th>주제&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/">🔗 kube-prometheus-stack + GitOps 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/">🔗 Alertmanager Slack &amp;amp; 트러블슈팅&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/">🔗 Prometheus/KSM/Kubelet 완전 분리 구조&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/">🔗 Loki/Promtail 로그 파이프라인 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/">🔗 운영 중 발생한 실제 이슈 &amp;amp; 해결 과정&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/">🔗 FastAPI Observability Dashboard &amp;amp; Alert Library&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/">🔗 Data Pipeline 구축&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/">🔗 검증&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-전체-회고-요약">🎯 &lt;strong>전체 회고 요약&lt;/strong>&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>단계&lt;/th>
+&lt;th>핵심 목표&lt;/th>
+&lt;th>주요 개선점&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>모니터링 뼈대 구축&lt;/td>
+&lt;td>kube-prometheus-stack dev/prod 완전 분리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>Slack 알람 통합&lt;/td>
+&lt;td>Alertmanager configSecret 표준화 + 알람 라우팅&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>메트릭 교차 수집 제거&lt;/td>
+&lt;td>KSM/Kubelet 라벨 통일, Prometheus TSDB local-path&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>로그 파이프라인 완성&lt;/td>
+&lt;td>Loki/Promtail dev/prod 분리 + LogQL Range Query&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>실제 운영 이슈 해결&lt;/td>
+&lt;td>라벨/Secret/NFS 권한/NFS unmount 문제 일괄 해결&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>FastAPI 관측 대시보드&lt;/td>
+&lt;td>RPS·p95·ErrorRate·로그 통합 패널 + Alert Library&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>Data Pipeline 구축&lt;/td>
+&lt;td>S3 Raw → Feature ETL, Airflow DAG 기반 자동화&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>검증&lt;/td>
+&lt;td>Observability 계층, Grafana 대시보드, Datapipeline&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;blockquote>
+&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 7단계 : Data Pipeline 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/</link><pubDate>Mon, 10 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/</guid><description>&lt;h2 id="data-pipeline-구축">Data Pipeline 구축&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델의 성능은 결국 데이터 품질에서 결정됩니다.&lt;/p>
+&lt;p>그런데 그 데이터를 어떻게 추출하고, 검증하고, 가공하고, 저장하는지까지 자동화하지 않으면&lt;/p>
+&lt;p>MLOps는 절대 완성되지 않습니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 Raw S3 → 전처리 → Feature → 저장까지 이어지는&lt;/p>
+&lt;p>&lt;strong>엔드투엔드 데이터 파이프라인&lt;/strong>을 직접 구축해&lt;/p>
+&lt;p>이후 MLflow 학습 자동화와 바로 연결될 ‘데이터 레이어’를 먼저 다졌습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Raw 데이터&lt;/strong>를 S3에서 가져오고&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Airflow DAG&lt;/strong>에서 단계별 처리 흐름을 관리하며&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Python 전처리 코드&lt;/strong>에서 Feature 생성&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 6단계 : FastAPI Observability Dashboard &amp; Alert Library]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/</link><pubDate>Wed, 05 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/</guid><description>&lt;h2 id="fastapi-observability-dashboard--alert-library">FastAPI Observability Dashboard &amp;amp; Alert Library&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“FastAPI는 모델을 서빙하는 ‘입구’이자,&lt;/p>
+&lt;p>장애가 나면 가장 먼저 흔들리는 지점입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 실제 운영처럼&lt;/p>
+&lt;p>&lt;strong>문제가 생기면 바로 감지되고, 원인을 바로 찾을 수 있는 관측체계&lt;/strong>를 만들었습니다.”&lt;/p>
+&lt;p>“A/B·Canary·핫스왑 구조 위에 안전망을 올리는 과정,&lt;/p>
+&lt;p>그 첫 단계가 바로 FastAPI Observability Dashboard &amp;amp; Alert Library입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 &lt;strong>핵심 요약&lt;/strong>&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>FastAPI 기반 ML Serving 환경에서&lt;/p>
+&lt;p>&lt;strong>실제 운영 가능한 수준의 관측·알람 체계&lt;/strong> 구축&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>장애 발생 시 즉시 감지하고&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 5단계 : 운영 중 발생한 실제 이슈 &amp; 해결 과정]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</link><pubDate>Sun, 02 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</guid><description>&lt;h2 id="운영-중-발생한-실제-이슈--해결-과정">운영 중 발생한 실제 이슈 &amp;amp; 해결 과정&lt;/h2>
+&lt;hr>
+&lt;h1 id="-시나리오-설명">🧠 시나리오 설명&lt;/h1>
+&lt;blockquote>
+&lt;p>“관측·알림·로그 시스템은 세팅보다 운영 이후가 진짜 시작입니다.”&lt;/p>
+&lt;p>“실운영 환경에서 반드시 마주치는 문제들(div/prod 크로스 스크랩, Alertmanager 충돌, NFS 권한, TSDB 병목 등)을 정리하고&lt;/p>
+&lt;p>&lt;strong>왜 문제가 생겼는지 → 어떻게 해결했는지 → 다시는 반복되지 않도록&lt;/strong> 구조 자체를 잡아주는 단계입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>dev/prod &lt;strong>크로스 스크랩 문제&lt;/strong> 정리&lt;/li>
+&lt;li>Alertmanager configSecret / generated-secret 충돌&lt;/li>
+&lt;li>Instant Query 오류(&lt;code>log queries are not supported&lt;/code>) 원리&lt;/li>
+&lt;li>worker2 종료 지연(30~40초)&lt;/li>
+&lt;li>tmp-curl CrashLoopBackOff&lt;/li>
+&lt;li>NFS Flush / Permission / fsGroup 문제&lt;/li>
+&lt;li>SealedSecret namespace mismatch&lt;/li>
+&lt;li>Prometheus TSDB → local-path 전환 시 발생 가능한 이슈&lt;/li>
+&lt;li>&lt;strong>“문제 → 원인 → 해결 → 재발 방지” 구조로 정리&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-devprod-cross-scrape-문제">1️⃣ dev/prod Cross-Scrape 문제&lt;/h2>
+&lt;h3 id="-증상">🧩 증상&lt;/h3>
+&lt;p>&lt;code>monitoring-dev&lt;/code> Prometheus에서 &lt;code>monitoring-prod&lt;/code> 메트릭까지 보여서&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 4단계 : Loki/Promtail 로그 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</link><pubDate>Mon, 27 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</guid><description>&lt;h2 id="lokipromtail-로그-파이프라인-구축">Loki/Promtail 로그 파이프라인 구축&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“운영형 MLOps에서 가장 위험한 장애는 모델이 아닌 로그가 안 보이는 순간입니다.”&lt;/p>
+&lt;p>“FastAPI·MLflow·Airflow가 모두 돌아가도, 로그가 한 번 섞이거나 누락되면&lt;/p>
+&lt;p>장애 원인을 찾지 못해 운영 자체가 멈춰버립니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 dev/prod를 완전히 분리한&lt;/p>
+&lt;p>&lt;strong>Loki + Promtail 로그 파이프라인&lt;/strong>을 구축해,&lt;/p>
+&lt;p>모델 핫스왑·에러 패턴·API 이상 징후까지 한눈에 보이도록 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>로그 파이프라인 전체 구성&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>Promtail → Loki → Grafana(LogQL)&lt;/li>
+&lt;li>dev/prod 모두 완전 분리&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Ingress + TLS + GitOps 자동 적용&lt;/strong>&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 3단계 : Prometheus/KSM/Kubelet 완전 분리 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</link><pubDate>Wed, 22 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</guid><description>&lt;h2 id="prometheusksmkubelet-완전-분리-구조">Prometheus/KSM/Kubelet 완전 분리 구조&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“dev와 prod는 분리돼 있어야 하는데,&lt;/p>
+&lt;p>정작 관측 데이터에서는 서로 섞여 보이는 문제가 계속 생겼습니다.”&lt;/p>
+&lt;p>“Prometheus/KSM/Kubelet의 라벨과 셀렉터가 조금만 어긋나도&lt;/p>
+&lt;p>dev에서 prod 메트릭을 읽는 심각한 혼선이 발생하기 때문에,&lt;/p>
+&lt;p>이번 단계에서는 관측 스택을 &lt;strong>라벨 기반으로 완전히 절단&lt;/strong>하는 데 집중했습니다.”&lt;/p>
+&lt;p>“그리고 TSDB는 로컬 디스크로 옮겨 &lt;strong>속도·안정성&lt;/strong>을 끌어올리고,&lt;/p>
+&lt;p>NFS는 나머지 관측 도구 전용으로 재정비하여&lt;/p>
+&lt;p>이후 Loki·Alertmanager 통합 기반의 Observability 전체 구조를 안정적으로 받칠 수 있도록 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>문제&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>prometheus-dev.local&lt;/code>에서 &lt;code>airflow-prod&lt;/code>, &lt;code>fastapi-prod&lt;/code> 메트릭이 섞여서 나옴&lt;/li>
+&lt;li>kube-state-metrics / kubelet(cAdvisor) / ServiceMonitor 라벨이 꼬여 dev↔prod 교차 수집&lt;/li>
+&lt;li>NFS 기반 Prometheus TSDB로 &lt;strong>worker2 종료 지연 + I/O 부담&lt;/strong> 체감&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>목표&lt;/strong>
+&lt;ul>
+&lt;li>dev/prod &lt;strong>메트릭 수집 완전 분리&lt;/strong>&lt;/li>
+&lt;li>Prometheus TSDB를 &lt;strong>local-path로 전환(속도·안정성 개선)&lt;/strong>&lt;/li>
+&lt;li>NFS는 관측 도구(Grafana/Alertmanager/로그 등)에만 사용&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>결론&lt;/strong>
+&lt;ul>
+&lt;li>
+&lt;p>라벨/selector/metricRelabelings 정리만 해도 dev/prod가 깨끗이 분리됨&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델이 잘 학습되고 잘 배포되는 것보다&lt;/p>
+&lt;p>&lt;strong>문제가 생겼을 때 즉시 감지되는 것&lt;/strong>이 더 중요할 때가 많습니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 dev/prod 각각에서 알람이&lt;/p>
+&lt;p>&lt;strong>정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인&lt;/strong>을 먼저 완성했습니다.”&lt;/p>
+&lt;p>“이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은&lt;/p>
+&lt;p>운영형 MLOps 이벤트를 실시간으로 감지할 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>Prometheus → Alertmanager → Slack&lt;/code> 경로를&lt;/p>
+&lt;p>dev/prod 완전히 분리된 상태로,&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 1단계 : kube-prometheus-stack + GitOps 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</link><pubDate>Tue, 14 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</guid><description>&lt;h2 id="kube-prometheus-stack--gitops-구축">kube-prometheus-stack + GitOps 구축&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모니터링은 한 번 세팅해두고 끝나는 게 아니라,&lt;/p>
+&lt;p>클러스터를 갈아엎어도 &lt;strong>같은 모습으로 다시 살아나야 하는 인프라&lt;/strong>입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 kube-prometheus-stack을 dev/prod로 완전히 분리하고,&lt;/p>
+&lt;p>&lt;strong>모든 구성을 YAML + GitOps로 고정&lt;/strong>해서&lt;/p>
+&lt;p>새 클러스터에도 동일한 Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>클러스터를 새로 깔아도,&lt;/p>
+&lt;p>&lt;code>monitoring-dev / monitoring-prod&lt;/code> Observability 스택을&lt;/p>
+&lt;p>&lt;strong>YAML + GitOps만으로 그대로 재현&lt;/strong>할 수 있는 상태 만들기&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>구성 요소&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Mon, 06 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
@@ -126,7 +418,6 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;hr>
 &lt;hr>
 &lt;h2 id="-전체-회고-요약-09단계">🎯 전체 회고 요약 (0~9단계)&lt;/h2>
 &lt;table>

@@ -1,4 +1,24 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Python on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/python/</link><description>Recent content in Python on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 10 May 2025 12:25:32 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/python/index.xml" rel="self" type="application/rss+xml"/><item><title>[코드업] 기초 100제. 십자 뒤집기, 설탕과자 뽑기, 성실한 개미</title><link>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</link><pubDate>Sat, 10 May 2025 12:25:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</guid><description>&lt;h1 id="-codeup-문제-요약">📘 CodeUp 문제 요약&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Python on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/python/</link><description>Recent content in Python on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 10 Nov 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/python/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 7단계 : Data Pipeline 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/</link><pubDate>Mon, 10 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/</guid><description>&lt;h2 id="data-pipeline-구축">Data Pipeline 구축&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모델의 성능은 결국 데이터 품질에서 결정됩니다.&lt;/p>
+&lt;p>그런데 그 데이터를 어떻게 추출하고, 검증하고, 가공하고, 저장하는지까지 자동화하지 않으면&lt;/p>
+&lt;p>MLOps는 절대 완성되지 않습니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 Raw S3 → 전처리 → Feature → 저장까지 이어지는&lt;/p>
+&lt;p>&lt;strong>엔드투엔드 데이터 파이프라인&lt;/strong>을 직접 구축해&lt;/p>
+&lt;p>이후 MLflow 학습 자동화와 바로 연결될 ‘데이터 레이어’를 먼저 다졌습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Raw 데이터&lt;/strong>를 S3에서 가져오고&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Airflow DAG&lt;/strong>에서 단계별 처리 흐름을 관리하며&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Python 전처리 코드&lt;/strong>에서 Feature 생성&lt;/p></description></item><item><title>[코드업] 기초 100제. 십자 뒤집기, 설탕과자 뽑기, 성실한 개미</title><link>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</link><pubDate>Sat, 10 May 2025 12:25:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</guid><description>&lt;h1 id="-codeup-문제-요약">📘 CodeUp 문제 요약&lt;/h1>
 &lt;hr>
 &lt;h2 id="-6096---십자-뒤집기">🔹 6096 - 십자 뒤집기&lt;/h2>
 &lt;blockquote>
