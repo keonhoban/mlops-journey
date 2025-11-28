@@ -3,25 +3,21 @@
 &lt;thead>
 &lt;tr>
 &lt;th>구분&lt;/th>
-&lt;th>증명 핵심&lt;/th>
+&lt;th>증명 포인트&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
 &lt;tr>
-&lt;td>&lt;strong>A. Observability 계층&lt;/strong>&lt;/td>
-&lt;td>ArgoCD 상태 · Prometheus/Loki 정상 수집 · Slack 알람 도착&lt;/td>
+&lt;td>&lt;strong>A. Observability&lt;/strong>&lt;/td>
+&lt;td>메트릭·로그·알람 dev/prod 완전 분리&lt;/td>
 &lt;/tr>
 &lt;tr>
-&lt;td>**B. FastAPI Observability&lt;/td>
-&lt;td>&lt;/td>
+&lt;td>&lt;strong>B. FastAPI Observability&lt;/strong>&lt;/td>
+&lt;td>RPS·p95·에러·로그 패널 정상 동작&lt;/td>
 &lt;/tr>
 &lt;tr>
-&lt;td>&amp;amp; Grafana 대시보드**&lt;/td>
-&lt;td>FastAPI 대시보드 동작 · 에러/지연 알람 작동&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;strong>C. Data Pipeline (Airflow + S3)&lt;/strong>&lt;/td>
-&lt;td>Airflow DAG 성공 · S3 Raw→Feature 변환 확인&lt;/td>
+&lt;td>&lt;strong>C. Data Pipeline&lt;/strong>&lt;/td>
+&lt;td>Raw→Feature ETL 자동 실행 성공&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
@@ -33,4 +29,17 @@
 &lt;h2 id="1-argocd-applications-gitops-기반-구성">1️⃣ ArgoCD Applications (GitOps 기반 구성)&lt;/h2>
 &lt;h3 id="-1-1-cli로-전체-application-상태-확인">✔ 1-1. CLI로 전체 Application 상태 확인&lt;/h3>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl -n argocd get applications
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img alt="proof-01-01-argocd-all-status-cmd.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-01-argocd-all-status-cmd.png">&lt;/p></description></item></channel></rss>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img alt="proof-01-01-argocd-all-status-cmd.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-01-argocd-all-status-cmd.png">&lt;/p>
+&lt;p>📸 &lt;strong>proof-01-01-argocd-all-status-cmd.png&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>확인 포인트&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>airflow-dev/prod&lt;/code>&lt;/li>
+&lt;li>&lt;code>fastapi-dev/prod&lt;/code>&lt;/li>
+&lt;li>&lt;code>mlflow-dev/prod&lt;/code>&lt;/li>
+&lt;li>&lt;code>monitoring-dev/prod&lt;/code> (Prometheus + Grafana + Alertmanager)&lt;/li>
+&lt;li>&lt;code>loki-dev/prod&lt;/code>, &lt;code>promtail-dev/prod&lt;/code>&lt;/li>
+&lt;li>&lt;code>fastapi-logs-storage-dev/prod&lt;/code>&lt;/li>
+&lt;li>&lt;code>metallb-config&lt;/code>&lt;/li>
+&lt;li>&lt;code>dev/prod-namespaces&lt;/code>, &lt;code>dev/prod-secrets&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>→ &lt;strong>SYNC STATUS = Synced&lt;/strong>, &lt;strong>HEALTH STATUS = Healthy&lt;/strong>&lt;/p></description></item></channel></rss>
