@@ -33,12 +33,10 @@ dev/prod 완전히 분리된 상태로,
 클러스터를 갈아엎어도 같은 모습으로 다시 살아나야 하는 인프라입니다.”
 “그래서 이번 단계에서는 kube-prometheus-stack을 dev/prod로 완전히 분리하고,
 모든 구성을 YAML + GitOps로 고정해서
-새 클러스터에도 동일한 Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”
+Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”
 🎯 핵심 요약 목표
-클러스터를 새로 깔아도,
-monitoring-dev / monitoring-prod Observability 스택을
-YAML + GitOps만으로 그대로 재현할 수 있는 상태 만들기
-구성 요소
+monitoring-dev / monitoring-prod Observability 스택을 YAML + GitOps만으로 그대로 재현할 수 있는 상태 만들기 구성 요소
+kube-prometheus-stack 65.5.0 (Prometheus + Alertmanager + Grafana) nfs-monitoring StorageClass (NFS 기반 동적 프로비저닝) nginx-ingress 기반 HTTPS Ingress ArgoCD Application 2개 (monitoring-dev, monitoring-prod) 보안/운영 포인트
 ...</p></div><footer class=entry-footer><span title='2025-10-14 17:10:21 +0900 +0900'>October 14, 2025</span>&nbsp;·&nbsp;6 min</footer><a class=entry-link aria-label="post link to [MLOps 플랫폼 Observability & Data Pipeline - 1단계 : kube-prometheus-stack + GitOps 구축]" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[MLOps 운영 고도화 - 4단계: FastAPI 로그 안정화 (NFS + PV/PVC + Loguru)]</h2></header><div class=entry-content><p>FastAPI 앱 전면 개편: A/B · Canary · Blue-Green 서빙 베이스 🧠 시나리오 설명 “운영 환경에서 모델은 언제든 교체될 수 있고,
 그 순간이 서비스 품질이 가장 크게 흔들리는 위험 구간입니다.”
 “그래서 이번 단계에서는 이후 모든 자동화(학습·등록·핫스왑·롤백)의 기반이 되는

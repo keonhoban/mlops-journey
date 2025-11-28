@@ -6,22 +6,28 @@
 &lt;p>클러스터를 갈아엎어도 &lt;strong>같은 모습으로 다시 살아나야 하는 인프라&lt;/strong>입니다.”&lt;/p>
 &lt;p>“그래서 이번 단계에서는 kube-prometheus-stack을 dev/prod로 완전히 분리하고,&lt;/p>
 &lt;p>&lt;strong>모든 구성을 YAML + GitOps로 고정&lt;/strong>해서&lt;/p>
-&lt;p>새 클러스터에도 동일한 Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;p>Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”&lt;/p>&lt;/blockquote>
 &lt;hr>
 &lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
 &lt;ul>
 &lt;li>
 &lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>
-&lt;p>클러스터를 새로 깔아도,&lt;/p>
-&lt;p>&lt;code>monitoring-dev / monitoring-prod&lt;/code> Observability 스택을&lt;/p>
-&lt;p>&lt;strong>YAML + GitOps만으로 그대로 재현&lt;/strong>할 수 있는 상태 만들기&lt;/p>
-&lt;/li>
+&lt;li>&lt;code>monitoring-dev / monitoring-prod&lt;/code> Observability 스택을
+&lt;strong>YAML + GitOps만으로 그대로 재현&lt;/strong>할 수 있는 상태 만들기&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
-&lt;p>&lt;strong>구성 요소&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 9단계: 시크릿 관리 &amp; 키 회전 자동화 (AWS·SealedSecret)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</link><pubDate>Thu, 25 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</guid><description>&lt;h2 id="시크릿-관리-및-키-회전-자동화-aws-credentials--sealedsecret-re-seal">시크릿 관리 및 키 회전 자동화: AWS Credentials · SealedSecret Re-Seal&lt;/h2>
+&lt;p>&lt;strong>구성 요소&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>kube-prometheus-stack 65.5.0&lt;/code> (Prometheus + Alertmanager + Grafana)&lt;/li>
+&lt;li>&lt;code>nfs-monitoring&lt;/code> StorageClass (NFS 기반 동적 프로비저닝)&lt;/li>
+&lt;li>&lt;code>nginx-ingress&lt;/code> 기반 HTTPS Ingress&lt;/li>
+&lt;li>&lt;code>ArgoCD Application&lt;/code> 2개 (&lt;code>monitoring-dev&lt;/code>, &lt;code>monitoring-prod&lt;/code>)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>보안/운영 포인트&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 9단계: 시크릿 관리 &amp; 키 회전 자동화 (AWS·SealedSecret)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</link><pubDate>Thu, 25 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</guid><description>&lt;h2 id="시크릿-관리-및-키-회전-자동화-aws-credentials--sealedsecret-re-seal">시크릿 관리 및 키 회전 자동화: AWS Credentials · SealedSecret Re-Seal&lt;/h2>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
