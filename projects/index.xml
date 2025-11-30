@@ -106,7 +106,7 @@
 &lt;/tbody>
 &lt;/table>
 &lt;blockquote>
-&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Mon, 06 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>

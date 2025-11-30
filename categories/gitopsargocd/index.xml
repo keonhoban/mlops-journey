@@ -189,36 +189,7 @@
 &lt;ul>
 &lt;li>
 &lt;p>&lt;code>Prometheus → Alertmanager → Slack&lt;/code> 경로를&lt;/p>
-&lt;p>dev/prod 완전히 분리된 상태로,&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 1단계 : kube-prometheus-stack + GitOps 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</link><pubDate>Tue, 14 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</guid><description>&lt;h2 id="kube-prometheus-stack--gitops-구축">kube-prometheus-stack + GitOps 구축&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“모니터링은 한 번 세팅해두고 끝나는 게 아니라,&lt;/p>
-&lt;p>클러스터를 갈아엎어도 &lt;strong>같은 모습으로 다시 살아나야 하는 인프라&lt;/strong>입니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 kube-prometheus-stack을 dev/prod로 완전히 분리하고,&lt;/p>
-&lt;p>&lt;strong>모든 구성을 YAML + GitOps로 고정&lt;/strong>해서&lt;/p>
-&lt;p>Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>monitoring-dev / monitoring-prod&lt;/code> Observability 스택을
-&lt;strong>YAML + GitOps만으로 그대로 재현&lt;/strong>할 수 있는 상태 만들기&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>구성 요소&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>kube-prometheus-stack 65.5.0&lt;/code> (Prometheus + Alertmanager + Grafana)&lt;/li>
-&lt;li>&lt;code>nfs-monitoring&lt;/code> StorageClass (NFS 기반 동적 프로비저닝)&lt;/li>
-&lt;li>&lt;code>nginx-ingress&lt;/code> 기반 HTTPS Ingress&lt;/li>
-&lt;li>&lt;code>ArgoCD Application&lt;/code> 2개 (&lt;code>monitoring-dev&lt;/code>, &lt;code>monitoring-prod&lt;/code>)&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>보안/운영 포인트&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Mon, 06 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+&lt;p>dev/prod 완전히 분리된 상태로,&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
@@ -289,7 +260,36 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="1--ci-진입-github-actions">&lt;strong>1) 🧪 CI 진입 (GitHub Actions)&lt;/strong>&lt;/h2>
-&lt;p>&lt;img alt="CI_진입.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-ci.png">&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</link><pubDate>Fri, 03 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</guid><description>&lt;h2 id="에필로그--한-번의-커밋으로-끝까지-가는-자율형-mlops-플랫폼">에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼”&lt;/h2>
+&lt;p>&lt;img alt="CI_진입.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-ci.png">&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 1단계 : kube-prometheus-stack + GitOps 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</link><pubDate>Tue, 14 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</guid><description>&lt;h2 id="kube-prometheus-stack--gitops-구축">kube-prometheus-stack + GitOps 구축&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>“모니터링은 한 번 세팅해두고 끝나는 게 아니라,&lt;/p>
+&lt;p>클러스터를 갈아엎어도 &lt;strong>같은 모습으로 다시 살아나야 하는 인프라&lt;/strong>입니다.”&lt;/p>
+&lt;p>“그래서 이번 단계에서는 kube-prometheus-stack을 dev/prod로 완전히 분리하고,&lt;/p>
+&lt;p>&lt;strong>모든 구성을 YAML + GitOps로 고정&lt;/strong>해서&lt;/p>
+&lt;p>Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>monitoring-dev / monitoring-prod&lt;/code> Observability 스택을
+&lt;strong>YAML + GitOps만으로 그대로 재현&lt;/strong>할 수 있는 상태 만들기&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>구성 요소&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>kube-prometheus-stack 65.5.0&lt;/code> (Prometheus + Alertmanager + Grafana)&lt;/li>
+&lt;li>&lt;code>nfs-monitoring&lt;/code> StorageClass (NFS 기반 동적 프로비저닝)&lt;/li>
+&lt;li>&lt;code>nginx-ingress&lt;/code> 기반 HTTPS Ingress&lt;/li>
+&lt;li>&lt;code>ArgoCD Application&lt;/code> 2개 (&lt;code>monitoring-dev&lt;/code>, &lt;code>monitoring-prod&lt;/code>)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>보안/운영 포인트&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</link><pubDate>Fri, 03 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/</guid><description>&lt;h2 id="에필로그--한-번의-커밋으로-끝까지-가는-자율형-mlops-플랫폼">에필로그 — “한 번의 커밋으로 끝까지 가는 자율형 MLOps 플랫폼”&lt;/h2>
 &lt;hr>
 &lt;h2 id="-전체-경로-요약">📌 전체 경로 요약&lt;/h2>
 &lt;table>
