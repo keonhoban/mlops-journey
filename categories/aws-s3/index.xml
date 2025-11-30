@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>AWS S3 on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/aws-s3/</link><description>Recent content in AWS S3 on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 21 Nov 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/aws-s3/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Fri, 21 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>AWS S3 on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/aws-s3/</link><description>Recent content in AWS S3 on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 26 Nov 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/aws-s3/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Wed, 26 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -19,6 +19,10 @@
 &lt;td>&lt;strong>C. Data Pipeline&lt;/strong>&lt;/td>
 &lt;td>Raw→Feature ETL 자동 실행 성공&lt;/td>
 &lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>D. Data Pipeline Advanced&lt;/strong>&lt;/td>
+&lt;td>버전·스키마·메타데이터·관측 등 운영형 구조&lt;/td>
+&lt;/tr>
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
@@ -29,17 +33,4 @@
 &lt;h2 id="1-argocd-applications-gitops-기반-구성">1️⃣ ArgoCD Applications (GitOps 기반 구성)&lt;/h2>
 &lt;h3 id="-1-1-cli로-전체-application-상태-확인">✔ 1-1. CLI로 전체 Application 상태 확인&lt;/h3>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>kubectl -n argocd get applications
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img alt="proof-01-01-argocd-all-status-cmd.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-01-argocd-all-status-cmd.png">&lt;/p>
-&lt;p>📸 &lt;strong>proof-01-01-argocd-all-status-cmd.png&lt;/strong>&lt;/p>
-&lt;p>&lt;strong>확인 포인트&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>airflow-dev/prod&lt;/code>&lt;/li>
-&lt;li>&lt;code>fastapi-dev/prod&lt;/code>&lt;/li>
-&lt;li>&lt;code>mlflow-dev/prod&lt;/code>&lt;/li>
-&lt;li>&lt;code>monitoring-dev/prod&lt;/code> (Prometheus + Grafana + Alertmanager)&lt;/li>
-&lt;li>&lt;code>loki-dev/prod&lt;/code>, &lt;code>promtail-dev/prod&lt;/code>&lt;/li>
-&lt;li>&lt;code>fastapi-logs-storage-dev/prod&lt;/code>&lt;/li>
-&lt;li>&lt;code>metallb-config&lt;/code>&lt;/li>
-&lt;li>&lt;code>dev/prod-namespaces&lt;/code>, &lt;code>dev/prod-secrets&lt;/code>&lt;/li>
-&lt;/ul>
-&lt;p>→ &lt;strong>SYNC STATUS = Synced&lt;/strong>, &lt;strong>HEALTH STATUS = Healthy&lt;/strong>&lt;/p></description></item></channel></rss>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img alt="proof-01-01-argocd-all-status-cmd.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-01-01-argocd-all-status-cmd.png">&lt;/p></description></item></channel></rss>
