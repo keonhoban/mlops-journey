@@ -85,8 +85,8 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>6&lt;/td>
-&lt;td>FastAPI 관측 대시보드&lt;/td>
-&lt;td>RPS·p95·ErrorRate·로그·알람 템플릿 구축&lt;/td>
+&lt;td>FastAPI/Platform 관측 대시보드&lt;/td>
+&lt;td>FastAPI 서비스 + Kubernetes/Node 플랫폼 관측 체계 완성&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>7&lt;/td>

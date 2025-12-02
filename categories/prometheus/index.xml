@@ -12,8 +12,8 @@
 &lt;td>메트릭·로그·알람 dev/prod 완전 분리&lt;/td>
 &lt;/tr>
 &lt;tr>
-&lt;td>&lt;strong>B. FastAPI Observability&lt;/strong>&lt;/td>
-&lt;td>RPS·p95·에러·로그 패널 정상 동작&lt;/td>
+&lt;td>&lt;strong>B. FastAPI &amp;amp; Platform Observability&lt;/strong>&lt;/td>
+&lt;td>FastAPI + Platform 대시보드 정상 동작&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;strong>C. Data Pipeline&lt;/strong>&lt;/td>
