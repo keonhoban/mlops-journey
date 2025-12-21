@@ -228,7 +228,7 @@
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
-&lt;h2 id="-목차-핵심만">🧭 목차 (핵심만)&lt;/h2>
+&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -288,7 +288,7 @@
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
-&lt;h2 id="0--준비-한-번만">0) 🧰 준비 (한 번만)&lt;/h2>
+&lt;h2 id="0--준비">0) 🧰 준비&lt;/h2>
 &lt;ul>
 &lt;li>(GitOps) &lt;code>charts/fastapi/values/{dev,prod}.yaml&lt;/code>에서 &lt;strong>ALIAS_SELECTION_MODE/DEFAULT_ALIAS/CANARY_PERCENT&lt;/strong> 값을 시나리오별로 수정 → &lt;code>git commit&lt;/code> → &lt;code>git push&lt;/code>&lt;/li>
 &lt;li>(테스트 스크립트) &lt;code>/ops/ab_test.sh&lt;/code> 저장 (아래 제공)&lt;/li>
