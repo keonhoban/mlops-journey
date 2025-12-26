@@ -1,4 +1,50 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>GitOps(ArgoCD) on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/gitopsargocd/</link><description>Recent content in GitOps(ArgoCD) on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 30 Nov 2025 02:50:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/gitopsargocd/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>GitOps(ArgoCD) on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/gitopsargocd/</link><description>Recent content in GitOps(ArgoCD) on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 26 Dec 2025 10:08:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/gitopsargocd/index.xml" rel="self" type="application/rss+xml"/><item><title>Triton 구축</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/01/</link><pubDate>Fri, 26 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/01/</guid><description>&lt;h2 id="triton-cpu-only-gitops-통합-onnx-1개-서빙--prometheusgrafana-관측">Triton (CPU-only) GitOps 통합: ONNX 1개 서빙 + Prometheus/Grafana 관측&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>실무에서 서빙 계층은 곧바로 트래픽과 SLA를 맞는 최전선입니다.&lt;/p>
+&lt;p>모델이 아무리 좋아도, &lt;strong>서빙이 불안정하면&lt;/strong> 운영시 바로 무너집니다.&lt;/p>
+&lt;p>그래서 이번에는 Triton 첫 구축으로 GPU/파이프라인 연동을 일부러 빼고,&lt;/p>
+&lt;p>Triton 자체를 GitOps로 안정적으로 띄우고, 모델 load→infer→metrics 관측까지 ‘서빙 플랫폼 뼈대 구축’을 진행했습니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>dev/prod 네임스페이스 분리&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>triton-dev&lt;/code>, &lt;code>triton-prod&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Triton 모델 제어 모드&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>-model-control-mode=explicit&lt;/code>&lt;/li>
+&lt;li>필요 시에만 load/unload로 운영 제어 가능&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Model Repository&lt;/strong>
+&lt;ul>
+&lt;li>NFS(RWX) 기반 PVC로 &lt;code>/models&lt;/code> 마운트&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>모델 검증&lt;/strong>
+&lt;ul>
+&lt;li>ONNX 1개 &lt;code>simple_model&lt;/code>로 &lt;code>load → infer&lt;/code> 성공&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>관측&lt;/strong>
+&lt;ul>
+&lt;li>Triton은 &lt;code>/metrics&lt;/code>를 &lt;strong>Prometheus 포맷으로 자체 노출&lt;/strong>&lt;/li>
+&lt;li>ServiceMonitor로 dev/prod Prometheus에 자동 스크랩&lt;/li>
+&lt;li>Grafana에서 패널로 증명 가능&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>GPU 확장 포인트&lt;/strong>
+&lt;ul>
+&lt;li>values에 &lt;code>gpu.enabled&lt;/code> 분기 설계 (현재 false → CPU 사용)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>완료 기준은 “Triton + GitOps + Observability” 구축입니다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>

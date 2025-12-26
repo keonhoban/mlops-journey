@@ -1,4 +1,79 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 30 Nov 2025 02:50:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>🏔️ MLOps Journey on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/</link><description>Recent content in 🏔️ MLOps Journey on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 26 Dec 2025 10:08:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/index.xml" rel="self" type="application/rss+xml"/><item><title>Triton 구축</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/01/</link><pubDate>Fri, 26 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/01/</guid><description>&lt;h2 id="triton-cpu-only-gitops-통합-onnx-1개-서빙--prometheusgrafana-관측">Triton (CPU-only) GitOps 통합: ONNX 1개 서빙 + Prometheus/Grafana 관측&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>실무에서 서빙 계층은 곧바로 트래픽과 SLA를 맞는 최전선입니다.&lt;/p>
+&lt;p>모델이 아무리 좋아도, &lt;strong>서빙이 불안정하면&lt;/strong> 운영시 바로 무너집니다.&lt;/p>
+&lt;p>그래서 이번에는 Triton 첫 구축으로 GPU/파이프라인 연동을 일부러 빼고,&lt;/p>
+&lt;p>Triton 자체를 GitOps로 안정적으로 띄우고, 모델 load→infer→metrics 관측까지 ‘서빙 플랫폼 뼈대 구축’을 진행했습니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>dev/prod 네임스페이스 분리&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>triton-dev&lt;/code>, &lt;code>triton-prod&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Triton 모델 제어 모드&lt;/strong>
+&lt;ul>
+&lt;li>&lt;code>-model-control-mode=explicit&lt;/code>&lt;/li>
+&lt;li>필요 시에만 load/unload로 운영 제어 가능&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Model Repository&lt;/strong>
+&lt;ul>
+&lt;li>NFS(RWX) 기반 PVC로 &lt;code>/models&lt;/code> 마운트&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>모델 검증&lt;/strong>
+&lt;ul>
+&lt;li>ONNX 1개 &lt;code>simple_model&lt;/code>로 &lt;code>load → infer&lt;/code> 성공&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>관측&lt;/strong>
+&lt;ul>
+&lt;li>Triton은 &lt;code>/metrics&lt;/code>를 &lt;strong>Prometheus 포맷으로 자체 노출&lt;/strong>&lt;/li>
+&lt;li>ServiceMonitor로 dev/prod Prometheus에 자동 스크랩&lt;/li>
+&lt;li>Grafana에서 패널로 증명 가능&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>GPU 확장 포인트&lt;/strong>
+&lt;ul>
+&lt;li>values에 &lt;code>gpu.enabled&lt;/code> 분기 설계 (현재 false → CPU 사용)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>완료 기준은 “Triton + GitOps + Observability” 구축입니다.&lt;/p></description></item><item><title>[OJ] Phase 1 (4주) 학습 회고</title><link>https://keonhoban.github.io/mlops-journey/posts/online-judge/02/</link><pubDate>Mon, 08 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/online-judge/02/</guid><description>&lt;h3 id="들어가며">들어가며&lt;/h3>
+&lt;p>코딩 테스트를 준비하면서 목표로 삼은 것은&lt;/p>
+&lt;p>단순히 문제를 많이 푸는 것이 아니라,&lt;/p>
+&lt;p>내가 어디서 자주 막히는지 스스로 파악할 수 있는 방식으로 공부하고 싶었습니다.&lt;/p>
+&lt;p>이 글은 4주간의 Phase 1을&lt;/p>
+&lt;p>어떻게 계획하고, 실패를 관리하고, 다음 단계로 연결했는지에 대한 회고입니다.&lt;/p>
+&lt;hr>
+&lt;h3 id="1-phase-1의-목표-설정">1️⃣ Phase 1의 목표 설정&lt;/h3>
+&lt;p>Phase 1의 목표는 명확했습니다.&lt;/p>
+&lt;ul>
+&lt;li>실버 → 골드 같은 수치 목표 ❌&lt;/li>
+&lt;li>&lt;strong>문제 적응력 / 사고 체력 회복&lt;/strong> ⭕&lt;/li>
+&lt;/ul>
+&lt;p>특히 처음 보는 문제에서&lt;/p>
+&lt;p>당황하지 않고 접근하는 능력을 기르는 데 집중했습니다.&lt;/p></description></item><item><title>[OJ] 문제 해결 사고 프레임 정리</title><link>https://keonhoban.github.io/mlops-journey/posts/online-judge/01/</link><pubDate>Mon, 08 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/online-judge/01/</guid><description>&lt;h3 id="들어가며">들어가며&lt;/h3>
+&lt;p>문제 난이도가 올라가며 가장 답답했던 지점은 단순했습니다.&lt;/p>
+&lt;p>해설을 보면 이해되는데, 문제를 처음 마주하면 손이 잘 안 움직였습니다.&lt;/p>
+&lt;p>&lt;strong>문제에 접근하는 ‘사고 구조’가 정리되어 있지 않았기 때문&lt;/strong>이었습니다.&lt;/p>
+&lt;p>이 글은 문제 풀이 기법이 아니라,&lt;/p>
+&lt;p>문제를 처음 마주했을 때 &lt;strong>어디서부터 생각해야 하는지&lt;/strong>&lt;/p>
+&lt;p>스스로 정리하기 위해 적용해본 사고 프레임 기록입니다.&lt;/p>
+&lt;hr>
+&lt;h3 id="1-왜-사고-프레임이-필요했는가">1️⃣ 왜 사고 프레임이 필요했는가&lt;/h3>
+&lt;p>문제를 풀다 보면 이런 상태가 반복되었습니다. (* 특히 여러 조건이 결합된 시물레이션 문제들)&lt;/p>
+&lt;ul>
+&lt;li>해설을 보면 “아, 그렇구나”&lt;/li>
+&lt;li>며칠 뒤 다시 보면 혼자서는 못 풂&lt;/li>
+&lt;li>문제를 많이 풀어도 체감 실력은 정체&lt;/li>
+&lt;/ul>
+&lt;p>이 상태를 벗어나기 위해&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>
