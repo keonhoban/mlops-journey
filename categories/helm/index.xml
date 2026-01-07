@@ -1,4 +1,47 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Helm on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/helm/</link><description>Recent content in Helm on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 05 Jan 2026 11:03:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/helm/index.xml" rel="self" type="application/rss+xml"/><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/triton/01/</link><pubDate>Mon, 05 Jan 2026 11:03:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/triton/01/</guid><description>&lt;h2 id="에필로그--gitops-기반-triton-서빙이-배포검증관측알림-루프로-고정되다">에필로그 — “GitOps 기반 Triton 서빙이 ‘배포→검증→관측→알림’ 루프로 고정되다”&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Helm on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/helm/</link><description>Recent content in Helm on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 07 Jan 2026 13:05:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/helm/index.xml" rel="self" type="application/rss+xml"/><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - 검증(Proof)]</title><link>https://keonhoban.github.io/mlops-journey/projects/triton/02/</link><pubDate>Wed, 07 Jan 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/triton/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>구분&lt;/th>
+&lt;th>증명 핵심&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>A. GitOps 분리&lt;/strong>&lt;/td>
+&lt;td>Triton dev/prod 독립 배포 및 상태 고정&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>B. 모델 제어&lt;/strong>&lt;/td>
+&lt;td>NFS model-repo 분리 + explicit load 통제&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>C. 서빙 검증&lt;/strong>&lt;/td>
+&lt;td>load → ready → infer E2E 성공&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>D. 관측 가능성&lt;/strong>&lt;/td>
+&lt;td>&lt;code>/metrics&lt;/code> → Prometheus → Grafana 연계&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>E. 배포 통제&lt;/strong>&lt;/td>
+&lt;td>MLflow→Airflow 검증 체인 + commit/rollback&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>F. 알럿 분리&lt;/strong>&lt;/td>
+&lt;td>Alertmanager null default 기반 dev/prod 분리&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>G. 알럿 실증&lt;/strong>&lt;/td>
+&lt;td>Triton latency 알럿 E2E 동작&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h1 id="a-triton-gitops--devprod-분리">A. Triton GitOps &amp;amp; Dev/Prod 분리&lt;/h1>
+&lt;h2 id="1-argocd-applications-gitops-기준">1️⃣ ArgoCD Applications (GitOps 기준)&lt;/h2>
+&lt;h3 id="-devprod-애플리케이션-상태-증명">✔ dev/prod 애플리케이션 상태 증명&lt;/h3>
+&lt;p>&lt;img alt="proof-triton-01.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-triton-01.png">&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/triton/01/</link><pubDate>Mon, 05 Jan 2026 11:03:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/triton/01/</guid><description>&lt;h2 id="에필로그--gitops-기반-triton-서빙이-배포검증관측알림-루프로-고정되다">에필로그 — “GitOps 기반 Triton 서빙이 ‘배포→검증→관측→알림’ 루프로 고정되다”&lt;/h2>
 &lt;hr>
 &lt;h2 id="-전체-경로-요약">📌 전체 경로 요약&lt;/h2>
 &lt;table>
