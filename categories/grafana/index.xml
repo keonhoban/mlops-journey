@@ -15,11 +15,11 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>2&lt;/td>
-&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/triton/02/">🔗 MLflow → Triton 자동 배포 파이프라인 구축 (Airflow 기반 · 검증 체인 · 최소 롤백)&lt;/a>&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/triton/02/">🔗 MLflow → Triton 자동 배포 파이프라인 구축 (Airflow 기반· 검증 체인· 최소 롤백)&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>3&lt;/td>
-&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/triton/03/">🔗 Alerting 운영 표준 매뉴얼 (Dev/Prod 철벽 분리 + Triton Serving Alerts)&lt;/a>&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/triton/03/">🔗 Alerting 운영 표준 매뉴얼 (Dev/Prod 분리 + Triton Serving Alerts)&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
