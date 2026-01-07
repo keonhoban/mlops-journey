@@ -1,4 +1,36 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Prometheus on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/prometheus/</link><description>Recent content in Prometheus on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 30 Nov 2025 02:50:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/prometheus/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Prometheus on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/prometheus/</link><description>Recent content in Prometheus on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 02 Jan 2026 13:05:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/prometheus/index.xml" rel="self" type="application/rss+xml"/><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Alerting 운영 표준 매뉴얼]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/03/</link><pubDate>Fri, 02 Jan 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/03/</guid><description>&lt;h3 id="devprod-분리--triton-serving-alerts">Dev/Prod 분리 + Triton Serving Alerts&lt;/h3>
+&lt;p>&lt;em>(kube-prometheus-stack · PrometheusRule · Alertmanager · ArgoCD · SealedSecret)&lt;/em>&lt;/p>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>관측(Observability)은 “대시보드”가 아니라 &lt;strong>사고를 막는 운영 정책&lt;/strong>입니다.&lt;/p>
+&lt;p>특히 dev/prod 환경에서 알럿이 섞이는 순간, 운영자는 신뢰를 잃고 결국 알럿을 무시하게 됩니다.&lt;/p>
+&lt;p>이번 문서는 다음을 &lt;strong>영구적으로 보장&lt;/strong>하는 운영 표준입니다.&lt;/p>
+&lt;ul>
+&lt;li>dev/prod 알럿 완전 분리&lt;/li>
+&lt;li>라벨/네임스페이스 실수로 교차 전송이 발생해도 &lt;strong>Slack 전송 차단&lt;/strong>&lt;/li>
+&lt;li>GitOps + SealedSecret 기반으로 &lt;strong>재현 가능한 표준화&lt;/strong>&lt;/li>
+&lt;li>Triton 서빙 품질(성능/실패)을 &lt;strong>모델 실행 관점&lt;/strong>에서 감지&lt;/li>
+&lt;/ul>
+&lt;p>또한 알럿은 “발생”만으로 끝나지 않습니다.
+운영에서는 알럿 이후 30초 안에 “원인 확인 → 조치 판단”이 가능해야 합니다.&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - MLflow → Triton 자동 배포 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/02/</link><pubDate>Mon, 29 Dec 2025 12:02:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/02/</guid><description>&lt;h3 id="airflow-기반--검증-체인--최소-롤백">Airflow 기반 · 검증 체인 · 최소 롤백&lt;/h3>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>실무 환경에서 모델 배포는&lt;/p>
+&lt;p>“새 모델을 올리는 작업”이 아니라&lt;/p>
+&lt;p>“현재 운영 상태를 안전하게 갱신하는 상태 전이(State Transition)”에 가깝습니다.&lt;/p>
+&lt;p>이번 단계에서는 MLflow Registry를 단일 소스로 삼아&lt;/p>
+&lt;p>Triton Inference Server에 모델을 &lt;strong>자동 배포&lt;/strong>하고,&lt;/p>
+&lt;ul>
+&lt;li>로딩&lt;/li>
+&lt;li>헬스 체크&lt;/li>
+&lt;li>실제 추론 검증&lt;/li>
+&lt;/ul>
+&lt;p>을 모두 통과한 경우에만 운영 모델을 확정(commit)하며,&lt;/p>
+&lt;p>중간 단계에서 하나라도 실패하면&lt;/p>
+&lt;p>&lt;strong>이전 운영 상태로 자동 복구되는 최소 롤백 구조&lt;/strong>를 구현했습니다.&lt;/p>
+&lt;p>이 모든 흐름은 Airflow DAG를 통해&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>

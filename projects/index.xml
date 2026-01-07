@@ -1,4 +1,58 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Projects on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/projects/</link><description>Recent content in Projects on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 30 Nov 2025 02:50:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/projects/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Projects on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/projects/</link><description>Recent content in Projects on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Mon, 05 Jan 2026 11:03:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/projects/index.xml" rel="self" type="application/rss+xml"/><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/triton/01/</link><pubDate>Mon, 05 Jan 2026 11:03:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/triton/01/</guid><description>&lt;h2 id="에필로그--gitops-기반-triton-서빙이-배포검증관측알림-루프로-고정되다">에필로그 — “GitOps 기반 Triton 서빙이 ‘배포→검증→관측→알림’ 루프로 고정되다”&lt;/h2>
+&lt;hr>
+&lt;h2 id="-전체-경로-요약">📌 전체 경로 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>순서&lt;/th>
+&lt;th>주제&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>🔗 Triton (CPU-only) GitOps 통합: ONNX 1개 서빙 + Prometheus/Grafana 관측&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>🔗 MLflow → Triton 자동 배포 파이프라인 구축 (Airflow 기반 · 검증 체인 · 최소 롤백)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>🔗 Alerting 운영 표준 매뉴얼 (Dev/Prod 철벽 분리 + Triton Serving Alerts)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h2 id="-전체-회고-요약">🎯 전체 회고 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>단계&lt;/th>
+&lt;th>핵심 목표&lt;/th>
+&lt;th>주요 개선점&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>Triton “서빙 플랫폼 뼈대” 구축&lt;/td>
+&lt;td>GitOps로 dev/prod 분리 배포 + explicit load&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;ul>
+&lt;li>NFS model-repo + /metrics 관측 |
+| 2 | 자동 배포 파이프라인 운영화 | MLflow Registry(단일 소스)
+→ materialize
+→ load/ready/infer 검증
+→ commit_current, 실패 시 minimal rollback |
+| 3 | 알람 신뢰성/분리 표준화 | Alertmanager null default&lt;/li>
+&lt;li>namespace 정규식 허용만 Slack 전송&lt;/li>
+&lt;li>Triton mean latency 기반 알럿 도입 |&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>
