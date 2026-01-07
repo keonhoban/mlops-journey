@@ -36,18 +36,18 @@
 &lt;tbody>
 &lt;tr>
 &lt;td>1&lt;/td>
-&lt;td>Triton “서빙 플랫폼 뼈대” 구축&lt;/td>
-&lt;td>GitOps로 dev/prod 분리 배포 + explicit load&lt;!-- raw HTML omitted -->NFS model-repo + /metrics 관측&lt;/td>
+&lt;td>Triton 서빙 기반 구축&lt;/td>
+&lt;td>GitOps dev/prod 분리 · explicit load · NFS model-repo · /metrics&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>2&lt;/td>
-&lt;td>자동 배포 파이프라인 운영화&lt;/td>
-&lt;td>MLflow Registry(단일 소스)&lt;!-- raw HTML omitted -->→ materialize&lt;!-- raw HTML omitted -->→ load/ready/infer 검증&lt;!-- raw HTML omitted -->→ commit_current, 실패 시 minimal rollback&lt;/td>
+&lt;td>배포 파이프라인 운영화&lt;/td>
+&lt;td>MLflow 단일 소스 → 검증 체인(load/ready/infer) → commit/rollback&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>3&lt;/td>
-&lt;td>알람 신뢰성/분리 표준화&lt;/td>
-&lt;td>Alertmanager null default&lt;!-- raw HTML omitted -->namespace 정규식 허용만 Slack 전송&lt;!-- raw HTML omitted -->Triton mean latency 기반 알럿 도입&lt;/td>
+&lt;td>알람 신뢰성 표준화&lt;/td>
+&lt;td>Alertmanager null default · namespace 기반 Slack 라우팅 · mean latency 알럿&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
