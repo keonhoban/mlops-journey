@@ -36,18 +36,18 @@
 &lt;tbody>
 &lt;tr>
 &lt;td>1&lt;/td>
-&lt;td>Triton 서빙 기반 구축&lt;/td>
-&lt;td>GitOps dev/prod 분리 · explicit load · NFS model-repo · /metrics&lt;/td>
+&lt;td>Triton 서빙 기반&lt;/td>
+&lt;td>GitOps 분리 · explicit load · 관측&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>2&lt;/td>
-&lt;td>배포 파이프라인 운영화&lt;/td>
-&lt;td>MLflow 단일 소스 → 검증 체인(load/ready/infer) → commit/rollback&lt;/td>
+&lt;td>배포 자동화&lt;/td>
+&lt;td>MLflow 단일 소스 · 검증 기반 commit/rollback&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>3&lt;/td>
-&lt;td>알람 신뢰성 표준화&lt;/td>
-&lt;td>Alertmanager null default · namespace 기반 Slack 라우팅 · mean latency 알럿&lt;/td>
+&lt;td>알람 운영&lt;/td>
+&lt;td>null default · namespace 라우팅 · latency 알럿&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
