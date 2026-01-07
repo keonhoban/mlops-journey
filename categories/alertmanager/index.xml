@@ -3,17 +3,14 @@
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
-&lt;p>관측(Observability)은 “대시보드”가 아니라 &lt;strong>사고를 막는 운영 정책&lt;/strong>입니다.&lt;/p>
-&lt;p>특히 dev/prod 환경에서 알럿이 섞이는 순간, 운영자는 신뢰를 잃고 결국 알럿을 무시하게 됩니다.&lt;/p>
-&lt;p>이번 문서는 다음을 &lt;strong>영구적으로 보장&lt;/strong>하는 운영 표준입니다.&lt;/p>
-&lt;ul>
-&lt;li>dev/prod 알럿 완전 분리&lt;/li>
-&lt;li>라벨/네임스페이스 실수로 교차 전송이 발생해도 &lt;strong>Slack 전송 차단&lt;/strong>&lt;/li>
-&lt;li>GitOps + SealedSecret 기반으로 &lt;strong>재현 가능한 표준화&lt;/strong>&lt;/li>
-&lt;li>Triton 서빙 품질(성능/실패)을 &lt;strong>모델 실행 관점&lt;/strong>에서 감지&lt;/li>
-&lt;/ul>
-&lt;p>또한 알럿은 “발생”만으로 끝나지 않습니다.
-운영에서는 알럿 이후 30초 안에 “원인 확인 → 조치 판단”이 가능해야 합니다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
+&lt;p>Observability는 대시보드가 아니라, 사고를 막는 운영 정책입니다.&lt;/p>
+&lt;p>이 문서는 dev/prod 알럿을 완전히 분리하고,
+라벨 실수로 인한 교차 전송까지 구조적으로 차단하며,
+Triton 서빙 품질을 모델 실행 관점에서 감지하도록 설계된
+GitOps 기반 Alerting 운영 표준입니다.&lt;/p>
+&lt;p>알럿은 발생이 아니라 30초 안에 판단과 조치로 이어져야 하며,
+이를 위해 Alertmanager 라우팅과 Grafana 대시보드를
+하나의 운영 판단 루프로 고정합니다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
