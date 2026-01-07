@@ -8,9 +8,73 @@
 라벨 실수로 인한 교차 전송까지 구조적으로 차단하며,
 Triton 서빙 품질을 모델 실행 관점에서 감지하도록 설계된
 GitOps 기반 Alerting 운영 표준입니다.&lt;/p>
-&lt;p>알럿은 발생이 아니라 30초 안에 판단과 조치로 이어져야 하며,
+&lt;p>알럿이후 빠르게 판단이 가능하도록,
 이를 위해 Alertmanager 라우팅과 Grafana 대시보드를
-하나의 운영 판단 루프로 고정합니다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
+하나의 흐름으로 묶었습니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>PrometheusRule: “언제 이상인가” 정의&lt;/li>
+&lt;li>Alertmanager: “어디로 보낼지/차단할지” 최종 통제&lt;/li>
+&lt;li>Slack: 단순 수신자&lt;/li>
+&lt;li>기본 receiver는 반드시 &lt;code>&amp;quot;null&amp;quot;&lt;/code>&lt;/li>
+&lt;li>Slack 전송은 &lt;strong>namespace 정규식 match&lt;/strong>로만 허용&lt;/li>
+&lt;li>Triton 알럿은 p95 대신 &lt;strong>mean latency 기반&lt;/strong>으로 시작&lt;/li>
+&lt;li>Grafana: 알럿 이후 “원인 확인/판단” 표준 (avg latency + queue + pending)&lt;/li>
+&lt;li>알럿-대시보드는 한 세트로 운영 (Detect → Diagnose → Act)&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-전체-아키텍처">1️⃣ 전체 아키텍처&lt;/h2>
+&lt;pre tabindex="0">&lt;code>[Workload (Triton/FastAPI/...)]
+↓ metrics
+[Prometheus (dev/prod)]
+↓ PrometheusRule: &amp;#34;언제 이상인가&amp;#34;
+[Alertmanager (dev/prod)]
+↓ Routing Policy: &amp;#34;어디로 보낼지/차단할지&amp;#34;
+[Slack (#dev / #prod)] → [Grafana Dashboard: Diagnose (30s)]
+&lt;/code>&lt;/pre>&lt;h3 id="핵심-원칙">핵심 원칙&lt;/h3>
+&lt;ul>
+&lt;li>Alertmanager가 최종 통제 지점&lt;/li>
+&lt;li>PrometheusRule은 “알럿 발생”만 담당&lt;/li>
+&lt;li>“기본 전송 금지(Null default)”가 안전한 운영의 출발점&lt;/li>
+&lt;li>알럿은 감지, Grafana는 원인 확인(진단) 표준&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="2-운영-정책-policy">2️⃣ 운영 정책 (Policy)&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>항목&lt;/th>
+&lt;th>정책&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Default receiver&lt;/td>
+&lt;td>&lt;code>&amp;quot;null&amp;quot;&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Slack 전송&lt;/td>
+&lt;td>routes + matchers로만 허용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>교차(dev↔prod)&lt;/td>
+&lt;td>무조건 차단&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>예외&lt;/td>
+&lt;td>문서/코드로 명시적으로 추가한 것만 허용&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Dashboard&lt;/td>
+&lt;td>알럿 발생 시 Grafana로 즉시 원인 확인 (30초 루틴)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h1 id="part-a-alertmanager-devprod-분리--철벽-라우팅">Part A. Alertmanager Dev/Prod 분리 &amp;amp; 철벽 라우팅&lt;/h1>
+&lt;h2 id="a-1-dev-alertmanager-최종-설정">A-1) DEV Alertmanager 최종 설정&lt;/h2>
+&lt;p>📄 &lt;code>/tmp/alertmanager-dev.yaml&lt;/code>&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
