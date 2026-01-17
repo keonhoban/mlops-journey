@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Projects on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/projects/</link><description>Recent content in Projects on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 17 Jan 2026 16:23:10 +1200</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/projects/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - 검증(Proof)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_feature_store/02/</guid><description>&lt;h1 id="feature-store--feast---검증proof">[Feature Store &amp;amp; Feast - 검증(Proof)]&lt;/h1>
-&lt;h2 id="gitops로-계약-배포--airflow로-버전화latest-저장--옵션-b-feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow로 버전화/Latest 저장 + (옵션 B) Feast 조회까지 E2E 증명&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Projects on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/projects/</link><description>Recent content in Projects on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 17 Jan 2026 16:23:10 +1200</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/projects/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - 검증(Proof)]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow로-버전화latest-저장--옵션-b-feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow로 버전화/Latest 저장 + (옵션 B) Feast 조회까지 E2E 증명&lt;/h3>
 &lt;hr>
 &lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
@@ -41,8 +40,7 @@
 &lt;/tbody>
 &lt;/table>
 &lt;blockquote>
-&lt;p>이 글은 “설명”이 아니라 “증거”만 남깁니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_feature_store/01/</link><pubDate>Fri, 16 Jan 2026 13:30:12 +1700</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_feature_store/01/</guid><description>&lt;h1 id="feature-store--feast---에필로그">[Feature Store &amp;amp; Feast - 에필로그]&lt;/h1>
-&lt;h2 id="feature-store는-피처-생성이-아니라-운영-재현성의-기준이다">Feature Store는 ‘피처 생성’이 아니라 &lt;strong>운영 재현성의 기준&lt;/strong>이다&lt;/h2>
+&lt;p>이 글은 “설명”이 아니라 “증거”만 남깁니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</link><pubDate>Fri, 16 Jan 2026 13:30:12 +1700</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</guid><description>&lt;h3 id="feature-store는-피처-생성이-아니라-운영-재현성의-기준이다">Feature Store는 ‘피처 생성’이 아니라 &lt;strong>운영 재현성의 기준&lt;/strong>이다&lt;/h3>
 &lt;hr>
 &lt;h2 id="-시리즈-전체-경로-요약">📌 시리즈 전체 경로 요약&lt;/h2>
 &lt;table>
@@ -55,15 +53,15 @@
 &lt;tbody>
 &lt;tr>
 &lt;td>1&lt;/td>
-&lt;td>Contract 기반 Feature Store-lite 구축&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/">Contract 기반 Feature Store-lite 구축&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>2&lt;/td>
-&lt;td>Feast 확장으로 조회 가능한 플랫폼 완성&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/">Feast 확장으로 조회 가능한 플랫폼 완성&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>3&lt;/td>
-&lt;td>Proof로 운영 신뢰성 검증&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/projects/feature_store/02/">Proof로 운영 신뢰성 검증&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
