@@ -1,4 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>AWS S3 on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/aws-s3/</link><description>Recent content in AWS S3 on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 30 Nov 2025 02:50:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/aws-s3/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>AWS S3 on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/aws-s3/</link><description>Recent content in AWS S3 on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 15 Jan 2026 17:15:38 +1203</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/aws-s3/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - Feast]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/</link><pubDate>Thu, 15 Jan 2026 17:15:38 +1203</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/</guid><description>&lt;h1 id="feature-store--feast---feast">Feature Store &amp;amp; Feast - Feast]&lt;/h1>
+&lt;h2 id="gitops로-feast-계약-배포--airflow로-버전화latest-갱신--feastregistrys3-offlineredis-online로-온라인-조회까지">GitOps로 Feast 계약 배포 + Airflow로 버전화/Latest 갱신 + Feast(Registry/S3 Offline/Redis Online)로 온라인 조회까지&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오">🧠 시나리오&lt;/h2>
+&lt;p>이전 글(Feature Store-lite)에서 저는 &lt;strong>계약(스키마/메타) + 버전화 저장 + 재현성&lt;/strong>까지 고정했습니다.&lt;/p>
+&lt;p>하지만 실무에서는 “저장”에서 끝나지 않습니다. 결국 중요한 건 &lt;strong>조회 가능(Serving-ready)&lt;/strong> 상태입니다.&lt;/p>
+&lt;p>이번 글은 Feature Store-lite 위에 Feast를 얹어 아래를 완성합니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Offline Source&lt;/strong>: S3의 &lt;code>latest/features.parquet&lt;/code> (Feast가 읽는 고정 포인터)&lt;/li>
+&lt;li>&lt;strong>Registry&lt;/strong>: S3에 &lt;code>registry.pb&lt;/code> 저장(환경별 분리)&lt;/li>
+&lt;li>&lt;strong>Online Store&lt;/strong>: Redis 적재(materialize)로 온라인 조회 가능&lt;/li>
+&lt;li>&lt;strong>Feature Server&lt;/strong>: 상시 서비스 + startup 시 &lt;code>feast apply&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>즉, **“저장하는 파이프라인” → “조회 가능한 피처 플랫폼”**으로 확장하는 단계입니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - Feature Store-lite]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/</link><pubDate>Wed, 14 Jan 2026 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/</guid><description>&lt;h1 id="feature-store--feast---feature-store-lite">[Feature Store &amp;amp; Feast - Feature Store-lite]&lt;/h1>
+&lt;h2 id="gitops로-계약-배포하고-airflow로-스키마-기반-피처를-생성해-s3에-버전화--재현성-메타로-저장하기">GitOps로 계약 배포하고, Airflow로 스키마 기반 피처를 생성해 S3에 “버전화 + 재현성 메타”로 저장하기&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오">🧠 시나리오&lt;/h2>
+&lt;p>실무에서 Feature Store의 승부는 “ML 성능”이 아니라 &lt;strong>운영 안정성/재현성&lt;/strong>에서 먼저 갈립니다.&lt;/p>
+&lt;p>“오늘 만든 feature.csv”가 아니라, 아래가 &lt;strong>반드시 남아야&lt;/strong> 운영이 됩니다.&lt;/p>
+&lt;ul>
+&lt;li>언제 생성됐는지 (generated_at)&lt;/li>
+&lt;li>어떤 스키마(계약)로 생성됐는지 (schema + schema_hash)&lt;/li>
+&lt;li>어떤 소스에서 생성됐는지 (source)&lt;/li>
+&lt;li>어떤 버전으로 저장됐는지 (version)&lt;/li>
+&lt;li>결과물이 어디 있는지 (feature_uri)&lt;/li>
+&lt;/ul>
+&lt;p>Feature Store 도입을 고민하면 흔히 “Feast부터 써야 하나?”가 먼저 나오는데,&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>

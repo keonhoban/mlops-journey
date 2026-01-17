@@ -1,4 +1,130 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>GitOps(ArgoCD) on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/gitopsargocd/</link><description>Recent content in GitOps(ArgoCD) on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 07 Jan 2026 13:05:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/gitopsargocd/index.xml" rel="self" type="application/rss+xml"/><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/triton/02/</link><pubDate>Wed, 07 Jan 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/triton/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>GitOps(ArgoCD) on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/gitopsargocd/</link><description>Recent content in GitOps(ArgoCD) on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 17 Jan 2026 16:23:10 +1200</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/gitopsargocd/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - 검증(Proof)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_feature_store/02/</guid><description>&lt;h1 id="feature-store--feast---검증proof">[Feature Store &amp;amp; Feast - 검증(Proof)]&lt;/h1>
+&lt;h2 id="gitops로-계약-배포--airflow로-버전화latest-저장--옵션-b-feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow로 버전화/Latest 저장 + (옵션 B) Feast 조회까지 E2E 증명&lt;/h2>
+&lt;hr>
+&lt;h2 id="-목차">🧭 목차&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>구분&lt;/th>
+&lt;th>증명 포인트&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>A. GitOps 분리&lt;/strong>&lt;/td>
+&lt;td>dev·prod 독립 배포 + 상태 고정(Synced/Healthy)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>B. Contract 고정&lt;/strong>&lt;/td>
+&lt;td>계약(schema/repo)을 운영 리소스로 배포·마운트&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>C. 파이프라인&lt;/strong>&lt;/td>
+&lt;td>Airflow DAG E2E 성공&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>D. 저장 정책&lt;/strong>&lt;/td>
+&lt;td>S3 version 1단 + latest 동시 유지&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>E. 재현성&lt;/strong>&lt;/td>
+&lt;td>schema_hash·metadata로 생성 조건 기록&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>F. Feast 검증&lt;/strong>&lt;/td>
+&lt;td>apply → materialize → online 조회 성공&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>G. 복구 전략&lt;/strong>&lt;/td>
+&lt;td>실제 장애 재현 → 해결 → 가드레일 고정&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;blockquote>
+&lt;p>이 글은 “설명”이 아니라 “증거”만 남깁니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_feature_store/01/</link><pubDate>Fri, 16 Jan 2026 13:30:12 +1700</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_feature_store/01/</guid><description>&lt;h1 id="feature-store--feast---에필로그">[Feature Store &amp;amp; Feast - 에필로그]&lt;/h1>
+&lt;h2 id="feature-store는-피처-생성이-아니라-운영-재현성의-기준이다">Feature Store는 ‘피처 생성’이 아니라 &lt;strong>운영 재현성의 기준&lt;/strong>이다&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시리즈-전체-경로-요약">📌 시리즈 전체 경로 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>순서&lt;/th>
+&lt;th>주제&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>Contract 기반 Feature Store-lite 구축&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>Feast 확장으로 조회 가능한 플랫폼 완성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>Proof로 운영 신뢰성 검증&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>이 시리즈는 “Feast를 써봤다”가 아니라,&lt;/p>
+&lt;p>&lt;strong>Feature Store를 운영 가능한 시스템으로 고정하는 과정&lt;/strong>을 기록했습니다.&lt;/p>
+&lt;hr>
+&lt;h2 id="-전체-회고-요약">🎯 전체 회고 요약&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>단계&lt;/th>
+&lt;th>목표&lt;/th>
+&lt;th>고정된 기준&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>Feature Store-lite 뼈대 구축&lt;/td>
+&lt;td>Contract 분리 + 버전 1단 + 재현성 메타&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>Feast로 플랫폼 확장&lt;/td>
+&lt;td>version + latest 정책 + offline/online 일관성&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>Proof로 신뢰성 확보&lt;/td>
+&lt;td>E2E 검증 + 장애 재현·복구&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="-이-시리즈를-관통하는-한-문장">🔄 이 시리즈를 관통하는 한 문장&lt;/h3>
+&lt;p>&lt;strong>Contract → Build → Versioned Store → Latest Pointer → Apply → Materialize → Online Read&lt;/strong>&lt;/p></description></item><item><title>[Feature Store &amp; Feast - Feast]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/</link><pubDate>Thu, 15 Jan 2026 17:15:38 +1203</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/</guid><description>&lt;h1 id="feature-store--feast---feast">Feature Store &amp;amp; Feast - Feast]&lt;/h1>
+&lt;h2 id="gitops로-feast-계약-배포--airflow로-버전화latest-갱신--feastregistrys3-offlineredis-online로-온라인-조회까지">GitOps로 Feast 계약 배포 + Airflow로 버전화/Latest 갱신 + Feast(Registry/S3 Offline/Redis Online)로 온라인 조회까지&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오">🧠 시나리오&lt;/h2>
+&lt;p>이전 글(Feature Store-lite)에서 저는 &lt;strong>계약(스키마/메타) + 버전화 저장 + 재현성&lt;/strong>까지 고정했습니다.&lt;/p>
+&lt;p>하지만 실무에서는 “저장”에서 끝나지 않습니다. 결국 중요한 건 &lt;strong>조회 가능(Serving-ready)&lt;/strong> 상태입니다.&lt;/p>
+&lt;p>이번 글은 Feature Store-lite 위에 Feast를 얹어 아래를 완성합니다.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Offline Source&lt;/strong>: S3의 &lt;code>latest/features.parquet&lt;/code> (Feast가 읽는 고정 포인터)&lt;/li>
+&lt;li>&lt;strong>Registry&lt;/strong>: S3에 &lt;code>registry.pb&lt;/code> 저장(환경별 분리)&lt;/li>
+&lt;li>&lt;strong>Online Store&lt;/strong>: Redis 적재(materialize)로 온라인 조회 가능&lt;/li>
+&lt;li>&lt;strong>Feature Server&lt;/strong>: 상시 서비스 + startup 시 &lt;code>feast apply&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>즉, **“저장하는 파이프라인” → “조회 가능한 피처 플랫폼”**으로 확장하는 단계입니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - Feature Store-lite]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/</link><pubDate>Wed, 14 Jan 2026 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/</guid><description>&lt;h1 id="feature-store--feast---feature-store-lite">[Feature Store &amp;amp; Feast - Feature Store-lite]&lt;/h1>
+&lt;h2 id="gitops로-계약-배포하고-airflow로-스키마-기반-피처를-생성해-s3에-버전화--재현성-메타로-저장하기">GitOps로 계약 배포하고, Airflow로 스키마 기반 피처를 생성해 S3에 “버전화 + 재현성 메타”로 저장하기&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오">🧠 시나리오&lt;/h2>
+&lt;p>실무에서 Feature Store의 승부는 “ML 성능”이 아니라 &lt;strong>운영 안정성/재현성&lt;/strong>에서 먼저 갈립니다.&lt;/p>
+&lt;p>“오늘 만든 feature.csv”가 아니라, 아래가 &lt;strong>반드시 남아야&lt;/strong> 운영이 됩니다.&lt;/p>
+&lt;ul>
+&lt;li>언제 생성됐는지 (generated_at)&lt;/li>
+&lt;li>어떤 스키마(계약)로 생성됐는지 (schema + schema_hash)&lt;/li>
+&lt;li>어떤 소스에서 생성됐는지 (source)&lt;/li>
+&lt;li>어떤 버전으로 저장됐는지 (version)&lt;/li>
+&lt;li>결과물이 어디 있는지 (feature_uri)&lt;/li>
+&lt;/ul>
+&lt;p>Feature Store 도입을 고민하면 흔히 “Feast부터 써야 하나?”가 먼저 나오는데,&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/triton/02/</link><pubDate>Wed, 07 Jan 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/triton/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>
