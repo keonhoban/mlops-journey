@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Proof of Feature Store &amp; Feast on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/proof-of-feature-store--feast/</link><description>Recent content in Proof of Feature Store &amp; Feast on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 17 Jan 2026 16:23:10 +1200</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/proof-of-feature-store--feast/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - 검증(Proof)]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow로-버전화latest-저장--옵션-b-feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow로 버전화/Latest 저장 + (옵션 B) Feast 조회까지 E2E 증명&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Proof of Feature Store &amp; Feast on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/proof-of-feature-store--feast/</link><description>Recent content in Proof of Feature Store &amp; Feast on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 17 Jan 2026 16:23:10 +1200</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/proof-of-feature-store--feast/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - 검증(Proof)]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow-버전화latest-저장--feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow 버전화/Latest 저장 + Feast 조회까지 E2E 증명&lt;/h3>
 &lt;hr>
 &lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
@@ -15,7 +15,7 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;strong>B. Contract 고정&lt;/strong>&lt;/td>
-&lt;td>계약(schema/repo)을 운영 리소스로 배포·마운트&lt;/td>
+&lt;td>계약(schema / repo)을 운영 리소스로 배포·마운트&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;strong>C. 파이프라인&lt;/strong>&lt;/td>
@@ -31,13 +31,9 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>&lt;strong>F. Feast 검증&lt;/strong>&lt;/td>
-&lt;td>apply → materialize → online 조회 성공&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;strong>G. 복구 전략&lt;/strong>&lt;/td>
-&lt;td>실제 장애 재현 → 해결 → 가드레일 고정&lt;/td>
+&lt;td>s3fs → materialize → online 조회 성공&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
 &lt;blockquote>
-&lt;p>이 글은 “설명”이 아니라 “증거”만 남깁니다.&lt;/p></description></item></channel></rss>
+&lt;p>이 글은 설명이 아니라 증거(Proof)만 남깁니다.&lt;/p></description></item></channel></rss>
