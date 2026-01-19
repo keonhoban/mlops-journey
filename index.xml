@@ -7798,7 +7798,7 @@ Client → SMTP → Mail Server → POP3 or IMAP → Client
 &lt;li>ML Platform 관점의 &lt;strong>MLOps 아키텍처 설계&lt;/strong>&lt;/li>
 &lt;li>Triton / Feature Store / MLflow / Airflow 실전 구축기&lt;/li>
 &lt;li>GitOps 기반 ML 시스템 운영 노하우&lt;/li>
-&lt;li>실무에서 얻은 &lt;strong>결정적 지식과 설계 판단&lt;/strong>&lt;/li>
+&lt;li>실무에서 얻은 &lt;strong>지식과 설계 판단&lt;/strong>&lt;/li>
 &lt;li>DevOps → MLOps 전환 과정에서의 시행착오와 성장 기록&lt;/li>
 &lt;/ul>
 &lt;p>이 블로그는&lt;br>
