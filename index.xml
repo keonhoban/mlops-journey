@@ -7740,26 +7740,52 @@ Client → SMTP → Mail Server → POP3 or IMAP → Client
 &lt;/table>
 &lt;blockquote>
 &lt;p>실무에서 셸은 &amp;ldquo;빠르고 가벼운 자동화 도구&amp;quot;로&lt;/p></description></item><item><title>About</title><link>https://keonhoban.github.io/mlops-journey/about/</link><pubDate>Sun, 06 Apr 2025 20:57:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/about/</guid><description>&lt;h1 id="-안녕하세요">👋 안녕하세요!&lt;/h1>
-&lt;p>현재 &lt;strong>MLOps 엔지니어&lt;/strong>를 목표로 꾸준히 배우고 성장하고 있습니다.&lt;br>
-&lt;strong>2년 3개월 동안 DevOps 엔지니어&lt;/strong>로 일하며 시스템 운영, 인프라 관리, 자동화의 기본기를 다졌습니다.&lt;br>
-이제는 더 깊은 통합 역량을 가진 MLOps 전문가로 나아가고자 합니다.&lt;/p>
-&lt;p>제 목표는 &lt;strong>기업에서 신뢰할 수 있는 실전형 MLOps 엔지니어&lt;/strong>가 되는 것입니다.&lt;br>
-이 블로그는 그 여정을 기록하는 공간이자, 기술과 성장의 아카이브입니다.&lt;/p>
+&lt;p>저는 &lt;strong>머신러닝 플랫폼을 직접 설계·구축·운영해 온 MLOps 엔지니어&lt;/strong>입니다.&lt;br>
+2년 3개월간 DevOps 엔지니어로 근무하며 &lt;strong>대규모 시스템 운영, 인프라 안정성, 자동화&lt;/strong>의 기본기를 쌓았고,&lt;br>
+현재는 &lt;strong>ML Platform 관점의 MLOps 역량&lt;/strong>을 중심으로 실무 수준의 프로젝트를 구축하고 있습니다.&lt;/p>
+&lt;p>단순히 모델을 배포하는 MLOps가 아니라,&lt;br>
+&lt;strong>Data → Feature → Training → Registry → Inference → Monitoring&lt;/strong>&lt;br>
+전 과정을 하나의 플랫폼으로 연결하고,&lt;br>
+운영 중 발생하는 문제를 &lt;strong>구조적으로 해결할 수 있는 엔지니어&lt;/strong>를 목표로 하고 있습니다.&lt;/p>
 &lt;hr>
-&lt;h2 id="-현재-주요-관심-분야-및-학습-중인-기술">🛠️ 현재 주요 관심 분야 및 학습 중인 기술&lt;/h2>
+&lt;h2 id="-주요-기술-및-실무-경험">🛠️ 주요 기술 및 실무 경험&lt;/h2>
+&lt;h3 id="-mlops--ml-platform">🔧 MLOps &amp;amp; ML Platform&lt;/h3>
 &lt;ul>
-&lt;li>&lt;strong>MLOps&lt;/strong>: MLflow, Kubeflow, Airflow&lt;/li>
-&lt;li>&lt;strong>인프라 자동화&lt;/strong>: AWS, Kubernetes, Terraform&lt;/li>
-&lt;li>&lt;strong>프로그래밍 언어&lt;/strong>: Python, Java, Bash&lt;/li>
-&lt;li>&lt;strong>데이터 엔지니어링&lt;/strong>: 데이터 파이프라인 설계 및 구축&lt;/li>
+&lt;li>&lt;strong>MLflow&lt;/strong>: 실험 관리 및 Model Registry 운영&lt;/li>
+&lt;li>&lt;strong>Airflow&lt;/strong>: 데이터 파이프라인 및 모델 학습 자동화&lt;/li>
+&lt;li>&lt;strong>Triton Inference Server&lt;/strong>: ONNX 기반 모델 서빙, GitOps 연동&lt;/li>
+&lt;li>&lt;strong>Feature Store&lt;/strong>
+&lt;ul>
+&lt;li>Feature Store-lite 직접 설계&lt;/li>
+&lt;li>Feast (S3 Offline Store + Redis Online Store) 구축 및 검증&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>Observability&lt;/strong>
+&lt;ul>
+&lt;li>Prometheus / Grafana 기반 서빙·파이프라인 모니터링&lt;/li>
+&lt;li>Alertmanager를 통한 운영 알람 설계&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="-infrastructure--devops">☁️ Infrastructure &amp;amp; DevOps&lt;/h3>
+&lt;ul>
+&lt;li>Kubernetes 기반 ML 플랫폼 운영&lt;/li>
+&lt;li>GitOps (ArgoCD)로 MLOps 컴포넌트 배포 관리&lt;/li>
+&lt;li>AWS 인프라 설계 및 자동화 (Terraform)&lt;/li>
+&lt;li>CI/CD 및 운영 자동화 경험&lt;/li>
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="-경력-및-자격증">🚀 경력 및 자격증&lt;/h2>
 &lt;ul>
-&lt;li>&lt;strong>DevOps 엔지니어&lt;/strong> (2년 3개월 경험)&lt;/li>
+&lt;li>&lt;strong>DevOps 엔지니어&lt;/strong> (2년 3개월)
+&lt;ul>
+&lt;li>시스템 운영, 인프라 관리, 장애 대응, 자동화 경험&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;li>&lt;strong>보유 자격증&lt;/strong>
 &lt;ul>
-&lt;li>AWS SAA (Solutions Architect – Associate)&lt;/li>
+&lt;li>AWS Certified Solutions Architect – Associate&lt;/li>
+&lt;li>AWS Certified Solutions Architect – Professional&lt;/li>
 &lt;li>정보처리기사&lt;/li>
 &lt;li>리눅스 마스터 2급&lt;/li>
 &lt;li>네트워크 관리사&lt;/li>
@@ -7767,14 +7793,13 @@ Client → SMTP → Mail Server → POP3 or IMAP → Client
 &lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="-이-블로그에서-다루는-내용">📌 이 블로그에서 다루는 내용&lt;/h2>
+&lt;h2 id="-이-블로그는-이런-내용을-다룹니다">📌 이 블로그는 이런 내용을 다룹니다&lt;/h2>
 &lt;ul>
-&lt;li>MLOps 실무 기술 및 학습 노트&lt;/li>
-&lt;li>프로젝트/실습 기록 및 코드 공유&lt;/li>
-&lt;li>인프라 운영 및 자동화 노하우&lt;/li>
-&lt;li>기술 면접 및 자격증 준비 과정&lt;/li>
-&lt;li>실전에서 부딪히며 얻은 &lt;strong>결정적 지식&lt;/strong>과 실무 팁&lt;/li>
-&lt;li>DevOps → MLOps로의 &lt;strong>전환 여정&lt;/strong>과 개인적인 성장 이야기&lt;/li>
+&lt;li>ML Platform 관점의 &lt;strong>MLOps 아키텍처 설계&lt;/strong>&lt;/li>
+&lt;li>Triton / Feature Store / MLflow / Airflow 실전 구축기&lt;/li>
+&lt;li>GitOps 기반 ML 시스템 운영 노하우&lt;/li>
+&lt;li>실무에서 얻은 &lt;strong>결정적 지식과 설계 판단&lt;/strong>&lt;/li>
+&lt;li>DevOps → MLOps 전환 과정에서의 시행착오와 성장 기록&lt;/li>
 &lt;/ul>
-&lt;p>이 블로그가 같은 길을 걷는 분들에게도&lt;br>
-작은 인사이트와 응원이 되길 바랍니다 😊&lt;/p></description></item></channel></rss>
+&lt;p>이 블로그는&lt;br>
+&lt;strong>“실제로 운영 가능한 MLOps 시스템을 만들 수 있는 엔지니어”가 되기 위한 기록&lt;/strong>입니다.&lt;/p></description></item></channel></rss>
