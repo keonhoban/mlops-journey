@@ -3,15 +3,16 @@ date = '2025-04-06T20:57:56+09:00'
 draft = false
 title = 'About'
 +++
+
 # 👋 안녕하세요!
 
 저는 머신러닝 플랫폼을 직접 설계·구축·운영해 온 MLOps 엔지니어입니다.
 2년 3개월간 DevOps 엔지니어로 근무하며 대규모 시스템 운영, 인프라 안정성, 자동화의 기본기를 쌓았고,
 현재는 ML Platform 관점에서 실무 수준의 MLOps 프로젝트를 구축하고 있습니다.
 
-단순히 모델을 배포하는 MLOps가 아니라,  
-**Data → Feature → Training → Registry → Inference → Monitoring**  
-전 과정을 하나의 플랫폼으로 연결하고,  
+단순히 모델을 배포하는 MLOps가 아니라,
+**Data → Feature → Training → Registry → Inference → Monitoring**
+전 과정을 하나의 플랫폼으로 연결하고,
 운영 중 발생하는 문제를 **구조적으로 해결할 수 있는 엔지니어**를 목표로 하고 있습니다.
 
 ---
