@@ -7740,8 +7740,8 @@ Client → SMTP → Mail Server → POP3 or IMAP → Client
 &lt;/table>
 &lt;blockquote>
 &lt;p>실무에서 셸은 &amp;ldquo;빠르고 가벼운 자동화 도구&amp;quot;로&lt;/p></description></item><item><title>About</title><link>https://keonhoban.github.io/mlops-journey/about/</link><pubDate>Sun, 06 Apr 2025 20:57:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/about/</guid><description>&lt;h1 id="-안녕하세요">👋 안녕하세요!&lt;/h1>
-&lt;p>저는 머신러닝 플랫폼을 직접 설계·구축·운영해 온 MLOps 엔지니어입니다.
-2년 3개월간 DevOps 엔지니어로 근무하며 대규모 시스템 운영, 인프라 안정성, 자동화의 기본기를 쌓았고,
+&lt;p>저는 머신러닝 플랫폼을 직접 설계·구축·운영해 온 MLOps 엔지니어입니다.&lt;/p>
+&lt;p>2년 3개월간 DevOps 엔지니어로 근무하며 대규모 시스템 운영, 인프라 안정성, 자동화의 기본기를 쌓았고,
 현재는 ML Platform 관점에서 실무 수준의 MLOps 프로젝트를 구축하고 있습니다.&lt;/p>
 &lt;p>단순히 모델을 배포하는 MLOps가 아니라,
 &lt;strong>Data → Feature → Training → Registry → Inference → Monitoring&lt;/strong>
