@@ -172,7 +172,7 @@ Serving Pipeline 영향
 &lt;li>특정 기능이 다른 기능을 망가뜨리기 시작한다&lt;/li>
 &lt;li>확장 기능이 코어 시스템을 복잡하게 만든다&lt;/li>
 &lt;/ul>
-&lt;p>이 문제의 근본 원인은 대부분 같습니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 설계 의도]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/01/</link><pubDate>Fri, 06 Mar 2026 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/01/</guid><description>&lt;h1 id="gitops-기반-e2e-ml-platform">GitOps 기반 E2E ML Platform&lt;/h1>
+&lt;p>이 문제의 근본 원인은 대부분 같습니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 설계 의도]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/01/</link><pubDate>Fri, 06 Mar 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/01/</guid><description>&lt;h1 id="gitops-기반-e2e-ml-platform">GitOps 기반 E2E ML Platform&lt;/h1>
 &lt;ul>
 &lt;li>설계 의도&lt;/li>
 &lt;/ul>
