@@ -329,25 +329,26 @@ Serving Pipeline 영향
 &lt;li>확장 기능이 코어 시스템을 망가뜨리지 않도록 어떻게 설계할 것인가&lt;/li>
 &lt;/ul>
 &lt;p>즉, 문제는 &lt;strong>모델을 배포하는 방법이 아니라 운영 환경에서 변경을 통제하는 방법&lt;/strong>입니다.&lt;/p></description></item><item><title>About</title><link>https://keonhoban.github.io/mlops-journey/about/</link><pubDate>Sat, 14 Feb 2026 17:10:56 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/about/</guid><description>&lt;h1 id="mlops--ml-platform-engineer">MLOps / ML Platform Engineer&lt;/h1>
-&lt;p>Production-grade ML Platform을 설계하고 운영하는 엔지니어&lt;/p>
+&lt;p>Production-grade &lt;strong>ML Platform을 설계하고 운영하는 플랫폼 엔지니어&lt;/strong>입니다.&lt;/p>
 &lt;p>DevOps 2년 3개월(가비아) 운영 경험을 기반으로,&lt;/p>
-&lt;p>&lt;strong>GitOps 기반 dev/prod 분리형 E2E ML Platform을 직접 설계·구축·운영했습니다.&lt;/strong>&lt;/p>
-&lt;p>단순 모델 배포가 아니라,&lt;/p>
+&lt;p>&lt;strong>GitOps 기반 dev/prod 분리형 Production-grade E2E ML Platform을 직접 설계·구축·검증했습니다.&lt;/strong>&lt;/p>
+&lt;p>단순히 모델을 배포하는 시스템이 아니라,&lt;/p>
 &lt;p>&lt;strong>Data → Feature → Training → Registry → Deploy → Inference → Monitoring&lt;/strong>&lt;/p>
 &lt;p>전 과정을 자동화하고,&lt;/p>
-&lt;p>운영 환경에서의 &lt;strong>롤백 전략, 확장성, 관측 체계, 장애 대응 구조까지 포함한 ML Platform 아키텍처&lt;/strong>를 구현했습니다.&lt;/p>
+&lt;p>운영 환경에서 필요한 &lt;strong>롤백 전략, 확장성, 관측 체계, 장애 대응 구조까지 포함한 ML Platform 아키텍처&lt;/strong>를 구현했습니다.&lt;/p>
 &lt;hr>
-&lt;h1 id="-platform-snapshot-30초-요약">🔎 Platform Snapshot (30초 요약)&lt;/h1>
+&lt;h1 id="-platform-snapshot-요약">🔎 Platform Snapshot (요약)&lt;/h1>
 &lt;ul>
-&lt;li>&lt;strong>GitOps&lt;/strong>: ArgoCD 기반 dev/prod 완전 분리&lt;/li>
+&lt;li>&lt;strong>GitOps&lt;/strong>: ArgoCD 기반 dev/prod 완전 분리 환경&lt;/li>
 &lt;li>&lt;strong>Orchestration&lt;/strong>: Airflow DAG 기반 E2E 자동화&lt;/li>
-&lt;li>&lt;strong>Model Registry&lt;/strong>: MLflow Registry + alias 기반 핫스왑/롤백&lt;/li>
+&lt;li>&lt;strong>Model Registry&lt;/strong>: MLflow Registry + alias 기반 Hot Swap / Rollback&lt;/li>
 &lt;li>&lt;strong>Serving&lt;/strong>: Triton Inference Server + FastAPI reload 구조&lt;/li>
-&lt;li>&lt;strong>Observability&lt;/strong>: Prometheus / Grafana / Alertmanager 설계&lt;/li>
+&lt;li>&lt;strong>Observability&lt;/strong>: Prometheus / Grafana / Alertmanager 기반 운영 관측&lt;/li>
 &lt;li>&lt;strong>Reproducibility&lt;/strong>: Feature Store-lite(버전화 + latest 고정), Feast 검증&lt;/li>
-&lt;li>&lt;strong>구조 설계 철학&lt;/strong>: Core / Baseline / Optional 분리 아키텍처&lt;/li>
+&lt;li>&lt;strong>Architecture&lt;/strong>: Core / Baseline / Optional 분리형 플랫폼 구조&lt;/li>
+&lt;li>&lt;strong>Proof System&lt;/strong>: runtime / optional attach-detach / observability 검증 문서화&lt;/li>
 &lt;/ul>
-&lt;p>👉 모든 구성은 GitHub 및 블로그에 &lt;strong>Proof 형태로 공개&lt;/strong>&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow-버전화latest-저장--feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow 버전화/Latest 저장 + Feast 조회까지 E2E 증명&lt;/h3>
+&lt;p>👉 모든 구성은 GitHub 및 블로그에 &lt;strong>Proof 형태로 공개&lt;/strong>되어 있습니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow-버전화latest-저장--feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow 버전화/Latest 저장 + Feast 조회까지 E2E 증명&lt;/h3>
 &lt;hr>
 &lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
