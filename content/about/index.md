@@ -6,65 +6,88 @@ title = 'About'
 
 # MLOps / ML Platform Engineer
 
-Production-grade ML Platform을 설계하고 운영하는 엔지니어
+Production-grade **ML Platform을 설계하고 운영하는 플랫폼 엔지니어**입니다.
 
 DevOps 2년 3개월(가비아) 운영 경험을 기반으로,
 
-**GitOps 기반 dev/prod 분리형 E2E ML Platform을 직접 설계·구축·운영했습니다.**
+**GitOps 기반 dev/prod 분리형 Production-grade E2E ML Platform을 직접 설계·구축·검증했습니다.**
 
-단순 모델 배포가 아니라,
+단순히 모델을 배포하는 시스템이 아니라,
 
 **Data → Feature → Training → Registry → Deploy → Inference → Monitoring**
 
 전 과정을 자동화하고,
 
-운영 환경에서의 **롤백 전략, 확장성, 관측 체계, 장애 대응 구조까지 포함한 ML Platform 아키텍처**를 구현했습니다.
+운영 환경에서 필요한 **롤백 전략, 확장성, 관측 체계, 장애 대응 구조까지 포함한 ML Platform 아키텍처**를 구현했습니다.
 
 ---
 
-# 🔎 Platform Snapshot (30초 요약)
+# 🔎 Platform Snapshot (요약)
 
-- **GitOps**: ArgoCD 기반 dev/prod 완전 분리
+- **GitOps**: ArgoCD 기반 dev/prod 완전 분리 환경
 - **Orchestration**: Airflow DAG 기반 E2E 자동화
-- **Model Registry**: MLflow Registry + alias 기반 핫스왑/롤백
+- **Model Registry**: MLflow Registry + alias 기반 Hot Swap / Rollback
 - **Serving**: Triton Inference Server + FastAPI reload 구조
-- **Observability**: Prometheus / Grafana / Alertmanager 설계
+- **Observability**: Prometheus / Grafana / Alertmanager 기반 운영 관측
 - **Reproducibility**: Feature Store-lite(버전화 + latest 고정), Feast 검증
-- **구조 설계 철학**: Core / Baseline / Optional 분리 아키텍처
+- **Architecture**: Core / Baseline / Optional 분리형 플랫폼 구조
+- **Proof System**: runtime / optional attach-detach / observability 검증 문서화
 
-👉 모든 구성은 GitHub 및 블로그에 **Proof 형태로 공개**
+👉 모든 구성은 GitHub 및 블로그에 **Proof 형태로 공개**되어 있습니다.
 
 ---
 
-# 🔗 Project Proof
+# 🚀 대표 프로젝트
 
-아래 프로젝트는 GitOps 기반 ML Platform을 단계적으로 설계·확장해온 기록입니다.
+## Production-grade E2E ML Platform
 
-각 글은 단순 실습이 아니라,
+GitOps 기반 dev/prod 환경 분리와
 
-- 환경 분리 전략
-- 배포 구조
-- 모델 운영 전략
-- 관측 설계
+Airflow–MLflow–Triton–FastAPI–Observability를 포함한 **통합 ML Platform 프로젝트**입니다.
 
-를 독립적으로 검증하기 위해 구성되었습니다.
+이 프로젝트는 단순 구현이 아니라,
 
-> 현재는 이를 하나의 Production-grade ML Platform 구조로 통합 정리 중입니다.
-> 
+- GitOps 경계 구조
+- Optional attach / detach 구조
+- Serving Runtime 상태
+- Observability 시스템
+- 운영 문서 및 Proof 체계
 
-### E2E GitOps ML Platform
+를 **실제 실행 결과와 캡처 기반으로 검증한 플랫폼**입니다.
 
-https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/01/
+🔗 프로젝트 보기
+
+https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/01/
+
+---
+
+# 🔬 기술 설계 탐색 및 검증 기록
+
+아래 글들은 현재 ML Platform을 구성하기까지 진행했던
+
+기술 설계 탐색 및 검증 기록입니다.
 
 ### Observability 설계
+
+Prometheus / Grafana / Alertmanager 기반
+
+ML Platform 관측 체계 설계 및 운영 구조
 
 https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/01/
 
 ### Triton Serving 구조
 
+Triton Inference Server 기반
+
+모델 서빙 및 alias 기반 hot swap 구조 설계
+
 https://keonhoban.github.io/mlops-journey/projects/triton/01/
 
 ### Feature Store (Lite + Feast 검증)
+
+Feature Store-lite 구조와
+
+Feast 기반 Feature Store 검증 기록
 
 https://keonhoban.github.io/mlops-journey/projects/feature_store/01/
 
@@ -72,18 +95,23 @@ https://keonhoban.github.io/mlops-journey/projects/feature_store/01/
 
 # 🔗 GitHub
 
-- GitOps Repository
-    
-    https://github.com/keonhoban/mlops-infra-gitops
-    
-- Airflow DAG
-    
-    https://github.com/keonhoban/airflow-dags-dev
-    
-- MLOps Experiments
-    
-    https://github.com/keonhoban/mlops-infra-labs
-    
+### GitOps Repository
+
+GitOps 기반 ML Platform 인프라 코드
+
+https://github.com/keonhoban/mlops-infra-gitops
+
+### Airflow DAG
+
+ML Pipeline Orchestration 코드
+
+https://github.com/keonhoban/airflow-dags-dev
+
+### MLOps Experiments
+
+ML Platform 실험 및 검증 코드
+
+https://github.com/keonhoban/mlops-infra-labs
 
 ---
 
@@ -94,7 +122,7 @@ https://keonhoban.github.io/mlops-journey/projects/feature_store/01/
 **운영 환경을 전제로 설계된 ML Platform**입니다.
 
 - Kubernetes 기반 ML Platform
-- GitOps 배포 및 환경 분리 전략
+- GitOps 기반 배포 및 환경 분리 전략
 - MLflow Tracking + Registry 운영 구조
 - Alias 기반 모델 Hot Swap
 - DAG 기반 자동 학습·배포 파이프라인
@@ -120,7 +148,7 @@ https://keonhoban.github.io/mlops-journey/projects/feature_store/01/
 ### 무중단 메일 마이그레이션
 
 - 신규 서버 프로비저닝
-- DNS/MX/SPF/DKIM 전환
+- DNS / MX / SPF / DKIM 전환
 - 원복 시나리오 설계
 - 증분 이전 자동화
 
@@ -176,7 +204,7 @@ AWS (Route53, CloudFront 등)
 
 # 🎓 Education
 
-컴퓨터공학 학사 (학점은행제, 4.2/4.5)
+컴퓨터공학 학사 (학점은행제, 4.2 / 4.5)
 
 동의과학대학교 의무행정과 졸업
 
@@ -186,7 +214,7 @@ AWS (Route53, CloudFront 등)
 
 단순 모델 배포 엔지니어가 아니라,
 
-**Production-grade ML Platform을 설계하고 운영 안정성을 개선하는 플랫폼 엔지니어**를 지향합니다.
+**Production-grade ML Platform을 설계하고운영 안정성을 개선하는 플랫폼 엔지니어**를 지향합니다.
 
 ---
 
