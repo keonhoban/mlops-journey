@@ -346,7 +346,7 @@ Serving Pipeline 영향
 &lt;li>&lt;strong>Observability&lt;/strong>: Prometheus / Grafana / Alertmanager 기반 운영 관측&lt;/li>
 &lt;li>&lt;strong>Reproducibility&lt;/strong>: Feature Store-lite(버전화 + latest 고정), Feast 검증&lt;/li>
 &lt;li>&lt;strong>Architecture&lt;/strong>: Core / Baseline / Optional 분리형 플랫폼 구조&lt;/li>
-&lt;li>&lt;strong>Proof System&lt;/strong>: runtime / optional attach-detach / observability 검증 문서화&lt;/li>
+&lt;li>&lt;strong>Proof System&lt;/strong>: GitOps 경계 / runtime / optional attach-detach / observability 검증 문서화&lt;/li>
 &lt;/ul>
 &lt;p>👉 모든 구성은 GitHub 및 블로그에 &lt;strong>Proof 형태로 공개&lt;/strong>되어 있습니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow-버전화latest-저장--feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow 버전화/Latest 저장 + Feast 조회까지 E2E 증명&lt;/h3>
 &lt;hr>
