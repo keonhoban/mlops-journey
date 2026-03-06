@@ -31,7 +31,7 @@ DevOps 2년 3개월(가비아) 운영 경험을 기반으로,
 - **Observability**: Prometheus / Grafana / Alertmanager 기반 운영 관측
 - **Reproducibility**: Feature Store-lite(버전화 + latest 고정), Feast 검증
 - **Architecture**: Core / Baseline / Optional 분리형 플랫폼 구조
-- **Proof System**: runtime / optional attach-detach / observability 검증 문서화
+- **Proof System**: GitOps 경계 / runtime / optional attach-detach / observability 검증 문서화
 
 👉 모든 구성은 GitHub 및 블로그에 **Proof 형태로 공개**되어 있습니다.
 
@@ -214,7 +214,7 @@ AWS (Route53, CloudFront 등)
 
 단순 모델 배포 엔지니어가 아니라,
 
-**Production-grade ML Platform을 설계하고운영 안정성을 개선하는 플랫폼 엔지니어**를 지향합니다.
+**Production-grade ML Platform을 설계하고 운영 안정성을 개선하는 플랫폼 엔지니어**를 지향합니다.
 
 ---
 
