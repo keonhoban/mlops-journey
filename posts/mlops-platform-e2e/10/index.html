@@ -1,0 +1,139 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[GitOps 기반 E2E ML Platform - 운영 문서화] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="운영 문서화
+
+Runbook / Security / Proof 디렉토리까지 남긴 이유
+
+들어가며
+많은 프로젝트는 다음 단계에서 멈춥니다.
+코드 작성
+README 작성
+하지만 실제 운영 환경에서는 다음 문제가 발생합니다.
+
+서비스 장애 발생
+운영자가 시스템 구조를 모름
+복구 절차 문서 없음
+보안 정책 위치 불명확
+
+이 경우 시스템이 아무리 잘 만들어져 있어도
+운영 대응이 매우 어려워집니다.
+그래서 이 프로젝트에서는 코드 외에
+다음 문서 구조를 함께 구성했습니다.
+Runbook
+Security
+Proof
+Audit
+즉
+
+코드를 설명하는 문서가 아니라"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[GitOps 기반 E2E ML Platform - 운영 문서화] "><meta property="og:description" content="운영 문서화 Runbook / Security / Proof 디렉토리까지 남긴 이유 들어가며 많은 프로젝트는 다음 단계에서 멈춥니다.
+코드 작성 README 작성 하지만 실제 운영 환경에서는 다음 문제가 발생합니다.
+서비스 장애 발생 운영자가 시스템 구조를 모름 복구 절차 문서 없음 보안 정책 위치 불명확 이 경우 시스템이 아무리 잘 만들어져 있어도
+운영 대응이 매우 어려워집니다.
+그래서 이 프로젝트에서는 코드 외에
+다음 문서 구조를 함께 구성했습니다.
+Runbook Security Proof Audit 즉
+코드를 설명하는 문서가 아니라"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-03-06T17:10:38+09:00"><meta property="article:modified_time" content="2026-03-06T17:10:38+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[GitOps 기반 E2E ML Platform - 운영 문서화] "><meta name=twitter:description content="운영 문서화
+
+Runbook / Security / Proof 디렉토리까지 남긴 이유
+
+들어가며
+많은 프로젝트는 다음 단계에서 멈춥니다.
+코드 작성
+README 작성
+하지만 실제 운영 환경에서는 다음 문제가 발생합니다.
+
+서비스 장애 발생
+운영자가 시스템 구조를 모름
+복구 절차 문서 없음
+보안 정책 위치 불명확
+
+이 경우 시스템이 아무리 잘 만들어져 있어도
+운영 대응이 매우 어려워집니다.
+그래서 이 프로젝트에서는 코드 외에
+다음 문서 구조를 함께 구성했습니다.
+Runbook
+Security
+Proof
+Audit
+즉
+
+코드를 설명하는 문서가 아니라"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[GitOps 기반 E2E ML Platform - 운영 문서화] ","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[GitOps 기반 E2E ML Platform - 운영 문서화] ","name":"[GitOps 기반 E2E ML Platform - 운영 문서화] ","description":"운영 문서화 Runbook / Security / Proof 디렉토리까지 남긴 이유 들어가며 많은 프로젝트는 다음 단계에서 멈춥니다.\n코드 작성 README 작성 하지만 실제 운영 환경에서는 다음 문제가 발생합니다.\n서비스 장애 발생 운영자가 시스템 구조를 모름 복구 절차 문서 없음 보안 정책 위치 불명확 이 경우 시스템이 아무리 잘 만들어져 있어도\n운영 대응이 매우 어려워집니다.\n그래서 이 프로젝트에서는 코드 외에\n다음 문서 구조를 함께 구성했습니다.\nRunbook Security Proof Audit 즉\n코드를 설명하는 문서가 아니라\n","keywords":[],"articleBody":"운영 문서화 Runbook / Security / Proof 디렉토리까지 남긴 이유 들어가며 많은 프로젝트는 다음 단계에서 멈춥니다.\n코드 작성 README 작성 하지만 실제 운영 환경에서는 다음 문제가 발생합니다.\n서비스 장애 발생 운영자가 시스템 구조를 모름 복구 절차 문서 없음 보안 정책 위치 불명확 이 경우 시스템이 아무리 잘 만들어져 있어도\n운영 대응이 매우 어려워집니다.\n그래서 이 프로젝트에서는 코드 외에\n다음 문서 구조를 함께 구성했습니다.\nRunbook Security Proof Audit 즉\n코드를 설명하는 문서가 아니라\n운영을 설명하는 문서 구조를 만들었습니다.\n문서 디렉토리 구조 이 프로젝트의 문서 구조는 다음과 같습니다.\ndocs/ ├─ overview │ ├─ architecture.md │ └─ e2e-flow.md │ ├─ runbook │ ├─ security │ ├─ audit │ └─ proof └─ latest 각 디렉토리는 서로 다른 목적을 가집니다.\n디렉토리 목적 overview 아키텍처 설명 runbook 운영 절차 security 보안 정책 audit 운영 기록 proof 시스템 실행 증거 Runbook: 운영 절차 문서 Runbook은 운영자가 시스템을 관리할 때 사용하는 문서입니다.\n예를 들어 다음 상황을 생각해볼 수 있습니다.\n모델 배포 실패 Triton 모델 로딩 실패 FastAPI reload 오류 Airflow DAG 실패 이 경우 운영자는 다음 정보를 필요로 합니다.\n어떤 명령을 실행해야 하는가 어떤 로그를 확인해야 하는가 어떤 서비스 상태를 확인해야 하는가 이 정보를 Runbook에 정리합니다.\n예시 구조:\ndocs/runbook/ ├─ deploy.md ├─ rollback.md ├─ monitoring.md └─ troubleshooting.md 이 문서는 다음 상황에서 사용됩니다.\n운영 장애 대응 서비스 복구 절차 운영 인수인계 즉 Runbook은\n운영자가 실제로 사용하는 문서입니다.\nSecurity 문서 ML 플랫폼은 다양한 시스템을 포함합니다.\n예를 들어 이 프로젝트에는 다음 시스템이 있습니다.\nAirflow MLflow Triton FastAPI MinIO Prometheus ArgoCD 각 시스템은 다음 정보를 필요로 합니다.\nSecret Access token Webhook Storage credential 이 정보는 반드시 관리되어야 합니다.\n그래서 이 프로젝트에서는 보안 관련 문서를\n별도 디렉토리로 분리했습니다.\ndocs/security/ 이 문서에는 다음 내용이 포함됩니다.\nSecret 관리 정책 Sealed Secrets 사용 방식 Credential rotation 전략 External access 정책 즉 보안 관련 내용은 코드가 아니라\n문서로도 설명됩니다.\nAudit 문서 운영 시스템에서는 다음 기록이 중요합니다.\n언제 배포했는가 어떤 모델이 배포되었는가 어떤 변경이 있었는가 이 기록은 감사(Audit) 목적으로 사용됩니다.\n예시:\ndocs/audit/ Audit 문서는 다음 정보를 기록합니다.\n배포 기록 모델 버전 변경 운영 정책 변경 이 문서는 다음 상황에서 사용됩니다.\n운영 사고 분석 변경 이력 확인 시스템 감사 대응 Proof 디렉토리 이 프로젝트에서 가장 특징적인 문서는\nProof 디렉토리입니다.\n경로:\ndocs/proof/latest/ 이 디렉토리는 다음 목적을 가집니다.\n시스템이 실제로 동작했음을 기록 많은 프로젝트는 다음과 같은 방식으로 설명됩니다.\n아키텍처 다이어그램 코드 설명 설정 파일 하지만 이 방식만으로는\n시스템이 실제로 동작했는지 확인할 수 없습니다.\n그래서 이 프로젝트에서는\n실행 결과를 파일로 기록했습니다.\nProof 구조 Proof 디렉토리에는 다음 항목이 포함됩니다.\ndocs/proof/latest/ ├─ e2e_success ├─ core_only ├─ optional_on └─ observability 각 디렉토리는 다음 내용을 증명합니다.\n디렉토리 목적 e2e_success 모델 서빙 정상 동작 core_only Core-only 상태 optional_on Optional attach 상태 observability 모니터링 시스템 즉 이 구조는 다음 질문에 답합니다.\n이 시스템이 실제로 동작하는가? Proof 생성 방식 Proof는 다음 스크립트로 생성됩니다.\nmake proof-e2e 또는\n./ops/proof/proof_e2e_success.sh 이 스크립트는 다음 작업을 수행합니다.\nTriton 상태 확인 FastAPI 상태 확인 Reload API 실행 Metrics 확인 그리고 결과를 파일로 저장합니다.\n예시:\ntriton_dev_ready_and_repo_index.txt fastapi_dev_health_models_metrics.txt reload_dev_variant_A.json 이 파일들은 단순 로그가 아니라\n시스템이 실제로 동작했다는 증거입니다.\n왜 Proof가 필요한가 이 Proof 구조는 다음 상황에서 특히 중요합니다.\n포트폴리오 제출 이 프로젝트가 실제로 동작했는가? 면접 설명 이 플랫폼을 실제로 운영해봤는가? 운영 기록 배포 결과가 무엇이었는가? Proof 디렉토리는 이 질문들에 대해\n파일로 답할 수 있게 합니다.\n운영 문서화의 목적 이 프로젝트에서 문서 구조는\n단순 설명 문서가 아닙니다.\n각 문서는 다음 역할을 합니다.\n문서 목적 overview 아키텍처 설명 runbook 운영 절차 security 보안 정책 audit 변경 기록 proof 실행 증거 즉 문서는 코드 설명이 아니라\n운영 시스템을 설명하는 구조입니다.\n","wordCount":"560","inLanguage":"en","datePublished":"2026-03-06T17:10:38+09:00","dateModified":"2026-03-06T17:10:38+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[GitOps 기반 E2E ML Platform - 운영 문서화]</h1><div class=post-meta><span title='2026-03-06 17:10:38 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;3 min</div></header><div class=post-content><h1 id=운영-문서화>운영 문서화<a hidden class=anchor aria-hidden=true href=#운영-문서화>#</a></h1><ul><li>Runbook / Security / Proof 디렉토리까지 남긴 이유</li></ul><h2 id=들어가며>들어가며<a hidden class=anchor aria-hidden=true href=#들어가며>#</a></h2><p>많은 프로젝트는 다음 단계에서 멈춥니다.</p><pre tabindex=0><code>코드 작성
+README 작성
+</code></pre><p>하지만 실제 운영 환경에서는 다음 문제가 발생합니다.</p><ul><li>서비스 장애 발생</li><li>운영자가 시스템 구조를 모름</li><li>복구 절차 문서 없음</li><li>보안 정책 위치 불명확</li></ul><p>이 경우 시스템이 아무리 잘 만들어져 있어도</p><p>운영 대응이 매우 어려워집니다.</p><p>그래서 이 프로젝트에서는 코드 외에</p><p>다음 문서 구조를 함께 구성했습니다.</p><pre tabindex=0><code>Runbook
+Security
+Proof
+Audit
+</code></pre><p>즉</p><blockquote><p>코드를 설명하는 문서가 아니라</p><p><strong>운영을 설명하는 문서 구조</strong>를 만들었습니다.</p></blockquote><hr><h1 id=문서-디렉토리-구조>문서 디렉토리 구조<a hidden class=anchor aria-hidden=true href=#문서-디렉토리-구조>#</a></h1><p>이 프로젝트의 문서 구조는 다음과 같습니다.</p><pre tabindex=0><code>docs/
+ ├─ overview
+ │   ├─ architecture.md
+ │   └─ e2e-flow.md
+ │
+ ├─ runbook
+ │
+ ├─ security
+ │
+ ├─ audit
+ │
+ └─ proof
+     └─ latest
+</code></pre><p>각 디렉토리는 서로 다른 목적을 가집니다.</p><table><thead><tr><th>디렉토리</th><th>목적</th></tr></thead><tbody><tr><td>overview</td><td>아키텍처 설명</td></tr><tr><td>runbook</td><td>운영 절차</td></tr><tr><td>security</td><td>보안 정책</td></tr><tr><td>audit</td><td>운영 기록</td></tr><tr><td>proof</td><td>시스템 실행 증거</td></tr></tbody></table><hr><h1 id=runbook-운영-절차-문서>Runbook: 운영 절차 문서<a hidden class=anchor aria-hidden=true href=#runbook-운영-절차-문서>#</a></h1><p>Runbook은 운영자가 시스템을 관리할 때 사용하는 문서입니다.</p><p>예를 들어 다음 상황을 생각해볼 수 있습니다.</p><ul><li>모델 배포 실패</li><li>Triton 모델 로딩 실패</li><li>FastAPI reload 오류</li><li>Airflow DAG 실패</li></ul><p>이 경우 운영자는 다음 정보를 필요로 합니다.</p><pre tabindex=0><code>어떤 명령을 실행해야 하는가
+어떤 로그를 확인해야 하는가
+어떤 서비스 상태를 확인해야 하는가
+</code></pre><p>이 정보를 Runbook에 정리합니다.</p><p>예시 구조:</p><pre tabindex=0><code>docs/runbook/
+ ├─ deploy.md
+ ├─ rollback.md
+ ├─ monitoring.md
+ └─ troubleshooting.md
+</code></pre><p>이 문서는 다음 상황에서 사용됩니다.</p><pre tabindex=0><code>운영 장애 대응
+서비스 복구 절차
+운영 인수인계
+</code></pre><p>즉 Runbook은</p><blockquote><p>운영자가 실제로 사용하는 문서입니다.</p></blockquote><hr><h1 id=security-문서>Security 문서<a hidden class=anchor aria-hidden=true href=#security-문서>#</a></h1><p>ML 플랫폼은 다양한 시스템을 포함합니다.</p><p>예를 들어 이 프로젝트에는 다음 시스템이 있습니다.</p><pre tabindex=0><code>Airflow
+MLflow
+Triton
+FastAPI
+MinIO
+Prometheus
+ArgoCD
+</code></pre><p>각 시스템은 다음 정보를 필요로 합니다.</p><pre tabindex=0><code>Secret
+Access token
+Webhook
+Storage credential
+</code></pre><p>이 정보는 반드시 관리되어야 합니다.</p><p>그래서 이 프로젝트에서는 보안 관련 문서를</p><p>별도 디렉토리로 분리했습니다.</p><pre tabindex=0><code>docs/security/
+</code></pre><p>이 문서에는 다음 내용이 포함됩니다.</p><pre tabindex=0><code>Secret 관리 정책
+Sealed Secrets 사용 방식
+Credential rotation 전략
+External access 정책
+</code></pre><p>즉 보안 관련 내용은 코드가 아니라</p><p><strong>문서로도 설명됩니다.</strong></p><hr><h1 id=audit-문서>Audit 문서<a hidden class=anchor aria-hidden=true href=#audit-문서>#</a></h1><p>운영 시스템에서는 다음 기록이 중요합니다.</p><pre tabindex=0><code>언제 배포했는가
+어떤 모델이 배포되었는가
+어떤 변경이 있었는가
+</code></pre><p>이 기록은 감사(Audit) 목적으로 사용됩니다.</p><p>예시:</p><pre tabindex=0><code>docs/audit/
+</code></pre><p>Audit 문서는 다음 정보를 기록합니다.</p><pre tabindex=0><code>배포 기록
+모델 버전 변경
+운영 정책 변경
+</code></pre><p>이 문서는 다음 상황에서 사용됩니다.</p><pre tabindex=0><code>운영 사고 분석
+변경 이력 확인
+시스템 감사 대응
+</code></pre><hr><h1 id=proof-디렉토리>Proof 디렉토리<a hidden class=anchor aria-hidden=true href=#proof-디렉토리>#</a></h1><p>이 프로젝트에서 가장 특징적인 문서는</p><p><strong>Proof 디렉토리</strong>입니다.</p><p>경로:</p><pre tabindex=0><code>docs/proof/latest/
+</code></pre><p>이 디렉토리는 다음 목적을 가집니다.</p><pre tabindex=0><code>시스템이 실제로 동작했음을 기록
+</code></pre><p>많은 프로젝트는 다음과 같은 방식으로 설명됩니다.</p><pre tabindex=0><code>아키텍처 다이어그램
+코드 설명
+설정 파일
+</code></pre><p>하지만 이 방식만으로는</p><p>시스템이 실제로 동작했는지 확인할 수 없습니다.</p><p>그래서 이 프로젝트에서는</p><p>실행 결과를 파일로 기록했습니다.</p><hr><h1 id=proof-구조>Proof 구조<a hidden class=anchor aria-hidden=true href=#proof-구조>#</a></h1><p>Proof 디렉토리에는 다음 항목이 포함됩니다.</p><pre tabindex=0><code>docs/proof/latest/
+ ├─ e2e_success
+ ├─ core_only
+ ├─ optional_on
+ └─ observability
+</code></pre><p>각 디렉토리는 다음 내용을 증명합니다.</p><table><thead><tr><th>디렉토리</th><th>목적</th></tr></thead><tbody><tr><td>e2e_success</td><td>모델 서빙 정상 동작</td></tr><tr><td>core_only</td><td>Core-only 상태</td></tr><tr><td>optional_on</td><td>Optional attach 상태</td></tr><tr><td>observability</td><td>모니터링 시스템</td></tr></tbody></table><p>즉 이 구조는 다음 질문에 답합니다.</p><pre tabindex=0><code>이 시스템이 실제로 동작하는가?
+</code></pre><hr><h1 id=proof-생성-방식>Proof 생성 방식<a hidden class=anchor aria-hidden=true href=#proof-생성-방식>#</a></h1><p>Proof는 다음 스크립트로 생성됩니다.</p><pre tabindex=0><code>make proof-e2e
+</code></pre><p>또는</p><pre tabindex=0><code>./ops/proof/proof_e2e_success.sh
+</code></pre><p>이 스크립트는 다음 작업을 수행합니다.</p><pre tabindex=0><code>Triton 상태 확인
+FastAPI 상태 확인
+Reload API 실행
+Metrics 확인
+</code></pre><p>그리고 결과를 파일로 저장합니다.</p><p>예시:</p><pre tabindex=0><code>triton_dev_ready_and_repo_index.txt
+fastapi_dev_health_models_metrics.txt
+reload_dev_variant_A.json
+</code></pre><p>이 파일들은 단순 로그가 아니라</p><blockquote><p>시스템이 실제로 동작했다는 증거입니다.</p></blockquote><hr><h1 id=왜-proof가-필요한가>왜 Proof가 필요한가<a hidden class=anchor aria-hidden=true href=#왜-proof가-필요한가>#</a></h1><p>이 Proof 구조는 다음 상황에서 특히 중요합니다.</p><h3 id=포트폴리오-제출>포트폴리오 제출<a hidden class=anchor aria-hidden=true href=#포트폴리오-제출>#</a></h3><pre tabindex=0><code>이 프로젝트가 실제로 동작했는가?
+</code></pre><h3 id=면접-설명>면접 설명<a hidden class=anchor aria-hidden=true href=#면접-설명>#</a></h3><pre tabindex=0><code>이 플랫폼을 실제로 운영해봤는가?
+</code></pre><h3 id=운영-기록>운영 기록<a hidden class=anchor aria-hidden=true href=#운영-기록>#</a></h3><pre tabindex=0><code>배포 결과가 무엇이었는가?
+</code></pre><p>Proof 디렉토리는 이 질문들에 대해</p><p><strong>파일로 답할 수 있게 합니다.</strong></p><hr><h1 id=운영-문서화의-목적>운영 문서화의 목적<a hidden class=anchor aria-hidden=true href=#운영-문서화의-목적>#</a></h1><p>이 프로젝트에서 문서 구조는</p><p>단순 설명 문서가 아닙니다.</p><p>각 문서는 다음 역할을 합니다.</p><table><thead><tr><th>문서</th><th>목적</th></tr></thead><tbody><tr><td>overview</td><td>아키텍처 설명</td></tr><tr><td>runbook</td><td>운영 절차</td></tr><tr><td>security</td><td>보안 정책</td></tr><tr><td>audit</td><td>변경 기록</td></tr><tr><td>proof</td><td>실행 증거</td></tr></tbody></table><p>즉 문서는 코드 설명이 아니라</p><blockquote><p><strong>운영 시스템을 설명하는 구조</strong>입니다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/><span class=title>Next »</span><br><span>[GitOps 기반 E2E ML Platform - 운영 제어 구조]</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

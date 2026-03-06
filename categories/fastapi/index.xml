@@ -1,4 +1,24 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>FastAPI on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/fastapi/</link><description>Recent content in FastAPI on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sun, 30 Nov 2025 02:50:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/fastapi/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>FastAPI on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/fastapi/</link><description>Recent content in FastAPI on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 06 Mar 2026 17:10:32 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/fastapi/index.xml" rel="self" type="application/rss+xml"/><item><title>[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</link><pubDate>Fri, 06 Mar 2026 17:10:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</guid><description>&lt;h1 id="mlflow--triton--fastapi">MLflow + Triton + FastAPI&lt;/h1>
+&lt;ul>
+&lt;li>등록과 서빙 반영을 분리한 이유&lt;/li>
+&lt;/ul>
+&lt;h2 id="들어가며">들어가며&lt;/h2>
+&lt;p>ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.&lt;/p>
+&lt;pre tabindex="0">&lt;code>Train
+↓
+MLflow Register
+↓
+Deploy
+&lt;/code>&lt;/pre>&lt;p>즉, &lt;strong>모델 등록과 서빙 반영이 거의 같은 단계&lt;/strong>로 취급됩니다.&lt;/p>
+&lt;p>이 방식은 간단하고 구현하기 쉽습니다.&lt;/p>
+&lt;p>하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>등록된 모델이 바로 운영 모델이 되어버림&lt;/li>
+&lt;li>서빙 환경 상태를 고려하지 않고 배포 진행&lt;/li>
+&lt;li>모델 로딩 실패 시 서비스 장애 발생&lt;/li>
+&lt;li>모델 전환 시점 제어가 어려움&lt;/li>
+&lt;/ul>
+&lt;p>이 프로젝트에서는 이러한 문제를 피하기 위해&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>

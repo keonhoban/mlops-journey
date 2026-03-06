@@ -1,4 +1,39 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Airflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/airflow/</link><description>Recent content in Airflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 17 Jan 2026 16:23:10 +1200</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/airflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow-버전화latest-저장--feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow 버전화/Latest 저장 + Feast 조회까지 E2E 증명&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Airflow on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/airflow/</link><description>Recent content in Airflow on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 06 Mar 2026 17:10:30 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/airflow/index.xml" rel="self" type="application/rss+xml"/><item><title>[GitOps 기반 E2E ML Platform - 모델 반영 제어]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/06/</link><pubDate>Fri, 06 Mar 2026 17:10:30 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/06/</guid><description>&lt;h1 id="drift-gate--promotion--shadow">Drift Gate / Promotion / Shadow&lt;/h1>
+&lt;ul>
+&lt;li>검증된 변경만 운영 경로에 올림&lt;/li>
+&lt;/ul>
+&lt;h2 id="들어가며">들어가며&lt;/h2>
+&lt;p>모델 학습 파이프라인을 만들다 보면&lt;/p>
+&lt;p>다음 질문이 자연스럽게 등장합니다.&lt;/p>
+&lt;blockquote>
+&lt;p>어떤 모델을 운영 환경에 반영할 것인가?&lt;/p>&lt;/blockquote>
+&lt;p>많은 프로젝트에서는 다음 기준을 사용합니다.&lt;/p>
+&lt;pre tabindex="0">&lt;code>accuracy &amp;gt;= threshold
+&lt;/code>&lt;/pre>&lt;p>하지만 운영 환경에서는 이 기준만으로는 충분하지 않습니다.&lt;/p>
+&lt;p>예를 들어 다음 상황을 생각해볼 수 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>학습 데이터와 실제 서비스 데이터 분포가 다름&lt;/li>
+&lt;li>모델 성능이 특정 테스트셋에서는 높지만 실제 환경에서는 낮음&lt;/li>
+&lt;li>데이터 드리프트가 발생했지만 파이프라인이 이를 감지하지 못함&lt;/li>
+&lt;/ul>
+&lt;p>이런 상황에서 단순히 accuracy 기준만 사용하면&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 운영 환경 반영 제어]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/05/</link><pubDate>Fri, 06 Mar 2026 17:10:29 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/05/</guid><description>&lt;h1 id="e2e-dag">E2E DAG:&lt;/h1>
+&lt;ul>
+&lt;li>학습 성공이 곧 운영 반영을 의미하지 않도록 설계&lt;/li>
+&lt;/ul>
+&lt;h2 id="들어가며">들어가며&lt;/h2>
+&lt;p>많은 머신러닝 파이프라인은 다음과 같은 형태를 가집니다.&lt;/p>
+&lt;pre tabindex="0">&lt;code>Train → Register → Deploy
+&lt;/code>&lt;/pre>&lt;p>이 구조는 실험 환경에서는 충분히 동작합니다.&lt;/p>
+&lt;p>하지만 운영 환경에서는 몇 가지 중요한 문제가 생깁니다.&lt;/p>
+&lt;p>예를 들어 다음 상황을 생각해볼 수 있습니다.&lt;/p>
+&lt;ul>
+&lt;li>데이터 분포가 바뀌었는데도 모델이 배포되는 경우&lt;/li>
+&lt;li>모델 성능이 특정 데이터셋에서는 좋지만 실제 트래픽에서는 나쁜 경우&lt;/li>
+&lt;li>서빙 환경에서 모델 로딩이 실패하는 경우&lt;/li>
+&lt;/ul>
+&lt;p>이런 상황에서&lt;/p>
+&lt;blockquote>
+&lt;p>학습 성공이 곧 운영 반영&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow-버전화latest-저장--feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow 버전화/Latest 저장 + Feast 조회까지 E2E 증명&lt;/h3>
 &lt;hr>
 &lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>

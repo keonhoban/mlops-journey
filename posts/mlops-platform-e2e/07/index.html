@@ -1,0 +1,166 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="MLflow + Triton + FastAPI
+
+등록과 서빙 반영을 분리한 이유
+
+들어가며
+ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.
+Train
+  ↓
+MLflow Register
+  ↓
+Deploy
+즉, 모델 등록과 서빙 반영이 거의 같은 단계로 취급됩니다.
+이 방식은 간단하고 구현하기 쉽습니다.
+하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.
+
+등록된 모델이 바로 운영 모델이 되어버림
+서빙 환경 상태를 고려하지 않고 배포 진행
+모델 로딩 실패 시 서비스 장애 발생
+모델 전환 시점 제어가 어려움
+
+이 프로젝트에서는 이러한 문제를 피하기 위해"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]"><meta property="og:description" content="MLflow + Triton + FastAPI 등록과 서빙 반영을 분리한 이유 들어가며 ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.
+Train ↓ MLflow Register ↓ Deploy 즉, 모델 등록과 서빙 반영이 거의 같은 단계로 취급됩니다.
+이 방식은 간단하고 구현하기 쉽습니다.
+하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.
+등록된 모델이 바로 운영 모델이 되어버림 서빙 환경 상태를 고려하지 않고 배포 진행 모델 로딩 실패 시 서비스 장애 발생 모델 전환 시점 제어가 어려움 이 프로젝트에서는 이러한 문제를 피하기 위해"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-03-06T17:10:32+09:00"><meta property="article:modified_time" content="2026-03-06T17:10:32+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]"><meta name=twitter:description content="MLflow + Triton + FastAPI
+
+등록과 서빙 반영을 분리한 이유
+
+들어가며
+ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.
+Train
+  ↓
+MLflow Register
+  ↓
+Deploy
+즉, 모델 등록과 서빙 반영이 거의 같은 단계로 취급됩니다.
+이 방식은 간단하고 구현하기 쉽습니다.
+하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.
+
+등록된 모델이 바로 운영 모델이 되어버림
+서빙 환경 상태를 고려하지 않고 배포 진행
+모델 로딩 실패 시 서비스 장애 발생
+모델 전환 시점 제어가 어려움
+
+이 프로젝트에서는 이러한 문제를 피하기 위해"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]","name":"[GitOps 기반 E2E ML Platform - 모델 등록\/서빙 반영 분리]","description":"MLflow + Triton + FastAPI 등록과 서빙 반영을 분리한 이유 들어가며 ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.\nTrain ↓ MLflow Register ↓ Deploy 즉, 모델 등록과 서빙 반영이 거의 같은 단계로 취급됩니다.\n이 방식은 간단하고 구현하기 쉽습니다.\n하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.\n등록된 모델이 바로 운영 모델이 되어버림 서빙 환경 상태를 고려하지 않고 배포 진행 모델 로딩 실패 시 서비스 장애 발생 모델 전환 시점 제어가 어려움 이 프로젝트에서는 이러한 문제를 피하기 위해\n","keywords":[],"articleBody":"MLflow + Triton + FastAPI 등록과 서빙 반영을 분리한 이유 들어가며 ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.\nTrain ↓ MLflow Register ↓ Deploy 즉, 모델 등록과 서빙 반영이 거의 같은 단계로 취급됩니다.\n이 방식은 간단하고 구현하기 쉽습니다.\n하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.\n등록된 모델이 바로 운영 모델이 되어버림 서빙 환경 상태를 고려하지 않고 배포 진행 모델 로딩 실패 시 서비스 장애 발생 모델 전환 시점 제어가 어려움 이 프로젝트에서는 이러한 문제를 피하기 위해\n모델 등록과 실제 서빙 반영을 명확히 분리했습니다.\n핵심 구조는 다음과 같습니다.\nMLflow ↓ Model Registry ↓ Triton Serving Runtime ↓ FastAPI Serving Control Layer 이 글에서는 이 구조를 설명합니다.\n모델 생명주기 구조 이 플랫폼에서 모델은 다음 단계를 거칩니다.\nTrain ↓ MLflow Register ↓ Triton Model Repository ↓ FastAPI Reload ↓ Serving Runtime 여기서 중요한 점은 다음입니다.\nMLflow에 등록된 모델이 곧 운영 모델은 아니다.\n실제로 운영 모델은\nTriton에서 READY 상태로 로드된 모델입니다.\nMLflow: 모델 기록 시스템 MLflow는 이 플랫폼에서 다음 역할을 합니다.\nExperiment Tracking Model Registry Training Metadata 예를 들어 MLflow에는 다음 정보가 저장됩니다.\nmodel version run_id training parameters metrics 즉 MLflow는\n모델 학습 결과를 기록하는 시스템\n입니다.\n하지만 MLflow 자체는\n서빙 상태를 관리하지 않습니다.\nTriton: Serving Runtime 실제 모델 서빙은 Triton이 담당합니다.\n관련 설정:\nmodel-control-mode=explicit 이 설정의 의미는 다음과 같습니다.\n모델 자동 로드 금지 명시적으로 load/unload 수행 즉 Triton은 다음 구조로 동작합니다.\nModel Repository ↓ Explicit Load ↓ READY 상태 관련 설정 파일:\ncharts/triton/templates/deployment.yaml Triton 실행 옵션 일부:\n--model-repository=/models --model-control-mode=explicit 이 설정 덕분에 모델 로딩을\n파이프라인에서 명시적으로 제어할 수 있습니다.\n실제 Triton READY 상태 실제로 Triton이 모델을 정상적으로 로드했는지는\nrepository index API로 확인할 수 있습니다.\nProof:\ndocs/proof/latest/e2e_success/triton_dev_ready_and_repo_index.txt 예시 결과:\nHTTP/1.1 200 OK 그리고 repository index:\n[ {\"name\":\"best_model\",\"version\":\"46\",\"state\":\"READY\"} ] 즉 Triton에서 다음이 확인됩니다.\nmodel = best_model version = 46 state = READY 이 상태가 되어야\n모델이 실제 서빙 가능한 상태입니다.\nFastAPI: Serving Control Layer Triton 위에는 FastAPI gateway가 존재합니다.\nFastAPI는 다음 역할을 합니다.\nInference Gateway Serving Control Traffic Routing Reload Interface FastAPI는 단순한 inference API가 아니라\n서빙 제어 계층입니다.\n관련 코드:\ncharts/fastapi/app/main.py FastAPI는 다음 라우터를 제공합니다.\n/health /ready /models /predict /variant/{alias}/reload /models API /models API는 현재 서빙 상태를 확인하는 API입니다.\n관련 코드:\ncharts/fastapi/app/routes/models.py 이 API는 다음 정보를 반환합니다.\n{ \"ssot\": { \"served_version\":46 } } 여기서 중요한 개념이 등장합니다.\nSSOT = Single Source of Truth 이 플랫폼에서는\nTriton served version이 SSOT입니다.\n즉 운영 진실은 다음입니다.\nTriton served model MLflow registry는\n운영 진실이 아닙니다.\nFastAPI Reload API 모델 전환은 FastAPI reload API로 수행됩니다.\nAPI:\nPOST /variant/{alias}/reload 관련 코드:\ncharts/fastapi/app/routes/reload.py 이 API는 다음 기능을 수행합니다.\nTriton served version 확인 ↓ MLflow metadata 조회 ↓ 서빙 상태 업데이트 예시 응답:\n{ \"status\":\"success\", \"variant\":\"A\", \"version\":46, \"run_id\":\"e57473991dc14de6a57dc7e5dfa1aa70\" } Proof:\ndocs/proof/latest/e2e_success/reload_dev_variant_A.json FastAPI Health 상태 FastAPI의 상태는 다음 API로 확인할 수 있습니다.\nGET /health Proof:\ndocs/proof/latest/e2e_success/fastapi_dev_health_models_metrics.txt 예시:\n{ \"status\":\"ok\", \"loaded_aliases\": [\"A\",\"B\"] } 즉\nFastAPI 정상 모델 alias 정상 입니다.\nTraffic Routing FastAPI는 트래픽 분기도 담당합니다.\n관련 코드:\ncharts/fastapi/app/services/alias_selector.py 이 시스템은 다음 전략을 지원합니다.\nmirror traffic split traffic 그리고 다음 방식으로 사용자 트래픽을 분기합니다.\nclient_id hash routing 예시 코드:\npct=sha256(client_id)%100 이 방식은 다음 특징을 가집니다.\ndeterministic routing sticky traffic 즉 같은 사용자는 항상 같은 모델로 이동합니다.\n실제 서빙 상태 Proof FastAPI는 다음 정보를 제공합니다.\nProof:\ndocs/proof/latest/e2e_success/fastapi_dev_health_models_metrics.txt 예시 결과:\n{ \"active\": { \"A\": { \"model_name\":\"best_model\", \"version\":46, \"run_id\":\"e5747399...\" } } } 또한 metrics endpoint도 존재합니다.\nGET /metrics 예시:\nhttp_requests_total process_cpu_seconds_total python_gc_objects_collected_total 즉 FastAPI는\nPrometheus metrics exporter 역할도 합니다.\n왜 이 구조가 중요한가 이 플랫폼에서 모델 서빙 구조는 다음과 같이 분리되어 있습니다.\nMLflow ↓ Model Registry ↓ Triton ↓ Serving Runtime ↓ FastAPI ↓ Serving Control Layer 이 구조 덕분에 다음이 가능합니다.\n모델 기록 MLflow\n실제 서빙 Triton\n서빙 제어 FastAPI\n즉\n모델 기록 모델 서빙 서빙 전환 세 가지 역할이 분리됩니다.\n핵심 메시지 이 플랫폼의 중요한 설계 원칙은 다음입니다.\n등록된 모델 ≠ 운영 모델 운영 모델은 다음 조건을 만족해야 합니다.\nTriton READY 상태 AND FastAPI reload 완료 이 구조 덕분에\n모델 등록 서빙 준비 서비스 반영 을 단계적으로 통제할 수 있습니다.\n다음 글 지금까지는 서빙 아키텍처 구조를 살펴보았습니다.\n다음 글에서는 실제 런타임에서\n이 시스템이 정상 동작하는지 확인합니다.\n다음 내용이 포함됩니다.\nTriton READY 상태 확인 repository index 확인 FastAPI health 확인 reload API 동작 확인 관련 Proof:\ndocs/proof/latest/e2e_success/* 즉 다음 글에서는\n이 플랫폼이 실제로 동작하는지\nServing Runtime 증거를 통해 확인합니다.\n","wordCount":"688","inLanguage":"en","datePublished":"2026-03-06T17:10:32+09:00","dateModified":"2026-03-06T17:10:32+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]</h1><div class=post-meta><span title='2026-03-06 17:10:32 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</div></header><div class=post-content><h1 id=mlflow--triton--fastapi>MLflow + Triton + FastAPI<a hidden class=anchor aria-hidden=true href=#mlflow--triton--fastapi>#</a></h1><ul><li>등록과 서빙 반영을 분리한 이유</li></ul><h2 id=들어가며>들어가며<a hidden class=anchor aria-hidden=true href=#들어가며>#</a></h2><p>ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.</p><pre tabindex=0><code>Train
+  ↓
+MLflow Register
+  ↓
+Deploy
+</code></pre><p>즉, <strong>모델 등록과 서빙 반영이 거의 같은 단계</strong>로 취급됩니다.</p><p>이 방식은 간단하고 구현하기 쉽습니다.</p><p>하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.</p><ul><li>등록된 모델이 바로 운영 모델이 되어버림</li><li>서빙 환경 상태를 고려하지 않고 배포 진행</li><li>모델 로딩 실패 시 서비스 장애 발생</li><li>모델 전환 시점 제어가 어려움</li></ul><p>이 프로젝트에서는 이러한 문제를 피하기 위해</p><p><strong>모델 등록과 실제 서빙 반영을 명확히 분리했습니다.</strong></p><p>핵심 구조는 다음과 같습니다.</p><pre tabindex=0><code>MLflow
+   ↓
+Model Registry
+   ↓
+Triton Serving Runtime
+   ↓
+FastAPI Serving Control Layer
+</code></pre><p>이 글에서는 이 구조를 설명합니다.</p><hr><h1 id=모델-생명주기-구조>모델 생명주기 구조<a hidden class=anchor aria-hidden=true href=#모델-생명주기-구조>#</a></h1><p>이 플랫폼에서 모델은 다음 단계를 거칩니다.</p><pre tabindex=0><code>Train
+   ↓
+MLflow Register
+   ↓
+Triton Model Repository
+   ↓
+FastAPI Reload
+   ↓
+Serving Runtime
+</code></pre><p>여기서 중요한 점은 다음입니다.</p><blockquote><p>MLflow에 등록된 모델이 곧 운영 모델은 아니다.</p></blockquote><p>실제로 운영 모델은</p><p><strong>Triton에서 READY 상태로 로드된 모델</strong>입니다.</p><hr><h1 id=mlflow-모델-기록-시스템>MLflow: 모델 기록 시스템<a hidden class=anchor aria-hidden=true href=#mlflow-모델-기록-시스템>#</a></h1><p>MLflow는 이 플랫폼에서 다음 역할을 합니다.</p><pre tabindex=0><code>Experiment Tracking
+Model Registry
+Training Metadata
+</code></pre><p>예를 들어 MLflow에는 다음 정보가 저장됩니다.</p><ul><li>model version</li><li>run_id</li><li>training parameters</li><li>metrics</li></ul><p>즉 MLflow는</p><blockquote><p>모델 학습 결과를 기록하는 시스템</p></blockquote><p>입니다.</p><p>하지만 MLflow 자체는</p><p><strong>서빙 상태를 관리하지 않습니다.</strong></p><hr><h1 id=triton-serving-runtime>Triton: Serving Runtime<a hidden class=anchor aria-hidden=true href=#triton-serving-runtime>#</a></h1><p>실제 모델 서빙은 Triton이 담당합니다.</p><p>관련 설정:</p><pre tabindex=0><code>model-control-mode=explicit
+</code></pre><p>이 설정의 의미는 다음과 같습니다.</p><pre tabindex=0><code>모델 자동 로드 금지
+명시적으로 load/unload 수행
+</code></pre><p>즉 Triton은 다음 구조로 동작합니다.</p><pre tabindex=0><code>Model Repository
+      ↓
+Explicit Load
+      ↓
+READY 상태
+</code></pre><p>관련 설정 파일:</p><pre tabindex=0><code>charts/triton/templates/deployment.yaml
+</code></pre><p>Triton 실행 옵션 일부:</p><pre tabindex=0><code>--model-repository=/models
+--model-control-mode=explicit
+</code></pre><p>이 설정 덕분에 모델 로딩을</p><p><strong>파이프라인에서 명시적으로 제어</strong>할 수 있습니다.</p><hr><h1 id=실제-triton-ready-상태>실제 Triton READY 상태<a hidden class=anchor aria-hidden=true href=#실제-triton-ready-상태>#</a></h1><p>실제로 Triton이 모델을 정상적으로 로드했는지는</p><p>repository index API로 확인할 수 있습니다.</p><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/e2e_success/triton_dev_ready_and_repo_index.txt
+</code></pre><p>예시 결과:</p><pre tabindex=0><code>HTTP/1.1 200 OK
+</code></pre><p>그리고 repository index:</p><pre tabindex=0><code>[
+ {&#34;name&#34;:&#34;best_model&#34;,&#34;version&#34;:&#34;46&#34;,&#34;state&#34;:&#34;READY&#34;}
+]
+</code></pre><p>즉 Triton에서 다음이 확인됩니다.</p><pre tabindex=0><code>model = best_model
+version = 46
+state = READY
+</code></pre><p>이 상태가 되어야</p><p>모델이 실제 서빙 가능한 상태입니다.</p><hr><h1 id=fastapi-serving-control-layer>FastAPI: Serving Control Layer<a hidden class=anchor aria-hidden=true href=#fastapi-serving-control-layer>#</a></h1><p>Triton 위에는 FastAPI gateway가 존재합니다.</p><p>FastAPI는 다음 역할을 합니다.</p><pre tabindex=0><code>Inference Gateway
+Serving Control
+Traffic Routing
+Reload Interface
+</code></pre><p>FastAPI는 단순한 inference API가 아니라</p><p><strong>서빙 제어 계층</strong>입니다.</p><p>관련 코드:</p><pre tabindex=0><code>charts/fastapi/app/main.py
+</code></pre><p>FastAPI는 다음 라우터를 제공합니다.</p><pre tabindex=0><code>/health
+/ready
+/models
+/predict
+/variant/{alias}/reload
+</code></pre><hr><h1 id=models-api>/models API<a hidden class=anchor aria-hidden=true href=#models-api>#</a></h1><p><code>/models</code> API는 현재 서빙 상태를 확인하는 API입니다.</p><p>관련 코드:</p><pre tabindex=0><code>charts/fastapi/app/routes/models.py
+</code></pre><p>이 API는 다음 정보를 반환합니다.</p><pre tabindex=0><code>{
+ &#34;ssot&#34;: {
+   &#34;served_version&#34;:46
+ }
+}
+</code></pre><p>여기서 중요한 개념이 등장합니다.</p><pre tabindex=0><code>SSOT = Single Source of Truth
+</code></pre><p>이 플랫폼에서는</p><p><strong>Triton served version이 SSOT입니다.</strong></p><p>즉 운영 진실은 다음입니다.</p><pre tabindex=0><code>Triton served model
+</code></pre><p>MLflow registry는</p><p>운영 진실이 아닙니다.</p><hr><h1 id=fastapi-reload-api>FastAPI Reload API<a hidden class=anchor aria-hidden=true href=#fastapi-reload-api>#</a></h1><p>모델 전환은 FastAPI reload API로 수행됩니다.</p><p>API:</p><pre tabindex=0><code>POST /variant/{alias}/reload
+</code></pre><p>관련 코드:</p><pre tabindex=0><code>charts/fastapi/app/routes/reload.py
+</code></pre><p>이 API는 다음 기능을 수행합니다.</p><pre tabindex=0><code>Triton served version 확인
+      ↓
+MLflow metadata 조회
+      ↓
+서빙 상태 업데이트
+</code></pre><p>예시 응답:</p><pre tabindex=0><code>{
+ &#34;status&#34;:&#34;success&#34;,
+ &#34;variant&#34;:&#34;A&#34;,
+ &#34;version&#34;:46,
+ &#34;run_id&#34;:&#34;e57473991dc14de6a57dc7e5dfa1aa70&#34;
+}
+</code></pre><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/e2e_success/reload_dev_variant_A.json
+</code></pre><hr><h1 id=fastapi-health-상태>FastAPI Health 상태<a hidden class=anchor aria-hidden=true href=#fastapi-health-상태>#</a></h1><p>FastAPI의 상태는 다음 API로 확인할 수 있습니다.</p><pre tabindex=0><code>GET /health
+</code></pre><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/e2e_success/fastapi_dev_health_models_metrics.txt
+</code></pre><p>예시:</p><pre tabindex=0><code>{
+ &#34;status&#34;:&#34;ok&#34;,
+ &#34;loaded_aliases&#34;: [&#34;A&#34;,&#34;B&#34;]
+}
+</code></pre><p>즉</p><ul><li>FastAPI 정상</li><li>모델 alias 정상</li></ul><p>입니다.</p><hr><h1 id=traffic-routing>Traffic Routing<a hidden class=anchor aria-hidden=true href=#traffic-routing>#</a></h1><p>FastAPI는 트래픽 분기도 담당합니다.</p><p>관련 코드:</p><pre tabindex=0><code>charts/fastapi/app/services/alias_selector.py
+</code></pre><p>이 시스템은 다음 전략을 지원합니다.</p><pre tabindex=0><code>mirror traffic
+split traffic
+</code></pre><p>그리고 다음 방식으로 사용자 트래픽을 분기합니다.</p><pre tabindex=0><code>client_id hash routing
+</code></pre><p>예시 코드:</p><pre tabindex=0><code>pct=sha256(client_id)%100
+</code></pre><p>이 방식은 다음 특징을 가집니다.</p><ul><li>deterministic routing</li><li>sticky traffic</li></ul><p>즉 같은 사용자는 항상 같은 모델로 이동합니다.</p><hr><h1 id=실제-서빙-상태-proof>실제 서빙 상태 Proof<a hidden class=anchor aria-hidden=true href=#실제-서빙-상태-proof>#</a></h1><p>FastAPI는 다음 정보를 제공합니다.</p><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/e2e_success/fastapi_dev_health_models_metrics.txt
+</code></pre><p>예시 결과:</p><pre tabindex=0><code>{
+ &#34;active&#34;: {
+   &#34;A&#34;: {
+     &#34;model_name&#34;:&#34;best_model&#34;,
+     &#34;version&#34;:46,
+     &#34;run_id&#34;:&#34;e5747399...&#34;
+   }
+ }
+}
+</code></pre><p>또한 metrics endpoint도 존재합니다.</p><pre tabindex=0><code>GET /metrics
+</code></pre><p>예시:</p><pre tabindex=0><code>http_requests_total
+process_cpu_seconds_total
+python_gc_objects_collected_total
+</code></pre><p>즉 FastAPI는</p><p><strong>Prometheus metrics exporter 역할도 합니다.</strong></p><hr><h1 id=왜-이-구조가-중요한가>왜 이 구조가 중요한가<a hidden class=anchor aria-hidden=true href=#왜-이-구조가-중요한가>#</a></h1><p>이 플랫폼에서 모델 서빙 구조는 다음과 같이 분리되어 있습니다.</p><pre tabindex=0><code>MLflow
+   ↓
+Model Registry
+   ↓
+Triton
+   ↓
+Serving Runtime
+   ↓
+FastAPI
+   ↓
+Serving Control Layer
+</code></pre><p>이 구조 덕분에 다음이 가능합니다.</p><h3 id=모델-기록>모델 기록<a hidden class=anchor aria-hidden=true href=#모델-기록>#</a></h3><p>MLflow</p><hr><h3 id=실제-서빙>실제 서빙<a hidden class=anchor aria-hidden=true href=#실제-서빙>#</a></h3><p>Triton</p><hr><h3 id=서빙-제어>서빙 제어<a hidden class=anchor aria-hidden=true href=#서빙-제어>#</a></h3><p>FastAPI</p><hr><p>즉</p><pre tabindex=0><code>모델 기록
+모델 서빙
+서빙 전환
+</code></pre><p>세 가지 역할이 분리됩니다.</p><hr><h1 id=핵심-메시지>핵심 메시지<a hidden class=anchor aria-hidden=true href=#핵심-메시지>#</a></h1><p>이 플랫폼의 중요한 설계 원칙은 다음입니다.</p><pre tabindex=0><code>등록된 모델 ≠ 운영 모델
+</code></pre><p>운영 모델은 다음 조건을 만족해야 합니다.</p><pre tabindex=0><code>Triton READY 상태
+AND
+FastAPI reload 완료
+</code></pre><p>이 구조 덕분에</p><ul><li>모델 등록</li><li>서빙 준비</li><li>서비스 반영</li></ul><p>을 <strong>단계적으로 통제할 수 있습니다.</strong></p><hr><h1 id=다음-글>다음 글<a hidden class=anchor aria-hidden=true href=#다음-글>#</a></h1><p>지금까지는 서빙 아키텍처 구조를 살펴보았습니다.</p><p>다음 글에서는 실제 런타임에서</p><p>이 시스템이 정상 동작하는지 확인합니다.</p><p>다음 내용이 포함됩니다.</p><ul><li>Triton READY 상태 확인</li><li>repository index 확인</li><li>FastAPI health 확인</li><li>reload API 동작 확인</li></ul><p>관련 Proof:</p><pre tabindex=0><code>docs/proof/latest/e2e_success/*
+</code></pre><p>즉 다음 글에서는</p><blockquote><p>이 플랫폼이 실제로 동작하는지</p></blockquote><p><strong>Serving Runtime 증거를 통해 확인합니다.</strong></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/08/><span class=title>« Prev</span><br><span>[GitOps 기반 E2E ML Platform - 실제 동작 확인] </span></a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/06/><span class=title>Next »</span><br><span>[GitOps 기반 E2E ML Platform - 모델 반영 제어]</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

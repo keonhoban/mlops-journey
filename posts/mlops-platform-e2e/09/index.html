@@ -1,0 +1,153 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[GitOps 기반 E2E ML Platform - 운영 제어 구조] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="Observability / Auto Rollback / Manual Rollback
+
+배포보다 중요할 수 있는 운영 제어
+
+들어가며
+ML 시스템을 구축할 때 많은 관심이 다음 단계에 집중됩니다.
+Train
+Register
+Deploy
+하지만 실제 운영 환경에서는
+배포 이후에 더 중요한 문제가 발생합니다.
+예를 들어 다음 상황을 생각해볼 수 있습니다.
+
+모델이 정상적으로 배포되었지만 latency가 급격히 증가한 경우
+특정 입력 데이터에서 오류율이 증가하는 경우
+inference 요청이 실패하는 경우
+
+이런 상황에서 중요한 질문은 다음입니다.
+
+문제가 발생했을 때 어떻게 감지하고 복구할 것인가?"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[GitOps 기반 E2E ML Platform - 운영 제어 구조] "><meta property="og:description" content="Observability / Auto Rollback / Manual Rollback 배포보다 중요할 수 있는 운영 제어 들어가며 ML 시스템을 구축할 때 많은 관심이 다음 단계에 집중됩니다.
+Train Register Deploy 하지만 실제 운영 환경에서는
+배포 이후에 더 중요한 문제가 발생합니다.
+예를 들어 다음 상황을 생각해볼 수 있습니다.
+모델이 정상적으로 배포되었지만 latency가 급격히 증가한 경우 특정 입력 데이터에서 오류율이 증가하는 경우 inference 요청이 실패하는 경우 이런 상황에서 중요한 질문은 다음입니다.
+문제가 발생했을 때 어떻게 감지하고 복구할 것인가?"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-03-06T17:10:37+09:00"><meta property="article:modified_time" content="2026-03-06T17:10:37+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[GitOps 기반 E2E ML Platform - 운영 제어 구조] "><meta name=twitter:description content="Observability / Auto Rollback / Manual Rollback
+
+배포보다 중요할 수 있는 운영 제어
+
+들어가며
+ML 시스템을 구축할 때 많은 관심이 다음 단계에 집중됩니다.
+Train
+Register
+Deploy
+하지만 실제 운영 환경에서는
+배포 이후에 더 중요한 문제가 발생합니다.
+예를 들어 다음 상황을 생각해볼 수 있습니다.
+
+모델이 정상적으로 배포되었지만 latency가 급격히 증가한 경우
+특정 입력 데이터에서 오류율이 증가하는 경우
+inference 요청이 실패하는 경우
+
+이런 상황에서 중요한 질문은 다음입니다.
+
+문제가 발생했을 때 어떻게 감지하고 복구할 것인가?"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[GitOps 기반 E2E ML Platform - 운영 제어 구조] ","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[GitOps 기반 E2E ML Platform - 운영 제어 구조] ","name":"[GitOps 기반 E2E ML Platform - 운영 제어 구조] ","description":"Observability / Auto Rollback / Manual Rollback 배포보다 중요할 수 있는 운영 제어 들어가며 ML 시스템을 구축할 때 많은 관심이 다음 단계에 집중됩니다.\nTrain Register Deploy 하지만 실제 운영 환경에서는\n배포 이후에 더 중요한 문제가 발생합니다.\n예를 들어 다음 상황을 생각해볼 수 있습니다.\n모델이 정상적으로 배포되었지만 latency가 급격히 증가한 경우 특정 입력 데이터에서 오류율이 증가하는 경우 inference 요청이 실패하는 경우 이런 상황에서 중요한 질문은 다음입니다.\n문제가 발생했을 때 어떻게 감지하고 복구할 것인가?\n","keywords":[],"articleBody":"Observability / Auto Rollback / Manual Rollback 배포보다 중요할 수 있는 운영 제어 들어가며 ML 시스템을 구축할 때 많은 관심이 다음 단계에 집중됩니다.\nTrain Register Deploy 하지만 실제 운영 환경에서는\n배포 이후에 더 중요한 문제가 발생합니다.\n예를 들어 다음 상황을 생각해볼 수 있습니다.\n모델이 정상적으로 배포되었지만 latency가 급격히 증가한 경우 특정 입력 데이터에서 오류율이 증가하는 경우 inference 요청이 실패하는 경우 이런 상황에서 중요한 질문은 다음입니다.\n문제가 발생했을 때 어떻게 감지하고 복구할 것인가?\n그래서 이 플랫폼에서는 배포 이후 단계에\n다음 세 가지 시스템을 설계했습니다.\nObservability Auto Rollback Manual Rollback 이 글에서는 이 세 가지 운영 제어 구조를 설명합니다.\nObservability 구조 이 플랫폼의 관측 시스템은 다음 스택을 기반으로 구성됩니다.\nPrometheus Alertmanager Grafana Metrics Server 이 시스템들은 Baseline 레이어에서 관리됩니다.\n관련 Proof:\ndocs/proof/latest/observability/* 이 Proof 파일들은 실제 클러스터에서\n관측 시스템이 실행 중임을 보여줍니다.\nMetrics API 먼저 Kubernetes cluster metrics 상태를 확인합니다.\nProof:\ndocs/proof/latest/observability/metrics_api.txt 결과 예시:\nv1beta1.metrics.k8s.io kube-system/metrics-server True 이 결과는 다음 의미를 가집니다.\nKubernetes Metrics API 활성화 Node / Pod resource metrics 사용 가능 즉 다음 명령이 정상 동작합니다.\nkubectl top nodes kubectl top pods Pod Resource Metrics 실제 Pod 리소스 상태도 확인할 수 있습니다.\nProof:\ndocs/proof/latest/observability/top_pods_head.txt 예시 일부:\nairflow-dev-scheduler CPU 17m MEMORY 508Mi fastapi-dev CPU 2m MEMORY 111Mi loki-dev CPU 17m MEMORY 188Mi minio-dev CPU 4m MEMORY 131Mi 이 정보는 다음 용도로 사용됩니다.\n서비스 리소스 모니터링 capacity planning anomaly detection Prometheus Operator ML 서비스 metrics는 Prometheus가 수집합니다.\nProof:\ndocs/proof/latest/observability/monitoring_dev_objects.txt 예시:\nprometheus.monitoring.coreos.com alertmanager.monitoring.coreos.com servicemonitor.monitoring.coreos.com prometheusrule.monitoring.coreos.com 이 리소스들은 Prometheus Operator가 생성합니다.\n구조:\nServiceMonitor ↓ Prometheus ↓ Alertmanager FastAPI Metrics 수집 FastAPI는 다음 endpoint를 통해 metrics를 노출합니다.\nGET /metrics 이 endpoint는 Prometheus FastAPI Instrumentator로 구현되어 있습니다.\n관련 코드:\ncharts/fastapi/app/main.py 예시 코드:\nInstrumentator().instrument(app).expose(app,endpoint=\"/metrics\") 즉 FastAPI는 다음 metric을 제공합니다.\nhttp_requests_total process_cpu_seconds_total python_gc_objects_collected_total Custom Alert Rules 이 플랫폼에서는 서비스 관련 alert rule도 정의합니다.\nProof:\nprometheusrule.monitoring.coreos.com/fastapi-alerts prometheusrule.monitoring.coreos.com/triton-alerts 이 rule들은 다음 문제를 감지합니다.\nFastAPI error rate 증가 Triton inference 오류 latency 증가 즉 모델 서빙 상태를\nPrometheus에서 지속적으로 감시합니다.\nAuto Rollback 정책 관측 시스템은 단순히 모니터링만 하지 않습니다.\n이 플랫폼에서는 관측 결과를 기반으로\n자동 롤백 정책을 적용합니다.\n관련 코드:\ndags/mlops_lib/observability/auto_rollback.py Auto Rollback은 다음 조건을 확인합니다.\nFastAPI service health 5xx error rate latency p95 이 값들은 Prometheus query로 가져옵니다.\nError Rate 기준 Error rate는 다음 기준을 사용합니다.\nobserve_error_rate_threshold = 0.02 즉\n5xx error rate \u003e 2% 이면 문제로 판단합니다.\n하지만 여기서 중요한 조건이 하나 더 있습니다.\nerror rate AND error request rate 둘 다 증가해야 rollback을 실행합니다.\nLatency 기준 Latency는 다음 기준을 사용합니다.\nobserve_latency_p95_threshold_sec = 0.8 즉\np95 latency \u003e 800ms 이면 문제로 판단합니다.\nService Health 확인 Auto Rollback은 먼저 다음 조건을 확인합니다.\nmin(up) metric 즉 서비스가 실제로 살아 있는지 확인합니다.\n예시 코드:\nmin_up=self.prom.min_up_in_namespace(namespace=self.tg.namespace) 결과가 다음과 같으면\nmin_up \u003c 1 서비스 장애로 판단합니다.\nRollback Trigger 이 조건들이 만족되면\n자동 롤백이 실행됩니다.\nService unhealthy OR Error rate 초과 OR Latency 초과 이 경우 다음 메시지가 생성됩니다.\nAutoRollback: TRIGGERED 그리고 모델 rollback이 실행됩니다.\nObservability 실패 시 정책 여기서 중요한 설계 결정이 하나 있습니다.\nObservability 시스템이 실패한 경우입니다.\n예를 들어 다음 상황입니다.\nPrometheus scrape 실패 metric query 실패 network 문제 이 경우 이 플랫폼은 다음 정책을 사용합니다.\nRollback skip 즉\n관측 실패 ≠ 서비스 실패 입니다.\n이 정책의 목적은 다음입니다.\n잘못된 롤백을 방지하는 것\nManual Rollback 자동 롤백과 별도로\nManual Rollback DAG도 존재합니다.\n관련 코드:\ndags/rollback_manual.py 이 DAG은 다음 상황에서 사용됩니다.\n운영자 직접 rollback 실험 rollback 비상 대응 Manual rollback은 다음 단계를 수행합니다.\nSSOT 파일 업데이트 ↓ Triton unload ↓ Triton load ↓ FastAPI reload ↓ Serving 상태 확인 즉 모델 서빙 상태를\n완전히 이전 버전으로 복구합니다.\nRollback SSOT Manual rollback에서 중요한 개념은\nSSOT 파일입니다.\n예시:\ncurrent.json config.pbtxt 이 파일은 다음 정보를 저장합니다.\ncurrent model version serving configuration rollback 시 이 파일을 업데이트하여\n모델 상태를 복구합니다.\nObservability의 핵심 목적 이 플랫폼에서 Observability의 목적은\n단순한 모니터링이 아닙니다.\n오히려 다음을 위한 시스템입니다.\n서비스 상태 감시 성능 이상 감지 자동 복구 트리거 운영 대응 지원 즉 배포 이후에도\n모델 상태를 지속적으로 관리합니다.\n핵심 메시지 ML 플랫폼에서 배포는 끝이 아닙니다.\n오히려 다음이 더 중요합니다.\nDeploy ↓ Observe ↓ Recover 이 플랫폼에서는 다음 구조로 이를 구현했습니다.\nPrometheus Observability ↓ Auto Rollback Policy ↓ Manual Rollback DAG 이 구조 덕분에\n모델 성능 문제 inference 오류 latency 증가 와 같은 문제를\n자동으로 감지하고 대응할 수 있습니다.\n다음 글 지금까지는 플랫폼의 운영 제어 구조를 살펴보았습니다.\n다음 글에서는 마지막 기술 글로\n운영 문서화 구조를 설명합니다.\n다음 내용이 포함됩니다.\nRunbook 문서 Security 문서 Proof 디렉토리 구조 Audit 기록 관련 경로:\ndocs/runbook/* docs/security/* docs/audit/* docs/proof/latest/INDEX.md 이를 통해\n코드뿐 아니라 운영 문서까지 남긴 이유\n를 설명합니다.\n","wordCount":"720","inLanguage":"en","datePublished":"2026-03-06T17:10:37+09:00","dateModified":"2026-03-06T17:10:37+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[GitOps 기반 E2E ML Platform - 운영 제어 구조]</h1><div class=post-meta><span title='2026-03-06 17:10:37 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</div></header><div class=post-content><h1 id=observability--auto-rollback--manual-rollback>Observability / Auto Rollback / Manual Rollback<a hidden class=anchor aria-hidden=true href=#observability--auto-rollback--manual-rollback>#</a></h1><ul><li>배포보다 중요할 수 있는 운영 제어</li></ul><h2 id=들어가며>들어가며<a hidden class=anchor aria-hidden=true href=#들어가며>#</a></h2><p>ML 시스템을 구축할 때 많은 관심이 다음 단계에 집중됩니다.</p><pre tabindex=0><code>Train
+Register
+Deploy
+</code></pre><p>하지만 실제 운영 환경에서는</p><p>배포 이후에 더 중요한 문제가 발생합니다.</p><p>예를 들어 다음 상황을 생각해볼 수 있습니다.</p><ul><li>모델이 정상적으로 배포되었지만 latency가 급격히 증가한 경우</li><li>특정 입력 데이터에서 오류율이 증가하는 경우</li><li>inference 요청이 실패하는 경우</li></ul><p>이런 상황에서 중요한 질문은 다음입니다.</p><blockquote><p>문제가 발생했을 때 어떻게 감지하고 복구할 것인가?</p></blockquote><p>그래서 이 플랫폼에서는 배포 이후 단계에</p><p>다음 세 가지 시스템을 설계했습니다.</p><pre tabindex=0><code>Observability
+Auto Rollback
+Manual Rollback
+</code></pre><p>이 글에서는 이 세 가지 운영 제어 구조를 설명합니다.</p><hr><h1 id=observability-구조>Observability 구조<a hidden class=anchor aria-hidden=true href=#observability-구조>#</a></h1><p>이 플랫폼의 관측 시스템은 다음 스택을 기반으로 구성됩니다.</p><pre tabindex=0><code>Prometheus
+Alertmanager
+Grafana
+Metrics Server
+</code></pre><p>이 시스템들은 Baseline 레이어에서 관리됩니다.</p><p>관련 Proof:</p><pre tabindex=0><code>docs/proof/latest/observability/*
+</code></pre><p>이 Proof 파일들은 실제 클러스터에서</p><p>관측 시스템이 실행 중임을 보여줍니다.</p><hr><h1 id=metrics-api>Metrics API<a hidden class=anchor aria-hidden=true href=#metrics-api>#</a></h1><p>먼저 Kubernetes cluster metrics 상태를 확인합니다.</p><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/observability/metrics_api.txt
+</code></pre><p>결과 예시:</p><pre tabindex=0><code>v1beta1.metrics.k8s.io   kube-system/metrics-server   True
+</code></pre><p>이 결과는 다음 의미를 가집니다.</p><pre tabindex=0><code>Kubernetes Metrics API 활성화
+Node / Pod resource metrics 사용 가능
+</code></pre><p>즉 다음 명령이 정상 동작합니다.</p><pre tabindex=0><code>kubectl top nodes
+kubectl top pods
+</code></pre><hr><h1 id=pod-resource-metrics>Pod Resource Metrics<a hidden class=anchor aria-hidden=true href=#pod-resource-metrics>#</a></h1><p>실제 Pod 리소스 상태도 확인할 수 있습니다.</p><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/observability/top_pods_head.txt
+</code></pre><p>예시 일부:</p><pre tabindex=0><code>airflow-dev-scheduler         CPU 17m   MEMORY 508Mi
+fastapi-dev                   CPU 2m    MEMORY 111Mi
+loki-dev                      CPU 17m   MEMORY 188Mi
+minio-dev                     CPU 4m    MEMORY 131Mi
+</code></pre><p>이 정보는 다음 용도로 사용됩니다.</p><ul><li>서비스 리소스 모니터링</li><li>capacity planning</li><li>anomaly detection</li></ul><hr><h1 id=prometheus-operator>Prometheus Operator<a hidden class=anchor aria-hidden=true href=#prometheus-operator>#</a></h1><p>ML 서비스 metrics는 Prometheus가 수집합니다.</p><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/observability/monitoring_dev_objects.txt
+</code></pre><p>예시:</p><pre tabindex=0><code>prometheus.monitoring.coreos.com
+alertmanager.monitoring.coreos.com
+servicemonitor.monitoring.coreos.com
+prometheusrule.monitoring.coreos.com
+</code></pre><p>이 리소스들은 Prometheus Operator가 생성합니다.</p><p>구조:</p><pre tabindex=0><code>ServiceMonitor
+      ↓
+Prometheus
+      ↓
+Alertmanager
+</code></pre><hr><h1 id=fastapi-metrics-수집>FastAPI Metrics 수집<a hidden class=anchor aria-hidden=true href=#fastapi-metrics-수집>#</a></h1><p>FastAPI는 다음 endpoint를 통해 metrics를 노출합니다.</p><pre tabindex=0><code>GET /metrics
+</code></pre><p>이 endpoint는 Prometheus FastAPI Instrumentator로 구현되어 있습니다.</p><p>관련 코드:</p><pre tabindex=0><code>charts/fastapi/app/main.py
+</code></pre><p>예시 코드:</p><pre tabindex=0><code>Instrumentator().instrument(app).expose(app,endpoint=&#34;/metrics&#34;)
+</code></pre><p>즉 FastAPI는 다음 metric을 제공합니다.</p><pre tabindex=0><code>http_requests_total
+process_cpu_seconds_total
+python_gc_objects_collected_total
+</code></pre><hr><h1 id=custom-alert-rules>Custom Alert Rules<a hidden class=anchor aria-hidden=true href=#custom-alert-rules>#</a></h1><p>이 플랫폼에서는 서비스 관련 alert rule도 정의합니다.</p><p>Proof:</p><pre tabindex=0><code>prometheusrule.monitoring.coreos.com/fastapi-alerts
+prometheusrule.monitoring.coreos.com/triton-alerts
+</code></pre><p>이 rule들은 다음 문제를 감지합니다.</p><pre tabindex=0><code>FastAPI error rate 증가
+Triton inference 오류
+latency 증가
+</code></pre><p>즉 모델 서빙 상태를</p><p>Prometheus에서 지속적으로 감시합니다.</p><hr><h1 id=auto-rollback-정책>Auto Rollback 정책<a hidden class=anchor aria-hidden=true href=#auto-rollback-정책>#</a></h1><p>관측 시스템은 단순히 모니터링만 하지 않습니다.</p><p>이 플랫폼에서는 관측 결과를 기반으로</p><p><strong>자동 롤백 정책</strong>을 적용합니다.</p><p>관련 코드:</p><pre tabindex=0><code>dags/mlops_lib/observability/auto_rollback.py
+</code></pre><p>Auto Rollback은 다음 조건을 확인합니다.</p><pre tabindex=0><code>FastAPI service health
+5xx error rate
+latency p95
+</code></pre><p>이 값들은 Prometheus query로 가져옵니다.</p><hr><h1 id=error-rate-기준>Error Rate 기준<a hidden class=anchor aria-hidden=true href=#error-rate-기준>#</a></h1><p>Error rate는 다음 기준을 사용합니다.</p><pre tabindex=0><code>observe_error_rate_threshold = 0.02
+</code></pre><p>즉</p><pre tabindex=0><code>5xx error rate &gt; 2%
+</code></pre><p>이면 문제로 판단합니다.</p><p>하지만 여기서 중요한 조건이 하나 더 있습니다.</p><pre tabindex=0><code>error rate
+AND
+error request rate
+</code></pre><p>둘 다 증가해야 rollback을 실행합니다.</p><hr><h1 id=latency-기준>Latency 기준<a hidden class=anchor aria-hidden=true href=#latency-기준>#</a></h1><p>Latency는 다음 기준을 사용합니다.</p><pre tabindex=0><code>observe_latency_p95_threshold_sec = 0.8
+</code></pre><p>즉</p><pre tabindex=0><code>p95 latency &gt; 800ms
+</code></pre><p>이면 문제로 판단합니다.</p><hr><h1 id=service-health-확인>Service Health 확인<a hidden class=anchor aria-hidden=true href=#service-health-확인>#</a></h1><p>Auto Rollback은 먼저 다음 조건을 확인합니다.</p><pre tabindex=0><code>min(up) metric
+</code></pre><p>즉 서비스가 실제로 살아 있는지 확인합니다.</p><p>예시 코드:</p><pre tabindex=0><code>min_up=self.prom.min_up_in_namespace(namespace=self.tg.namespace)
+</code></pre><p>결과가 다음과 같으면</p><pre tabindex=0><code>min_up &lt; 1
+</code></pre><p>서비스 장애로 판단합니다.</p><hr><h1 id=rollback-trigger>Rollback Trigger<a hidden class=anchor aria-hidden=true href=#rollback-trigger>#</a></h1><p>이 조건들이 만족되면</p><p>자동 롤백이 실행됩니다.</p><pre tabindex=0><code>Service unhealthy
+OR
+Error rate 초과
+OR
+Latency 초과
+</code></pre><p>이 경우 다음 메시지가 생성됩니다.</p><pre tabindex=0><code>AutoRollback: TRIGGERED
+</code></pre><p>그리고 모델 rollback이 실행됩니다.</p><hr><h1 id=observability-실패-시-정책>Observability 실패 시 정책<a hidden class=anchor aria-hidden=true href=#observability-실패-시-정책>#</a></h1><p>여기서 중요한 설계 결정이 하나 있습니다.</p><p>Observability 시스템이 실패한 경우입니다.</p><p>예를 들어 다음 상황입니다.</p><pre tabindex=0><code>Prometheus scrape 실패
+metric query 실패
+network 문제
+</code></pre><p>이 경우 이 플랫폼은 다음 정책을 사용합니다.</p><pre tabindex=0><code>Rollback skip
+</code></pre><p>즉</p><pre tabindex=0><code>관측 실패 ≠ 서비스 실패
+</code></pre><p>입니다.</p><p>이 정책의 목적은 다음입니다.</p><blockquote><p>잘못된 롤백을 방지하는 것</p></blockquote><hr><h1 id=manual-rollback>Manual Rollback<a hidden class=anchor aria-hidden=true href=#manual-rollback>#</a></h1><p>자동 롤백과 별도로</p><p>Manual Rollback DAG도 존재합니다.</p><p>관련 코드:</p><pre tabindex=0><code>dags/rollback_manual.py
+</code></pre><p>이 DAG은 다음 상황에서 사용됩니다.</p><pre tabindex=0><code>운영자 직접 rollback
+실험 rollback
+비상 대응
+</code></pre><p>Manual rollback은 다음 단계를 수행합니다.</p><pre tabindex=0><code>SSOT 파일 업데이트
+      ↓
+Triton unload
+      ↓
+Triton load
+      ↓
+FastAPI reload
+      ↓
+Serving 상태 확인
+</code></pre><p>즉 모델 서빙 상태를</p><p><strong>완전히 이전 버전으로 복구합니다.</strong></p><hr><h1 id=rollback-ssot>Rollback SSOT<a hidden class=anchor aria-hidden=true href=#rollback-ssot>#</a></h1><p>Manual rollback에서 중요한 개념은</p><p><strong>SSOT 파일</strong>입니다.</p><p>예시:</p><pre tabindex=0><code>current.json
+config.pbtxt
+</code></pre><p>이 파일은 다음 정보를 저장합니다.</p><pre tabindex=0><code>current model version
+serving configuration
+</code></pre><p>rollback 시 이 파일을 업데이트하여</p><p>모델 상태를 복구합니다.</p><hr><h1 id=observability의-핵심-목적>Observability의 핵심 목적<a hidden class=anchor aria-hidden=true href=#observability의-핵심-목적>#</a></h1><p>이 플랫폼에서 Observability의 목적은</p><p>단순한 모니터링이 아닙니다.</p><p>오히려 다음을 위한 시스템입니다.</p><pre tabindex=0><code>서비스 상태 감시
+성능 이상 감지
+자동 복구 트리거
+운영 대응 지원
+</code></pre><p>즉 배포 이후에도</p><p>모델 상태를 지속적으로 관리합니다.</p><hr><h1 id=핵심-메시지>핵심 메시지<a hidden class=anchor aria-hidden=true href=#핵심-메시지>#</a></h1><p>ML 플랫폼에서 배포는 끝이 아닙니다.</p><p>오히려 다음이 더 중요합니다.</p><pre tabindex=0><code>Deploy
+      ↓
+Observe
+      ↓
+Recover
+</code></pre><p>이 플랫폼에서는 다음 구조로 이를 구현했습니다.</p><pre tabindex=0><code>Prometheus Observability
+      ↓
+Auto Rollback Policy
+      ↓
+Manual Rollback DAG
+</code></pre><p>이 구조 덕분에</p><ul><li>모델 성능 문제</li><li>inference 오류</li><li>latency 증가</li></ul><p>와 같은 문제를</p><p><strong>자동으로 감지하고 대응할 수 있습니다.</strong></p><hr><h1 id=다음-글>다음 글<a hidden class=anchor aria-hidden=true href=#다음-글>#</a></h1><p>지금까지는 플랫폼의 운영 제어 구조를 살펴보았습니다.</p><p>다음 글에서는 마지막 기술 글로</p><p><strong>운영 문서화 구조</strong>를 설명합니다.</p><p>다음 내용이 포함됩니다.</p><pre tabindex=0><code>Runbook 문서
+Security 문서
+Proof 디렉토리 구조
+Audit 기록
+</code></pre><p>관련 경로:</p><pre tabindex=0><code>docs/runbook/*
+docs/security/*
+docs/audit/*
+docs/proof/latest/INDEX.md
+</code></pre><p>이를 통해</p><blockquote><p>코드뿐 아니라 운영 문서까지 남긴 이유</p></blockquote><p>를 설명합니다.</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/><span class=title>« Prev</span><br><span>[GitOps 기반 E2E ML Platform - 운영 문서화] </span></a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/08/><span class=title>Next »</span><br><span>[GitOps 기반 E2E ML Platform - 실제 동작 확인]</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

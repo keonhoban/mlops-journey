@@ -1,0 +1,121 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[GitOps 기반 E2E ML Platform - 운영 경계] | 🏔️ MLOps Journey</title>
+<meta name=keywords content><meta name=description content="Core / Baseline / Optional
+
+운영 가능한 경계를 먼저 설계
+
+들어가며
+ML 플랫폼을 설계할 때 흔히 하는 접근은
+필요한 도구를 하나씩 붙여 나가는 방식입니다.
+예를 들어 다음과 같은 식입니다.
+
+Airflow 설치
+MLflow 추가
+Triton 추가
+Monitoring 추가
+Feature Store 추가
+
+이 방식은 처음에는 빠르게 시스템을 만들 수 있습니다.
+하지만 시간이 지나면 다음 문제가 생기기 시작합니다.
+
+시스템 의존성이 서로 얽히기 시작한다
+특정 기능이 다른 기능을 망가뜨리기 시작한다
+확장 기능이 코어 시스템을 복잡하게 만든다
+
+이 문제의 근본 원인은 대부분 같습니다."><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[GitOps 기반 E2E ML Platform - 운영 경계]"><meta property="og:description" content="Core / Baseline / Optional 운영 가능한 경계를 먼저 설계 들어가며 ML 플랫폼을 설계할 때 흔히 하는 접근은
+필요한 도구를 하나씩 붙여 나가는 방식입니다.
+예를 들어 다음과 같은 식입니다.
+Airflow 설치 MLflow 추가 Triton 추가 Monitoring 추가 Feature Store 추가 이 방식은 처음에는 빠르게 시스템을 만들 수 있습니다.
+하지만 시간이 지나면 다음 문제가 생기기 시작합니다.
+시스템 의존성이 서로 얽히기 시작한다 특정 기능이 다른 기능을 망가뜨리기 시작한다 확장 기능이 코어 시스템을 복잡하게 만든다 이 문제의 근본 원인은 대부분 같습니다."><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-03-06T17:10:23+09:00"><meta property="article:modified_time" content="2026-03-06T17:10:23+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[GitOps 기반 E2E ML Platform - 운영 경계]"><meta name=twitter:description content="Core / Baseline / Optional
+
+운영 가능한 경계를 먼저 설계
+
+들어가며
+ML 플랫폼을 설계할 때 흔히 하는 접근은
+필요한 도구를 하나씩 붙여 나가는 방식입니다.
+예를 들어 다음과 같은 식입니다.
+
+Airflow 설치
+MLflow 추가
+Triton 추가
+Monitoring 추가
+Feature Store 추가
+
+이 방식은 처음에는 빠르게 시스템을 만들 수 있습니다.
+하지만 시간이 지나면 다음 문제가 생기기 시작합니다.
+
+시스템 의존성이 서로 얽히기 시작한다
+특정 기능이 다른 기능을 망가뜨리기 시작한다
+확장 기능이 코어 시스템을 복잡하게 만든다
+
+이 문제의 근본 원인은 대부분 같습니다."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[GitOps 기반 E2E ML Platform - 운영 경계]","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[GitOps 기반 E2E ML Platform - 운영 경계]","name":"[GitOps 기반 E2E ML Platform - 운영 경계]","description":"Core / Baseline / Optional 운영 가능한 경계를 먼저 설계 들어가며 ML 플랫폼을 설계할 때 흔히 하는 접근은\n필요한 도구를 하나씩 붙여 나가는 방식입니다.\n예를 들어 다음과 같은 식입니다.\nAirflow 설치 MLflow 추가 Triton 추가 Monitoring 추가 Feature Store 추가 이 방식은 처음에는 빠르게 시스템을 만들 수 있습니다.\n하지만 시간이 지나면 다음 문제가 생기기 시작합니다.\n시스템 의존성이 서로 얽히기 시작한다 특정 기능이 다른 기능을 망가뜨리기 시작한다 확장 기능이 코어 시스템을 복잡하게 만든다 이 문제의 근본 원인은 대부분 같습니다.\n","keywords":[],"articleBody":"Core / Baseline / Optional 운영 가능한 경계를 먼저 설계 들어가며 ML 플랫폼을 설계할 때 흔히 하는 접근은\n필요한 도구를 하나씩 붙여 나가는 방식입니다.\n예를 들어 다음과 같은 식입니다.\nAirflow 설치 MLflow 추가 Triton 추가 Monitoring 추가 Feature Store 추가 이 방식은 처음에는 빠르게 시스템을 만들 수 있습니다.\n하지만 시간이 지나면 다음 문제가 생기기 시작합니다.\n시스템 의존성이 서로 얽히기 시작한다 특정 기능이 다른 기능을 망가뜨리기 시작한다 확장 기능이 코어 시스템을 복잡하게 만든다 이 문제의 근본 원인은 대부분 같습니다.\n운영 책임이 다른 시스템들이 같은 계층에 섞여 있기 때문입니다.\n그래서 이 프로젝트에서는\n도구를 먼저 고르는 대신 운영 경계를 먼저 설계했습니다.\n그 결과가 바로\nCore Baseline Optional 이라는 세 가지 레이어입니다.\n운영 구조를 먼저 나눈 이유 ML 플랫폼에는 여러 종류의 시스템이 존재합니다.\n하지만 이 시스템들은 실제로 서로 다른 책임을 가지고 있습니다.\n예를 들어 다음을 생각해 볼 수 있습니다.\n시스템 역할 Airflow 파이프라인 orchestration MLflow 모델 tracking / registry Triton 모델 serving runtime FastAPI inference gateway Monitoring 운영 상태 관측 Logging 로그 수집 Feature Store 데이터 재사용 이 시스템들을 하나의 레이어로 묶어 버리면\n다음 문제가 발생합니다.\nFeature Store 장애가 서빙 시스템에 영향 Monitoring 변경이 모델 파이프라인에 영향 데이터 시스템이 ML serving 구조에 의존 이러한 결합은 운영 안정성을 떨어뜨립니다.\n그래서 이 플랫폼에서는\n시스템을 기능이 아니라 운영 책임 기준으로 분리했습니다.\nCore: 모델 생명주기 자동화의 핵심 경로 Core는 플랫폼에서 가장 중요한 부분입니다.\n이 레이어는 다음 역할을 담당합니다.\n데이터 처리 → 모델 학습 → 모델 등록 → 서빙 반영 즉, 모델 생명주기(Model Lifecycle) 전체를 담당합니다.\n대표적인 구성 요소는 다음과 같습니다.\nAirflow MLflow Triton FastAPI 이 시스템들은 서로 강하게 연결됩니다.\n예를 들어 실제 흐름은 다음과 같습니다.\nAirflow DAG ↓ MLflow Model Registry ↓ Triton Model Repository ↓ FastAPI Reload 이 경로는 플랫폼에서 가장 중요한 경로이기 때문에\n다른 시스템과 섞이지 않도록 Core 레이어로 독립시켰습니다.\nBaseline: 항상 살아 있어야 하는 운영 기반 Baseline은 Core와는 다른 성격의 시스템입니다.\n이 레이어는 ML 기능과 관계없이 항상 필요합니다.\n예를 들어 다음 시스템들이 여기에 포함됩니다.\nPrometheus / Alertmanager Grafana Loki Object Storage (MinIO) 이 시스템들은 다음 역할을 합니다.\nMonitoring Logging Storage Cluster Observability 이 기능들은 모델 학습이나 서빙과 직접적인 관계는 없습니다.\n하지만 운영 환경에서는 반드시 필요합니다.\n그래서 Baseline 레이어는 다음 특징을 갖습니다.\nCore와 독립적으로 유지 Optional 기능과 무관하게 항상 실행 운영 관측과 로그 수집 담당 이 구조 덕분에 Core 시스템에 문제가 발생하더라도\nBaseline을 통해 상태를 관측할 수 있습니다.\nOptional: 확장 기능을 위한 독립 레이어 Optional 레이어는 확장 기능을 위한 영역입니다.\n예를 들어 다음 시스템이 여기에 포함됩니다.\nFeature Store (Feast) Feature Store는 매우 유용한 시스템입니다.\n하지만 모든 ML 플랫폼에 반드시 필요한 것은 아닙니다.\n또한 Feature Store는 다음 특성을 가지고 있습니다.\n데이터 시스템과 강하게 연결됨 인프라 요구사항이 커질 수 있음 운영 복잡도가 증가함 그래서 Feature Store를 Core 시스템에 직접 넣으면\n플랫폼 전체가 복잡해질 수 있습니다.\n이 프로젝트에서는 이를 해결하기 위해\nOptional 레이어를 별도로 만들었습니다.\nOptional 레이어의 핵심 특징은 다음과 같습니다.\nAttach / Detach 가능 Core와 독립 Baseline과도 독립 즉, Optional 기능을 제거해도\nCore는 정상 동작하고 Baseline도 정상 동작합니다. 실제 GitOps 구조 이 구조는 단순한 개념이 아니라\nArgoCD GitOps 환경에서 실제로 구현되어 있습니다.\n예를 들어 플랫폼의 AppProject 구성은 다음과 같습니다.\nbaseline bootstrap dev prod optional 이 구조는 실제 ArgoCD 프로젝트 목록에서도 확인할 수 있습니다.\nProof:\ndocs/proof/latest/projects.txt 예시 일부:\nbaseline Baseline stack project (minio / loki / alloy) bootstrap Root/Bootstrap project dev Dev environment project prod Prod environment project optional Optional project (feature-store / feast) 즉, 레이어 구조가 단순한 문서가 아니라\nGitOps 배포 구조 자체에 반영되어 있습니다.\n실제 배포된 애플리케이션 구조 ArgoCD Application 목록을 보면\n각 레이어가 실제로 분리되어 있는 것을 확인할 수 있습니다.\nProof:\ndocs/proof/latest/apps.txt 예시 일부:\nCore airflow-dev airflow-prod mlflow-dev mlflow-prod fastapi-dev fastapi-prod triton-dev triton-prod Baseline monitoring-dev monitoring-prod loki-dev loki-prod minio-dev minio-prod alloy-dev alloy-prod Optional feast-dev feast-prod optional-envs-dev optional-envs-prod 이 구조를 보면 다음 특징을 확인할 수 있습니다.\nCore 시스템은 dev/prod 환경별로 분리 Baseline 시스템은 운영 기반으로 별도 관리 Optional 기능은 독립 프로젝트로 분리 Root Application 구조 GitOps의 루트 구조 역시 레이어 개념을 기반으로 설계했습니다.\nProof:\ndocs/proof/latest/root-apps.txt 루트 애플리케이션은 다음을 관리합니다.\nroot-apps root-baseline root-optional 이 구조는 다음을 의미합니다.\nRoot App ↓ Layer Management ↓ Environment Applications 즉, 루트 앱이 전체 구조를 관리하고\n각 레이어는 독립적으로 배포됩니다.\n왜 이 구조가 중요한가 이 구조의 가장 큰 장점은\n운영 복잡도를 통제할 수 있다는 점입니다.\n예를 들어 다음 상황을 생각해볼 수 있습니다.\nFeature Store 장애 Optional 레이어 장애\n→ Core 영향 없음\n→ Serving 영향 없음\nMonitoring 변경 Baseline 레이어 변경\n→ Core 영향 없음\n모델 파이프라인 변경 Core 레이어 변경\n→ Optional 영향 없음\n이러한 구조 덕분에\n각 시스템의 변경 범위를 레이어 단위로 제한할 수 있습니다.\n이 구조가 실제로 검증되는 방식 이 시리즈에서는 이 구조를 단순히 설명하는 것이 아니라\n실제로 동작한다는 것을 Proof로 확인합니다.\n예를 들어 다음 글에서는\nOptional ON/OFF 테스트 Core-only 환경 동작 Feature Store detach 을 실제 실행 결과로 확인합니다.\n관련 Proof:\ndocs/proof/latest/core_only/* docs/proof/latest/optional_on/* 즉, Optional 레이어가 실제로 Attach / Detach 가능한 구조인지\n실행 결과로 검증합니다.\n마무리 이 플랫폼을 설계하면서 가장 먼저 결정한 것은\n어떤 도구를 사용할지가 아니었습니다.\n대신 다음 질문을 먼저 고민했습니다.\n운영 책임이 다른 시스템들을 어떻게 분리할 것인가\n그 결과 만들어진 구조가 바로\nCore Baseline Optional 이라는 세 가지 레이어입니다.\n이 구조 덕분에\n모델 생명주기 자동화 운영 관측 시스템 확장 기능 이 서로 간섭하지 않도록 만들 수 있었습니다.\n다음 글에서는\nArgoCD AppProject와 ApplicationSet을 사용해 dev / prod 환경과 레이어 경계를 어떻게 강제했는지를 살펴보겠습니다.\n","wordCount":"845","inLanguage":"en","datePublished":"2026-03-06T17:10:23+09:00","dateModified":"2026-03-06T17:10:23+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[GitOps 기반 E2E ML Platform - 운영 경계]</h1><div class=post-meta><span title='2026-03-06 17:10:23 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</div></header><div class=post-content><h1 id=core--baseline--optional>Core / Baseline / Optional<a hidden class=anchor aria-hidden=true href=#core--baseline--optional>#</a></h1><ul><li>운영 가능한 경계를 먼저 설계</li></ul><h2 id=들어가며>들어가며<a hidden class=anchor aria-hidden=true href=#들어가며>#</a></h2><p>ML 플랫폼을 설계할 때 흔히 하는 접근은</p><p>필요한 도구를 하나씩 붙여 나가는 방식입니다.</p><p>예를 들어 다음과 같은 식입니다.</p><ul><li>Airflow 설치</li><li>MLflow 추가</li><li>Triton 추가</li><li>Monitoring 추가</li><li>Feature Store 추가</li></ul><p>이 방식은 처음에는 빠르게 시스템을 만들 수 있습니다.</p><p>하지만 시간이 지나면 다음 문제가 생기기 시작합니다.</p><ul><li>시스템 의존성이 서로 얽히기 시작한다</li><li>특정 기능이 다른 기능을 망가뜨리기 시작한다</li><li>확장 기능이 코어 시스템을 복잡하게 만든다</li></ul><p>이 문제의 근본 원인은 대부분 같습니다.</p><blockquote><p>운영 책임이 다른 시스템들이 같은 계층에 섞여 있기 때문입니다.</p></blockquote><p>그래서 이 프로젝트에서는</p><p><strong>도구를 먼저 고르는 대신 운영 경계를 먼저 설계했습니다.</strong></p><p>그 결과가 바로</p><pre tabindex=0><code>Core
+Baseline
+Optional
+</code></pre><p>이라는 세 가지 레이어입니다.</p><hr><h1 id=운영-구조를-먼저-나눈-이유>운영 구조를 먼저 나눈 이유<a hidden class=anchor aria-hidden=true href=#운영-구조를-먼저-나눈-이유>#</a></h1><p>ML 플랫폼에는 여러 종류의 시스템이 존재합니다.</p><p>하지만 이 시스템들은 실제로 서로 다른 책임을 가지고 있습니다.</p><p>예를 들어 다음을 생각해 볼 수 있습니다.</p><table><thead><tr><th>시스템</th><th>역할</th></tr></thead><tbody><tr><td>Airflow</td><td>파이프라인 orchestration</td></tr><tr><td>MLflow</td><td>모델 tracking / registry</td></tr><tr><td>Triton</td><td>모델 serving runtime</td></tr><tr><td>FastAPI</td><td>inference gateway</td></tr><tr><td>Monitoring</td><td>운영 상태 관측</td></tr><tr><td>Logging</td><td>로그 수집</td></tr><tr><td>Feature Store</td><td>데이터 재사용</td></tr></tbody></table><p>이 시스템들을 하나의 레이어로 묶어 버리면</p><p>다음 문제가 발생합니다.</p><ul><li>Feature Store 장애가 <strong>서빙 시스템에 영향</strong></li><li>Monitoring 변경이 <strong>모델 파이프라인에 영향</strong></li><li>데이터 시스템이 <strong>ML serving 구조에 의존</strong></li></ul><p>이러한 결합은 운영 안정성을 떨어뜨립니다.</p><p>그래서 이 플랫폼에서는</p><p>시스템을 <strong>기능이 아니라 운영 책임 기준으로 분리</strong>했습니다.</p><hr><h1 id=core-모델-생명주기-자동화의-핵심-경로>Core: 모델 생명주기 자동화의 핵심 경로<a hidden class=anchor aria-hidden=true href=#core-모델-생명주기-자동화의-핵심-경로>#</a></h1><p>Core는 플랫폼에서 가장 중요한 부분입니다.</p><p>이 레이어는 다음 역할을 담당합니다.</p><pre tabindex=0><code>데이터 처리
+→ 모델 학습
+→ 모델 등록
+→ 서빙 반영
+</code></pre><p>즉, <strong>모델 생명주기(Model Lifecycle)</strong> 전체를 담당합니다.</p><p>대표적인 구성 요소는 다음과 같습니다.</p><ul><li>Airflow</li><li>MLflow</li><li>Triton</li><li>FastAPI</li></ul><p>이 시스템들은 서로 강하게 연결됩니다.</p><p>예를 들어 실제 흐름은 다음과 같습니다.</p><pre tabindex=0><code>Airflow DAG
+    ↓
+MLflow Model Registry
+    ↓
+Triton Model Repository
+    ↓
+FastAPI Reload
+</code></pre><p>이 경로는 플랫폼에서 가장 중요한 경로이기 때문에</p><p>다른 시스템과 섞이지 않도록 <strong>Core 레이어로 독립</strong>시켰습니다.</p><hr><h1 id=baseline-항상-살아-있어야-하는-운영-기반>Baseline: 항상 살아 있어야 하는 운영 기반<a hidden class=anchor aria-hidden=true href=#baseline-항상-살아-있어야-하는-운영-기반>#</a></h1><p>Baseline은 Core와는 다른 성격의 시스템입니다.</p><p>이 레이어는 <strong>ML 기능과 관계없이 항상 필요합니다.</strong></p><p>예를 들어 다음 시스템들이 여기에 포함됩니다.</p><ul><li>Prometheus / Alertmanager</li><li>Grafana</li><li>Loki</li><li>Object Storage (MinIO)</li></ul><p>이 시스템들은 다음 역할을 합니다.</p><pre tabindex=0><code>Monitoring
+Logging
+Storage
+Cluster Observability
+</code></pre><p>이 기능들은 모델 학습이나 서빙과 직접적인 관계는 없습니다.</p><p>하지만 운영 환경에서는 반드시 필요합니다.</p><p>그래서 Baseline 레이어는 다음 특징을 갖습니다.</p><ul><li>Core와 독립적으로 유지</li><li>Optional 기능과 무관하게 항상 실행</li><li>운영 관측과 로그 수집 담당</li></ul><p>이 구조 덕분에 Core 시스템에 문제가 발생하더라도</p><p>Baseline을 통해 상태를 관측할 수 있습니다.</p><hr><h1 id=optional-확장-기능을-위한-독립-레이어>Optional: 확장 기능을 위한 독립 레이어<a hidden class=anchor aria-hidden=true href=#optional-확장-기능을-위한-독립-레이어>#</a></h1><p>Optional 레이어는 <strong>확장 기능을 위한 영역</strong>입니다.</p><p>예를 들어 다음 시스템이 여기에 포함됩니다.</p><ul><li>Feature Store (Feast)</li></ul><p>Feature Store는 매우 유용한 시스템입니다.</p><p>하지만 모든 ML 플랫폼에 반드시 필요한 것은 아닙니다.</p><p>또한 Feature Store는 다음 특성을 가지고 있습니다.</p><ul><li>데이터 시스템과 강하게 연결됨</li><li>인프라 요구사항이 커질 수 있음</li><li>운영 복잡도가 증가함</li></ul><p>그래서 Feature Store를 Core 시스템에 직접 넣으면</p><p>플랫폼 전체가 복잡해질 수 있습니다.</p><p>이 프로젝트에서는 이를 해결하기 위해</p><p>Optional 레이어를 별도로 만들었습니다.</p><p>Optional 레이어의 핵심 특징은 다음과 같습니다.</p><pre tabindex=0><code>Attach / Detach 가능
+Core와 독립
+Baseline과도 독립
+</code></pre><p>즉, Optional 기능을 제거해도</p><ul><li>Core는 정상 동작하고</li><li>Baseline도 정상 동작합니다.</li></ul><hr><h1 id=실제-gitops-구조>실제 GitOps 구조<a hidden class=anchor aria-hidden=true href=#실제-gitops-구조>#</a></h1><p>이 구조는 단순한 개념이 아니라</p><p>ArgoCD GitOps 환경에서 실제로 구현되어 있습니다.</p><p>예를 들어 플랫폼의 AppProject 구성은 다음과 같습니다.</p><pre tabindex=0><code>baseline
+bootstrap
+dev
+prod
+optional
+</code></pre><p>이 구조는 실제 ArgoCD 프로젝트 목록에서도 확인할 수 있습니다.</p><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/projects.txt
+</code></pre><p>예시 일부:</p><pre tabindex=0><code>baseline   Baseline stack project (minio / loki / alloy)
+bootstrap  Root/Bootstrap project
+dev        Dev environment project
+prod       Prod environment project
+optional   Optional project (feature-store / feast)
+</code></pre><p>즉, 레이어 구조가 단순한 문서가 아니라</p><p><strong>GitOps 배포 구조 자체에 반영되어 있습니다.</strong></p><hr><h1 id=실제-배포된-애플리케이션-구조>실제 배포된 애플리케이션 구조<a hidden class=anchor aria-hidden=true href=#실제-배포된-애플리케이션-구조>#</a></h1><p>ArgoCD Application 목록을 보면</p><p>각 레이어가 실제로 분리되어 있는 것을 확인할 수 있습니다.</p><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/apps.txt
+</code></pre><p>예시 일부:</p><h3 id=core>Core<a hidden class=anchor aria-hidden=true href=#core>#</a></h3><pre tabindex=0><code>airflow-dev
+airflow-prod
+mlflow-dev
+mlflow-prod
+fastapi-dev
+fastapi-prod
+triton-dev
+triton-prod
+</code></pre><h3 id=baseline>Baseline<a hidden class=anchor aria-hidden=true href=#baseline>#</a></h3><pre tabindex=0><code>monitoring-dev
+monitoring-prod
+loki-dev
+loki-prod
+minio-dev
+minio-prod
+alloy-dev
+alloy-prod
+</code></pre><h3 id=optional>Optional<a hidden class=anchor aria-hidden=true href=#optional>#</a></h3><pre tabindex=0><code>feast-dev
+feast-prod
+optional-envs-dev
+optional-envs-prod
+</code></pre><p>이 구조를 보면 다음 특징을 확인할 수 있습니다.</p><ul><li>Core 시스템은 dev/prod 환경별로 분리</li><li>Baseline 시스템은 운영 기반으로 별도 관리</li><li>Optional 기능은 독립 프로젝트로 분리</li></ul><hr><h1 id=root-application-구조>Root Application 구조<a hidden class=anchor aria-hidden=true href=#root-application-구조>#</a></h1><p>GitOps의 루트 구조 역시 레이어 개념을 기반으로 설계했습니다.</p><p>Proof:</p><pre tabindex=0><code>docs/proof/latest/root-apps.txt
+</code></pre><p>루트 애플리케이션은 다음을 관리합니다.</p><pre tabindex=0><code>root-apps
+root-baseline
+root-optional
+</code></pre><p>이 구조는 다음을 의미합니다.</p><pre tabindex=0><code>Root App
+   ↓
+Layer Management
+   ↓
+Environment Applications
+</code></pre><p>즉, 루트 앱이 전체 구조를 관리하고</p><p>각 레이어는 독립적으로 배포됩니다.</p><hr><h1 id=왜-이-구조가-중요한가>왜 이 구조가 중요한가<a hidden class=anchor aria-hidden=true href=#왜-이-구조가-중요한가>#</a></h1><p>이 구조의 가장 큰 장점은</p><p><strong>운영 복잡도를 통제할 수 있다는 점입니다.</strong></p><p>예를 들어 다음 상황을 생각해볼 수 있습니다.</p><h3 id=feature-store-장애>Feature Store 장애<a hidden class=anchor aria-hidden=true href=#feature-store-장애>#</a></h3><p>Optional 레이어 장애</p><p>→ Core 영향 없음</p><p>→ Serving 영향 없음</p><hr><h3 id=monitoring-변경>Monitoring 변경<a hidden class=anchor aria-hidden=true href=#monitoring-변경>#</a></h3><p>Baseline 레이어 변경</p><p>→ Core 영향 없음</p><hr><h3 id=모델-파이프라인-변경>모델 파이프라인 변경<a hidden class=anchor aria-hidden=true href=#모델-파이프라인-변경>#</a></h3><p>Core 레이어 변경</p><p>→ Optional 영향 없음</p><hr><p>이러한 구조 덕분에</p><p>각 시스템의 변경 범위를 <strong>레이어 단위로 제한</strong>할 수 있습니다.</p><hr><h1 id=이-구조가-실제로-검증되는-방식>이 구조가 실제로 검증되는 방식<a hidden class=anchor aria-hidden=true href=#이-구조가-실제로-검증되는-방식>#</a></h1><p>이 시리즈에서는 이 구조를 단순히 설명하는 것이 아니라</p><p>실제로 동작한다는 것을 <strong>Proof로 확인</strong>합니다.</p><p>예를 들어 다음 글에서는</p><ul><li>Optional ON/OFF 테스트</li><li>Core-only 환경 동작</li><li>Feature Store detach</li></ul><p>을 실제 실행 결과로 확인합니다.</p><p>관련 Proof:</p><pre tabindex=0><code>docs/proof/latest/core_only/*
+docs/proof/latest/optional_on/*
+</code></pre><p>즉, Optional 레이어가 실제로 <strong>Attach / Detach 가능</strong>한 구조인지</p><p>실행 결과로 검증합니다.</p><hr><h1 id=마무리>마무리<a hidden class=anchor aria-hidden=true href=#마무리>#</a></h1><p>이 플랫폼을 설계하면서 가장 먼저 결정한 것은</p><p>어떤 도구를 사용할지가 아니었습니다.</p><p>대신 다음 질문을 먼저 고민했습니다.</p><blockquote><p>운영 책임이 다른 시스템들을 어떻게 분리할 것인가</p></blockquote><p>그 결과 만들어진 구조가 바로</p><pre tabindex=0><code>Core
+Baseline
+Optional
+</code></pre><p>이라는 세 가지 레이어입니다.</p><p>이 구조 덕분에</p><ul><li>모델 생명주기 자동화</li><li>운영 관측 시스템</li><li>확장 기능</li></ul><p>이 서로 간섭하지 않도록 만들 수 있었습니다.</p><p>다음 글에서는</p><p><strong>ArgoCD AppProject와 ApplicationSet을 사용해
+dev / prod 환경과 레이어 경계를 어떻게 강제했는지</strong>를 살펴보겠습니다.</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/03/><span class=title>« Prev</span><br><span>[GitOps 기반 E2E ML Platform - GitOps 구조]</span>
+</a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/01/><span class=title>Next »</span><br><span>[GitOps 기반 E2E ML Platform - 설계 의도]</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

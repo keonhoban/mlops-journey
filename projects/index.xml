@@ -1,4 +1,61 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Projects on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/projects/</link><description>Recent content in Projects on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 17 Jan 2026 16:23:10 +1200</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/projects/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow-버전화latest-저장--feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow 버전화/Latest 저장 + Feast 조회까지 E2E 증명&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Projects on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/projects/</link><description>Recent content in Projects on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 06 Mar 2026 17:10:50 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/projects/index.xml" rel="self" type="application/rss+xml"/><item><title>[GitOps 기반 E2E ML Platform - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/01/</link><pubDate>Fri, 06 Mar 2026 17:10:50 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/01/</guid><description>&lt;h2 id="-전체-시리즈-경로">📌 전체 시리즈 경로&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>순서&lt;/th>
+&lt;th>주제&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/01/">GitOps 기반 ML Platform을 설계한 이유&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/">Core / Baseline / Optional 아키텍처&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/03/">ArgoCD AppProject / AppSet 경계&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/04/">Optional ON/OFF 확장 구조&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/05/">E2E DAG와 운영 반영 분리&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/06/">Drift Gate · Promotion · Shadow&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/">MLflow · Triton · FastAPI 서빙 구조&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/08/">Serving Runtime 동작 확인&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/">Observability · Rollback (Auto / Manual)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/">Runbook · Security · Proof 문서 구조&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/">최종 검증 (Proof of Platform)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;hr>
+&lt;h1 id="-전체-구조-요약">🎯 전체 구조 요약&lt;/h1>
+&lt;p>이 프로젝트는 단순한 모델 배포 시스템이 아니라&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow-버전화latest-저장--feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow 버전화/Latest 저장 + Feast 조회까지 E2E 증명&lt;/h3>
 &lt;hr>
 &lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>

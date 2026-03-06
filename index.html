@@ -6,74 +6,69 @@ DevOps에서 MLOps 전문가로 나아가는 여정
 실습 기반 프로젝트 & 코드 정리 📝 Blog 보기
 기술 노트, 팁, 결정적 지식 요약 🧗 About Me
 성장 여정과 기술 이력 📬 Contact
-📧 Email: keonho0510@naver.com 🐙 GitHub: github.com/keonhoban "><meta property="og:locale" content="ko"><meta property="og:type" content="website"><meta name=twitter:card content="summary"><meta name=twitter:title content="🏔️ MLOps Journey"><meta name=twitter:description content><script type=application/ld+json>{"@context":"https://schema.org","@type":"Organization","name":"🏔️  MLOps Journey","url":"https://keonhoban.github.io/mlops-journey/","description":"","logo":"https://keonhoban.github.io/mlops-journey/favicon.ico","sameAs":[]}</script></head><body class=list id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span class=active>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><div class=post-content><h1 id=-welcome-to-mlops-journey>👋 Welcome to MLOps Journey!<a hidden class=anchor aria-hidden=true href=#-welcome-to-mlops-journey>#</a></h1><blockquote><p><strong>“성장에는 정답이 없지만, 진심은 언제나 방향을 알려준다.”</strong></p></blockquote><p><strong>DevOps에서 MLOps 전문가로 나아가는 여정</strong><br>오늘도 한 걸음, 내일은 더 멀리 함께 가요. 🏃‍♂️✨</p><hr><h2 id=-explore-more>🚀 Explore More<a hidden class=anchor aria-hidden=true href=#-explore-more>#</a></h2><p>📂 <a href=/mlops-journey/projects>Projects 보기</a></p><ul><li>실습 기반 프로젝트 & 코드 정리</li></ul><p>📝 <a href=/mlops-journey/posts>Blog 보기</a></p><ul><li>기술 노트, 팁, 결정적 지식 요약</li></ul><p>🧗 <a href=/mlops-journey/about>About Me</a></p><ul><li>성장 여정과 기술 이력</li></ul><hr><p>📬 <strong>Contact</strong></p><ul><li>📧 Email: <a href=mailto:keonho0510@naver.com>keonho0510@naver.com</a></li><li>🐙 GitHub: <a href=https://github.com/keonhoban>github.com/keonhoban</a></li></ul></div><article class=first-entry><header class=entry-header><h2 class=entry-hint-parent>[Feature Store & Feast - Feast]</h2></header><div class=entry-content><p>GitOps로 Feast 계약 배포 + Airflow로 버전화/Latest 갱신 + Feast(Registry/S3 Offline/Redis Online)로 온라인 조회까지 🧠 시나리오 이전 글(Feature Store-lite)에서 저는 계약(스키마/메타) + 버전화 저장 + 재현성까지 고정했습니다.
-하지만 실무에서는 “저장”에서 끝나지 않습니다. 결국 중요한 건 조회 가능(Serving-ready) 상태입니다.
-이번 글은 Feature Store-lite 위에 Feast를 얹어 아래를 완성합니다.
-Offline Source: S3의 latest/features.parquet (Feast가 읽는 고정 포인터) Registry: S3에 registry.pb 저장(환경별 분리) Online Store: Redis 적재(materialize)로 온라인 조회 가능 Feature Server: 상시 서비스 + startup 시 feast apply 즉, “저장하는 파이프라인” → “조회 가능한 피처 플랫폼”으로 확장하는 단계입니다.
-...</p></div><footer class=entry-footer><span title='2026-01-15 17:15:38 +1203 +1203'>January 15, 2026</span>&nbsp;·&nbsp;6 min</footer><a class=entry-link aria-label="post link to [Feature Store & Feast - Feast]" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[Feature Store & Feast - Feature Store-lite]</h2></header><div class=entry-content><p>GitOps로 계약 배포하고, Airflow로 스키마 기반 피처를 생성해 S3에 “버전화 + 재현성 메타”로 저장하기 🧠 시나리오 Feature Store는 “ML 성능”이 아니라 운영 안정성/재현성에서 먼저 갈립니다.
-“오늘 만든 feature.csv”가 아니라, 아래가 반드시 남아야 운영이 됩니다.
-언제 생성됐는지 (generated_at) 어떤 스키마(계약)로 생성됐는지 (schema + schema_hash) 어떤 소스에서 생성됐는지 (source) 어떤 버전으로 저장됐는지 (version) 결과물이 어디 있는지 (feature_uri) Feature Store 도입을 고민하면 흔히 “Feast부터 써야 하나?”가 먼저 나오는데,
-도구보다 먼저 피처 생성/버전화/재현 방식이 고정돼야 합니다.
-...</p></div><footer class=entry-footer><span title='2026-01-14 17:10:21 +0900 +0900'>January 14, 2026</span>&nbsp;·&nbsp;5 min</footer><a class=entry-link aria-label="post link to [Feature Store & Feast - Feature Store-lite]" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Alerting 운영 표준 매뉴얼]</h2></header><div class=entry-content><p>Dev/Prod 분리 + Triton Serving Alerts (kube-prometheus-stack · PrometheusRule · Alertmanager · ArgoCD · SealedSecret)
-🧠 시나리오 설명 Observability는 대시보드가 아니라, 사고를 막는 운영 정책입니다.
-이 문서는 dev/prod 알럿을 완전히 분리하고, 라벨 실수로 인한 교차 전송까지 구조적으로 차단하며, Triton 서빙 품질을 모델 실행 관점에서 감지하도록 설계된 GitOps 기반 Alerting 운영입니다.
-알럿이후 즉시 운영 판단이 가능하도록, Alertmanager 라우팅과 Grafana 대시보드를 하나의 판단 흐름으로 고정했습니다.
-🎯 핵심 요약 PrometheusRule: “언제 이상인가” 정의 Alertmanager: “어디로 보낼지/차단할지” 최종 통제 Slack: 단순 수신자 기본 receiver는 반드시 "null" Slack 전송은 namespace 정규식 match로만 허용 Triton 알럿은 p95 대신 mean latency 기반으로 시작 Grafana: 알럿 이후 “원인 확인/판단” 표준 (avg latency + queue + pending) 알럿-대시보드는 한 세트로 운영 (Detect → Diagnose → Act) 1️⃣ 전체 아키텍처 [Workload (Triton/FastAPI/...)] ↓ metrics [Prometheus (dev/prod)] ↓ PrometheusRule: "언제 이상인가" [Alertmanager (dev/prod)] ↓ Routing Policy: "어디로 보낼지/차단할지" [Slack (#dev / #prod)] → [Grafana Dashboard: Diagnose (30s)] 핵심 원칙 Alertmanager가 최종 통제 지점 PrometheusRule은 “알럿 발생”만 담당 “기본 전송 금지(Null default)”가 안전한 운영의 출발점 알럿은 감지, Grafana는 원인 확인(진단) 표준 2️⃣ 운영 정책 (Policy) 항목 정책 Default receiver "null" Slack 전송 routes + matchers로만 허용 교차(dev↔prod) 무조건 차단 예외 문서/코드로 명시적으로 추가한 것만 허용 Dashboard 알럿 발생 시 Grafana로 즉시 원인 확인 (30초 루틴) Part A. Alertmanager Dev/Prod 분리 & 철벽 라우팅 A-1) DEV Alertmanager 최종 설정 📄 /tmp/alertmanager-dev.yaml
-...</p></div><footer class=entry-footer><span title='2026-01-02 13:05:22 +0900 +0900'>January 2, 2026</span>&nbsp;·&nbsp;7 min</footer><a class=entry-link aria-label="post link to [Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Alerting 운영 표준 매뉴얼]" href=https://keonhoban.github.io/mlops-journey/posts/triton/03/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - MLflow → Triton 자동 배포 파이프라인 구축]</h2></header><div class=entry-content><p>Airflow 기반 · 검증 체인 · 최소 롤백 🧠 시나리오 설명 실무 환경에서 모델 배포는
-“새 모델을 올리는 작업”이 아니라
-“현재 운영 상태를 안전하게 갱신하는 상태 전이(State Transition)”에 가깝습니다.
-이번 단계에서는 MLflow Registry를 단일 소스로 삼아
-Triton Inference Server에 모델을 자동 배포하고,
-로딩 헬스 체크 실제 추론 검증 을 모두 통과한 경우에만 운영 모델을 확정(commit)하며,
-중간 단계에서 하나라도 실패하면
-이전 운영 상태로 자동 복구되는 최소 롤백 구조를 구현했습니다.
-이 모든 흐름은 Airflow DAG를 통해
-...</p></div><footer class=entry-footer><span title='2025-12-29 12:02:22 +0900 +0900'>December 29, 2025</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - MLflow → Triton 자동 배포 파이프라인 구축]" href=https://keonhoban.github.io/mlops-journey/posts/triton/02/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Triton 구축]</h2></header><div class=entry-content><p>Triton (CPU-only) GitOps 통합: ONNX 1개 서빙 + Prometheus/Grafana 관측 🧠 시나리오 설명 실무에서 서빙 계층은 곧바로 트래픽과 SLA를 맞는 최전선입니다.
-모델이 아무리 좋아도, 서빙이 불안정하면 운영시 바로 무너집니다.
-그래서 이번에는 Triton 첫 구축으로 GPU/파이프라인 연동을 일부러 빼고,
-Triton 자체를 GitOps로 안정적으로 띄우고, 모델 load→infer→metrics 관측까지 ‘서빙 플랫폼 뼈대 구축’을 진행했습니다.
-🎯 핵심 요약 dev/prod 네임스페이스 분리 triton-dev, triton-prod Triton 모델 제어 모드 -model-control-mode=explicit 필요 시에만 load/unload로 운영 제어 가능 Model Repository NFS(RWX) 기반 PVC로 /models 마운트 모델 검증 ONNX 1개 simple_model로 load → infer 성공 관측 Triton은 /metrics를 Prometheus 포맷으로 자체 노출 ServiceMonitor로 dev/prod Prometheus에 자동 스크랩 Grafana에서 패널로 증명 가능 GPU 확장 포인트 values에 gpu.enabled 분기 설계 (현재 false → CPU 사용) 완료 기준은 “Triton + GitOps + Observability” 구축입니다.
-...</p></div><footer class=entry-footer><span title='2025-12-26 10:08:22 +0900 +0900'>December 26, 2025</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Triton 구축]" href=https://keonhoban.github.io/mlops-journey/posts/triton/01/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[OJ] Phase 1 (4주) 학습 회고</h2></header><div class=entry-content><p>들어가며 코딩 테스트를 준비하면서 목표로 삼은 것은
-단순히 문제를 많이 푸는 것이 아니라,
-내가 어디서 자주 막히는지 스스로 파악할 수 있는 방식으로 공부하고 싶었습니다.
-이 글은 4주간의 Phase 1을
-어떻게 계획하고, 실패를 관리하고, 다음 단계로 연결했는지에 대한 회고입니다.
-1️⃣ Phase 1의 목표 설정 Phase 1의 목표는 명확했습니다.
-실버 → 골드 같은 수치 목표 ❌ 문제 적응력 / 사고 체력 회복 ⭕ 특히 처음 보는 문제에서
-당황하지 않고 접근하는 능력을 기르는 데 집중했습니다.
-...</p></div><footer class=entry-footer><span title='2025-12-17 10:08:22 +0900 +0900'>December 17, 2025</span>&nbsp;·&nbsp;2 min</footer><a class=entry-link aria-label="post link to [OJ] Phase 1 (4주) 학습 회고" href=https://keonhoban.github.io/mlops-journey/posts/online-judge/02/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[OJ] 문제 해결 사고 프레임 정리</h2></header><div class=entry-content><p>들어가며 문제 난이도가 올라가며 가장 답답했던 지점은 단순했습니다.
-해설을 보면 이해되는데, 문제를 처음 마주하면 손이 잘 안 움직였습니다.
-문제에 접근하는 ‘사고 구조’가 정리되어 있지 않았기 때문이었습니다.
-이 글은 문제 풀이 기법이 아니라,
-문제를 처음 마주했을 때 어디서부터 생각해야 하는지
-스스로 정리하기 위해 적용해본 사고 프레임 기록입니다.
-1️⃣ 왜 사고 프레임이 필요했는가 문제를 풀다 보면 이런 상태가 반복되었습니다. (* 특히 여러 조건이 결합된 시물레이션 문제들)
-해설을 보면 “아, 그렇구나” 며칠 뒤 다시 보면 혼자서는 못 풂 문제를 많이 풀어도 체감 실력은 정체 이 상태를 벗어나기 위해
-...</p></div><footer class=entry-footer><span title='2025-12-08 10:08:22 +0900 +0900'>December 8, 2025</span>&nbsp;·&nbsp;2 min</footer><a class=entry-link aria-label="post link to [OJ] 문제 해결 사고 프레임 정리" href=https://keonhoban.github.io/mlops-journey/posts/online-judge/01/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[MLOps 플랫폼 Observability & Data Pipeline - 8단계 : Data Pipeline 고도화]</h2></header><div class=entry-content><p>Data Pipeline 고도화: 스키마/메타데이터 + KST 타임라인 🧠 시나리오 설명 “이전 MLOps 플랫폼 Observability & Data Pipeline - 7단계에서 우리는 S3 Raw → 전처리 → Feature CSV → S3 저장까지
-동작하는 엔드투엔드 데이터 파이프라인(v1)을 만들었습니다.”
-“하지만 실무 ML 플랫폼 입장에서는,
-‘그때 그 실행에서 어떤 데이터를, 어떤 품질로, 어느 버전에 저장했는지’가
-시간·버전·스키마·메타데이터까지 한 번에 남아야 합니다.”
-“그래서 이번 단계에서는 기존 v1 파이프라인을 버리지 않고,
-그 위에 버전 디렉터리 구조 + schema.json + metadata.json + KST 타임라인을 얹어
-...</p></div><footer class=entry-footer><span title='2025-11-15 17:10:21 +0900 +0900'>November 15, 2025</span>&nbsp;·&nbsp;8 min</footer><a class=entry-link aria-label="post link to [MLOps 플랫폼 Observability & Data Pipeline - 8단계 : Data Pipeline 고도화]" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/08/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[MLOps 플랫폼 Observability & Data Pipeline - 7단계 : Data Pipeline 구축]</h2></header><div class=entry-content><p>Data Pipeline 구축 🧠 시나리오 설명 “모델의 성능은 결국 데이터 품질에서 결정됩니다.
-그런데 그 데이터를 어떻게 추출하고, 검증하고, 가공하고, 저장하는지까지 자동화하지 않으면
-MLOps는 절대 완성되지 않습니다.”
-“그래서 이번 단계에서는 Raw S3 → 전처리 → Feature → 저장까지 이어지는
-엔드투엔드 데이터 파이프라인을 직접 구축해
-이후 MLflow 학습 자동화와 바로 연결될 ‘데이터 레이어’를 먼저 다졌습니다.”
-🎯 핵심 요약 Raw 데이터를 S3에서 가져오고
-Airflow DAG에서 단계별 처리 흐름을 관리하며
-Python 전처리 코드에서 Feature 생성
-...</p></div><footer class=entry-footer><span title='2025-11-10 17:10:21 +0900 +0900'>November 10, 2025</span>&nbsp;·&nbsp;3 min</footer><a class=entry-link aria-label="post link to [MLOps 플랫폼 Observability & Data Pipeline - 7단계 : Data Pipeline 구축]" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[MLOps 플랫폼 Observability & Data Pipeline - 6단계 : FastAPI Observability Dashboard & Alert Library]</h2></header><div class=entry-content><p>FastAPI Observability Dashboard & Alert Library 🧠 시나리오 설명 “FastAPI는 모델을 서빙하는 ‘입구’이자,
-장애가 나면 가장 먼저 흔들리는 지점입니다.”
-“그래서 이번 단계에서는 실제 운영처럼
-문제가 생기면 바로 감지되고, 원인을 바로 찾을 수 있는 관측체계를 만들었습니다.”
-“A/B·Canary·핫스왑 구조 위에 안전망을 올리는 과정,
-그 첫 단계가 바로 FastAPI Observability Dashboard & Alert Library입니다.”
-🎯 핵심 요약 목표
-FastAPI 기반 ML Serving 환경에서
-실제 운영 가능한 수준의 관측·알람 체계 구축
-장애 발생 시 즉시 감지하고
-...</p></div><footer class=entry-footer><span title='2025-11-05 17:10:21 +0900 +0900'>November 5, 2025</span>&nbsp;·&nbsp;5 min</footer><a class=entry-link aria-label="post link to [MLOps 플랫폼 Observability & Data Pipeline - 6단계 : FastAPI Observability Dashboard & Alert Library]" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/></a></article><footer class=page-footer><nav class=pagination><a class=next href=https://keonhoban.github.io/mlops-journey/page/2/>Next&nbsp;&nbsp;»</a></nav></footer></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+📧 Email: keonho0510@naver.com 🐙 GitHub: github.com/keonhoban "><meta property="og:locale" content="ko"><meta property="og:type" content="website"><meta name=twitter:card content="summary"><meta name=twitter:title content="🏔️ MLOps Journey"><meta name=twitter:description content><script type=application/ld+json>{"@context":"https://schema.org","@type":"Organization","name":"🏔️  MLOps Journey","url":"https://keonhoban.github.io/mlops-journey/","description":"","logo":"https://keonhoban.github.io/mlops-journey/favicon.ico","sameAs":[]}</script></head><body class=list id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span class=active>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><div class=post-content><h1 id=-welcome-to-mlops-journey>👋 Welcome to MLOps Journey!<a hidden class=anchor aria-hidden=true href=#-welcome-to-mlops-journey>#</a></h1><blockquote><p><strong>“성장에는 정답이 없지만, 진심은 언제나 방향을 알려준다.”</strong></p></blockquote><p><strong>DevOps에서 MLOps 전문가로 나아가는 여정</strong><br>오늘도 한 걸음, 내일은 더 멀리 함께 가요. 🏃‍♂️✨</p><hr><h2 id=-explore-more>🚀 Explore More<a hidden class=anchor aria-hidden=true href=#-explore-more>#</a></h2><p>📂 <a href=/mlops-journey/projects>Projects 보기</a></p><ul><li>실습 기반 프로젝트 & 코드 정리</li></ul><p>📝 <a href=/mlops-journey/posts>Blog 보기</a></p><ul><li>기술 노트, 팁, 결정적 지식 요약</li></ul><p>🧗 <a href=/mlops-journey/about>About Me</a></p><ul><li>성장 여정과 기술 이력</li></ul><hr><p>📬 <strong>Contact</strong></p><ul><li>📧 Email: <a href=mailto:keonho0510@naver.com>keonho0510@naver.com</a></li><li>🐙 GitHub: <a href=https://github.com/keonhoban>github.com/keonhoban</a></li></ul></div><article class=first-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 운영 문서화]</h2></header><div class=entry-content><p>운영 문서화 Runbook / Security / Proof 디렉토리까지 남긴 이유 들어가며 많은 프로젝트는 다음 단계에서 멈춥니다.
+코드 작성 README 작성 하지만 실제 운영 환경에서는 다음 문제가 발생합니다.
+서비스 장애 발생 운영자가 시스템 구조를 모름 복구 절차 문서 없음 보안 정책 위치 불명확 이 경우 시스템이 아무리 잘 만들어져 있어도
+운영 대응이 매우 어려워집니다.
+그래서 이 프로젝트에서는 코드 외에
+다음 문서 구조를 함께 구성했습니다.
+Runbook Security Proof Audit 즉
+코드를 설명하는 문서가 아니라
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:38 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;3 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 운영 문서화] " href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 운영 제어 구조]</h2></header><div class=entry-content><p>Observability / Auto Rollback / Manual Rollback 배포보다 중요할 수 있는 운영 제어 들어가며 ML 시스템을 구축할 때 많은 관심이 다음 단계에 집중됩니다.
+Train Register Deploy 하지만 실제 운영 환경에서는
+배포 이후에 더 중요한 문제가 발생합니다.
+예를 들어 다음 상황을 생각해볼 수 있습니다.
+모델이 정상적으로 배포되었지만 latency가 급격히 증가한 경우 특정 입력 데이터에서 오류율이 증가하는 경우 inference 요청이 실패하는 경우 이런 상황에서 중요한 질문은 다음입니다.
+문제가 발생했을 때 어떻게 감지하고 복구할 것인가?
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:37 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 운영 제어 구조] " href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 실제 동작 확인]</h2></header><div class=entry-content><p>Serving Runtime Proof 실제로 READY / Reload / Metrics까지 살아 있는가 들어가며 지금까지 이 시리즈에서는 다음을 설명했습니다.
+ML 플랫폼 구조 GitOps 환경 설계 Optional 레이어 분리 E2E 파이프라인 Drift Gate / Promotion 전략 MLflow + Triton + FastAPI 서빙 구조 하지만 여기서 중요한 질문이 하나 남습니다.
+이 시스템이 실제로 동작하는가?
+많은 아키텍처 글이
+다이어그램과 코드 설명으로 끝납니다.
+하지만 실제 운영 환경에서는 다음이 더 중요합니다.
+서빙 시스템이 실제로 살아 있는가 모델이 실제로 로드되었는가 API가 실제로 동작하는가 metrics가 실제로 수집되는가 그래서 이 프로젝트에서는
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:35 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 실제 동작 확인] " href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/08/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]</h2></header><div class=entry-content><p>MLflow + Triton + FastAPI 등록과 서빙 반영을 분리한 이유 들어가며 ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.
+Train ↓ MLflow Register ↓ Deploy 즉, 모델 등록과 서빙 반영이 거의 같은 단계로 취급됩니다.
+이 방식은 간단하고 구현하기 쉽습니다.
+하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.
+등록된 모델이 바로 운영 모델이 되어버림 서빙 환경 상태를 고려하지 않고 배포 진행 모델 로딩 실패 시 서비스 장애 발생 모델 전환 시점 제어가 어려움 이 프로젝트에서는 이러한 문제를 피하기 위해
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:32 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 모델 반영 제어]</h2></header><div class=entry-content><p>Drift Gate / Promotion / Shadow 검증된 변경만 운영 경로에 올림 들어가며 모델 학습 파이프라인을 만들다 보면
+다음 질문이 자연스럽게 등장합니다.
+어떤 모델을 운영 환경에 반영할 것인가?
+많은 프로젝트에서는 다음 기준을 사용합니다.
+accuracy >= threshold 하지만 운영 환경에서는 이 기준만으로는 충분하지 않습니다.
+예를 들어 다음 상황을 생각해볼 수 있습니다.
+학습 데이터와 실제 서비스 데이터 분포가 다름 모델 성능이 특정 테스트셋에서는 높지만 실제 환경에서는 낮음 데이터 드리프트가 발생했지만 파이프라인이 이를 감지하지 못함 이런 상황에서 단순히 accuracy 기준만 사용하면
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:30 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 모델 반영 제어] " href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/06/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 운영 환경 반영 제어]</h2></header><div class=entry-content><p>E2E DAG: 학습 성공이 곧 운영 반영을 의미하지 않도록 설계 들어가며 많은 머신러닝 파이프라인은 다음과 같은 형태를 가집니다.
+Train → Register → Deploy 이 구조는 실험 환경에서는 충분히 동작합니다.
+하지만 운영 환경에서는 몇 가지 중요한 문제가 생깁니다.
+예를 들어 다음 상황을 생각해볼 수 있습니다.
+데이터 분포가 바뀌었는데도 모델이 배포되는 경우 모델 성능이 특정 데이터셋에서는 좋지만 실제 트래픽에서는 나쁜 경우 서빙 환경에서 모델 로딩이 실패하는 경우 이런 상황에서
+학습 성공이 곧 운영 반영
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:29 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 운영 환경 반영 제어] " href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/05/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 토글 구조]</h2></header><div class=entry-content><p>Optional ON/OFF 확장 기능을 비파괴적으로 붙였다 떼는 구조 들어가며 ML 플랫폼을 설계하다 보면 자연스럽게 다음 질문이 등장합니다.
+Feature Store를 붙일까? 데이터 파이프라인 시스템을 추가할까? 추가 실험 플랫폼을 도입할까? 이런 시스템들은 대부분 매우 유용합니다.
+하지만 동시에 다음과 같은 문제를 가져올 수 있습니다.
+플랫폼 복잡도 증가 시스템 의존성 증가 장애 전파 범위 확대 예를 들어 Feature Store를 Core 시스템에 강하게 연결하면
+다음 상황이 발생할 수 있습니다.
+Feature Store 장애 ↓ Feature Pipeline 실패 ↓ Training Pipeline 실패 ↓ Serving Pipeline 영향 이런 구조는 운영 안정성을 떨어뜨립니다.
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:27 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 토글 구조] " href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/04/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - GitOps 구조]</h2></header><div class=entry-content><p>ArgoCD AppProject / ApplicationSet dev/prod와 레이어 경계를 강제하기 들어가며 GitOps를 사용하는 이유는 보통 다음과 같이 설명됩니다.
+Git이 Single Source of Truth다 배포가 자동화된다 변경 이력을 추적할 수 있다 이 설명은 맞지만, 운영 관점에서 GitOps의 가장 중요한 역할은 따로 있습니다.
+바로
+배포 경계를 구조로 강제하는 것
+입니다.
+예를 들어 dev와 prod 환경이 있다고 가정해봅시다.
+만약 다음과 같은 구조라면 문제가 생길 수 있습니다.
+같은 Git repository 같은 Kubernetes cluster 단지 namespace 이름만 다른 환경 이 경우 작은 실수 하나로도 다음과 같은 일이 발생할 수 있습니다.
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:25 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - GitOps 구조]" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/03/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 운영 경계]</h2></header><div class=entry-content><p>Core / Baseline / Optional 운영 가능한 경계를 먼저 설계 들어가며 ML 플랫폼을 설계할 때 흔히 하는 접근은
+필요한 도구를 하나씩 붙여 나가는 방식입니다.
+예를 들어 다음과 같은 식입니다.
+Airflow 설치 MLflow 추가 Triton 추가 Monitoring 추가 Feature Store 추가 이 방식은 처음에는 빠르게 시스템을 만들 수 있습니다.
+하지만 시간이 지나면 다음 문제가 생기기 시작합니다.
+시스템 의존성이 서로 얽히기 시작한다 특정 기능이 다른 기능을 망가뜨리기 시작한다 확장 기능이 코어 시스템을 복잡하게 만든다 이 문제의 근본 원인은 대부분 같습니다.
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:23 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 운영 경계]" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 설계 의도]</h2></header><div class=entry-content><p>GitOps 기반 E2E ML Platform 설계 의도 들어가며 머신러닝 프로젝트를 처음 접하면 보통 이런 흐름으로 시작합니다.
+데이터를 준비한다 모델을 학습한다 모델을 배포한다 이 흐름은 학습이나 실험에는 충분합니다.
+하지만 운영 환경에서는 이야기가 조금 달라집니다.
+운영 환경에서는 다음 질문이 먼저 등장합니다.
+잘못된 모델이 배포되면 어떻게 막을 것인가 dev와 prod를 어떻게 분리할 것인가 관측이 실패했을 때 롤백은 어떻게 할 것인가 확장 기능이 코어 시스템을 망가뜨리지 않도록 어떻게 설계할 것인가 즉, 문제는 모델을 배포하는 방법이 아니라 운영 환경에서 변경을 통제하는 방법입니다.
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:21 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 설계 의도] " href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/01/></a></article><footer class=page-footer><nav class=pagination><a class=next href=https://keonhoban.github.io/mlops-journey/page/2/>Next&nbsp;&nbsp;»</a></nav></footer></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
 </a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
