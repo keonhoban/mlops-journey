@@ -108,6 +108,12 @@
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
+&lt;h2 id="-프로젝트-github-저장소">🙌 프로젝트 GitHub 저장소&lt;/h2>
+&lt;ul>
+&lt;li>GitHub 코드: &lt;a href="https://github.com/keonhoban/mlops-infra-gitops">[GitOps] mlops-platform&lt;/a>&lt;/li>
+&lt;li>DAG 코드: &lt;a href="https://github.com/keonhoban/airflow-dags-dev">[DAG] airflow-dags&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
 &lt;h1 id="-전체-구조-요약">🎯 전체 구조 요약&lt;/h1>
 &lt;p>이 프로젝트는 단순한 모델 배포 시스템이 아니라&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</link><pubDate>Sat, 17 Jan 2026 16:23:10 +1200</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/02/</guid><description>&lt;h3 id="gitops로-계약-배포--airflow-버전화latest-저장--feast-조회까지-e2e-증명">GitOps로 계약 배포 + Airflow 버전화/Latest 저장 + Feast 조회까지 E2E 증명&lt;/h3>
 &lt;hr>

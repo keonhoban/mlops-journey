@@ -54,6 +54,12 @@
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
+&lt;h2 id="-프로젝트-github-저장소">🙌 프로젝트 GitHub 저장소&lt;/h2>
+&lt;ul>
+&lt;li>GitHub 코드: &lt;a href="https://github.com/keonhoban/mlops-infra-gitops">[GitOps] mlops-platform&lt;/a>&lt;/li>
+&lt;li>DAG 코드: &lt;a href="https://github.com/keonhoban/airflow-dags-dev">[DAG] airflow-dags&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
 &lt;h1 id="-전체-구조-요약">🎯 전체 구조 요약&lt;/h1>
 &lt;p>이 프로젝트는 단순한 모델 배포 시스템이 아니라&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 운영 경계]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/</link><pubDate>Fri, 06 Mar 2026 17:10:23 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/</guid><description>&lt;h1 id="core--baseline--optional">Core / Baseline / Optional&lt;/h1>
 &lt;ul>
