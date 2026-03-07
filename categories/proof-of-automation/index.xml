@@ -30,33 +30,29 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>4&lt;/td>
-&lt;td>Serving Runtime 검증&lt;/td>
+&lt;td>Airflow E2E DAG 실행 검증&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>5&lt;/td>
-&lt;td>Observability 검증&lt;/td>
+&lt;td>Serving Runtime 검증&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>6&lt;/td>
-&lt;td>운영 문서 / Proof 구조 검증&lt;/td>
+&lt;td>Observability 검증&lt;/td>
 &lt;/tr>
 &lt;tr>
 &lt;td>7&lt;/td>
+&lt;td>운영 문서 / Proof 구조 검증&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
 &lt;td>최종 결론&lt;/td>
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
 &lt;hr>
 &lt;h2 id="0--준비">0) 🧰 준비&lt;/h2>
-&lt;p>이번 검증은 다음 기준으로 진행했습니다.&lt;/p>
-&lt;ul>
-&lt;li>GitOps 구조는 &lt;strong>ArgoCD Project / Application / Root App&lt;/strong> 기준으로 확인&lt;/li>
-&lt;li>Optional 레이어는 &lt;strong>ON / OFF 실행 결과&lt;/strong>로 확인&lt;/li>
-&lt;li>서빙 상태는 &lt;strong>Triton READY / FastAPI health / reload / metrics&lt;/strong> 기준으로 확인&lt;/li>
-&lt;li>운영 관측은 &lt;strong>Prometheus / Alertmanager / ServiceMonitor / PrometheusRule&lt;/strong> 기준으로 확인&lt;/li>
-&lt;li>모든 결과는 &lt;code>docs/proof/latest/&lt;/code> 기준 최신 스냅샷으로 정리&lt;/li>
-&lt;/ul>
-&lt;p>사용한 주요 경로:&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+&lt;p>이번 검증은 다음 기준으로 진행했습니다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
