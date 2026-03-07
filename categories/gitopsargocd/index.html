@@ -3,7 +3,7 @@
 구조적으로 분리되어 있고, 실제로 동작하며, 운영 관측과 복구까지 가능한 상태임을
 캡처와 실행 결과로 검증하는 기록입니다.
 🧭 목차 # 섹션 0 준비 1 GitOps 경계 검증 2 Core-only 검증 3 Optional ON 검증 4 Airflow E2E DAG 실행 검증 5 Serving Runtime 검증 6 Observability 검증 7 운영 문서 / Proof 구조 검증 8 최종 결론 0) 🧰 준비 이번 검증은 다음 기준으로 진행했습니다.
-...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:57 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;7 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 검증]" href=https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 운영 문서화]</h2></header><div class=entry-content><p>운영 문서화 Runbook / Security / Proof 디렉토리까지 남긴 이유 들어가며 많은 프로젝트는 다음 단계에서 멈춥니다.
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:57 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;8 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 검증]" href=https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 운영 문서화]</h2></header><div class=entry-content><p>운영 문서화 Runbook / Security / Proof 디렉토리까지 남긴 이유 들어가며 많은 프로젝트는 다음 단계에서 멈춥니다.
 코드 작성 README 작성 하지만 실제 운영 환경에서는 다음 문제가 발생합니다.
 서비스 장애 발생 운영자가 시스템 구조를 모름 복구 절차 문서 없음 보안 정책 위치 불명확 이 경우 시스템이 아무리 잘 만들어져 있어도
 운영 대응이 매우 어려워집니다.
