@@ -124,7 +124,7 @@ https://github.com/keonhoban/mlops-infra-labs
 - Kubernetes 기반 ML Platform
 - GitOps 기반 배포 및 환경 분리 전략
 - MLflow Tracking + Registry 운영 구조
-- Alias 기반 모델 Hot Swap
+- MLflow alias 기반 모델 교체 및 runtime reload
 - DAG 기반 자동 학습·배포 파이프라인
 - 장애 대응을 고려한 롤백 및 상태 전이 설계
 - 메트릭·로그·알람 기반 운영 관측 체계
