@@ -103,7 +103,7 @@
 &lt;li>관측이 실패했을 때 롤백은 어떻게 할 것인가&lt;/li>
 &lt;li>확장 기능이 코어 시스템을 망가뜨리지 않도록 어떻게 설계할 것인가&lt;/li>
 &lt;/ul>
-&lt;p>즉, 문제는 &lt;strong>모델을 배포하는 방법이 아니라 운영 환경에서 변경을 통제하는 방법&lt;/strong>입니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</link><pubDate>Fri, 16 Jan 2026 13:30:12 +1700</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</guid><description>&lt;h3 id="feature-store는-피처-생성이-아니라-운영-재현성의-기준이다">Feature Store는 ‘피처 생성’이 아니라 &lt;strong>운영 재현성의 기준&lt;/strong>이다&lt;/h3>
+&lt;p>즉, 문제는 &lt;strong>모델을 배포하는 방법이 아니라 운영 환경에서 변경을 통제하는 방법&lt;/strong>입니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</link><pubDate>Fri, 16 Jan 2026 13:30:12 +1700</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</guid><description>&lt;h3 id="feature-store는-피처-생성이-아니라-운영-재현성의-기준">Feature Store는 ‘피처 생성’이 아니라 &lt;strong>운영 재현성의 기준&lt;/strong>&lt;/h3>
 &lt;hr>
 &lt;h2 id="-시리즈-전체-경로-요약">📌 시리즈 전체 경로 요약&lt;/h2>
 &lt;table>

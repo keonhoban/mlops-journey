@@ -226,7 +226,7 @@ Serving Pipeline 영향
 &lt;/tbody>
 &lt;/table>
 &lt;blockquote>
-&lt;p>이 글은 설명이 아니라 증거(Proof)만 남깁니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</link><pubDate>Fri, 16 Jan 2026 13:30:12 +1700</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</guid><description>&lt;h3 id="feature-store는-피처-생성이-아니라-운영-재현성의-기준이다">Feature Store는 ‘피처 생성’이 아니라 &lt;strong>운영 재현성의 기준&lt;/strong>이다&lt;/h3>
+&lt;p>이 글은 설명이 아니라 증거(Proof)만 남깁니다.&lt;/p></description></item><item><title>[Feature Store &amp; Feast - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</link><pubDate>Fri, 16 Jan 2026 13:30:12 +1700</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/feature_store/01/</guid><description>&lt;h3 id="feature-store는-피처-생성이-아니라-운영-재현성의-기준">Feature Store는 ‘피처 생성’이 아니라 &lt;strong>운영 재현성의 기준&lt;/strong>&lt;/h3>
 &lt;hr>
 &lt;h2 id="-시리즈-전체-경로-요약">📌 시리즈 전체 경로 요약&lt;/h2>
 &lt;table>
@@ -350,7 +350,7 @@ Serving Pipeline 영향
 &lt;h1 id="a-triton-gitops--devprod-분리">A. Triton GitOps &amp;amp; Dev/Prod 분리&lt;/h1>
 &lt;h2 id="1-argocd-applications-gitops-기준">1️⃣ ArgoCD Applications (GitOps 기준)&lt;/h2>
 &lt;h3 id="-devprod-애플리케이션-상태-증명">✔ dev/prod 애플리케이션 상태 증명&lt;/h3>
-&lt;p>&lt;img alt="proof-triton-01.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-triton-01.png">&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/triton/01/</link><pubDate>Mon, 05 Jan 2026 11:03:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/triton/01/</guid><description>&lt;h2 id="에필로그--gitops-기반-triton-서빙이-배포검증관측알림-루프로-고정되다">에필로그 — “GitOps 기반 Triton 서빙이 ‘배포→검증→관측→알림’ 루프로 고정되다”&lt;/h2>
+&lt;p>&lt;img alt="proof-triton-01.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/proof-triton-01.png">&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - 에필로그]</title><link>https://keonhoban.github.io/mlops-journey/projects/triton/01/</link><pubDate>Mon, 05 Jan 2026 11:03:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/triton/01/</guid><description>&lt;h2 id="에필로그--gitops-기반-triton-서빙이-배포검증관측알림-루프로-고정">에필로그 — “GitOps 기반 Triton 서빙이 ‘배포→검증→관측→알림’ 루프로 고정”&lt;/h2>
 &lt;hr>
 &lt;h2 id="-전체-경로-요약">📌 전체 경로 요약&lt;/h2>
 &lt;table>
