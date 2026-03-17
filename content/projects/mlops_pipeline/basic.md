@@ -187,7 +187,7 @@ airflow users create \
 | `./mlflow_store:/mlflow` (Airflow) | 학습 후 모델 저장 위치 공유 |
 | `./mlflow_store:/mlflow` (FastAPI) | 모델 추론 시 로드 경로 공유 |
 
-➡ **경로 통일성**이 매우 중요함! 지금은 모두 `./mlflow`로 공유 (./mlflow 하위에 /mlruns 존재)
+➡ **경로 통일성**이 중요함! 지금은 모두 `./mlflow`로 공유 (./mlflow 하위에 /mlruns 존재)
 
 ---
 
