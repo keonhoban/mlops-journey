@@ -64,7 +64,7 @@ Deploy
 &lt;li>데이터 파이프라인 시스템을 추가할까?&lt;/li>
 &lt;li>추가 실험 플랫폼을 도입할까?&lt;/li>
 &lt;/ul>
-&lt;p>이런 시스템들은 대부분 매우 유용합니다.&lt;/p>
+&lt;p>이런 시스템들은 대부분 유용합니다.&lt;/p>
 &lt;p>하지만 동시에 다음과 같은 문제를 가져올 수 있습니다.&lt;/p>
 &lt;ul>
 &lt;li>플랫폼 복잡도 증가&lt;/li>
@@ -293,7 +293,7 @@ Serving Pipeline 영향
 &lt;blockquote>
 &lt;p>머신러닝 모델을 실서비스에 배포할 때,
 기존 모델을 새 모델로 안전하게 교체(hot-swap)하는 자동화 구조는
-매우 중요한 요구사항입니다.&lt;/p>&lt;/blockquote>
+중요한 요구사항입니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
 &lt;h2 id="-tldr">✅ TL;DR&lt;/h2>
 &lt;ul>
@@ -803,7 +803,7 @@ Serving Pipeline 영향
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 매우 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item><item><title>[MLflow : Tracking + FastAPI 연동]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</link><pubDate>Fri, 06 Jun 2025 15:14:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</guid><description>&lt;blockquote>
+&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item><item><title>[MLflow : Tracking + FastAPI 연동]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</link><pubDate>Fri, 06 Jun 2025 15:14:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>MLflow Tracking Server 구성&lt;/li>

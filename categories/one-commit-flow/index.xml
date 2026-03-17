@@ -14,7 +14,7 @@ README 작성
 &lt;li>보안 정책 위치 불명확&lt;/li>
 &lt;/ul>
 &lt;p>이 경우 시스템이 아무리 잘 만들어져 있어도&lt;/p>
-&lt;p>운영 대응이 매우 어려워집니다.&lt;/p>
+&lt;p>운영 대응이 어려워집니다.&lt;/p>
 &lt;p>그래서 이 프로젝트에서는 코드 외에&lt;/p>
 &lt;p>다음 문서 구조를 함께 구성했습니다.&lt;/p>
 &lt;pre tabindex="0">&lt;code>Runbook
@@ -23,7 +23,8 @@ Proof
 Audit
 &lt;/code>&lt;/pre>&lt;p>즉&lt;/p>
 &lt;blockquote>
-&lt;p>코드를 설명하는 문서가 아니라&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+&lt;p>코드를 설명하는 문서가 아니라&lt;/p>
+&lt;p>&lt;strong>운영을 설명하는 문서 구조&lt;/strong>를 만들었습니다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>

@@ -856,7 +856,7 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 매우 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item><item><title>[MLflow : Tracking + FastAPI 연동]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</link><pubDate>Fri, 06 Jun 2025 15:14:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</guid><description>&lt;blockquote>
+&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item><item><title>[MLflow : Tracking + FastAPI 연동]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</link><pubDate>Fri, 06 Jun 2025 15:14:40 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlflow/01/</guid><description>&lt;blockquote>
 &lt;p>목표&lt;/p>
 &lt;ol>
 &lt;li>MLflow Tracking Server 구성&lt;/li>

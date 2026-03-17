@@ -195,4 +195,4 @@
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 매우 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item></channel></rss>
+&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item></channel></rss>

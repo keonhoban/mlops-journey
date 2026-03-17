@@ -16,7 +16,7 @@
 &lt;blockquote>
 &lt;p>머신러닝 모델을 실서비스에 배포할 때,
 기존 모델을 새 모델로 안전하게 교체(hot-swap)하는 자동화 구조는
-매우 중요한 요구사항입니다.&lt;/p>&lt;/blockquote>
+중요한 요구사항입니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
 &lt;h2 id="-tldr">✅ TL;DR&lt;/h2>
 &lt;ul>

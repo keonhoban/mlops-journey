@@ -2549,7 +2549,7 @@ ln ln -s
 &lt;li>&lt;code>less&lt;/code>는 로그, 설정 파일 분석에 적합 (검색, 이동 모두 지원)&lt;/li>
 &lt;li>&lt;code>+F&lt;/code>는 &lt;code>tail -f&lt;/code> 대체 가능 + 탐색까지 가능&lt;/li>
 &lt;li>&lt;code>ln&lt;/code> 기본은 &lt;strong>하드 링크&lt;/strong>, 디렉터리에는 사용 불가&lt;/li>
-&lt;li>심볼릭 링크(&lt;code>s&lt;/code>)는 실무에서 &lt;strong>버전링/디렉터리 단축&lt;/strong>에 매우 유용&lt;/li>
+&lt;li>심볼릭 링크(&lt;code>s&lt;/code>)는 실무에서 &lt;strong>버전링/디렉터리 단축&lt;/strong>에 유용&lt;/li>
 &lt;li>컨테이너, S3 경로 마운트 시도 자주 사용됨&lt;/li>
 &lt;/ul>
 &lt;hr>

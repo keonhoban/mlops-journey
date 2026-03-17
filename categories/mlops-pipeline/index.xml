@@ -131,7 +131,7 @@ README 작성
 &lt;li>보안 정책 위치 불명확&lt;/li>
 &lt;/ul>
 &lt;p>이 경우 시스템이 아무리 잘 만들어져 있어도&lt;/p>
-&lt;p>운영 대응이 매우 어려워집니다.&lt;/p>
+&lt;p>운영 대응이 어려워집니다.&lt;/p>
 &lt;p>그래서 이 프로젝트에서는 코드 외에&lt;/p>
 &lt;p>다음 문서 구조를 함께 구성했습니다.&lt;/p>
 &lt;pre tabindex="0">&lt;code>Runbook
@@ -140,7 +140,8 @@ Proof
 Audit
 &lt;/code>&lt;/pre>&lt;p>즉&lt;/p>
 &lt;blockquote>
-&lt;p>코드를 설명하는 문서가 아니라&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 운영 제어 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/</link><pubDate>Fri, 06 Mar 2026 17:10:37 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/</guid><description>&lt;h1 id="observability--auto-rollback--manual-rollback">Observability / Auto Rollback / Manual Rollback&lt;/h1>
+&lt;p>코드를 설명하는 문서가 아니라&lt;/p>
+&lt;p>&lt;strong>운영을 설명하는 문서 구조&lt;/strong>를 만들었습니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 운영 제어 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/</link><pubDate>Fri, 06 Mar 2026 17:10:37 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/09/</guid><description>&lt;h1 id="observability--auto-rollback--manual-rollback">Observability / Auto Rollback / Manual Rollback&lt;/h1>
 &lt;ul>
 &lt;li>배포보다 중요할 수 있는 운영 제어&lt;/li>
 &lt;/ul>
@@ -249,7 +250,7 @@ Deploy
 &lt;li>데이터 파이프라인 시스템을 추가할까?&lt;/li>
 &lt;li>추가 실험 플랫폼을 도입할까?&lt;/li>
 &lt;/ul>
-&lt;p>이런 시스템들은 대부분 매우 유용합니다.&lt;/p>
+&lt;p>이런 시스템들은 대부분 유용합니다.&lt;/p>
 &lt;p>하지만 동시에 다음과 같은 문제를 가져올 수 있습니다.&lt;/p>
 &lt;ul>
 &lt;li>플랫폼 복잡도 증가&lt;/li>
@@ -1076,7 +1077,7 @@ Serving Pipeline 영향
 &lt;blockquote>
 &lt;p>머신러닝 모델을 실서비스에 배포할 때,
 기존 모델을 새 모델로 안전하게 교체(hot-swap)하는 자동화 구조는
-매우 중요한 요구사항입니다.&lt;/p>&lt;/blockquote>
+중요한 요구사항입니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
 &lt;h2 id="-tldr">✅ TL;DR&lt;/h2>
 &lt;ul>
@@ -1561,4 +1562,4 @@ Serving Pipeline 영향
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 매우 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item></channel></rss>
+&lt;p>➡ &lt;strong>경로 통일성&lt;/strong>이 중요함! 지금은 모두 &lt;code>./mlflow&lt;/code>로 공유 (./mlflow 하위에 /mlruns 존재)&lt;/p></description></item></channel></rss>
