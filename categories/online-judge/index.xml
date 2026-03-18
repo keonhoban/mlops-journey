@@ -1,33 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Online Judge on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/online-judge/</link><description>Recent content in Online Judge on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 17 Dec 2025 10:08:22 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/online-judge/index.xml" rel="self" type="application/rss+xml"/><item><title>[OJ] Phase 1 (4주) 학습 회고</title><link>https://keonhoban.github.io/mlops-journey/posts/online-judge/02/</link><pubDate>Wed, 17 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/online-judge/02/</guid><description>&lt;h3 id="들어가며">들어가며&lt;/h3>
-&lt;p>코딩 테스트를 준비하면서 목표로 삼은 것은&lt;/p>
-&lt;p>단순히 문제를 많이 푸는 것이 아니라,&lt;/p>
-&lt;p>내가 어디서 자주 막히는지 스스로 파악할 수 있는 방식으로 공부하고 싶었습니다.&lt;/p>
-&lt;p>이 글은 4주간의 Phase 1을&lt;/p>
-&lt;p>어떻게 계획하고, 실패를 관리하고, 다음 단계로 연결했는지에 대한 회고입니다.&lt;/p>
-&lt;hr>
-&lt;h3 id="1-phase-1의-목표-설정">1️⃣ Phase 1의 목표 설정&lt;/h3>
-&lt;p>Phase 1의 목표는 명확했습니다.&lt;/p>
-&lt;ul>
-&lt;li>실버 → 골드 같은 수치 목표 ❌&lt;/li>
-&lt;li>&lt;strong>문제 적응력 / 사고 체력 회복&lt;/strong> ⭕&lt;/li>
-&lt;/ul>
-&lt;p>특히 처음 보는 문제에서&lt;/p>
-&lt;p>당황하지 않고 접근하는 능력을 기르는 데 집중했습니다.&lt;/p></description></item><item><title>[OJ] 문제 해결 사고 프레임 정리</title><link>https://keonhoban.github.io/mlops-journey/posts/online-judge/01/</link><pubDate>Mon, 08 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/online-judge/01/</guid><description>&lt;h3 id="들어가며">들어가며&lt;/h3>
-&lt;p>문제 난이도가 올라가며 가장 답답했던 지점은 단순했습니다.&lt;/p>
-&lt;p>해설을 보면 이해되는데, 문제를 처음 마주하면 손이 잘 안 움직였습니다.&lt;/p>
-&lt;p>&lt;strong>문제에 접근하는 ‘사고 구조’가 정리되어 있지 않았기 때문&lt;/strong>이었습니다.&lt;/p>
-&lt;p>이 글은 문제 풀이 기법이 아니라,&lt;/p>
-&lt;p>문제를 처음 마주했을 때 &lt;strong>어디서부터 생각해야 하는지&lt;/strong>&lt;/p>
-&lt;p>스스로 정리하기 위해 적용해본 사고 프레임 기록입니다.&lt;/p>
-&lt;hr>
-&lt;h3 id="1-왜-사고-프레임이-필요했는가">1️⃣ 왜 사고 프레임이 필요했는가&lt;/h3>
-&lt;p>문제를 풀다 보면 이런 상태가 반복되었습니다. (* 특히 여러 조건이 결합된 시물레이션 문제들)&lt;/p>
-&lt;ul>
-&lt;li>해설을 보면 “아, 그렇구나”&lt;/li>
-&lt;li>며칠 뒤 다시 보면 혼자서는 못 풂&lt;/li>
-&lt;li>문제를 많이 풀어도 체감 실력은 정체&lt;/li>
-&lt;/ul>
-&lt;p>이 상태를 벗어나기 위해&lt;/p></description></item><item><title>[코드업] 기초 100제. 십자 뒤집기, 설탕과자 뽑기, 성실한 개미</title><link>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</link><pubDate>Sat, 10 May 2025 12:25:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</guid><description>&lt;h1 id="-codeup-문제-요약">📘 CodeUp 문제 요약&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Online Judge on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/online-judge/</link><description>Recent content in Online Judge on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 10 May 2025 12:25:32 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/online-judge/index.xml" rel="self" type="application/rss+xml"/><item><title>[코드업] 기초 100제. 십자 뒤집기, 설탕과자 뽑기, 성실한 개미</title><link>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</link><pubDate>Sat, 10 May 2025 12:25:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</guid><description>&lt;h1 id="-codeup-문제-요약">📘 CodeUp 문제 요약&lt;/h1>
 &lt;hr>
 &lt;h2 id="-6096---십자-뒤집기">🔹 6096 - 십자 뒤집기&lt;/h2>
 &lt;blockquote>

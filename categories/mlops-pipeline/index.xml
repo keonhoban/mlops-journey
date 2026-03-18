@@ -1,4 +1,87 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>MLOps Pipeline on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/</link><description>Recent content in MLOps Pipeline on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 06 Mar 2026 17:10:57 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/index.xml" rel="self" type="application/rss+xml"/><item><title>[GitOps 기반 E2E ML Platform - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/</link><pubDate>Fri, 06 Mar 2026 17:10:57 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/</guid><description>&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>MLOps Pipeline on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/</link><description>Recent content in MLOps Pipeline on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 18 Mar 2026 11:00:00 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLflow Model Registry: alias 기반 모델 버전 관리와 hot swap 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlflow/01/</link><pubDate>Wed, 18 Mar 2026 11:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlflow/01/</guid><description>&lt;h2 id="mlflow-model-registry-stage-방식의-한계와-alias-기반-전환">MLflow Model Registry: Stage 방식의 한계와 alias 기반 전환&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>&amp;ldquo;MLflow 2.x부터 Staging/Production Stage가 deprecated됩니다.&lt;/p>
+&lt;p>대신 Registered Model Alias 방식이 공식 권장 패턴이 되었습니다.&amp;rdquo;&lt;/p>
+&lt;p>&amp;ldquo;이 변화는 단순한 API 교체가 아닙니다.&lt;/p>
+&lt;p>모델 버전 관리의 책임 구조가 바뀌는 것입니다.&amp;rdquo;&lt;/p>
+&lt;p>&amp;ldquo;이 글은 Stage 방식의 한계를 분석하고,&lt;/p>
+&lt;p>alias 기반 Champion/Challenger 패턴과&lt;/p>
+&lt;p>FastAPI와 연동한 zero-downtime hot swap 구조를 설명합니다.&amp;rdquo;&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>Stage 방식 한계&lt;/strong>: 고정된 Stage 이름(Staging/Production)은 운영 유연성 부족&lt;/li>
+&lt;li>&lt;strong>alias 방식 전환&lt;/strong>: &lt;code>@champion&lt;/code>, &lt;code>@challenger&lt;/code> 등 의미 있는 이름으로 버전 지정&lt;/li>
+&lt;li>&lt;strong>Champion/Challenger 패턴&lt;/strong>: 운영 모델(A)과 검증 모델(B)을 동시에 서빙&lt;/li>
+&lt;li>&lt;strong>hot swap 구조&lt;/strong>: FastAPI &lt;code>/variant/{alias}/reload&lt;/code> → MLflow alias 조회 → 모델 교체&lt;/li>
+&lt;li>&lt;strong>zero-downtime&lt;/strong>: 모델 교체 시 서비스 중단 없음 (메모리 내 교체)&lt;/li>
+&lt;li>&lt;strong>MLflow FQDN&lt;/strong>
+&lt;ul>
+&lt;li>dev: &lt;code>http://mlflow-dev-service.mlflow-dev.svc.cluster.local:5000&lt;/code>&lt;/li>
+&lt;li>prod: &lt;code>http://mlflow-prod-service.mlflow-prod.svc.cluster.local:5000&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-stage-방식의-한계">1️⃣ Stage 방식의 한계&lt;/h2>
+&lt;p>MLflow 1.x 시대에는 모델 버전에 Stage를 부여했습니다.&lt;/p></description></item><item><title>[Airflow - 6단계: KubernetesExecutor — 왜 CeleryExecutor 대신 선택했는가]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</link><pubDate>Wed, 18 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</guid><description>&lt;h2 id="airflow-kubernetesexecutor-task-격리와-동적-리소스-할당">Airflow KubernetesExecutor: Task 격리와 동적 리소스 할당&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>&amp;ldquo;Airflow를 Kubernetes 위에 올리면 Executor가 세 가지입니다.&lt;/p>
+&lt;p>LocalExecutor, CeleryExecutor, KubernetesExecutor.&lt;/p>
+&lt;p>이 중에서 MLOps 파이프라인에 가장 적합한 것을 선택하는 과정은&lt;/p>
+&lt;p>&lt;strong>단순한 설치 옵션 선택이 아니라 운영 구조에 대한 결정&lt;/strong>입니다.&amp;rdquo;&lt;/p>
+&lt;p>&amp;ldquo;이 프로젝트에서는 CeleryExecutor 대신 KubernetesExecutor를 선택했습니다.&lt;/p>
+&lt;p>이 글은 그 이유와 실제 구성 방법을 설명합니다.&amp;rdquo;&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>Executor 선택 기준&lt;/strong>: Task 격리 / 동적 리소스 / Worker 관리 비용&lt;/li>
+&lt;li>&lt;strong>KubernetesExecutor 선택 이유&lt;/strong>
+&lt;ul>
+&lt;li>Task마다 독립 Pod → 환경 격리 보장&lt;/li>
+&lt;li>Broker(Redis/RabbitMQ) 불필요 → 운영 복잡도 감소&lt;/li>
+&lt;li>Idle Worker 없음 → 리소스 낭비 제거&lt;/li>
+&lt;li>Task 단위 리소스 정의 → ML 학습/서빙 작업에 적합&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>실제 구성 요소&lt;/strong>
+&lt;ul>
+&lt;li>ServiceAccount + RBAC (Pod 생성 권한)&lt;/li>
+&lt;li>pod_template_file (Task Pod 표준 정의)&lt;/li>
+&lt;li>KubernetesPodOperator (커스텀 Task Pod)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>운영 주의사항&lt;/strong>
+&lt;ul>
+&lt;li>Cold start: Pod 스케줄링 지연 (&lt;del>10&lt;/del>30s)&lt;/li>
+&lt;li>Image pull policy: IfNotPresent 기본 권장&lt;/li>
+&lt;li>로그 지속성: NFS 또는 Remote Logging 필수&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-executor-종류-비교">1️⃣ Executor 종류 비교&lt;/h2>
+&lt;pre tabindex="0">&lt;code>Executor 비교
+┌──────────────────┬──────────────────────────────────────────────────────────────────────┐
+│ LocalExecutor │ Scheduler가 Task를 직접 실행. 단일 머신. 병렬 제한. │
+│ │ 소규모 환경에서만 적합. │
+├──────────────────┼──────────────────────────────────────────────────────────────────────┤
+│ CeleryExecutor │ Broker(Redis/RabbitMQ) + 별도 Worker 프로세스. │
+│ │ Worker가 항상 실행 중 → 유휴 리소스 발생. │
+│ │ Broker 관리 비용 추가. │
+├──────────────────┼──────────────────────────────────────────────────────────────────────┤
+│ KubernetesExecutor│ Task마다 Pod를 생성하고 완료 후 삭제. │
+│ │ Broker 불필요. Worker 관리 불필요. │
+│ │ Task 격리, 동적 리소스 정의 가능. │
+└──────────────────┴──────────────────────────────────────────────────────────────────────┘
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;h2 id="2-kubernetesexecutor를-선택한-이유">2️⃣ KubernetesExecutor를 선택한 이유&lt;/h2>
+&lt;h3 id="1-task-격리">(1) Task 격리&lt;/h3>
+&lt;p>CeleryExecutor의 Worker는 프로세스 단위로 격리됩니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/</link><pubDate>Fri, 06 Mar 2026 17:10:57 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/</guid><description>&lt;blockquote>
 &lt;p>이 글은 GitOps 기반 E2E ML Platform이&lt;/p>
 &lt;p>&lt;strong>구조적으로 분리되어 있고, 실제로 동작하며, 운영 관측과 복구까지 가능한 상태&lt;/strong>임을&lt;/p>
 &lt;p>캡처와 실행 결과로 검증하는 기록입니다.&lt;/p>&lt;/blockquote>
