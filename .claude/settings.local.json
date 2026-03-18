@@ -1,7 +1,36 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/.github/workflows/ci.yml)",
+      "Bash(curl -s https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/.github/workflows/ci.yml)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/tests/test_dag_integrity.py)",
+      "Bash(curl -s https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/tests/test_dag_integrity.py)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/dags/e2e_full.py)",
+      "Bash(curl -s https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/dags/e2e_full.py)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://raw.githubusercontent.com/keonhoban/mlops-infra-labs/main/docs/proof/load-test/README.md)",
+      "Bash(curl -s https://raw.githubusercontent.com/keonhoban/mlops-infra-labs/main/docs/proof/load-test/README.md)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://raw.githubusercontent.com/keonhoban/mlops-infra-labs/main/docs/proof/load-test/results.json)",
+      "Bash(curl -s https://raw.githubusercontent.com/keonhoban/mlops-infra-labs/main/docs/proof/load-test/results.json)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://raw.githubusercontent.com/keonhoban/mlops-infra-labs/main/charts/fastapi/templates/hpa.yaml)",
+      "Bash(curl -s https://raw.githubusercontent.com/keonhoban/mlops-infra-labs/main/charts/fastapi/templates/hpa.yaml)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/dags/mlops_lib/ids.py)",
+      "Bash(curl -s https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/dags/mlops_lib/ids.py)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://raw.githubusercontent.com/keonhoban/mlops-infra-labs/main/charts/fastapi/app/main.py)",
+      "Bash(curl -s https://raw.githubusercontent.com/keonhoban/mlops-infra-labs/main/charts/fastapi/app/main.py)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/dags/mlops_lib/triton/triton_config.py)",
+      "Bash(curl -s https://raw.githubusercontent.com/keonhoban/airflow-dags-dev/main/dags/mlops_lib/triton/triton_config.py)",
+      "Bash(curl -s \"https://api.github.com/repos/keonhoban/airflow-dags-dev/contents/dags\")",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(f[''''name''''], f[''''type'''']\\) for f in data] if isinstance\\(data, list\\) else print\\(json.dumps\\(data, indent=2\\)\\)\")",
+      "Bash(curl:*)",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(item[''''name'''']\\) for item in data]\")",
+      "Bash(python3:*)",
+      "Bash(ls:*)",
+      "Bash(gh api:*)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(echo ---EXIT:$?)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }
