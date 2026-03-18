@@ -6,7 +6,7 @@ Airflow Scheduler가 파싱 오류를 감지하고 해당 DAG을 비활성화합
 DAG CI를 구성했습니다.
 push 시점에 파싱 오류를 잡고, 운영 환경까지 가지 않도록 합니다.”
 🎯 핵심 요약 DAG CI 목적: 파싱 오류 / import 오류를 배포 전에 감지 test_dag_integrity.py: DagBag import, task 수 검증, SLA 설정 검증 GitHub Actions: push/PR 시 자동 실행, Python 환경에서 테스트 로컬 실행: pytest tests/test_dag_integrity.py 로 동일하게 검증 가능 CI 실패 시: 오류 로그에서 파일명과 원인 즉시 확인 가능 1️⃣ 왜 DAG CI가 필요한가 Airflow DAG 파일은 Python 코드입니다.
-...</p></div><footer class=entry-footer><span title='2026-03-18 12:00:00 +0900 +0900'>March 18, 2026</span>&nbsp;·&nbsp;5 min</footer><a class=entry-link aria-label="post link to [Airflow - 7단계: DAG CI 구축: test_dag_integrity.py + GitHub Actions]" href=https://keonhoban.github.io/mlops-journey/posts/airflow/07/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[MLflow Model Registry: alias 기반 모델 버전 관리와 hot swap 구조]</h2></header><div class=entry-content><p>MLflow Model Registry: Stage 방식의 한계와 alias 기반 전환 🧠 시나리오 설명 “MLflow 2.x부터 Staging/Production Stage가 deprecated됩니다.
+...</p></div><footer class=entry-footer><span title='2026-03-18 12:00:00 +0900 +0900'>March 18, 2026</span>&nbsp;·&nbsp;7 min</footer><a class=entry-link aria-label="post link to [Airflow - 7단계: DAG CI 구축: test_dag_integrity.py + GitHub Actions]" href=https://keonhoban.github.io/mlops-journey/posts/airflow/07/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[MLflow Model Registry: alias 기반 모델 버전 관리와 hot swap 구조]</h2></header><div class=entry-content><p>MLflow Model Registry: Stage 방식의 한계와 alias 기반 전환 🧠 시나리오 설명 “MLflow 2.x부터 Staging/Production Stage가 deprecated됩니다.
 대신 Registered Model Alias 방식이 공식 권장 패턴이 되었습니다.”
 “이 변화는 단순한 API 교체가 아닙니다.
 모델 버전 관리의 책임 구조가 바뀌는 것입니다.”
