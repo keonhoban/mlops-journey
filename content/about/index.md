@@ -32,6 +32,7 @@ DevOps 2년 3개월(가비아) 운영 경험을 기반으로,
 - **Reproducibility**: Feature Store-lite(버전화 + latest 고정), Feast 검증
 - **Architecture**: Core / Baseline / Optional 분리형 플랫폼 구조
 - **Proof System**: GitOps 경계 / runtime / optional attach-detach / observability 검증 문서화
+- **부하 테스트**: 136 RPS, p95 553ms, 에러율 0% (k6, 100 VU, 3노드 클러스터)
 
 👉 모든 구성은 GitHub 및 블로그에 **Proof 형태로 공개**되어 있습니다.
 
