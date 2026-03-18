@@ -26,7 +26,46 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="1-stage-방식의-한계">1️⃣ Stage 방식의 한계&lt;/h2>
-&lt;p>MLflow 1.x 시대에는 모델 버전에 Stage를 부여했습니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</link><pubDate>Fri, 06 Mar 2026 17:10:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</guid><description>&lt;h1 id="mlflow--triton--fastapi">MLflow + Triton + FastAPI&lt;/h1>
+&lt;p>MLflow 1.x 시대에는 모델 버전에 Stage를 부여했습니다.&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 - dynamic_batching + instance_group: CPU 서빙 성능 최적화]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/04/</link><pubDate>Wed, 18 Mar 2026 11:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/04/</guid><description>&lt;h3 id="cpu-서빙-처리량-최적화">CPU 서빙 처리량 최적화&lt;/h3>
+&lt;p>&lt;em>(dynamic_batching · instance_group · config.pbtxt · explicit mode)&lt;/em>&lt;/p>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>Triton을 올리고 모델이 READY 상태가 되면 끝일까요?&lt;/p>
+&lt;p>기본 설정만 사용하면 요청이 하나씩 순서대로 처리됩니다.&lt;/p>
+&lt;p>동시 요청이 몰리면 큐가 쌓이고, latency가 급격히 올라갑니다.&lt;/p>
+&lt;p>이 글은 &lt;code>dynamic_batching&lt;/code>과 &lt;code>instance_group&lt;/code> 설정으로&lt;/p>
+&lt;p>CPU 환경에서 처리량을 높이고 latency를 안정화한 과정을 설명합니다.&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>기본 설정의 한계&lt;/strong>: single instance + no batching → 요청 직렬 처리&lt;/li>
+&lt;li>&lt;strong>instance_group&lt;/strong>: CPU 인스턴스 수 증가 → 병렬 추론 처리&lt;/li>
+&lt;li>&lt;strong>dynamic_batching&lt;/strong>: 요청 자동 묶음 → 배치 단위 추론으로 처리량 향상&lt;/li>
+&lt;li>&lt;strong>적용 시점&lt;/strong>: explicit mode에서는 model load 시 config.pbtxt 반영&lt;/li>
+&lt;li>&lt;strong>실측 결과&lt;/strong>: 136 RPS, p95 553ms, 에러율 0% (100 VU, CPU-only 3노드)&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-기본-설정만으로는-무엇이-부족한가">1️⃣ 기본 설정만으로는 무엇이 부족한가&lt;/h2>
+&lt;p>Triton을 처음 실행하면 기본 동작은 다음과 같습니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 부하 테스트] k6로 검증한 Triton + FastAPI 서빙 성능: 136 RPS, p95 553ms</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</link><pubDate>Wed, 18 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</guid><description>&lt;h1 id="load-test-서빙-성능-검증">Load Test: 서빙 성능 검증&lt;/h1>
+&lt;ul>
+&lt;li>실제로 얼마나 버티는가&lt;/li>
+&lt;/ul>
+&lt;h2 id="들어가며">들어가며&lt;/h2>
+&lt;p>이 시리즈에서 지금까지 다음을 확인했습니다.&lt;/p>
+&lt;pre tabindex="0">&lt;code>Triton READY
+Model Repository Loaded
+FastAPI Health OK
+Reload API Success
+Metrics Exported
+&lt;/code>&lt;/pre>&lt;p>하지만 여기서 중요한 질문이 하나 더 남습니다.&lt;/p>
+&lt;blockquote>
+&lt;p>실제 트래픽이 들어왔을 때 이 시스템이 버티는가?&lt;/p>&lt;/blockquote>
+&lt;p>단일 요청이 성공하는 것과&lt;/p>
+&lt;p>100명이 동시에 요청을 보내는 것은 전혀 다른 문제입니다.&lt;/p>
+&lt;p>그래서 이 프로젝트에서는&lt;/p>
+&lt;p>&lt;strong>k6를 사용한 부하 테스트를 E2E 파이프라인 검증의 일부로 포함시켰습니다.&lt;/strong>&lt;/p>
+&lt;p>이 글에서는 다음 내용을 확인합니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</link><pubDate>Fri, 06 Mar 2026 17:10:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</guid><description>&lt;h1 id="mlflow--triton--fastapi">MLflow + Triton + FastAPI&lt;/h1>
 &lt;ul>
 &lt;li>등록과 서빙 반영을 분리한 이유&lt;/li>
 &lt;/ul>
