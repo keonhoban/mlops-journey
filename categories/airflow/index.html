@@ -6,7 +6,7 @@ Airflow Scheduler가 파싱 오류를 감지하고 해당 DAG을 비활성화합
 DAG CI를 구성했습니다.
 push 시점에 파싱 오류를 잡고, 운영 환경까지 가지 않도록 합니다.”
 🎯 핵심 요약 DAG CI 목적: 파싱 오류 / import 오류를 배포 전에 감지 test_dag_integrity.py: DagBag import, task 수 검증, SLA 설정 검증 GitHub Actions: push/PR 시 자동 실행, Python 환경에서 테스트 로컬 실행: pytest tests/test_dag_integrity.py 로 동일하게 검증 가능 CI 실패 시: 오류 로그에서 파일명과 원인 즉시 확인 가능 1️⃣ 왜 DAG CI가 필요한가 Airflow DAG 파일은 Python 코드입니다.
-...</p></div><footer class=entry-footer><span title='2026-03-18 12:00:00 +0900 +0900'>March 18, 2026</span>&nbsp;·&nbsp;7 min</footer><a class=entry-link aria-label="post link to [Airflow - 7단계: DAG CI 구축: test_dag_integrity.py + GitHub Actions]" href=https://keonhoban.github.io/mlops-journey/posts/airflow/07/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[Airflow - 6단계: KubernetesExecutor — 왜 CeleryExecutor 대신 선택했는가]</h2></header><div class=entry-content><p>Airflow KubernetesExecutor: Task 격리와 동적 리소스 할당 🧠 시나리오 설명 “Airflow를 Kubernetes 위에 올리면 Executor가 세 가지입니다.
+...</p></div><footer class=entry-footer><span title='2026-03-18 12:00:00 +0900 +0900'>March 18, 2026</span>&nbsp;·&nbsp;8 min</footer><a class=entry-link aria-label="post link to [Airflow - 7단계: DAG CI 구축: test_dag_integrity.py + GitHub Actions]" href=https://keonhoban.github.io/mlops-journey/posts/airflow/07/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[Airflow - 6단계: KubernetesExecutor — 왜 CeleryExecutor 대신 선택했는가]</h2></header><div class=entry-content><p>Airflow KubernetesExecutor: Task 격리와 동적 리소스 할당 🧠 시나리오 설명 “Airflow를 Kubernetes 위에 올리면 Executor가 세 가지입니다.
 LocalExecutor, CeleryExecutor, KubernetesExecutor.
 이 중에서 MLOps 파이프라인에 가장 적합한 것을 선택하는 과정은
 단순한 설치 옵션 선택이 아니라 운영 구조에 대한 결정입니다.”
