@@ -1584,7 +1584,7 @@ Serving Pipeline 영향
 │
 ├── ml_code/ 🧠 ML 학습 및 프로모션 코드
 │ ├── train_mlflow.py ← 모델 학습 및 MLflow 로깅
-│ └── promte_mlflow.py ← 모델 프로모션 (Staging → Production)
+│ └── promote_mlflow.py ← 모델 프로모션 (Staging → Production)
 │
 ├── mlflow_store/ 🗂️ MLflow 저장소 경로 (볼륨)
 │ ├── Dockerfile.mlflow ← MLflow 서버 커스터마이징
