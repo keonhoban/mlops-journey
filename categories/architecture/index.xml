@@ -60,8 +60,50 @@
 &lt;li>DAG 코드: &lt;a href="https://github.com/keonhoban/airflow-dags-dev">[DAG] airflow-dags&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h1 id="-전체-구조-요약">🎯 전체 구조 요약&lt;/h1>
-&lt;p>이 프로젝트는 단순한 모델 배포 시스템이 아니라&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 운영 경계]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/</link><pubDate>Fri, 06 Mar 2026 17:10:23 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/</guid><description>&lt;h1 id="core--baseline--optional">Core / Baseline / Optional&lt;/h1>
+&lt;h1 id="-impact-summary">📊 Impact Summary&lt;/h1>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>지표&lt;/th>
+&lt;th>Before&lt;/th>
+&lt;th>After&lt;/th>
+&lt;th>비고&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>모델 배포 소요 시간&lt;/td>
+&lt;td>수동 ~40분&lt;/td>
+&lt;td>DAG 자동화 ~13분&lt;/td>
+&lt;td>약 68% 단축&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>장애 감지&lt;/td>
+&lt;td>수동 대시보드 확인&lt;/td>
+&lt;td>Prometheus 60초 윈도우 내 SLO 위반 자동 감지&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>자동 롤백&lt;/td>
+&lt;td>수동 대응 5~15분&lt;/td>
+&lt;td>smoke test ~35초, observe ~95초 자동 복구&lt;/td>
+&lt;td>로컬 1-replica&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>미검증 모델 차단&lt;/td>
+&lt;td>없음&lt;/td>
+&lt;td>Drift Gate + Shadow 분기 100% 차단&lt;/td>
+&lt;td>20/20 시나리오&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Shadow 격리&lt;/td>
+&lt;td>없음&lt;/td>
+&lt;td>프로덕션 무영향 10/10 검증 완료&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;strong>성능 검증 (k6 부하 테스트)&lt;/strong>&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 운영 경계]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/</link><pubDate>Fri, 06 Mar 2026 17:10:23 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/02/</guid><description>&lt;h1 id="core--baseline--optional">Core / Baseline / Optional&lt;/h1>
 &lt;ul>
 &lt;li>운영 가능한 경계를 먼저 설계&lt;/li>
 &lt;/ul>
