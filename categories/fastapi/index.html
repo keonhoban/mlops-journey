@@ -7,14 +7,7 @@
 alias 기반 Champion/Challenger 패턴과
 FastAPI와 연동한 zero-downtime hot swap 구조를 설명합니다.”
 🎯 핵심 요약 Stage 방식 한계: 고정된 Stage 이름(Staging/Production)은 운영 유연성 부족 alias 방식 전환: @champion, @challenger 등 의미 있는 이름으로 버전 지정 Champion/Challenger 패턴: 운영 모델(A)과 검증 모델(B)을 동시에 서빙 hot swap 구조: FastAPI /variant/{alias}/reload → MLflow alias 조회 → 모델 교체 zero-downtime: 모델 교체 시 서비스 중단 없음 (메모리 내 교체) MLflow FQDN dev: http://mlflow-dev-service.mlflow-dev.svc.cluster.local:5000 prod: http://mlflow-prod-service.mlflow-prod.svc.cluster.local:5000 1️⃣ Stage 방식의 한계 MLflow 1.x 시대에는 모델 버전에 Stage를 부여했습니다.
-...</p></div><footer class=entry-footer><span title='2026-03-18 11:00:00 +0900 +0900'>March 18, 2026</span>&nbsp;·&nbsp;7 min</footer><a class=entry-link aria-label="post link to [MLflow Model Registry: alias 기반 모델 버전 관리와 hot swap 구조]" href=https://keonhoban.github.io/mlops-journey/posts/mlflow/01/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[Triton 운영형 서빙 플랫폼 - dynamic_batching + instance_group: CPU 서빙 성능 최적화]</h2></header><div class=entry-content><p>CPU 서빙 처리량 최적화 (dynamic_batching · instance_group · config.pbtxt · explicit mode)
-🧠 시나리오 설명 Triton을 올리고 모델이 READY 상태가 되면 끝일까요?
-기본 설정만 사용하면 요청이 하나씩 순서대로 처리됩니다.
-동시 요청이 몰리면 큐가 쌓이고, latency가 급격히 올라갑니다.
-이 글은 dynamic_batching과 instance_group 설정으로
-CPU 환경에서 처리량을 높이고 latency를 안정화한 과정을 설명합니다.
-🎯 핵심 요약 기본 설정의 한계: single instance + no batching → 요청 직렬 처리 instance_group: CPU 인스턴스 수 증가 → 병렬 추론 처리 dynamic_batching: 요청 자동 묶음 → 배치 단위 추론으로 처리량 향상 적용 시점: explicit mode에서는 model load 시 config.pbtxt 반영 실측 결과: 136 RPS, p95 553ms, 에러율 0% (100 VU, CPU-only 3노드) 1️⃣ 기본 설정만으로는 무엇이 부족한가 Triton을 처음 실행하면 기본 동작은 다음과 같습니다.
-...</p></div><footer class=entry-footer><span title='2026-03-18 11:00:00 +0900 +0900'>March 18, 2026</span>&nbsp;·&nbsp;5 min</footer><a class=entry-link aria-label="post link to [Triton 운영형 서빙 플랫폼 - dynamic_batching + instance_group: CPU 서빙 성능 최적화]" href=https://keonhoban.github.io/mlops-journey/posts/triton/04/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 부하 테스트] k6로 검증한 Triton + FastAPI 서빙 성능: 136 RPS, p95 553ms</h2></header><div class=entry-content><p>Load Test: 서빙 성능 검증 실제로 얼마나 버티는가 들어가며 이 시리즈에서 지금까지 다음을 확인했습니다.
+...</p></div><footer class=entry-footer><span title='2026-03-18 11:00:00 +0900 +0900'>March 18, 2026</span>&nbsp;·&nbsp;7 min</footer><a class=entry-link aria-label="post link to [MLflow Model Registry: alias 기반 모델 버전 관리와 hot swap 구조]" href=https://keonhoban.github.io/mlops-journey/posts/mlflow/01/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 부하 테스트] k6로 검증한 Triton + FastAPI 서빙 성능: 136 RPS, p95 553ms</h2></header><div class=entry-content><p>Load Test: 서빙 성능 검증 실제로 얼마나 버티는가 들어가며 이 시리즈에서 지금까지 다음을 확인했습니다.
 Triton READY Model Repository Loaded FastAPI Health OK Reload API Success Metrics Exported 하지만 여기서 중요한 질문이 하나 더 남습니다.
 실제 트래픽이 들어왔을 때 이 시스템이 버티는가?
 단일 요청이 성공하는 것과
@@ -22,7 +15,14 @@ Triton READY Model Repository Loaded FastAPI Health OK Reload API Success Metric
 그래서 이 프로젝트에서는
 k6를 사용한 부하 테스트를 E2E 파이프라인 검증의 일부로 포함시켰습니다.
 이 글에서는 다음 내용을 확인합니다.
-...</p></div><footer class=entry-footer><span title='2026-03-18 10:00:00 +0900 +0900'>March 18, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 부하 테스트] k6로 검증한 Triton + FastAPI 서빙 성능: 136 RPS, p95 553ms" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]</h2></header><div class=entry-content><p>MLflow + Triton + FastAPI 등록과 서빙 반영을 분리한 이유 들어가며 ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.
+...</p></div><footer class=entry-footer><span title='2026-03-18 10:00:00 +0900 +0900'>March 18, 2026</span>&nbsp;·&nbsp;4 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 부하 테스트] k6로 검증한 Triton + FastAPI 서빙 성능: 136 RPS, p95 553ms" href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[Triton 운영형 서빙 플랫폼 - dynamic_batching + instance_group: CPU 서빙 성능 최적화]</h2></header><div class=entry-content><p>CPU 서빙 처리량 최적화 (dynamic_batching · instance_group · config.pbtxt · explicit mode)
+🧠 시나리오 설명 Triton을 올리고 모델이 READY 상태가 되면 끝일까요?
+기본 설정만 사용하면 요청이 하나씩 순서대로 처리됩니다.
+동시 요청이 몰리면 큐가 쌓이고, latency가 급격히 올라갑니다.
+이 글은 dynamic_batching과 instance_group 설정으로
+CPU 환경에서 처리량을 높이고 latency를 안정화한 과정을 설명합니다.
+🎯 핵심 요약 기본 설정의 한계: single instance + no batching → 요청 직렬 처리 instance_group: CPU 인스턴스 수 증가 → 병렬 추론 처리 dynamic_batching: 요청 자동 묶음 → 배치 단위 추론으로 처리량 향상 적용 시점: explicit mode에서는 model load 시 config.pbtxt 반영 실측 결과: 136 RPS, p95 553ms, 에러율 0% (100 VU, CPU-only 3노드) 1️⃣ 기본 설정만으로는 무엇이 부족한가 Triton을 처음 실행하면 기본 동작은 다음과 같습니다.
+...</p></div><footer class=entry-footer><span title='2026-03-15 13:05:22 +0900 +0900'>March 15, 2026</span>&nbsp;·&nbsp;5 min</footer><a class=entry-link aria-label="post link to [Triton 운영형 서빙 플랫폼 - dynamic_batching + instance_group: CPU 서빙 성능 최적화]" href=https://keonhoban.github.io/mlops-journey/posts/triton/04/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]</h2></header><div class=entry-content><p>MLflow + Triton + FastAPI 등록과 서빙 반영을 분리한 이유 들어가며 ML 시스템을 처음 구축할 때 흔히 다음과 같은 구조를 사용합니다.
 Train ↓ MLflow Register ↓ Deploy 즉, 모델 등록과 서빙 반영이 거의 같은 단계로 취급됩니다.
 이 방식은 간단하고 구현하기 쉽습니다.
 하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.

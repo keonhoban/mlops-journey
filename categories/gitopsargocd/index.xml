@@ -26,7 +26,7 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="1-stage-방식의-한계">1️⃣ Stage 방식의 한계&lt;/h2>
-&lt;p>MLflow 1.x 시대에는 모델 버전에 Stage를 부여했습니다.&lt;/p></description></item><item><title>[Airflow - 6단계: KubernetesExecutor — 왜 CeleryExecutor 대신 선택했는가]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</link><pubDate>Wed, 18 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</guid><description>&lt;h2 id="airflow-kubernetesexecutor-task-격리와-동적-리소스-할당">Airflow KubernetesExecutor: Task 격리와 동적 리소스 할당&lt;/h2>
+&lt;p>MLflow 1.x 시대에는 모델 버전에 Stage를 부여했습니다.&lt;/p></description></item><item><title>[Airflow - 6단계: KubernetesExecutor — 왜 CeleryExecutor 대신 선택했는가]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</link><pubDate>Tue, 10 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</guid><description>&lt;h2 id="airflow-kubernetesexecutor-task-격리와-동적-리소스-할당">Airflow KubernetesExecutor: Task 격리와 동적 리소스 할당&lt;/h2>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>

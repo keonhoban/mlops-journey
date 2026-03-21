@@ -1,25 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>MLOps Pipeline on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/</link><description>Recent content in MLOps Pipeline on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 18 Mar 2026 12:00:00 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/index.xml" rel="self" type="application/rss+xml"/><item><title>[Airflow - 7단계: DAG CI 구축: test_dag_integrity.py + GitHub Actions]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/07/</link><pubDate>Wed, 18 Mar 2026 12:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/07/</guid><description>&lt;h2 id="airflow-dag-ci-파싱-오류를-운영-전에-잡는-구조">Airflow DAG CI: 파싱 오류를 운영 전에 잡는 구조&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>&amp;ldquo;DAG 파일에 오타가 하나 들어갔습니다.&lt;/p>
-&lt;p>Airflow Scheduler가 파싱 오류를 감지하고 해당 DAG을 비활성화합니다.&lt;/p>
-&lt;p>문제를 발견한 것은 배포 후 30분이 지난 시점입니다.&amp;rdquo;&lt;/p>
-&lt;p>&amp;ldquo;이 프로젝트에서는 이 상황을 방지하기 위해&lt;/p>
-&lt;p>&lt;strong>DAG CI를 구성했습니다.&lt;/strong>&lt;/p>
-&lt;p>push 시점에 파싱 오류를 잡고, 운영 환경까지 가지 않도록 합니다.&amp;rdquo;&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
-&lt;ul>
-&lt;li>&lt;strong>DAG CI 목적&lt;/strong>: 파싱 오류 / import 오류를 배포 전에 감지&lt;/li>
-&lt;li>&lt;strong>test_dag_integrity.py&lt;/strong>: DagBag import, task 수 검증, SLA 설정 검증&lt;/li>
-&lt;li>&lt;strong>GitHub Actions&lt;/strong>: push/PR 시 자동 실행, Python 환경에서 테스트&lt;/li>
-&lt;li>&lt;strong>로컬 실행&lt;/strong>: &lt;code>pytest tests/test_dag_integrity.py&lt;/code> 로 동일하게 검증 가능&lt;/li>
-&lt;li>&lt;strong>CI 실패 시&lt;/strong>: 오류 로그에서 파일명과 원인 즉시 확인 가능&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="1-왜-dag-ci가-필요한가">1️⃣ 왜 DAG CI가 필요한가&lt;/h2>
-&lt;p>Airflow DAG 파일은 Python 코드입니다.&lt;/p></description></item><item><title>[MLflow Model Registry: alias 기반 모델 버전 관리와 hot swap 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlflow/01/</link><pubDate>Wed, 18 Mar 2026 11:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlflow/01/</guid><description>&lt;h2 id="mlflow-model-registry-stage-방식의-한계와-alias-기반-전환">MLflow Model Registry: Stage 방식의 한계와 alias 기반 전환&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>MLOps Pipeline on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/</link><description>Recent content in MLOps Pipeline on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 18 Mar 2026 11:00:00 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/mlops-pipeline/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLflow Model Registry: alias 기반 모델 버전 관리와 hot swap 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlflow/01/</link><pubDate>Wed, 18 Mar 2026 11:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlflow/01/</guid><description>&lt;h2 id="mlflow-model-registry-stage-방식의-한계와-alias-기반-전환">MLflow Model Registry: Stage 방식의 한계와 alias 기반 전환&lt;/h2>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
@@ -47,7 +26,25 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="1-stage-방식의-한계">1️⃣ Stage 방식의 한계&lt;/h2>
-&lt;p>MLflow 1.x 시대에는 모델 버전에 Stage를 부여했습니다.&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 - dynamic_batching + instance_group: CPU 서빙 성능 최적화]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/04/</link><pubDate>Wed, 18 Mar 2026 11:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/04/</guid><description>&lt;h3 id="cpu-서빙-처리량-최적화">CPU 서빙 처리량 최적화&lt;/h3>
+&lt;p>MLflow 1.x 시대에는 모델 버전에 Stage를 부여했습니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 부하 테스트] k6로 검증한 Triton + FastAPI 서빙 성능: 136 RPS, p95 553ms</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</link><pubDate>Wed, 18 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</guid><description>&lt;h1 id="load-test-서빙-성능-검증">Load Test: 서빙 성능 검증&lt;/h1>
+&lt;ul>
+&lt;li>실제로 얼마나 버티는가&lt;/li>
+&lt;/ul>
+&lt;h2 id="들어가며">들어가며&lt;/h2>
+&lt;p>이 시리즈에서 지금까지 다음을 확인했습니다.&lt;/p>
+&lt;pre tabindex="0">&lt;code>Triton READY
+Model Repository Loaded
+FastAPI Health OK
+Reload API Success
+Metrics Exported
+&lt;/code>&lt;/pre>&lt;p>하지만 여기서 중요한 질문이 하나 더 남습니다.&lt;/p>
+&lt;blockquote>
+&lt;p>실제 트래픽이 들어왔을 때 이 시스템이 버티는가?&lt;/p>&lt;/blockquote>
+&lt;p>단일 요청이 성공하는 것과&lt;/p>
+&lt;p>100명이 동시에 요청을 보내는 것은 전혀 다른 문제입니다.&lt;/p>
+&lt;p>그래서 이 프로젝트에서는&lt;/p>
+&lt;p>&lt;strong>k6를 사용한 부하 테스트를 E2E 파이프라인 검증의 일부로 포함시켰습니다.&lt;/strong>&lt;/p>
+&lt;p>이 글에서는 다음 내용을 확인합니다.&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 - dynamic_batching + instance_group: CPU 서빙 성능 최적화]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/04/</link><pubDate>Sun, 15 Mar 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/04/</guid><description>&lt;h3 id="cpu-서빙-처리량-최적화">CPU 서빙 처리량 최적화&lt;/h3>
 &lt;p>&lt;em>(dynamic_batching · instance_group · config.pbtxt · explicit mode)&lt;/em>&lt;/p>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
@@ -68,7 +65,28 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="1-기본-설정만으로는-무엇이-부족한가">1️⃣ 기본 설정만으로는 무엇이 부족한가&lt;/h2>
-&lt;p>Triton을 처음 실행하면 기본 동작은 다음과 같습니다.&lt;/p></description></item><item><title>[Airflow - 6단계: KubernetesExecutor — 왜 CeleryExecutor 대신 선택했는가]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</link><pubDate>Wed, 18 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</guid><description>&lt;h2 id="airflow-kubernetesexecutor-task-격리와-동적-리소스-할당">Airflow KubernetesExecutor: Task 격리와 동적 리소스 할당&lt;/h2>
+&lt;p>Triton을 처음 실행하면 기본 동작은 다음과 같습니다.&lt;/p></description></item><item><title>[Airflow - 7단계: DAG CI 구축: test_dag_integrity.py + GitHub Actions]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/07/</link><pubDate>Fri, 13 Mar 2026 12:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/07/</guid><description>&lt;h2 id="airflow-dag-ci-파싱-오류를-운영-전에-잡는-구조">Airflow DAG CI: 파싱 오류를 운영 전에 잡는 구조&lt;/h2>
+&lt;hr>
+&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;blockquote>
+&lt;p>&amp;ldquo;DAG 파일에 오타가 하나 들어갔습니다.&lt;/p>
+&lt;p>Airflow Scheduler가 파싱 오류를 감지하고 해당 DAG을 비활성화합니다.&lt;/p>
+&lt;p>문제를 발견한 것은 배포 후 30분이 지난 시점입니다.&amp;rdquo;&lt;/p>
+&lt;p>&amp;ldquo;이 프로젝트에서는 이 상황을 방지하기 위해&lt;/p>
+&lt;p>&lt;strong>DAG CI를 구성했습니다.&lt;/strong>&lt;/p>
+&lt;p>push 시점에 파싱 오류를 잡고, 운영 환경까지 가지 않도록 합니다.&amp;rdquo;&lt;/p>&lt;/blockquote>
+&lt;hr>
+&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>DAG CI 목적&lt;/strong>: 파싱 오류 / import 오류를 배포 전에 감지&lt;/li>
+&lt;li>&lt;strong>test_dag_integrity.py&lt;/strong>: DagBag import, task 수 검증, SLA 설정 검증&lt;/li>
+&lt;li>&lt;strong>GitHub Actions&lt;/strong>: push/PR 시 자동 실행, Python 환경에서 테스트&lt;/li>
+&lt;li>&lt;strong>로컬 실행&lt;/strong>: &lt;code>pytest tests/test_dag_integrity.py&lt;/code> 로 동일하게 검증 가능&lt;/li>
+&lt;li>&lt;strong>CI 실패 시&lt;/strong>: 오류 로그에서 파일명과 원인 즉시 확인 가능&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="1-왜-dag-ci가-필요한가">1️⃣ 왜 DAG CI가 필요한가&lt;/h2>
+&lt;p>Airflow DAG 파일은 Python 코드입니다.&lt;/p></description></item><item><title>[Airflow - 6단계: KubernetesExecutor — 왜 CeleryExecutor 대신 선택했는가]</title><link>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</link><pubDate>Tue, 10 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/airflow/06/</guid><description>&lt;h2 id="airflow-kubernetesexecutor-task-격리와-동적-리소스-할당">Airflow KubernetesExecutor: Task 격리와 동적 리소스 할당&lt;/h2>
 &lt;hr>
 &lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
 &lt;blockquote>
@@ -123,25 +141,7 @@
 &lt;/code>&lt;/pre>&lt;hr>
 &lt;h2 id="2-kubernetesexecutor를-선택한-이유">2️⃣ KubernetesExecutor를 선택한 이유&lt;/h2>
 &lt;h3 id="1-task-격리">(1) Task 격리&lt;/h3>
-&lt;p>CeleryExecutor의 Worker는 프로세스 단위로 격리됩니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 부하 테스트] k6로 검증한 Triton + FastAPI 서빙 성능: 136 RPS, p95 553ms</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</link><pubDate>Wed, 18 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</guid><description>&lt;h1 id="load-test-서빙-성능-검증">Load Test: 서빙 성능 검증&lt;/h1>
-&lt;ul>
-&lt;li>실제로 얼마나 버티는가&lt;/li>
-&lt;/ul>
-&lt;h2 id="들어가며">들어가며&lt;/h2>
-&lt;p>이 시리즈에서 지금까지 다음을 확인했습니다.&lt;/p>
-&lt;pre tabindex="0">&lt;code>Triton READY
-Model Repository Loaded
-FastAPI Health OK
-Reload API Success
-Metrics Exported
-&lt;/code>&lt;/pre>&lt;p>하지만 여기서 중요한 질문이 하나 더 남습니다.&lt;/p>
-&lt;blockquote>
-&lt;p>실제 트래픽이 들어왔을 때 이 시스템이 버티는가?&lt;/p>&lt;/blockquote>
-&lt;p>단일 요청이 성공하는 것과&lt;/p>
-&lt;p>100명이 동시에 요청을 보내는 것은 전혀 다른 문제입니다.&lt;/p>
-&lt;p>그래서 이 프로젝트에서는&lt;/p>
-&lt;p>&lt;strong>k6를 사용한 부하 테스트를 E2E 파이프라인 검증의 일부로 포함시켰습니다.&lt;/strong>&lt;/p>
-&lt;p>이 글에서는 다음 내용을 확인합니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/</link><pubDate>Fri, 06 Mar 2026 17:10:57 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/</guid><description>&lt;blockquote>
+&lt;p>CeleryExecutor의 Worker는 프로세스 단위로 격리됩니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/</link><pubDate>Fri, 06 Mar 2026 17:10:57 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/</guid><description>&lt;blockquote>
 &lt;p>이 글은 GitOps 기반 E2E ML Platform이&lt;/p>
 &lt;p>&lt;strong>구조적으로 분리되어 있고, 실제로 동작하며, 운영 관측과 복구까지 가능한 상태&lt;/strong>임을&lt;/p>
 &lt;p>캡처와 실행 결과로 검증하는 기록입니다.&lt;/p>&lt;/blockquote>
