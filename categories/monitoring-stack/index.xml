@@ -22,241 +22,88 @@
 모델이 실제로 로드되었는가
 API가 실제로 동작하는가
 metrics가 실제로 수집되는가
-&lt;/code>&lt;/pre>&lt;p>그래서 이 프로젝트에서는&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Alerting 운영 표준 매뉴얼]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/03/</link><pubDate>Fri, 02 Jan 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/03/</guid><description>&lt;h3 id="devprod-분리--triton-serving-alerts">Dev/Prod 분리 + Triton Serving Alerts&lt;/h3>
-&lt;p>&lt;em>(kube-prometheus-stack · PrometheusRule · Alertmanager · ArgoCD · SealedSecret)&lt;/em>&lt;/p>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;/code>&lt;/pre>&lt;p>그래서 이 프로젝트에서는&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Alerting 운영 표준 매뉴얼]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/03/</link><pubDate>Fri, 02 Jan 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/03/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>Observability는 대시보드가 아니라, 사고를 막는 운영 정책입니다.&lt;/p>
-&lt;p>이 문서는 dev/prod 알럿을 완전히 분리하고,
+&lt;p>Triton 서빙 환경에서 dev/prod 알럿을 완전히 분리하고, PrometheusRule/Alertmanager/Grafana를 하나의 판단 흐름으로 고정하는 GitOps 기반 Alerting 운영 표준 설계&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/triton/02/">Triton 서빙 플랫폼 - MLflow → Triton 자동 배포 파이프라인&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>Observability는 대시보드가 아니라, 사고를 막는 운영 정책입니다.
+이 문서는 dev/prod 알럿을 완전히 분리하고,
 라벨 실수로 인한 교차 전송까지 구조적으로 차단하며,
 Triton 서빙 품질을 모델 실행 관점에서 감지하도록 설계된
-GitOps 기반 Alerting 운영입니다.&lt;/p>
-&lt;p>알럿이후 즉시 운영 판단이 가능하도록,
-Alertmanager 라우팅과 Grafana 대시보드를
-하나의 판단 흐름으로 고정했습니다.&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+GitOps 기반 Alerting 운영입니다.&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - MLflow → Triton 자동 배포 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/02/</link><pubDate>Mon, 29 Dec 2025 12:02:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/02/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>MLflow Registry를 단일 소스로 삼아 Airflow DAG에서 Triton에 모델을 자동 배포하고, 검증 체인(load/ready/infer) 통과 후에만 운영 확정하며, 실패 시 자동 롤백하는 파이프라인을 구축한 과정&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>PrometheusRule: “언제 이상인가” 정의&lt;/li>
-&lt;li>Alertmanager: “어디로 보낼지/차단할지” 최종 통제&lt;/li>
-&lt;li>Slack: 단순 수신자&lt;/li>
-&lt;li>기본 receiver는 반드시 &lt;code>&amp;quot;null&amp;quot;&lt;/code>&lt;/li>
-&lt;li>Slack 전송은 &lt;strong>namespace 정규식 match&lt;/strong>로만 허용&lt;/li>
-&lt;li>Triton 알럿은 p95 대신 &lt;strong>mean latency 기반&lt;/strong>으로 시작&lt;/li>
-&lt;li>Grafana: 알럿 이후 “원인 확인/판단” 표준 (avg latency + queue + pending)&lt;/li>
-&lt;li>알럿-대시보드는 한 세트로 운영 (Detect → Diagnose → Act)&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/triton/01/">Triton 서빙 플랫폼 - Triton 구축&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="1-전체-아키텍처">1️⃣ 전체 아키텍처&lt;/h2>
-&lt;pre tabindex="0">&lt;code>[Workload (Triton/FastAPI/...)]
-↓ metrics
-[Prometheus (dev/prod)]
-↓ PrometheusRule: &amp;#34;언제 이상인가&amp;#34;
-[Alertmanager (dev/prod)]
-↓ Routing Policy: &amp;#34;어디로 보낼지/차단할지&amp;#34;
-[Slack (#dev / #prod)] → [Grafana Dashboard: Diagnose (30s)]
-&lt;/code>&lt;/pre>&lt;h3 id="핵심-원칙">핵심 원칙&lt;/h3>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>실무 환경에서 모델 배포는 &amp;ldquo;새 모델을 올리는 작업&amp;quot;이 아니라 &amp;ldquo;현재 운영 상태를 안전하게 갱신하는 상태 전이(State Transition)&amp;ldquo;에 가깝다.
+이번 단계에서는 MLflow Registry를 단일 소스로 삼아 Triton Inference Server에 모델을 자동 배포하고, 로딩/헬스 체크/실제 추론 검증을 모두 통과한 경우에만 운영 모델을 확정(commit)하며, 중간 단계에서 하나라도 실패하면 이전 운영 상태로 자동 복구되는 최소 롤백 구조를 구현했다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 6단계 : FastAPI Observability Dashboard &amp; Alert Library]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/</link><pubDate>Wed, 05 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>FastAPI ML 서빙 환경에서 장애를 즉시 감지하고 원인을 추적할 수 있는 대시보드 3종과 Alert Library 4종을 구축한 과정&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>Alertmanager가 최종 통제 지점&lt;/li>
-&lt;li>PrometheusRule은 “알럿 발생”만 담당&lt;/li>
-&lt;li>“기본 전송 금지(Null default)”가 안전한 운영의 출발점&lt;/li>
-&lt;li>알럿은 감지, Grafana는 원인 확인(진단) 표준&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/">Observability 5단계: 운영 중 실제 이슈 &amp;amp; 해결 과정&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="2-운영-정책-policy">2️⃣ 운영 정책 (Policy)&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>항목&lt;/th>
-&lt;th>정책&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>Default receiver&lt;/td>
-&lt;td>&lt;code>&amp;quot;null&amp;quot;&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>Slack 전송&lt;/td>
-&lt;td>routes + matchers로만 허용&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>교차(dev↔prod)&lt;/td>
-&lt;td>무조건 차단&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>예외&lt;/td>
-&lt;td>문서/코드로 명시적으로 추가한 것만 허용&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>Dashboard&lt;/td>
-&lt;td>알럿 발생 시 Grafana로 즉시 원인 확인 (30초 루틴)&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;hr>
-&lt;h1 id="part-a-alertmanager-devprod-분리--철벽-라우팅">Part A. Alertmanager Dev/Prod 분리 &amp;amp; 철벽 라우팅&lt;/h1>
-&lt;h2 id="a-1-dev-alertmanager-최종-설정">A-1) DEV Alertmanager 최종 설정&lt;/h2>
-&lt;p>📄 &lt;code>/tmp/alertmanager-dev.yaml&lt;/code>&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - MLflow → Triton 자동 배포 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/02/</link><pubDate>Mon, 29 Dec 2025 12:02:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/02/</guid><description>&lt;h3 id="airflow-기반--검증-체인--최소-롤백">Airflow 기반 · 검증 체인 · 최소 롤백&lt;/h3>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>FastAPI는 모델을 서빙하는 입구이자, 장애가 나면 가장 먼저 흔들리는 지점이다.
+A/B, Canary, 핫스왑 구조 위에서 문제가 생기면 바로 감지되고 원인을 바로 찾을 수 있는 관측 체계가 필요하다.
+이번 단계에서는 실제 운영 수준의 FastAPI Observability Dashboard와 Alert Library를 구축한다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 5단계 : 운영 중 발생한 실제 이슈 &amp; 해결 과정]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</link><pubDate>Sun, 02 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>실무 환경에서 모델 배포는&lt;/p>
-&lt;p>“새 모델을 올리는 작업”이 아니라&lt;/p>
-&lt;p>“현재 운영 상태를 안전하게 갱신하는 상태 전이(State Transition)”에 가깝습니다.&lt;/p>
-&lt;p>이번 단계에서는 MLflow Registry를 단일 소스로 삼아&lt;/p>
-&lt;p>Triton Inference Server에 모델을 &lt;strong>자동 배포&lt;/strong>하고,&lt;/p>
+&lt;p>Observability 스택 운영 중 실제로 마주친 이슈들(크로스 스크랩, Alertmanager 충돌, NFS 권한, TSDB 병목 등)의 원인 분석과 재발 방지 구조를 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>로딩&lt;/li>
-&lt;li>헬스 체크&lt;/li>
-&lt;li>실제 추론 검증&lt;/li>
-&lt;/ul>
-&lt;p>을 모두 통과한 경우에만 운영 모델을 확정(commit)하며,&lt;/p>
-&lt;p>중간 단계에서 하나라도 실패하면&lt;/p>
-&lt;p>&lt;strong>이전 운영 상태로 자동 복구되는 최소 롤백 구조&lt;/strong>를 구현했습니다.&lt;/p>
-&lt;p>이 모든 흐름은 Airflow DAG를 통해&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 6단계 : FastAPI Observability Dashboard &amp; Alert Library]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/</link><pubDate>Wed, 05 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/</guid><description>&lt;h2 id="fastapi-observability-dashboard--alert-library">FastAPI Observability Dashboard &amp;amp; Alert Library&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“FastAPI는 모델을 서빙하는 ‘입구’이자,&lt;/p>
-&lt;p>장애가 나면 가장 먼저 흔들리는 지점입니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 실제 운영처럼&lt;/p>
-&lt;p>&lt;strong>문제가 생기면 바로 감지되고, 원인을 바로 찾을 수 있는 관측체계&lt;/strong>를 만들었습니다.”&lt;/p>
-&lt;p>“A/B·Canary·핫스왑 구조 위에 안전망을 올리는 과정,&lt;/p>
-&lt;p>그 첫 단계가 바로 FastAPI Observability Dashboard &amp;amp; Alert Library입니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h2 id="-핵심-요약">🎯 &lt;strong>핵심 요약&lt;/strong>&lt;/h2>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>FastAPI 기반 ML Serving 환경에서&lt;/p>
-&lt;p>&lt;strong>실제 운영 가능한 수준의 관측·알람 체계&lt;/strong> 구축&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>장애 발생 시 즉시 감지하고&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 5단계 : 운영 중 발생한 실제 이슈 &amp; 해결 과정]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</link><pubDate>Sun, 02 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</guid><description>&lt;h2 id="운영-중-발생한-실제-이슈--해결-과정">운영 중 발생한 실제 이슈 &amp;amp; 해결 과정&lt;/h2>
-&lt;hr>
-&lt;h1 id="-시나리오-설명">🧠 시나리오 설명&lt;/h1>
-&lt;blockquote>
-&lt;p>“관측·알림·로그 시스템은 세팅보다 운영 이후가 진짜 시작입니다.”&lt;/p>
-&lt;p>“실운영 환경에서 반드시 마주치는 문제들(div/prod 크로스 스크랩, Alertmanager 충돌, NFS 권한, TSDB 병목 등)을 정리하고&lt;/p>
-&lt;p>&lt;strong>왜 문제가 생겼는지 → 어떻게 해결했는지 → 다시는 반복되지 않도록&lt;/strong> 구조 자체를 잡아주는 단계입니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
-&lt;ul>
-&lt;li>dev/prod &lt;strong>크로스 스크랩 문제&lt;/strong> 정리&lt;/li>
-&lt;li>Alertmanager configSecret / generated-secret 충돌&lt;/li>
-&lt;li>Instant Query 오류(&lt;code>log queries are not supported&lt;/code>) 원리&lt;/li>
-&lt;li>worker2 종료 지연(30~40초)&lt;/li>
-&lt;li>tmp-curl CrashLoopBackOff&lt;/li>
-&lt;li>NFS Flush / Permission / fsGroup 문제&lt;/li>
-&lt;li>SealedSecret namespace mismatch&lt;/li>
-&lt;li>Prometheus TSDB → local-path 전환 시 발생 가능한 이슈&lt;/li>
-&lt;li>&lt;strong>“문제 → 원인 → 해결 → 재발 방지” 구조로 정리&lt;/strong>&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/">Observability 4단계: Loki/Promtail 로그 파이프라인 구축&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="1-devprod-cross-scrape-문제">1️⃣ dev/prod Cross-Scrape 문제&lt;/h2>
-&lt;h3 id="-증상">🧩 증상&lt;/h3>
-&lt;p>&lt;code>monitoring-dev&lt;/code> Prometheus에서 &lt;code>monitoring-prod&lt;/code> 메트릭까지 보여서&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 4단계 : Loki/Promtail 로그 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</link><pubDate>Mon, 27 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</guid><description>&lt;h2 id="lokipromtail-로그-파이프라인-구축">Loki/Promtail 로그 파이프라인 구축&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>관측, 알림, 로그 시스템은 세팅보다 운영 이후가 진짜 시작이다. 실운영 환경에서 반드시 마주치는 문제들(dev/prod 크로스 스크랩, Alertmanager 충돌, NFS 권한, TSDB 병목 등)을 정리하고, 왜 문제가 생겼는지에서 어떻게 해결했는지, 다시는 반복되지 않도록 구조 자체를 잡아주는 단계다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 4단계 : Loki/Promtail 로그 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</link><pubDate>Mon, 27 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“운영형 MLOps에서 가장 위험한 장애는 모델이 아닌 로그가 안 보이는 순간입니다.”&lt;/p>
-&lt;p>“FastAPI·MLflow·Airflow가 모두 돌아가도, 로그가 한 번 섞이거나 누락되면&lt;/p>
-&lt;p>장애 원인을 찾지 못해 운영 자체가 멈춰버립니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 dev/prod를 완전히 분리한&lt;/p>
-&lt;p>&lt;strong>Loki + Promtail 로그 파이프라인&lt;/strong>을 구축해,&lt;/p>
-&lt;p>모델 핫스왑·에러 패턴·API 이상 징후까지 한눈에 보이도록 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;p>dev/prod 완전 분리된 Loki + Promtail 로그 파이프라인을 구축하고, LogQL 기반으로 FastAPI/Airflow 로그를 중앙에서 조회할 수 있는 구조를 만드는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/">Observability 3단계: Prometheus/KSM/Kubelet 완전 분리 구조&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>운영형 MLOps에서 가장 위험한 장애는 모델이 아닌 로그가 안 보이는 순간이다. FastAPI, MLflow, Airflow가 모두 돌아가도, 로그가 한 번 섞이거나 누락되면 장애 원인을 찾지 못해 운영 자체가 멈춰버린다. dev/prod를 완전히 분리한 Loki + Promtail 로그 파이프라인을 구축해, 모델 핫스왑, 에러 패턴, API 이상 징후까지 한눈에 보이도록 만든다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 3단계 : Prometheus/KSM/Kubelet 완전 분리 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</link><pubDate>Wed, 22 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>dev/prod 간 메트릭이 교차 수집되는 문제를 라벨 기반으로 완전 분리하고, Prometheus TSDB를 local-path로 전환하여 성능과 안정성을 개선하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/">Observability 2단계: Alertmanager Slack &amp;amp; 트러블슈팅&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>dev와 prod는 분리돼 있어야 하는데, 정작 관측 데이터에서는 서로 섞여 보이는 문제가 계속 생겼다. Prometheus/KSM/Kubelet의 라벨과 셀렉터가 조금만 어긋나도 dev에서 prod 메트릭을 읽는 심각한 혼선이 발생한다. 이번 단계에서는 관측 스택을 라벨 기반으로 완전히 절단하는 데 집중한다. 그리고 TSDB는 로컬 디스크로 옮겨 속도와 안정성을 끌어올리고, NFS는 나머지 관측 도구 전용으로 재정비한다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>Alertmanager 설정을 SealedSecret으로 관리하고, dev/prod 각각의 Slack 채널로 알람이 정확히 흐르는 관측 파이프라인을 완성하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/">Observability 1단계: kube-prometheus-stack + GitOps 구축&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>모델이 잘 학습되고 잘 배포되는 것보다, 문제가 생겼을 때 즉시 감지되는 것이 더 중요할 때가 많다. dev/prod 각각에서 알람이 정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인을 먼저 완성해야 한다. 이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은 운영형 MLOps 이벤트를 실시간으로 감지할 수 있다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 1단계 : kube-prometheus-stack + GitOps 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</link><pubDate>Tue, 14 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>kube-prometheus-stack을 dev/prod 네임스페이스로 완전 분리하고, ArgoCD GitOps로 재현 가능한 Observability 뼈대를 구축하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/airflow/07/">Airflow 7단계: DAG CI 구축&lt;/a> — Level 3 마지막 포스트&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>모니터링은 한 번 세팅해두고 끝나는 게 아니라, 클러스터를 갈아엎어도 같은 모습으로 다시 살아나야 하는 인프라다. kube-prometheus-stack을 dev/prod로 완전히 분리하고, 모든 구성을 YAML + GitOps로 고정해서 Observability 스택을 재현할 수 있는 뼈대를 먼저 만든다.&lt;/p>
 &lt;hr>
 &lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
 &lt;ul>
 &lt;li>
-&lt;p>&lt;strong>로그 파이프라인 전체 구성&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>Promtail → Loki → Grafana(LogQL)&lt;/li>
-&lt;li>dev/prod 모두 완전 분리&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Ingress + TLS + GitOps 자동 적용&lt;/strong>&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 3단계 : Prometheus/KSM/Kubelet 완전 분리 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</link><pubDate>Wed, 22 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</guid><description>&lt;h2 id="prometheusksmkubelet-완전-분리-구조">Prometheus/KSM/Kubelet 완전 분리 구조&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“dev와 prod는 분리돼 있어야 하는데,&lt;/p>
-&lt;p>정작 관측 데이터에서는 서로 섞여 보이는 문제가 계속 생겼습니다.”&lt;/p>
-&lt;p>“Prometheus/KSM/Kubelet의 라벨과 셀렉터가 조금만 어긋나도&lt;/p>
-&lt;p>dev에서 prod 메트릭을 읽는 심각한 혼선이 발생하기 때문에,&lt;/p>
-&lt;p>이번 단계에서는 관측 스택을 &lt;strong>라벨 기반으로 완전히 절단&lt;/strong>하는 데 집중했습니다.”&lt;/p>
-&lt;p>“그리고 TSDB는 로컬 디스크로 옮겨 &lt;strong>속도·안정성&lt;/strong>을 끌어올리고,&lt;/p>
-&lt;p>NFS는 나머지 관측 도구 전용으로 재정비하여&lt;/p>
-&lt;p>이후 Loki·Alertmanager 통합 기반의 Observability 전체 구조를 안정적으로 받칠 수 있도록 만들었습니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>&lt;strong>문제&lt;/strong>
-&lt;ul>
-&lt;li>&lt;code>prometheus-dev.local&lt;/code>에서 &lt;code>airflow-prod&lt;/code>, &lt;code>fastapi-prod&lt;/code> 메트릭이 섞여서 나옴&lt;/li>
-&lt;li>kube-state-metrics / kubelet(cAdvisor) / ServiceMonitor 라벨이 꼬여 dev↔prod 교차 수집&lt;/li>
-&lt;li>NFS 기반 Prometheus TSDB로 &lt;strong>worker2 종료 지연 + I/O 부담&lt;/strong> 체감&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>목표&lt;/strong>
-&lt;ul>
-&lt;li>dev/prod &lt;strong>메트릭 수집 완전 분리&lt;/strong>&lt;/li>
-&lt;li>Prometheus TSDB를 &lt;strong>local-path로 전환(속도·안정성 개선)&lt;/strong>&lt;/li>
-&lt;li>NFS는 관측 도구(Grafana/Alertmanager/로그 등)에만 사용&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>결론&lt;/strong>
-&lt;ul>
-&lt;li>
-&lt;p>라벨/selector/metricRelabelings 정리만 해도 dev/prod가 깨끗이 분리됨&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“모델이 잘 학습되고 잘 배포되는 것보다&lt;/p>
-&lt;p>&lt;strong>문제가 생겼을 때 즉시 감지되는 것&lt;/strong>이 더 중요할 때가 많습니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 dev/prod 각각에서 알람이&lt;/p>
-&lt;p>&lt;strong>정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인&lt;/strong>을 먼저 완성했습니다.”&lt;/p>
-&lt;p>“이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은&lt;/p>
-&lt;p>운영형 MLOps 이벤트를 실시간으로 감지할 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;code>Prometheus → Alertmanager → Slack&lt;/code> 경로를&lt;/p>
-&lt;p>dev/prod 완전히 분리된 상태로,&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 1단계 : kube-prometheus-stack + GitOps 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</link><pubDate>Tue, 14 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</guid><description>&lt;h2 id="kube-prometheus-stack--gitops-구축">kube-prometheus-stack + GitOps 구축&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“모니터링은 한 번 세팅해두고 끝나는 게 아니라,&lt;/p>
-&lt;p>클러스터를 갈아엎어도 &lt;strong>같은 모습으로 다시 살아나야 하는 인프라&lt;/strong>입니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 kube-prometheus-stack을 dev/prod로 완전히 분리하고,&lt;/p>
-&lt;p>&lt;strong>모든 구성을 YAML + GitOps로 고정&lt;/strong>해서&lt;/p>
-&lt;p>Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>monitoring-dev / monitoring-prod&lt;/code> Observability 스택을
-&lt;strong>YAML + GitOps만으로 그대로 재현&lt;/strong>할 수 있는 상태 만들기&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>구성 요소&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>kube-prometheus-stack 65.5.0&lt;/code> (Prometheus + Alertmanager + Grafana)&lt;/li>
-&lt;li>&lt;code>nfs-monitoring&lt;/code> StorageClass (NFS 기반 동적 프로비저닝)&lt;/li>
-&lt;li>&lt;code>nginx-ingress&lt;/code> 기반 HTTPS Ingress&lt;/li>
-&lt;li>&lt;code>ArgoCD Application&lt;/code> 2개 (&lt;code>monitoring-dev&lt;/code>, &lt;code>monitoring-prod&lt;/code>)&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>보안/운영 포인트&lt;/strong>&lt;/p></description></item></channel></rss>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p></description></item></channel></rss>

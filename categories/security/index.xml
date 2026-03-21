@@ -17,25 +17,16 @@ Deploy
 &lt;/ul>
 &lt;p>이런 상황에서 중요한 질문은 다음입니다.&lt;/p>
 &lt;blockquote>
-&lt;p>문제가 발생했을 때 어떻게 감지하고 복구할 것인가?&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;p>문제가 발생했을 때 어떻게 감지하고 복구할 것인가?&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“모델이 잘 학습되고 잘 배포되는 것보다&lt;/p>
-&lt;p>&lt;strong>문제가 생겼을 때 즉시 감지되는 것&lt;/strong>이 더 중요할 때가 많습니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 dev/prod 각각에서 알람이&lt;/p>
-&lt;p>&lt;strong>정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인&lt;/strong>을 먼저 완성했습니다.”&lt;/p>
-&lt;p>“이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은&lt;/p>
-&lt;p>운영형 MLOps 이벤트를 실시간으로 감지할 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
+&lt;p>Alertmanager 설정을 SealedSecret으로 관리하고, dev/prod 각각의 Slack 채널로 알람이 정확히 흐르는 관측 파이프라인을 완성하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/">Observability 1단계: kube-prometheus-stack + GitOps 구축&lt;/a>&lt;/li>
+&lt;/ul>
 &lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;code>Prometheus → Alertmanager → Slack&lt;/code> 경로를&lt;/p>
-&lt;p>dev/prod 완전히 분리된 상태로,&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>모델이 잘 학습되고 잘 배포되는 것보다, 문제가 생겼을 때 즉시 감지되는 것이 더 중요할 때가 많다. dev/prod 각각에서 알람이 정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인을 먼저 완성해야 한다. 이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은 운영형 MLOps 이벤트를 실시간으로 감지할 수 있다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
@@ -227,15 +218,13 @@ Deploy
 &lt;/tbody>
 &lt;/table>
 &lt;blockquote>
-&lt;p>🔄 핵심&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 9단계: 시크릿 관리 &amp; 키 회전 자동화 (AWS·SealedSecret)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</link><pubDate>Thu, 25 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</guid><description>&lt;h2 id="시크릿-관리-및-키-회전-자동화-aws-credentials--sealedsecret-re-seal">시크릿 관리 및 키 회전 자동화: AWS Credentials · SealedSecret Re-Seal&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;p>🔄 핵심&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 9단계: 시크릿 관리 &amp; 키 회전 자동화 (AWS·SealedSecret)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</link><pubDate>Thu, 25 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/10/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“MLOps에서는 모델보다 먼저, ‘비밀’이 먼저 무너집니다.”&lt;/p>
-&lt;p>“특히 AWS 키처럼 &lt;strong>주기적으로 교체해야 하는 값&lt;/strong>은 자동화가 필요하지만,&lt;/p>
-&lt;p>JWT·Slack Webhook처럼 &lt;strong>교체 시 영향이 큰 값&lt;/strong>은 운영자가 직접 결정해야 합니다.”&lt;/p>
-&lt;p>“그래서 9단계에서는&lt;/p>
-&lt;p>&lt;strong>‘자동화할 것과 사람이 확인해야 할 것을 구분한 SecretOps 체계’를 확립하는 것&lt;/strong>이 목적이었습니다.”&lt;/p>
-&lt;p>“AWS 키 회전·SealedSecret 재암호화·GitOps 반영까지는&lt;/p>
-&lt;p>&lt;strong>필요한 작업들을 스크립트로 묶어 반복을 최소화&lt;/strong>했고,&lt;/p>
-&lt;p>운영자가 ‘언제 실행할지’만 결정하면 되도록 정리했습니다.”&lt;/p></description></item></channel></rss>
+&lt;p>AWS IAM 키 회전과 SealedSecret 재암호화를 스크립트로 표준화하고, GitOps 자동 반영까지 이어지는 반자동 SecretOps 체계를 구축하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/09/">MLOps 운영 고도화 8단계: CI/CD 운영 자동화&lt;/a> — GitHub Actions + Helm Lint 파이프라인&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>MLOps에서는 모델보다 먼저 &amp;lsquo;비밀&amp;rsquo;이 무너진다. AWS 키처럼 주기적으로 교체해야 하는 값은 자동화가 필요하지만, JWT·Slack Webhook처럼 교체 시 영향이 큰 값은 운영자가 직접 결정해야 한다. 자동화할 것과 사람이 확인해야 할 것을 구분한 SecretOps 체계를 확립한다.&lt;/p></description></item></channel></rss>

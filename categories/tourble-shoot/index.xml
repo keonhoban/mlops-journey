@@ -1,33 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Tourble Shoot on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/tourble-shoot/</link><description>Recent content in Tourble Shoot on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 22 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/tourble-shoot/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 3단계 : Prometheus/KSM/Kubelet 완전 분리 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</link><pubDate>Wed, 22 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</guid><description>&lt;h2 id="prometheusksmkubelet-완전-분리-구조">Prometheus/KSM/Kubelet 완전 분리 구조&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Tourble Shoot on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/tourble-shoot/</link><description>Recent content in Tourble Shoot on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 22 Oct 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/tourble-shoot/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 3단계 : Prometheus/KSM/Kubelet 완전 분리 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</link><pubDate>Wed, 22 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“dev와 prod는 분리돼 있어야 하는데,&lt;/p>
-&lt;p>정작 관측 데이터에서는 서로 섞여 보이는 문제가 계속 생겼습니다.”&lt;/p>
-&lt;p>“Prometheus/KSM/Kubelet의 라벨과 셀렉터가 조금만 어긋나도&lt;/p>
-&lt;p>dev에서 prod 메트릭을 읽는 심각한 혼선이 발생하기 때문에,&lt;/p>
-&lt;p>이번 단계에서는 관측 스택을 &lt;strong>라벨 기반으로 완전히 절단&lt;/strong>하는 데 집중했습니다.”&lt;/p>
-&lt;p>“그리고 TSDB는 로컬 디스크로 옮겨 &lt;strong>속도·안정성&lt;/strong>을 끌어올리고,&lt;/p>
-&lt;p>NFS는 나머지 관측 도구 전용으로 재정비하여&lt;/p>
-&lt;p>이후 Loki·Alertmanager 통합 기반의 Observability 전체 구조를 안정적으로 받칠 수 있도록 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;p>dev/prod 간 메트릭이 교차 수집되는 문제를 라벨 기반으로 완전 분리하고, Prometheus TSDB를 local-path로 전환하여 성능과 안정성을 개선하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/">Observability 2단계: Alertmanager Slack &amp;amp; 트러블슈팅&lt;/a>&lt;/li>
+&lt;/ul>
 &lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>&lt;strong>문제&lt;/strong>
-&lt;ul>
-&lt;li>&lt;code>prometheus-dev.local&lt;/code>에서 &lt;code>airflow-prod&lt;/code>, &lt;code>fastapi-prod&lt;/code> 메트릭이 섞여서 나옴&lt;/li>
-&lt;li>kube-state-metrics / kubelet(cAdvisor) / ServiceMonitor 라벨이 꼬여 dev↔prod 교차 수집&lt;/li>
-&lt;li>NFS 기반 Prometheus TSDB로 &lt;strong>worker2 종료 지연 + I/O 부담&lt;/strong> 체감&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>목표&lt;/strong>
-&lt;ul>
-&lt;li>dev/prod &lt;strong>메트릭 수집 완전 분리&lt;/strong>&lt;/li>
-&lt;li>Prometheus TSDB를 &lt;strong>local-path로 전환(속도·안정성 개선)&lt;/strong>&lt;/li>
-&lt;li>NFS는 관측 도구(Grafana/Alertmanager/로그 등)에만 사용&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>결론&lt;/strong>
-&lt;ul>
-&lt;li>
-&lt;p>라벨/selector/metricRelabelings 정리만 해도 dev/prod가 깨끗이 분리됨&lt;/p></description></item></channel></rss>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>dev와 prod는 분리돼 있어야 하는데, 정작 관측 데이터에서는 서로 섞여 보이는 문제가 계속 생겼다. Prometheus/KSM/Kubelet의 라벨과 셀렉터가 조금만 어긋나도 dev에서 prod 메트릭을 읽는 심각한 혼선이 발생한다. 이번 단계에서는 관측 스택을 라벨 기반으로 완전히 절단하는 데 집중한다. 그리고 TSDB는 로컬 디스크로 옮겨 속도와 안정성을 끌어올리고, NFS는 나머지 관측 도구 전용으로 재정비한다.&lt;/p></description></item></channel></rss>

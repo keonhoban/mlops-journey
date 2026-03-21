@@ -99,207 +99,86 @@
 &lt;/tbody>
 &lt;/table>
 &lt;blockquote>
-&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - MLflow → Triton 자동 배포 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/02/</link><pubDate>Mon, 29 Dec 2025 12:02:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/02/</guid><description>&lt;h3 id="airflow-기반--검증-체인--최소-롤백">Airflow 기반 · 검증 체인 · 최소 롤백&lt;/h3>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - MLflow → Triton 자동 배포 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/02/</link><pubDate>Mon, 29 Dec 2025 12:02:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/02/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>실무 환경에서 모델 배포는&lt;/p>
-&lt;p>“새 모델을 올리는 작업”이 아니라&lt;/p>
-&lt;p>“현재 운영 상태를 안전하게 갱신하는 상태 전이(State Transition)”에 가깝습니다.&lt;/p>
-&lt;p>이번 단계에서는 MLflow Registry를 단일 소스로 삼아&lt;/p>
-&lt;p>Triton Inference Server에 모델을 &lt;strong>자동 배포&lt;/strong>하고,&lt;/p>
+&lt;p>MLflow Registry를 단일 소스로 삼아 Airflow DAG에서 Triton에 모델을 자동 배포하고, 검증 체인(load/ready/infer) 통과 후에만 운영 확정하며, 실패 시 자동 롤백하는 파이프라인을 구축한 과정&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>로딩&lt;/li>
-&lt;li>헬스 체크&lt;/li>
-&lt;li>실제 추론 검증&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/triton/01/">Triton 서빙 플랫폼 - Triton 구축&lt;/a>&lt;/li>
 &lt;/ul>
-&lt;p>을 모두 통과한 경우에만 운영 모델을 확정(commit)하며,&lt;/p>
-&lt;p>중간 단계에서 하나라도 실패하면&lt;/p>
-&lt;p>&lt;strong>이전 운영 상태로 자동 복구되는 최소 롤백 구조&lt;/strong>를 구현했습니다.&lt;/p>
-&lt;p>이 모든 흐름은 Airflow DAG를 통해&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Triton 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/01/</link><pubDate>Fri, 26 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/01/</guid><description>&lt;h2 id="triton-cpu-only-gitops-통합-onnx-1개-서빙--prometheusgrafana-관측">Triton (CPU-only) GitOps 통합: ONNX 1개 서빙 + Prometheus/Grafana 관측&lt;/h2>
 &lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>실무 환경에서 모델 배포는 &amp;ldquo;새 모델을 올리는 작업&amp;quot;이 아니라 &amp;ldquo;현재 운영 상태를 안전하게 갱신하는 상태 전이(State Transition)&amp;ldquo;에 가깝다.
+이번 단계에서는 MLflow Registry를 단일 소스로 삼아 Triton Inference Server에 모델을 자동 배포하고, 로딩/헬스 체크/실제 추론 검증을 모두 통과한 경우에만 운영 모델을 확정(commit)하며, 중간 단계에서 하나라도 실패하면 이전 운영 상태로 자동 복구되는 최소 롤백 구조를 구현했다.&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Triton 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/01/</link><pubDate>Fri, 26 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/01/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>실무에서 서빙 계층은 곧바로 트래픽과 SLA를 맞는 최전선입니다.&lt;/p>
-&lt;p>모델이 아무리 좋아도, &lt;strong>서빙이 불안정하면&lt;/strong> 운영시 바로 무너집니다.&lt;/p>
-&lt;p>그래서 이번에는 Triton 첫 구축으로 GPU/파이프라인 연동을 일부러 빼고,&lt;/p>
-&lt;p>Triton 자체를 GitOps로 안정적으로 띄우고, 모델 load→infer→metrics 관측까지 ‘서빙 플랫폼 뼈대 구축’을 진행했습니다.&lt;/p>&lt;/blockquote>
+&lt;p>Triton Inference Server를 CPU-only GitOps 구조로 배포하고, ONNX 모델 1개의 load/infer 검증 및 Prometheus/Grafana 관측까지 서빙 플랫폼 뼈대를 구축한 과정&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/08/">Observability 8단계: Data Pipeline 고도화&lt;/a>&lt;/li>
+&lt;/ul>
 &lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>&lt;strong>dev/prod 네임스페이스 분리&lt;/strong>
-&lt;ul>
-&lt;li>&lt;code>triton-dev&lt;/code>, &lt;code>triton-prod&lt;/code>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>Triton 모델 제어 모드&lt;/strong>
-&lt;ul>
-&lt;li>&lt;code>-model-control-mode=explicit&lt;/code>&lt;/li>
-&lt;li>필요 시에만 load/unload로 운영 제어 가능&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>Model Repository&lt;/strong>
-&lt;ul>
-&lt;li>NFS(RWX) 기반 PVC로 &lt;code>/models&lt;/code> 마운트&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>모델 검증&lt;/strong>
-&lt;ul>
-&lt;li>ONNX 1개 &lt;code>simple_model&lt;/code>로 &lt;code>load → infer&lt;/code> 성공&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>관측&lt;/strong>
-&lt;ul>
-&lt;li>Triton은 &lt;code>/metrics&lt;/code>를 &lt;strong>Prometheus 포맷으로 자체 노출&lt;/strong>&lt;/li>
-&lt;li>ServiceMonitor로 dev/prod Prometheus에 자동 스크랩&lt;/li>
-&lt;li>Grafana에서 패널로 증명 가능&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>GPU 확장 포인트&lt;/strong>
-&lt;ul>
-&lt;li>values에 &lt;code>gpu.enabled&lt;/code> 분기 설계 (현재 false → CPU 사용)&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>실무에서 서빙 계층은 곧바로 트래픽과 SLA를 맞는 최전선이다. 모델이 아무리 좋아도 서빙이 불안정하면 운영 시 바로 무너진다.
+이번에는 Triton 첫 구축으로 GPU/파이프라인 연동을 일부러 빼고, Triton 자체를 GitOps로 안정적으로 띄우고, 모델 load → infer → metrics 관측까지 서빙 플랫폼 뼈대 구축을 진행했다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 5단계 : 운영 중 발생한 실제 이슈 &amp; 해결 과정]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</link><pubDate>Sun, 02 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>완료 기준은 “Triton + GitOps + Observability” 구축입니다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 5단계 : 운영 중 발생한 실제 이슈 &amp; 해결 과정]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</link><pubDate>Sun, 02 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/05/</guid><description>&lt;h2 id="운영-중-발생한-실제-이슈--해결-과정">운영 중 발생한 실제 이슈 &amp;amp; 해결 과정&lt;/h2>
-&lt;hr>
-&lt;h1 id="-시나리오-설명">🧠 시나리오 설명&lt;/h1>
-&lt;blockquote>
-&lt;p>“관측·알림·로그 시스템은 세팅보다 운영 이후가 진짜 시작입니다.”&lt;/p>
-&lt;p>“실운영 환경에서 반드시 마주치는 문제들(div/prod 크로스 스크랩, Alertmanager 충돌, NFS 권한, TSDB 병목 등)을 정리하고&lt;/p>
-&lt;p>&lt;strong>왜 문제가 생겼는지 → 어떻게 해결했는지 → 다시는 반복되지 않도록&lt;/strong> 구조 자체를 잡아주는 단계입니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;p>Observability 스택 운영 중 실제로 마주친 이슈들(크로스 스크랩, Alertmanager 충돌, NFS 권한, TSDB 병목 등)의 원인 분석과 재발 방지 구조를 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>dev/prod &lt;strong>크로스 스크랩 문제&lt;/strong> 정리&lt;/li>
-&lt;li>Alertmanager configSecret / generated-secret 충돌&lt;/li>
-&lt;li>Instant Query 오류(&lt;code>log queries are not supported&lt;/code>) 원리&lt;/li>
-&lt;li>worker2 종료 지연(30~40초)&lt;/li>
-&lt;li>tmp-curl CrashLoopBackOff&lt;/li>
-&lt;li>NFS Flush / Permission / fsGroup 문제&lt;/li>
-&lt;li>SealedSecret namespace mismatch&lt;/li>
-&lt;li>Prometheus TSDB → local-path 전환 시 발생 가능한 이슈&lt;/li>
-&lt;li>&lt;strong>“문제 → 원인 → 해결 → 재발 방지” 구조로 정리&lt;/strong>&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/">Observability 4단계: Loki/Promtail 로그 파이프라인 구축&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="1-devprod-cross-scrape-문제">1️⃣ dev/prod Cross-Scrape 문제&lt;/h2>
-&lt;h3 id="-증상">🧩 증상&lt;/h3>
-&lt;p>&lt;code>monitoring-dev&lt;/code> Prometheus에서 &lt;code>monitoring-prod&lt;/code> 메트릭까지 보여서&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 4단계 : Loki/Promtail 로그 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</link><pubDate>Mon, 27 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</guid><description>&lt;h2 id="lokipromtail-로그-파이프라인-구축">Loki/Promtail 로그 파이프라인 구축&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>관측, 알림, 로그 시스템은 세팅보다 운영 이후가 진짜 시작이다. 실운영 환경에서 반드시 마주치는 문제들(dev/prod 크로스 스크랩, Alertmanager 충돌, NFS 권한, TSDB 병목 등)을 정리하고, 왜 문제가 생겼는지에서 어떻게 해결했는지, 다시는 반복되지 않도록 구조 자체를 잡아주는 단계다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 4단계 : Loki/Promtail 로그 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</link><pubDate>Mon, 27 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/04/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“운영형 MLOps에서 가장 위험한 장애는 모델이 아닌 로그가 안 보이는 순간입니다.”&lt;/p>
-&lt;p>“FastAPI·MLflow·Airflow가 모두 돌아가도, 로그가 한 번 섞이거나 누락되면&lt;/p>
-&lt;p>장애 원인을 찾지 못해 운영 자체가 멈춰버립니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 dev/prod를 완전히 분리한&lt;/p>
-&lt;p>&lt;strong>Loki + Promtail 로그 파이프라인&lt;/strong>을 구축해,&lt;/p>
-&lt;p>모델 핫스왑·에러 패턴·API 이상 징후까지 한눈에 보이도록 만들었습니다.”&lt;/p>&lt;/blockquote>
+&lt;p>dev/prod 완전 분리된 Loki + Promtail 로그 파이프라인을 구축하고, LogQL 기반으로 FastAPI/Airflow 로그를 중앙에서 조회할 수 있는 구조를 만드는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/">Observability 3단계: Prometheus/KSM/Kubelet 완전 분리 구조&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>운영형 MLOps에서 가장 위험한 장애는 모델이 아닌 로그가 안 보이는 순간이다. FastAPI, MLflow, Airflow가 모두 돌아가도, 로그가 한 번 섞이거나 누락되면 장애 원인을 찾지 못해 운영 자체가 멈춰버린다. dev/prod를 완전히 분리한 Loki + Promtail 로그 파이프라인을 구축해, 모델 핫스왑, 에러 패턴, API 이상 징후까지 한눈에 보이도록 만든다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 3단계 : Prometheus/KSM/Kubelet 완전 분리 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</link><pubDate>Wed, 22 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>dev/prod 간 메트릭이 교차 수집되는 문제를 라벨 기반으로 완전 분리하고, Prometheus TSDB를 local-path로 전환하여 성능과 안정성을 개선하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/">Observability 2단계: Alertmanager Slack &amp;amp; 트러블슈팅&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>dev와 prod는 분리돼 있어야 하는데, 정작 관측 데이터에서는 서로 섞여 보이는 문제가 계속 생겼다. Prometheus/KSM/Kubelet의 라벨과 셀렉터가 조금만 어긋나도 dev에서 prod 메트릭을 읽는 심각한 혼선이 발생한다. 이번 단계에서는 관측 스택을 라벨 기반으로 완전히 절단하는 데 집중한다. 그리고 TSDB는 로컬 디스크로 옮겨 속도와 안정성을 끌어올리고, NFS는 나머지 관측 도구 전용으로 재정비한다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>Alertmanager 설정을 SealedSecret으로 관리하고, dev/prod 각각의 Slack 채널로 알람이 정확히 흐르는 관측 파이프라인을 완성하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/">Observability 1단계: kube-prometheus-stack + GitOps 구축&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>모델이 잘 학습되고 잘 배포되는 것보다, 문제가 생겼을 때 즉시 감지되는 것이 더 중요할 때가 많다. dev/prod 각각에서 알람이 정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인을 먼저 완성해야 한다. 이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은 운영형 MLOps 이벤트를 실시간으로 감지할 수 있다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 1단계 : kube-prometheus-stack + GitOps 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</link><pubDate>Tue, 14 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>kube-prometheus-stack을 dev/prod 네임스페이스로 완전 분리하고, ArgoCD GitOps로 재현 가능한 Observability 뼈대를 구축하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/airflow/07/">Airflow 7단계: DAG CI 구축&lt;/a> — Level 3 마지막 포스트&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>모니터링은 한 번 세팅해두고 끝나는 게 아니라, 클러스터를 갈아엎어도 같은 모습으로 다시 살아나야 하는 인프라다. kube-prometheus-stack을 dev/prod로 완전히 분리하고, 모든 구성을 YAML + GitOps로 고정해서 Observability 스택을 재현할 수 있는 뼈대를 먼저 만든다.&lt;/p>
 &lt;hr>
 &lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
 &lt;ul>
 &lt;li>
-&lt;p>&lt;strong>로그 파이프라인 전체 구성&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>Promtail → Loki → Grafana(LogQL)&lt;/li>
-&lt;li>dev/prod 모두 완전 분리&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Ingress + TLS + GitOps 자동 적용&lt;/strong>&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 3단계 : Prometheus/KSM/Kubelet 완전 분리 구조]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</link><pubDate>Wed, 22 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/03/</guid><description>&lt;h2 id="prometheusksmkubelet-완전-분리-구조">Prometheus/KSM/Kubelet 완전 분리 구조&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;p>&lt;strong>목표&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 4단계: FastAPI 로그 안정화 (NFS + PV/PVC + Loguru)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/</link><pubDate>Fri, 08 Aug 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“dev와 prod는 분리돼 있어야 하는데,&lt;/p>
-&lt;p>정작 관측 데이터에서는 서로 섞여 보이는 문제가 계속 생겼습니다.”&lt;/p>
-&lt;p>“Prometheus/KSM/Kubelet의 라벨과 셀렉터가 조금만 어긋나도&lt;/p>
-&lt;p>dev에서 prod 메트릭을 읽는 심각한 혼선이 발생하기 때문에,&lt;/p>
-&lt;p>이번 단계에서는 관측 스택을 &lt;strong>라벨 기반으로 완전히 절단&lt;/strong>하는 데 집중했습니다.”&lt;/p>
-&lt;p>“그리고 TSDB는 로컬 디스크로 옮겨 &lt;strong>속도·안정성&lt;/strong>을 끌어올리고,&lt;/p>
-&lt;p>NFS는 나머지 관측 도구 전용으로 재정비하여&lt;/p>
-&lt;p>이후 Loki·Alertmanager 통합 기반의 Observability 전체 구조를 안정적으로 받칠 수 있도록 만들었습니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;p>Pod 재시작 시 로그가 유실되지 않도록 NFS 기반 PV/PVC를 구성하고, Loguru로 구조화된 파일 로깅을 적용하여 FastAPI 서빙 로그를 영속화하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>&lt;strong>문제&lt;/strong>
-&lt;ul>
-&lt;li>&lt;code>prometheus-dev.local&lt;/code>에서 &lt;code>airflow-prod&lt;/code>, &lt;code>fastapi-prod&lt;/code> 메트릭이 섞여서 나옴&lt;/li>
-&lt;li>kube-state-metrics / kubelet(cAdvisor) / ServiceMonitor 라벨이 꼬여 dev↔prod 교차 수집&lt;/li>
-&lt;li>NFS 기반 Prometheus TSDB로 &lt;strong>worker2 종료 지연 + I/O 부담&lt;/strong> 체감&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/04/">MLOps 운영 고도화 3단계: 모델 롤백 자동화&lt;/a> — 스냅샷 기반 자동 롤백&lt;/li>
 &lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>목표&lt;/strong>
-&lt;ul>
-&lt;li>dev/prod &lt;strong>메트릭 수집 완전 분리&lt;/strong>&lt;/li>
-&lt;li>Prometheus TSDB를 &lt;strong>local-path로 전환(속도·안정성 개선)&lt;/strong>&lt;/li>
-&lt;li>NFS는 관측 도구(Grafana/Alertmanager/로그 등)에만 사용&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>결론&lt;/strong>
-&lt;ul>
-&lt;li>
-&lt;p>라벨/selector/metricRelabelings 정리만 해도 dev/prod가 깨끗이 분리됨&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
 &lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“모델이 잘 학습되고 잘 배포되는 것보다&lt;/p>
-&lt;p>&lt;strong>문제가 생겼을 때 즉시 감지되는 것&lt;/strong>이 더 중요할 때가 많습니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 dev/prod 각각에서 알람이&lt;/p>
-&lt;p>&lt;strong>정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인&lt;/strong>을 먼저 완성했습니다.”&lt;/p>
-&lt;p>“이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은&lt;/p>
-&lt;p>운영형 MLOps 이벤트를 실시간으로 감지할 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;code>Prometheus → Alertmanager → Slack&lt;/code> 경로를&lt;/p>
-&lt;p>dev/prod 완전히 분리된 상태로,&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 1단계 : kube-prometheus-stack + GitOps 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</link><pubDate>Tue, 14 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/</guid><description>&lt;h2 id="kube-prometheus-stack--gitops-구축">kube-prometheus-stack + GitOps 구축&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“모니터링은 한 번 세팅해두고 끝나는 게 아니라,&lt;/p>
-&lt;p>클러스터를 갈아엎어도 &lt;strong>같은 모습으로 다시 살아나야 하는 인프라&lt;/strong>입니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 kube-prometheus-stack을 dev/prod로 완전히 분리하고,&lt;/p>
-&lt;p>&lt;strong>모든 구성을 YAML + GitOps로 고정&lt;/strong>해서&lt;/p>
-&lt;p>Observability 스택을 재현할 수 있는 뼈대를 먼저 만들었습니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>monitoring-dev / monitoring-prod&lt;/code> Observability 스택을
-&lt;strong>YAML + GitOps만으로 그대로 재현&lt;/strong>할 수 있는 상태 만들기&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>구성 요소&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;code>kube-prometheus-stack 65.5.0&lt;/code> (Prometheus + Alertmanager + Grafana)&lt;/li>
-&lt;li>&lt;code>nfs-monitoring&lt;/code> StorageClass (NFS 기반 동적 프로비저닝)&lt;/li>
-&lt;li>&lt;code>nginx-ingress&lt;/code> 기반 HTTPS Ingress&lt;/li>
-&lt;li>&lt;code>ArgoCD Application&lt;/code> 2개 (&lt;code>monitoring-dev&lt;/code>, &lt;code>monitoring-prod&lt;/code>)&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>보안/운영 포인트&lt;/strong>&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 4단계: FastAPI 로그 안정화 (NFS + PV/PVC + Loguru)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/</link><pubDate>Fri, 08 Aug 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/</guid><description>&lt;h2 id="fastapi-앱-전면-개편-ab--canary--blue-green-서빙-베이스">FastAPI 앱 전면 개편: A/B · Canary · Blue-Green 서빙 베이스&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“운영 환경에서 모델은 언제든 교체될 수 있고,&lt;/p>
-&lt;p>그 순간이 서비스 품질이 가장 크게 흔들리는 위험 구간입니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 이후 모든 자동화(학습·등록·핫스왑·롤백)의 기반이 되는&lt;/p>
-&lt;p>&lt;strong>A/B · Canary · Blue-Green 전략을 모두 처리할 수 있는 FastAPI 서빙 구조&lt;/strong>부터 잡았습니다.”&lt;/p>
-&lt;p>“이 뼈대가 완성돼야 Airflow, MLflow, ArgoCD와 연결된&lt;/p>
-&lt;p>**진짜 ‘운영형 MLOps 파이프라인’**을 만들 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>전환 기준 = MLflow Alias(@A/@B)&lt;/strong>&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-실전-시나리오-기반-구성-배경">🧩 실전 시나리오 기반 구성 배경&lt;/h2>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>FastAPI Pod가 재시작되거나 스케일 다운되면 컨테이너 내부에 쌓인 로그가 모두 사라진다. 핫스왑 이력, 예측 요청 기록, 에러 트레이스가 유실되면 장애 원인을 추적할 수 없다. Pod 라이프사이클과 독립적으로 로그를 보존하는 구조가 필요하다.&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 : Airflow-MLflow-FastAPI (Helm)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</link><pubDate>Tue, 15 Jul 2025 17:55:05 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline/helm/</guid><description>&lt;h2 id="-실전-시나리오-기반-구성-배경">🧩 실전 시나리오 기반 구성 배경&lt;/h2>
 &lt;blockquote>
 &lt;p>이 프로젝트는 단순 실습을 넘어서, 실제 발생하는 다음과 같은 문제들을 해결하기 위한 MLOps 인프라 구축을 목표로 설계되었습니다.&lt;/p>&lt;/blockquote>
 &lt;ul>
@@ -313,330 +192,37 @@
 &lt;/li>
 &lt;li>
 &lt;p>&lt;strong>수작업 DAG 등록, 모델 배포 등의 비효율적 운영 문제&lt;/strong>&lt;br>
-→ Airflow + GitSync 연동으로 파이프라인 자동화 및 버전 관리 가능&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</link><pubDate>Thu, 10 Jul 2025 17:12:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</guid><description>&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+→ Airflow + GitSync 연동으로 파이프라인 자동화 및 버전 관리 가능&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</link><pubDate>Thu, 10 Jul 2025 17:12:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>머신러닝 모델을 실서비스에 배포할 때,
-기존 모델을 새 모델로 안전하게 교체(hot-swap)하는 자동화 구조는
-중요한 요구사항입니다.&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h2 id="-tldr">✅ TL;DR&lt;/h2>
+&lt;p>Airflow DAG에서 조건부 모델 등록 후 FastAPI 핫스왑까지 E2E 자동화 흐름을 실험합니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>&lt;code>Airflow&lt;/code>에서 학습 스크립트를 실행하고 조건부로 모델 등록&lt;/li>
-&lt;li>성능 기준을 충족한 모델은 &lt;code>Staging&lt;/code>으로 자동 승격&lt;/li>
-&lt;li>&lt;code>FastAPI&lt;/code>는 &lt;code>/reload&lt;/code> 요청 시 &lt;code>Staging 모델&lt;/code>을 다시 로딩 → 코드 수정 없이 핫스왑&lt;/li>
-&lt;li>&lt;strong>운영 환경에서의 실험 자동화, 모델 A/B 테스트, 모델 롤백&lt;/strong> 등에 확장 가능하도록 설계&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/">MLOps 플랫폼 구축 5단계: FastAPI 서빙 및 핫스왑 구조 구축&lt;/a> — FastAPI 모델 로딩과 &lt;code>/reload&lt;/code> API 구조&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="-구조-다이어그램-핫스왑-흐름">🧠 구조 다이어그램 (핫스왑 흐름)&lt;/h2>
-&lt;p>&lt;img alt="06" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/06.png">&lt;/p>
-&lt;hr>
-&lt;h2 id="-핵심-구성-요소">🧩 핵심 구성 요소&lt;/h2>
-&lt;h3 id="1-airflow-dag---조건부-모델-등록">1. Airflow DAG - 조건부 모델 등록&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># dags/dag_ml_experiment.py&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow &lt;span style="color:#f92672">import&lt;/span> DAG
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.python &lt;span style="color:#f92672">import&lt;/span> PythonOperator, BranchPythonOperator
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.operators.empty &lt;span style="color:#f92672">import&lt;/span> EmptyOperator
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> airflow.models &lt;span style="color:#f92672">import&lt;/span> Variable
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> datetime &lt;span style="color:#f92672">import&lt;/span> datetime, timedelta, timezone
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> sys
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sys&lt;span style="color:#f92672">.&lt;/span>path&lt;span style="color:#f92672">.&lt;/span>append(&lt;span style="color:#e6db74">&amp;#39;/opt/airflow/dags/repo/ml_code&amp;#39;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> train_and_log_model_fastapi &lt;span style="color:#f92672">import&lt;/span> train_model
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>default_args &lt;span style="color:#f92672">=&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#39;start_date&amp;#39;&lt;/span>: datetime&lt;span style="color:#f92672">.&lt;/span>now(timezone&lt;span style="color:#f92672">.&lt;/span>utc) &lt;span style="color:#f92672">-&lt;/span> timedelta(days&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">run_and_check&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Variable로 파라미터 동적 제어&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> C &lt;span style="color:#f92672">=&lt;/span> float(Variable&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;logreg_C&amp;#34;&lt;/span>, default_var&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1.0&lt;/span>))
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> max_iter &lt;span style="color:#f92672">=&lt;/span> int(Variable&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;logreg_max_iter&amp;#34;&lt;/span>, default_var&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">200&lt;/span>))
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[ERROR] 파라미터 불러오기 실패: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>str(e)&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">. 기본값 사용.&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> C, max_iter &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1.0&lt;/span>, &lt;span style="color:#ae81ff">200&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 정확도 기준으로 성공/실패 분기&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc &lt;span style="color:#f92672">=&lt;/span> train_model(C&lt;span style="color:#f92672">=&lt;/span>C, max_iter&lt;span style="color:#f92672">=&lt;/span>max_iter)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> acc &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">0.9&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#39;notify_success&amp;#39;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#39;notify_failure&amp;#39;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">notify_success&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;🎉 모델 등록 및 핫스왑 성공! FastAPI에 최신 모델 반영 완료.&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">notify_failure&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;❌ 성능 기준 미달. 모델 등록/서빙 생략됨.&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">with&lt;/span> DAG(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dag_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;mlflow_experiment_conditional_register_runner_fastapi&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> default_args&lt;span style="color:#f92672">=&lt;/span>default_args,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> schedule&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> catchup&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>) &lt;span style="color:#66d9ef">as&lt;/span> dag:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> branch_task &lt;span style="color:#f92672">=&lt;/span> BranchPythonOperator(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;branch_by_accuracy&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> python_callable&lt;span style="color:#f92672">=&lt;/span>run_and_check
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> success_notify_task &lt;span style="color:#f92672">=&lt;/span> PythonOperator(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;notify_success&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> python_callable&lt;span style="color:#f92672">=&lt;/span>notify_success
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> failure_notify_task &lt;span style="color:#f92672">=&lt;/span> PythonOperator(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> task_id&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;notify_failure&amp;#39;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> python_callable&lt;span style="color:#f92672">=&lt;/span>notify_failure
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> branch_task &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> [success_notify_task, failure_notify_task]
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h3 id="2-모델-학습-및-등록">2. 모델 학습 및 등록&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># ml_code/train_and_log_model_fastapi.py&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow.sklearn
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> mlflow.tracking &lt;span style="color:#f92672">import&lt;/span> MlflowClient
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.datasets &lt;span style="color:#f92672">import&lt;/span> load_iris
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.linear_model &lt;span style="color:#f92672">import&lt;/span> LogisticRegression
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.model_selection &lt;span style="color:#f92672">import&lt;/span> train_test_split
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> sklearn.metrics &lt;span style="color:#f92672">import&lt;/span> accuracy_score
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> sys
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> requests
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> time
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mlflow&lt;span style="color:#f92672">.&lt;/span>set_tracking_uri(&lt;span style="color:#e6db74">&amp;#34;http://mlflow-service.mlflow.svc.cluster.local:5000&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mlflow&lt;span style="color:#f92672">.&lt;/span>set_experiment(&lt;span style="color:#e6db74">&amp;#34;train_and_register_model_exp&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">train_model&lt;/span>(C, max_iter):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> X, y &lt;span style="color:#f92672">=&lt;/span> load_iris(return_X_y&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">True&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> X_train, X_test, y_train, y_test &lt;span style="color:#f92672">=&lt;/span> train_test_split(X, y, test_size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0.2&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">with&lt;/span> mlflow&lt;span style="color:#f92672">.&lt;/span>start_run() &lt;span style="color:#66d9ef">as&lt;/span> run:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clf &lt;span style="color:#f92672">=&lt;/span> LogisticRegression(C&lt;span style="color:#f92672">=&lt;/span>C, max_iter&lt;span style="color:#f92672">=&lt;/span>max_iter)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clf&lt;span style="color:#f92672">.&lt;/span>fit(X_train, y_train)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> y_pred &lt;span style="color:#f92672">=&lt;/span> clf&lt;span style="color:#f92672">.&lt;/span>predict(X_test)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc &lt;span style="color:#f92672">=&lt;/span> accuracy_score(y_test, y_pred)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_param(&lt;span style="color:#e6db74">&amp;#34;C&amp;#34;&lt;/span>, C)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_param(&lt;span style="color:#e6db74">&amp;#34;max_iter&amp;#34;&lt;/span>, max_iter)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>log_metric(&lt;span style="color:#e6db74">&amp;#34;accuracy&amp;#34;&lt;/span>, acc)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>sklearn&lt;span style="color:#f92672">.&lt;/span>log_model(clf, &lt;span style="color:#e6db74">&amp;#34;model&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[INFO] Logged model with accuracy=&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>acc&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> acc &lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#ae81ff">0.9&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 모델 등록&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> result &lt;span style="color:#f92672">=&lt;/span> mlflow&lt;span style="color:#f92672">.&lt;/span>register_model(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_uri&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;runs:/&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>run&lt;span style="color:#f92672">.&lt;/span>info&lt;span style="color:#f92672">.&lt;/span>run_id&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">/model&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;best_model&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> version &lt;span style="color:#f92672">=&lt;/span> result&lt;span style="color:#f92672">.&lt;/span>version
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[INFO] ✅ 모델 등록 완료 (version=&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">)&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 등록 직후 DB 업데이트 시간 필요&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> time&lt;span style="color:#f92672">.&lt;/span>sleep(&lt;span style="color:#ae81ff">3&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 스테이지 승격 + 기존 버전 Archive&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client &lt;span style="color:#f92672">=&lt;/span> MlflowClient()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client&lt;span style="color:#f92672">.&lt;/span>transition_model_version_stage(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;best_model&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> version&lt;span style="color:#f92672">=&lt;/span>version,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> stage&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Staging&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> archive_existing_versions&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">False&lt;/span> &lt;span style="color:#75715e"># 스테이징은 여러 개 가능&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[INFO] 🚀 모델 version &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> → Staging 반영 완료&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># FastAPI 핫스왑 요청 (reload 호출)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> response &lt;span style="color:#f92672">=&lt;/span> requests&lt;span style="color:#f92672">.&lt;/span>post(&lt;span style="color:#e6db74">&amp;#34;http://fastapi.local/reload&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[INFO] 🔁 FastAPI 모델 리로드 요청 결과: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>response&lt;span style="color:#f92672">.&lt;/span>status_code&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>response&lt;span style="color:#f92672">.&lt;/span>text&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[ERROR] ❌ FastAPI 리로드 요청 실패: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>str(e)&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;[WARN] ❌ 성능 기준 미달 (accuracy &amp;lt;= 0.9)&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 모델 버전 출력 (전후 비교 가능)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client &lt;span style="color:#f92672">=&lt;/span> MlflowClient()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> versions &lt;span style="color:#f92672">=&lt;/span> client&lt;span style="color:#f92672">.&lt;/span>get_latest_versions(&lt;span style="color:#e6db74">&amp;#34;best_model&amp;#34;&lt;/span>, stages&lt;span style="color:#f92672">=&lt;/span>[&lt;span style="color:#e6db74">&amp;#34;None&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;Staging&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;Production&amp;#34;&lt;/span>])
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> v &lt;span style="color:#f92672">in&lt;/span> versions:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;[INFO] 🔄 모델 Version=&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>v&lt;span style="color:#f92672">.&lt;/span>version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">, Stage=&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>v&lt;span style="color:#f92672">.&lt;/span>current_stage&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> acc
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;__main__&amp;#34;&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> acc &lt;span style="color:#f92672">=&lt;/span> train_model(float(sys&lt;span style="color:#f92672">.&lt;/span>argv[&lt;span style="color:#ae81ff">1&lt;/span>]), int(sys&lt;span style="color:#f92672">.&lt;/span>argv[&lt;span style="color:#ae81ff">2&lt;/span>]))
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h3 id="3-fastapi-모델-재로딩-구조">3. FastAPI 모델 재로딩 구조&lt;/h3>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># FastAPI app/main.py&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> fastapi &lt;span style="color:#f92672">import&lt;/span> FastAPI, Request
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow.pyfunc
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> mlflow
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">from&lt;/span> mlflow.tracking &lt;span style="color:#f92672">import&lt;/span> MlflowClient
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> os
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>app &lt;span style="color:#f92672">=&lt;/span> FastAPI()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>model &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>model_info &lt;span style="color:#f92672">=&lt;/span> {}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">load_model_from_mlflow&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">global&lt;/span> model, model_info
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tracking_uri &lt;span style="color:#f92672">=&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>environ&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;MLFLOW_TRACKING_URI&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_name &lt;span style="color:#f92672">=&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>environ&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;MODEL_NAME&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_stage &lt;span style="color:#f92672">=&lt;/span> os&lt;span style="color:#f92672">.&lt;/span>environ&lt;span style="color:#f92672">.&lt;/span>get(&lt;span style="color:#e6db74">&amp;#34;MODEL_STAGE&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;Staging&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mlflow&lt;span style="color:#f92672">.&lt;/span>set_tracking_uri(tracking_uri)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_uri &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;models:/&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_name&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">/&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_stage&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model &lt;span style="color:#f92672">=&lt;/span> mlflow&lt;span style="color:#f92672">.&lt;/span>pyfunc&lt;span style="color:#f92672">.&lt;/span>load_model(model_uri)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client &lt;span style="color:#f92672">=&lt;/span> MlflowClient()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> latest &lt;span style="color:#f92672">=&lt;/span> client&lt;span style="color:#f92672">.&lt;/span>get_latest_versions(name&lt;span style="color:#f92672">=&lt;/span>model_name, stages&lt;span style="color:#f92672">=&lt;/span>[model_stage])[&lt;span style="color:#ae81ff">0&lt;/span>]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> run_id &lt;span style="color:#f92672">=&lt;/span> latest&lt;span style="color:#f92672">.&lt;/span>run_id
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> version &lt;span style="color:#f92672">=&lt;/span> latest&lt;span style="color:#f92672">.&lt;/span>version
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;✅ Reloaded model: name=&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_name&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">, stage=&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>model_stage&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">, version=&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>version&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">, run_id=&lt;/span>&lt;span style="color:#e6db74">{&lt;/span>run_id&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> model_info &lt;span style="color:#f92672">=&lt;/span> {
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>: model_name,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;stage&amp;#34;&lt;/span>: model_stage,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;version&amp;#34;&lt;/span>: version,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;run_id&amp;#34;&lt;/span>: run_id,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;model_uri&amp;#34;&lt;/span>: model_uri,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@app.on_event&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;startup&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">startup_event&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> load_model_from_mlflow()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@app.get&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;/&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">root&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;message&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;FastAPI MLOps is running!&amp;#34;&lt;/span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 현재 모델 확인 가능&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@app.get&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;/model-info&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">get_model_info&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> model_info
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@app.post&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;/predict&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">async&lt;/span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">predict&lt;/span>(request: Request):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> input_data &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">await&lt;/span> request&lt;span style="color:#f92672">.&lt;/span>json()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> prediction &lt;span style="color:#f92672">=&lt;/span> model&lt;span style="color:#f92672">.&lt;/span>predict(input_data)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;prediction&amp;#34;&lt;/span>: prediction&lt;span style="color:#f92672">.&lt;/span>tolist()}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Staging 모델 다시 로드&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@app.post&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;/reload&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">reload_model&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> load_model_from_mlflow()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;status&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;success&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;message&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;🔁 Model reloaded successfully.&amp;#34;&lt;/span>}
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span> &lt;span style="color:#a6e22e">Exception&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> e:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> {&lt;span style="color:#e6db74">&amp;#34;status&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;error&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;message&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Reload failed: &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>str(e)&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
-&lt;h2 id="-테스트-결과-요약">✅ 테스트 결과 요약&lt;/h2>
-&lt;ul>
-&lt;li>&lt;code>logreg_C&lt;/code>, &lt;code>logreg_max_iter&lt;/code> 파라미터로 학습 DAG 설정 가능&lt;/li>
-&lt;li>모델 등록 시 &lt;code>Staging&lt;/code>으로 자동 승격&lt;/li>
-&lt;li>FastAPI 서버에 &lt;code>/reload&lt;/code> 호출 시 핫스왑 적용됨&lt;/li>
-&lt;li>&lt;code>/model-info&lt;/code>, &lt;code>/predict&lt;/code>에서 새로운 모델 정보 및 예측 결과 확인 완료&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="-테스트-검증-모델-등록--핫스왑-확인">🎓 테스트 검증 (모델 등록 + 핫스왑 확인)&lt;/h2>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 기존 모델 버전 확인&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>curl http://fastapi.local/model-info | jq
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> % Total % Received % Xferd Average Speed Time Time Time Current
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Dload Upload Total Spent Left Speed
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">144&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">144&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#ae81ff">19251&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> --:--:-- --:--:-- --:--:-- &lt;span style="color:#ae81ff">20571&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;best_model&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;stage&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Staging&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;version&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;run_id&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;8bd09505eabf40648337e811110ab22c&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;model_uri&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;models:/best_model/Staging&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 예측 결과 확인&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>curl -X POST http://fastapi.local/predict &lt;span style="color:#ae81ff">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> -H &lt;span style="color:#e6db74">&amp;#34;Content-Type: application/json&amp;#34;&lt;/span> &lt;span style="color:#ae81ff">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> -d &lt;span style="color:#e6db74">&amp;#39;[ [5.1, 3.5, 1.4, 0.2] ]&amp;#39;&lt;/span> | jq
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> % Total % Received % Xferd Average Speed Time Time Time Current
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Dload Upload Total Spent Left Speed
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">42&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">18&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">24&lt;/span> &lt;span style="color:#ae81ff">311&lt;/span> &lt;span style="color:#ae81ff">415&lt;/span> --:--:-- --:--:-- --:--:-- &lt;span style="color:#ae81ff">736&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;prediction&amp;#34;&lt;/span>: &lt;span style="color:#f92672">[&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">]&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 모델 reload (핫스왑)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>curl -X POST http://fastapi.local/reload | jq
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> % Total % Received % Xferd Average Speed Time Time Time Current
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Dload Upload Total Spent Left Speed
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">66&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">66&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#ae81ff">186&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> --:--:-- --:--:-- --:--:-- &lt;span style="color:#ae81ff">186&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;status&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;success&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;message&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;🔁 Model reloaded successfully.&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 신규 모델 버전 확인&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>curl http://fastapi.local/model-info | jq
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> % Total % Received % Xferd Average Speed Time Time Time Current
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Dload Upload Total Spent Left Speed
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">144&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">144&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#ae81ff">42985&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> --:--:-- --:--:-- --:--:-- &lt;span style="color:#ae81ff">48000&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;model_name&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;best_model&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;stage&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Staging&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;version&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;2&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;run_id&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;72f388927f5749c185b828a1a16bb063&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;model_uri&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;models:/best_model/Staging&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 예측 결과 확인&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>curl -X POST http://fastapi.local/predict &lt;span style="color:#ae81ff">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> -H &lt;span style="color:#e6db74">&amp;#34;Content-Type: application/json&amp;#34;&lt;/span> &lt;span style="color:#ae81ff">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> -d &lt;span style="color:#e6db74">&amp;#39;[ [5.1, 3.5, 1.4, 0.2] ]&amp;#39;&lt;/span> | jq
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> % Total % Received % Xferd Average Speed Time Time Time Current
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Dload Upload Total Spent Left Speed
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">42&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">18&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#ae81ff">24&lt;/span> &lt;span style="color:#ae81ff">3831&lt;/span> &lt;span style="color:#ae81ff">5108&lt;/span> --:--:-- --:--:-- --:--:-- &lt;span style="color:#ae81ff">10500&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;prediction&amp;#34;&lt;/span>: &lt;span style="color:#f92672">[&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">]&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</link><pubDate>Thu, 03 Jul 2025 17:11:53 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</guid><description>&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>개별 컴포넌트(Airflow, MLflow, FastAPI)를 각각 구성했지만, 학습부터 서빙까지의 자동화 흐름을 E2E로 검증해야 실제 운영 가능 여부를 판단할 수 있습니다. 이 단계에서는 Airflow DAG에서 모델 학습 → 성능 기준 분기 → MLflow 등록 → FastAPI 핫스왑까지 전체 파이프라인을 실험합니다.&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</link><pubDate>Thu, 03 Jul 2025 17:11:53 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“실무에서는 데이터 파이프라인이나 모델 학습 작업을 수시로 업데이트하게 되며,&lt;/p>
-&lt;p>이를 수동으로 업로드하지 않고 Git 기반으로 관리하는 것이 필수입니다.&lt;/p>
-&lt;p>Airflow는 GitSync 기능을 통해 DAG를 자동 동기화할 수 있습니다.”&lt;/p>&lt;/blockquote>
+&lt;p>Airflow를 Helm으로 배포하면서 GitSync DAG 동기화, 외부 PostgreSQL, AWS Secret 마운트를 연동합니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>DAG 코드가 Git으로 관리되어야 리뷰, 히스토리, 협업 가능&lt;/li>
-&lt;li>GitSync → DAG 자동 배포 (CI/CD 개념 적용)&lt;/li>
-&lt;li>Secret으로 Git 인증 → 조직 내 GitOps 문화와 연계&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/03/">MLOps 플랫폼 구축 3단계: MLflow Helm 구성&lt;/a> — Helm 기반 배포와 Secret 주입 패턴&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="-tldr">✨ TL;DR&lt;/h2>
-&lt;ul>
-&lt;li>Helm을 통해 Airflow를 배포하면서 DAG 코드를 Git 저장소에서 자동으로 동기화하는 구조 설계&lt;/li>
-&lt;li>GitSync, Secret 기반 SSH 인증, 외부 PostgreSQL, AWS S3 연동까지 포함해 구성&lt;/li>
-&lt;li>UI 접근은 Ingress를 통해 이루어지며, 로그는 PVC 또는 S3로 설정 가능&lt;/li>
-&lt;/ul>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>DAG 코드를 수동으로 업로드하면 버전 관리와 협업이 불가능합니다. Git 기반 DAG 관리(GitSync)를 도입하고, SSH Key/AWS 인증을 Secret으로 주입하며, 외부 PostgreSQL을 메타데이터 저장소로 연동하는 GitOps 패턴을 구성합니다.&lt;/p>
 &lt;hr>
 &lt;h2 id="-아키텍처-구성도">📐 아키텍처 구성도&lt;/h2>
-&lt;p>&lt;img alt="04" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/04.png">&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</link><pubDate>Mon, 23 Jun 2025 17:11:47 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</guid><description>&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;p>&lt;img alt="04" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/04.png">&lt;/p>
+&lt;hr>
+&lt;h2 id="-커스텀-airflow-이미지-구성">🐳 커스텀 Airflow 이미지 구성&lt;/h2>
+&lt;p>GitSync DAG에서 MLflow 연동 또는 AWS SDK 사용을 위한 Python 패키지 설치가 필요합니다.&lt;/p></description></item><item><title>[MLOps 플랫폼 구축 - 1단계: 인프라 설계 및 환경 준비]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</link><pubDate>Mon, 23 Jun 2025 17:11:47 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/01/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“ML 모델을 실험하고 추적하려면 단순 Jupyter Notebook으론 부족합니다.&lt;/p>
-&lt;p>Kubernetes 기반의 인프라를 선택한 이유는 다음과 같습니다.”&lt;/p>&lt;/blockquote>
+&lt;p>Kubernetes 기반 MLOps 인프라의 전체 구조를 설계하고, NFS/PostgreSQL/S3 기반 환경을 구축합니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>
-&lt;p>&lt;strong>Kubernetes&lt;/strong>:&lt;/p>
-&lt;p>👉 ML 모델 학습 및 서빙이 점점 컨테이너 기반으로 이뤄지고 있으며,&lt;/p>
-&lt;p>자원 할당, 스케일링, 리소스 격리를 위한 플랫폼으로 &lt;strong>사실상 표준&lt;/strong>이 되었음&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>NFS 구성&lt;/strong>:&lt;/p>
-&lt;p>👉 MLflow UI 내의 로그, 메타데이터 등 &lt;strong>파일 기반 공유 스토리지 필요&lt;/strong>,&lt;/p>
-&lt;p>로컬 볼륨은 Pod가 재시작되거나 이동하면 휘발되므로,&lt;/p>
-&lt;p>&lt;strong>여러 Pod 간 공유가 가능한 파일 스토리지가 필수&lt;/strong>&lt;/p>
-&lt;p>(※ 실무에서는 AWS EFS, GCP Filestore 등을 대체로 사용)&lt;/p></description></item></channel></rss>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/airflow/05/">Airflow 5단계: PythonOperator + MLflow Tracking 연동&lt;/a> — Level 1 완료 후 시작 권장&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>ML 모델을 실험하고 추적하려면 단순 Jupyter Notebook으로는 부족합니다. 학습 이력 추적(MLflow), 파이프라인 자동화(Airflow), 모델 서빙(FastAPI)을 하나의 플랫폼에서 운영하려면 Kubernetes 기반 인프라가 필요합니다. 이 단계에서는 그 기반이 되는 NFS, PostgreSQL, S3, Kubernetes 클러스터 환경을 설계하고 구축합니다.&lt;/p></description></item></channel></rss>

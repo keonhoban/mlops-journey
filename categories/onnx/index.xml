@@ -99,67 +99,24 @@
 &lt;/tbody>
 &lt;/table>
 &lt;blockquote>
-&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - MLflow → Triton 자동 배포 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/02/</link><pubDate>Mon, 29 Dec 2025 12:02:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/02/</guid><description>&lt;h3 id="airflow-기반--검증-체인--최소-롤백">Airflow 기반 · 검증 체인 · 최소 롤백&lt;/h3>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - MLflow → Triton 자동 배포 파이프라인 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/02/</link><pubDate>Mon, 29 Dec 2025 12:02:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/02/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>실무 환경에서 모델 배포는&lt;/p>
-&lt;p>“새 모델을 올리는 작업”이 아니라&lt;/p>
-&lt;p>“현재 운영 상태를 안전하게 갱신하는 상태 전이(State Transition)”에 가깝습니다.&lt;/p>
-&lt;p>이번 단계에서는 MLflow Registry를 단일 소스로 삼아&lt;/p>
-&lt;p>Triton Inference Server에 모델을 &lt;strong>자동 배포&lt;/strong>하고,&lt;/p>
+&lt;p>MLflow Registry를 단일 소스로 삼아 Airflow DAG에서 Triton에 모델을 자동 배포하고, 검증 체인(load/ready/infer) 통과 후에만 운영 확정하며, 실패 시 자동 롤백하는 파이프라인을 구축한 과정&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>로딩&lt;/li>
-&lt;li>헬스 체크&lt;/li>
-&lt;li>실제 추론 검증&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/triton/01/">Triton 서빙 플랫폼 - Triton 구축&lt;/a>&lt;/li>
 &lt;/ul>
-&lt;p>을 모두 통과한 경우에만 운영 모델을 확정(commit)하며,&lt;/p>
-&lt;p>중간 단계에서 하나라도 실패하면&lt;/p>
-&lt;p>&lt;strong>이전 운영 상태로 자동 복구되는 최소 롤백 구조&lt;/strong>를 구현했습니다.&lt;/p>
-&lt;p>이 모든 흐름은 Airflow DAG를 통해&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Triton 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/01/</link><pubDate>Fri, 26 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/01/</guid><description>&lt;h2 id="triton-cpu-only-gitops-통합-onnx-1개-서빙--prometheusgrafana-관측">Triton (CPU-only) GitOps 통합: ONNX 1개 서빙 + Prometheus/Grafana 관측&lt;/h2>
 &lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>실무 환경에서 모델 배포는 &amp;ldquo;새 모델을 올리는 작업&amp;quot;이 아니라 &amp;ldquo;현재 운영 상태를 안전하게 갱신하는 상태 전이(State Transition)&amp;ldquo;에 가깝다.
+이번 단계에서는 MLflow Registry를 단일 소스로 삼아 Triton Inference Server에 모델을 자동 배포하고, 로딩/헬스 체크/실제 추론 검증을 모두 통과한 경우에만 운영 모델을 확정(commit)하며, 중간 단계에서 하나라도 실패하면 이전 운영 상태로 자동 복구되는 최소 롤백 구조를 구현했다.&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Triton 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/01/</link><pubDate>Fri, 26 Dec 2025 10:08:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/01/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>실무에서 서빙 계층은 곧바로 트래픽과 SLA를 맞는 최전선입니다.&lt;/p>
-&lt;p>모델이 아무리 좋아도, &lt;strong>서빙이 불안정하면&lt;/strong> 운영시 바로 무너집니다.&lt;/p>
-&lt;p>그래서 이번에는 Triton 첫 구축으로 GPU/파이프라인 연동을 일부러 빼고,&lt;/p>
-&lt;p>Triton 자체를 GitOps로 안정적으로 띄우고, 모델 load→infer→metrics 관측까지 ‘서빙 플랫폼 뼈대 구축’을 진행했습니다.&lt;/p>&lt;/blockquote>
+&lt;p>Triton Inference Server를 CPU-only GitOps 구조로 배포하고, ONNX 모델 1개의 load/infer 검증 및 Prometheus/Grafana 관측까지 서빙 플랫폼 뼈대를 구축한 과정&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/08/">Observability 8단계: Data Pipeline 고도화&lt;/a>&lt;/li>
+&lt;/ul>
 &lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
-&lt;ul>
-&lt;li>&lt;strong>dev/prod 네임스페이스 분리&lt;/strong>
-&lt;ul>
-&lt;li>&lt;code>triton-dev&lt;/code>, &lt;code>triton-prod&lt;/code>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>Triton 모델 제어 모드&lt;/strong>
-&lt;ul>
-&lt;li>&lt;code>-model-control-mode=explicit&lt;/code>&lt;/li>
-&lt;li>필요 시에만 load/unload로 운영 제어 가능&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>Model Repository&lt;/strong>
-&lt;ul>
-&lt;li>NFS(RWX) 기반 PVC로 &lt;code>/models&lt;/code> 마운트&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>모델 검증&lt;/strong>
-&lt;ul>
-&lt;li>ONNX 1개 &lt;code>simple_model&lt;/code>로 &lt;code>load → infer&lt;/code> 성공&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>관측&lt;/strong>
-&lt;ul>
-&lt;li>Triton은 &lt;code>/metrics&lt;/code>를 &lt;strong>Prometheus 포맷으로 자체 노출&lt;/strong>&lt;/li>
-&lt;li>ServiceMonitor로 dev/prod Prometheus에 자동 스크랩&lt;/li>
-&lt;li>Grafana에서 패널로 증명 가능&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>GPU 확장 포인트&lt;/strong>
-&lt;ul>
-&lt;li>values에 &lt;code>gpu.enabled&lt;/code> 분기 설계 (현재 false → CPU 사용)&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;blockquote>
-&lt;p>완료 기준은 “Triton + GitOps + Observability” 구축입니다.&lt;/p></description></item></channel></rss>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>실무에서 서빙 계층은 곧바로 트래픽과 SLA를 맞는 최전선이다. 모델이 아무리 좋아도 서빙이 불안정하면 운영 시 바로 무너진다.
+이번에는 Triton 첫 구축으로 GPU/파이프라인 연동을 일부러 빼고, Triton 자체를 GitOps로 안정적으로 띄우고, 모델 load → infer → metrics 관측까지 서빙 플랫폼 뼈대 구축을 진행했다.&lt;/p></description></item></channel></rss>

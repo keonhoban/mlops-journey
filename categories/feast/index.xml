@@ -1,8 +1,14 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Feast on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/feast/</link><description>Recent content in Feast on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 15 Jan 2026 17:15:38 +1203</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/feast/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - Feast]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/</link><pubDate>Thu, 15 Jan 2026 17:15:38 +1203</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/</guid><description>&lt;h3 id="gitops로-feast-계약-배포--airflow로-버전화latest-갱신--feastregistrys3-offlineredis-online로-온라인-조회까지">GitOps로 Feast 계약 배포 + Airflow로 버전화/Latest 갱신 + Feast(Registry/S3 Offline/Redis Online)로 온라인 조회까지&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Feast on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/feast/</link><description>Recent content in Feast on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Thu, 15 Jan 2026 17:15:38 +1203</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/feast/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - Feast]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/</link><pubDate>Thu, 15 Jan 2026 17:15:38 +1203</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/02/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>Feature Store-lite 위에 Feast를 얹어, S3 Offline + Redis Online + Feature Server 구성으로 &amp;ldquo;저장하는 파이프라인&amp;quot;을 &amp;ldquo;조회 가능한 피처 플랫폼&amp;quot;으로 확장하는 과정&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/">Feature Store &amp;amp; Feast - Feature Store-lite&lt;/a>&lt;/li>
+&lt;/ul>
 &lt;hr>
-&lt;h2 id="-시나리오">🧠 시나리오&lt;/h2>
-&lt;p>이전 글(Feature Store-lite)에서 저는 &lt;strong>계약(스키마/메타) + 버전화 저장 + 재현성&lt;/strong>까지 고정했습니다.&lt;/p>
-&lt;p>하지만 실무에서는 “저장”에서 끝나지 않습니다. 결국 중요한 건 &lt;strong>조회 가능(Serving-ready)&lt;/strong> 상태입니다.&lt;/p>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>이전 글(Feature Store-lite)에서 &lt;strong>계약(스키마/메타) + 버전화 저장 + 재현성&lt;/strong>까지 고정했습니다.&lt;/p>
+&lt;p>하지만 실무에서는 &amp;ldquo;저장&amp;quot;에서 끝나지 않습니다. 결국 중요한 건 &lt;strong>조회 가능(Serving-ready)&lt;/strong> 상태입니다.&lt;/p>
 &lt;p>이번 글은 Feature Store-lite 위에 Feast를 얹어 아래를 완성합니다.&lt;/p>
 &lt;ul>
 &lt;li>&lt;strong>Offline Source&lt;/strong>: S3의 &lt;code>latest/features.parquet&lt;/code> (Feast가 읽는 고정 포인터)&lt;/li>
@@ -10,4 +16,4 @@
 &lt;li>&lt;strong>Online Store&lt;/strong>: Redis 적재(materialize)로 온라인 조회 가능&lt;/li>
 &lt;li>&lt;strong>Feature Server&lt;/strong>: 상시 서비스 + startup 시 &lt;code>feast apply&lt;/code>&lt;/li>
 &lt;/ul>
-&lt;p>즉, “저장하는 파이프라인” → “조회 가능한 피처 플랫폼”으로 확장하는 단계입니다.&lt;/p></description></item></channel></rss>
+&lt;p>즉, &amp;ldquo;저장하는 파이프라인&amp;rdquo; -&amp;gt; &amp;ldquo;조회 가능한 피처 플랫폼&amp;quot;으로 확장하는 단계입니다.&lt;/p></description></item></channel></rss>

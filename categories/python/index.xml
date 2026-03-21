@@ -1,35 +1,24 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Python on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/python/</link><description>Recent content in Python on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 15 Nov 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/python/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 8단계 : Data Pipeline 고도화]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/08/</link><pubDate>Sat, 15 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/08/</guid><description>&lt;h2 id="data-pipeline-고도화-스키마메타데이터--kst-타임라인">Data Pipeline 고도화: 스키마/메타데이터 + KST 타임라인&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Python on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/python/</link><description>Recent content in Python on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Sat, 15 Nov 2025 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/python/index.xml" rel="self" type="application/rss+xml"/><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 8단계 : Data Pipeline 고도화]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/08/</link><pubDate>Sat, 15 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/08/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“이전 &lt;strong>MLOps 플랫폼 Observability &amp;amp; Data Pipeline - 7단계&lt;/strong>에서
-우리는 S3 Raw → 전처리 → Feature CSV → S3 저장까지&lt;/p>
-&lt;p>동작하는 엔드투엔드 데이터 파이프라인(v1)을 만들었습니다.”&lt;/p>
-&lt;p>“하지만 실무 ML 플랫폼 입장에서는,&lt;/p>
-&lt;p>‘그때 그 실행에서 어떤 데이터를, 어떤 품질로, 어느 버전에 저장했는지’가&lt;/p>
-&lt;p>&lt;strong>시간·버전·스키마·메타데이터&lt;/strong>까지 한 번에 남아야 합니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 &lt;strong>기존 v1 파이프라인을 버리지 않고&lt;/strong>,&lt;/p>
-&lt;p>그 위에 &lt;strong>버전 디렉터리 구조 + schema.json + metadata.json + KST 타임라인&lt;/strong>을 얹어&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 7단계 : Data Pipeline 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/</link><pubDate>Mon, 10 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/</guid><description>&lt;h2 id="data-pipeline-구축">Data Pipeline 구축&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“모델의 성능은 결국 데이터 품질에서 결정됩니다.&lt;/p>
-&lt;p>그런데 그 데이터를 어떻게 추출하고, 검증하고, 가공하고, 저장하는지까지 자동화하지 않으면&lt;/p>
-&lt;p>MLOps는 절대 완성되지 않습니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 Raw S3 → 전처리 → Feature → 저장까지 이어지는&lt;/p>
-&lt;p>&lt;strong>엔드투엔드 데이터 파이프라인&lt;/strong>을 직접 구축해&lt;/p>
-&lt;p>이후 MLflow 학습 자동화와 바로 연결될 ‘데이터 레이어’를 먼저 다졌습니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;p>기존 v1 데이터 파이프라인에 버전 디렉터리 구조, schema.json, metadata.json, KST 타임라인을 얹어 ML Feature Store에 가까운 v2 파이프라인으로 고도화한 과정&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>
-&lt;p>&lt;strong>Raw 데이터&lt;/strong>를 S3에서 가져오고&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Airflow DAG&lt;/strong>에서 단계별 처리 흐름을 관리하며&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Python 전처리 코드&lt;/strong>에서 Feature 생성&lt;/p></description></item><item><title>[코드업] 기초 100제. 십자 뒤집기, 설탕과자 뽑기, 성실한 개미</title><link>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</link><pubDate>Sat, 10 May 2025 12:25:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</guid><description>&lt;h1 id="-codeup-문제-요약">📘 CodeUp 문제 요약&lt;/h1>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/">Observability 7단계: Data Pipeline 구축&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>이전 단계에서 S3 Raw에서 Feature CSV까지 동작하는 엔드투엔드 데이터 파이프라인(v1)을 만들었다. 하지만 실무 ML 플랫폼 입장에서는 &amp;ldquo;그때 그 실행에서 어떤 데이터를, 어떤 품질로, 어느 버전에 저장했는지&amp;quot;가 시간/버전/스키마/메타데이터까지 한 번에 남아야 한다.
+이번 단계에서는 기존 v1 파이프라인을 버리지 않고, 그 위에 버전 디렉터리 구조 + schema.json + metadata.json + KST 타임라인을 얹어 실제 ML Feature Store에 더 가까운 v2 파이프라인으로 고도화했다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 7단계 : Data Pipeline 구축]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/</link><pubDate>Mon, 10 Nov 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/07/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>S3 Raw 데이터를 Airflow DAG로 추출/검증/가공/저장하는 엔드투엔드 데이터 파이프라인을 구축하여 ML 학습 자동화의 데이터 레이어를 확보한 과정&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/06/">Observability 6단계: FastAPI Dashboard &amp;amp; Alert Library&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>모델의 성능은 결국 데이터 품질에서 결정된다. 그런데 데이터를 어떻게 추출하고, 검증하고, 가공하고, 저장하는지까지 자동화하지 않으면 MLOps는 완성되지 않는다.
+이번 단계에서는 Raw S3에서 전처리, Feature 생성, 저장까지 이어지는 엔드투엔드 데이터 파이프라인을 직접 구축해 이후 MLflow 학습 자동화와 바로 연결될 데이터 레이어를 다졌다.&lt;/p></description></item><item><title>[코드업] 기초 100제. 십자 뒤집기, 설탕과자 뽑기, 성실한 개미</title><link>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</link><pubDate>Sat, 10 May 2025 12:25:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</guid><description>&lt;h1 id="-codeup-문제-요약">📘 CodeUp 문제 요약&lt;/h1>
 &lt;hr>
 &lt;h2 id="-6096---십자-뒤집기">🔹 6096 - 십자 뒤집기&lt;/h2>
 &lt;blockquote>

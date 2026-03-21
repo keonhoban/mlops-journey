@@ -1,8 +1,14 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Feature Store on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/feature-store/</link><description>Recent content in Feature Store on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 14 Jan 2026 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/feature-store/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - Feature Store-lite]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/</link><pubDate>Wed, 14 Jan 2026 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/</guid><description>&lt;h3 id="gitops로-계약-배포하고-airflow로-스키마-기반-피처를-생성해-s3에-버전화--재현성-메타로-저장하기">GitOps로 계약 배포하고, Airflow로 스키마 기반 피처를 생성해 S3에 “버전화 + 재현성 메타”로 저장하기&lt;/h3>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Feature Store on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/feature-store/</link><description>Recent content in Feature Store on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Wed, 14 Jan 2026 17:10:21 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/feature-store/index.xml" rel="self" type="application/rss+xml"/><item><title>[Feature Store &amp; Feast - Feature Store-lite]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/</link><pubDate>Wed, 14 Jan 2026 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-feature-store/01/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>Feast 풀도입 이전 단계로, GitOps + Airflow를 사용해 피처 생성/버전화/재현성의 최소 요건(계약/메타/버전화)을 고정하는 Feature Store-lite 설계&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/triton/04/">Triton 서빙 플랫폼 - dynamic_batching + instance_group&lt;/a>&lt;/li>
+&lt;/ul>
 &lt;hr>
-&lt;h2 id="-시나리오">🧠 시나리오&lt;/h2>
-&lt;p>Feature Store는 “ML 성능”이 아니라 &lt;strong>운영 안정성/재현성&lt;/strong>에서 먼저 갈립니다.&lt;/p>
-&lt;p>“오늘 만든 feature.csv”가 아니라, 아래가 &lt;strong>반드시 남아야&lt;/strong> 운영이 됩니다.&lt;/p>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>Feature Store는 &amp;ldquo;ML 성능&amp;quot;이 아니라 &lt;strong>운영 안정성/재현성&lt;/strong>에서 먼저 갈립니다.&lt;/p>
+&lt;p>&amp;ldquo;오늘 만든 feature.csv&amp;quot;가 아니라, 아래가 &lt;strong>반드시 남아야&lt;/strong> 운영이 됩니다.&lt;/p>
 &lt;ul>
 &lt;li>언제 생성됐는지 (generated_at)&lt;/li>
 &lt;li>어떤 스키마(계약)로 생성됐는지 (schema + schema_hash)&lt;/li>
@@ -10,5 +16,5 @@
 &lt;li>어떤 버전으로 저장됐는지 (version)&lt;/li>
 &lt;li>결과물이 어디 있는지 (feature_uri)&lt;/li>
 &lt;/ul>
-&lt;p>Feature Store 도입을 고민하면 흔히 “Feast부터 써야 하나?”가 먼저 나오는데,&lt;/p>
-&lt;p>도구보다 먼저 &lt;strong>피처 생성/버전화/재현 방식이 고정&lt;/strong>돼야 합니다.&lt;/p></description></item></channel></rss>
+&lt;p>Feature Store 도입을 고민하면 흔히 &amp;ldquo;Feast부터 써야 하나?&amp;ldquo;가 먼저 나오는데,
+도구보다 먼저 &lt;strong>피처 생성/버전화/재현 방식이 고정&lt;/strong>돼야 합니다.&lt;/p></description></item></channel></rss>

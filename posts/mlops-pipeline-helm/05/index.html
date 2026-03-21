@@ -1,45 +1,21 @@
 <!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축] | 🏔️ MLOps Journey</title>
-<meta name=keywords content><meta name=description content="🧠 시나리오 설명
+<meta name=keywords content><meta name=description content='이 글에서 다루는 것
 
-“ 모델을 수동으로 넣는 것이 아니라,
-MLflow에 등록된 Staging 모델을 서빙 API에서 자동 로딩하는 구조를 지향합니다.”
+MLflow에 등록된 모델을 FastAPI로 서빙하고, Stage 기반 핫스왑과 모델 정보 조회 API를 구축합니다.
+선수지식
 
-FastAPI는 경량화된 서빙 서버로서 적합
-MLflow pyfunc.load_model()을 통해 자동 로딩 → CI/CD 및 모델 자동화 가능
-S3와 연결되므로, “로컬 복사본 관리 X”, 재현성 유지
-API 호출을 통해 실제 추론 결과 확인 가능
+MLOps 플랫폼 구축 4단계: Airflow GitSync + Secret 연동 — Helm 배포와 Secret 마운트 패턴
 
 
-✨ TL;DR
-
-MLflow에서 등록한 모델을 FastAPI 기반 REST API로 서빙합니다.
-mlflow.pyfunc.load_model()을 통해 Stage별 버전 관리, 핫스왑, 모델 정보 조회가 가능합니다.
-쿠버네티스 기반으로 Helm Chart 배포 + AWS 인증 Secret + Ingress 접근까지 연동합니다.
-
+이 단계에서 해결하려는 문제
+모델을 수동으로 서빙 서버에 복사하면 배포 실수와 버전 불일치가 발생합니다. MLflow Registry에서 Stage별 모델을 자동 로딩하는 구조를 만들어, 코드 변경 없이 모델을 교체할 수 있도록 합니다.
 
 📐 아키텍처 구성도
-"><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]"><meta property="og:description" content="🧠 시나리오 설명 “ 모델을 수동으로 넣는 것이 아니라,
-MLflow에 등록된 Staging 모델을 서빙 API에서 자동 로딩하는 구조를 지향합니다.”
-FastAPI는 경량화된 서빙 서버로서 적합 MLflow pyfunc.load_model()을 통해 자동 로딩 → CI/CD 및 모델 자동화 가능 S3와 연결되므로, “로컬 복사본 관리 X”, 재현성 유지 API 호출을 통해 실제 추론 결과 확인 가능 ✨ TL;DR MLflow에서 등록한 모델을 FastAPI 기반 REST API로 서빙합니다. mlflow.pyfunc.load_model()을 통해 Stage별 버전 관리, 핫스왑, 모델 정보 조회가 가능합니다. 쿠버네티스 기반으로 Helm Chart 배포 + AWS 인증 Secret + Ingress 접근까지 연동합니다. 📐 아키텍처 구성도 "><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-07-07T17:11:55+09:00"><meta property="article:modified_time" content="2025-07-07T17:11:55+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]"><meta name=twitter:description content="🧠 시나리오 설명
-
-“ 모델을 수동으로 넣는 것이 아니라,
-MLflow에 등록된 Staging 모델을 서빙 API에서 자동 로딩하는 구조를 지향합니다.”
-
-FastAPI는 경량화된 서빙 서버로서 적합
-MLflow pyfunc.load_model()을 통해 자동 로딩 → CI/CD 및 모델 자동화 가능
-S3와 연결되므로, “로컬 복사본 관리 X”, 재현성 유지
-API 호출을 통해 실제 추론 결과 확인 가능
 
 
-✨ TL;DR
-
-MLflow에서 등록한 모델을 FastAPI 기반 REST API로 서빙합니다.
-mlflow.pyfunc.load_model()을 통해 Stage별 버전 관리, 핫스왑, 모델 정보 조회가 가능합니다.
-쿠버네티스 기반으로 Helm Chart 배포 + AWS 인증 Secret + Ingress 접근까지 연동합니다.
-
-
-📐 아키텍처 구성도
-"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]","name":"[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]","description":"🧠 시나리오 설명 “ 모델을 수동으로 넣는 것이 아니라,\nMLflow에 등록된 Staging 모델을 서빙 API에서 자동 로딩하는 구조를 지향합니다.”\nFastAPI는 경량화된 서빙 서버로서 적합 MLflow pyfunc.load_model()을 통해 자동 로딩 → CI/CD 및 모델 자동화 가능 S3와 연결되므로, “로컬 복사본 관리 X”, 재현성 유지 API 호출을 통해 실제 추론 결과 확인 가능 ✨ TL;DR MLflow에서 등록한 모델을 FastAPI 기반 REST API로 서빙합니다. mlflow.pyfunc.load_model()을 통해 Stage별 버전 관리, 핫스왑, 모델 정보 조회가 가능합니다. 쿠버네티스 기반으로 Helm Chart 배포 + AWS 인증 Secret + Ingress 접근까지 연동합니다. 📐 아키텍처 구성도 ","keywords":[],"articleBody":"🧠 시나리오 설명 “ 모델을 수동으로 넣는 것이 아니라,\nMLflow에 등록된 Staging 모델을 서빙 API에서 자동 로딩하는 구조를 지향합니다.”\nFastAPI는 경량화된 서빙 서버로서 적합 MLflow pyfunc.load_model()을 통해 자동 로딩 → CI/CD 및 모델 자동화 가능 S3와 연결되므로, “로컬 복사본 관리 X”, 재현성 유지 API 호출을 통해 실제 추론 결과 확인 가능 ✨ TL;DR MLflow에서 등록한 모델을 FastAPI 기반 REST API로 서빙합니다. mlflow.pyfunc.load_model()을 통해 Stage별 버전 관리, 핫스왑, 모델 정보 조회가 가능합니다. 쿠버네티스 기반으로 Helm Chart 배포 + AWS 인증 Secret + Ingress 접근까지 연동합니다. 📐 아키텍처 구성도 🐳 FastAPI 커스텀 이미지 📦 Dockerfile FROM python:3.12 WORKDIR /app COPY app /app COPY requirements.txt . RUN pip install --no-cache-dir -r requirements.txt CMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"] 📄 requirements.txt fastapi==0.110.2 uvicorn==0.29.0 mlflow==2.13.0 pandas==2.1.4 scikit-learn==1.6.1 pydantic==2.7.1 boto3==1.34.113 numpy==1.26.4 packaging==24.2 psutil==7.0.0 scipy==1.15.3 setuptools==69.5.1 🚀 빌드 \u0026 푸시 docker build -t ghcr.io/hoizz/fastapi-ml:mlflow-model-info . docker push ghcr.io/hoizz/fastapi-ml:mlflow-model-info 📄 app/main.py from fastapi import FastAPI, Request import mlflow.pyfunc import mlflow from mlflow.tracking import MlflowClient import os app = FastAPI() model = None model_info = {} def load_model_from_mlflow(): global model, model_info tracking_uri = os.environ.get(\"MLFLOW_TRACKING_URI\") model_name = os.environ.get(\"MODEL_NAME\") model_stage = os.environ.get(\"MODEL_STAGE\", \"Production\") mlflow.set_tracking_uri(tracking_uri) model_uri = f\"models:/{model_name}/{model_stage}\" model = mlflow.pyfunc.load_model(model_uri) client = MlflowClient() latest = client.get_latest_versions(name=model_name, stages=[model_stage])[0] run_id = latest.run_id version = latest.version print(f\"✅ Reloaded model: name={model_name}, stage={model_stage}, version={version}, run_id={run_id}\") model_info = { \"model_name\": model_name, \"stage\": model_stage, \"version\": version, \"run_id\": run_id, \"model_uri\": model_uri, } @app.on_event(\"startup\") def startup_event(): load_model_from_mlflow() @app.get(\"/\") def root(): return {\"message\": \"FastAPI MLOps is running!\"} @app.get(\"/model-info\") def get_model_info(): return model_info @app.post(\"/predict\") async def predict(request: Request): input_data = await request.json() prediction = model.predict(input_data) return {\"prediction\": prediction.tolist()} 🛠️ Helm 배포 구성 🧾 values.yaml replicaCount: 1 image: repository: hoizz/fastapi-ml tag: mlflow-model-info pullPolicy: IfNotPresent service: name: fastapi-service type: ClusterIP port: 80 ingress: enabled: true className: nginx host: fastapi.local annotations: nginx.ingress.kubernetes.io/rewrite-target: / env: MLFLOW_TRACKING_URI: \"http://mlflow-service.mlflow.svc.cluster.local:5000\" MODEL_NAME: \"best_model\" MODEL_STAGE: \"Staging\" envFrom: - secretRef: name: aws-credentials-secret 📄 핵심 템플릿 fastapi-deployment.yaml apiVersion: apps/v1 kind: Deployment metadata: name: fastapi-server namespace: fastapi spec: replicas: 1 selector: matchLabels: app: fastapi template: metadata: labels: app: fastapi spec: containers: - name: fastapi image: {{ .Values.image.repository }}:{{ .Values.image.tag }} ports: - containerPort: 8000 env: - name: MLFLOW_TRACKING_URI value: {{ .Values.env.MLFLOW_TRACKING_URI }} - name: MODEL_NAME value: {{ .Values.env.MODEL_NAME }} - name: MODEL_STAGE value: {{ .Values.env.MODEL_STAGE }} envFrom: - secretRef: name: aws-credentials-secret fastapi-service.yaml apiVersion: v1 kind: Service metadata: name: fastapi-service namespace: fastapi spec: type: {{ .Values.service.type }} selector: app: fastapi ports: - port: {{ .Values.service.port }} targetPort: 8000 fastapi-ingress.yaml apiVersion: networking.k8s.io/v1 kind: Ingress metadata: name: fastapi-ingress namespace: fastapi annotations: {{- range $key, $value := .Values.ingress.annotations }} {{ $key }}: {{ $value | quote }} {{- end }} spec: ingressClassName: {{ .Values.ingress.className }} rules: - host: {{ .Values.ingress.host }} http: paths: - path: / pathType: Prefix backend: service: name: fastapi-service port: number: {{ .Values.service.port }} ⏱ 배포 kubectl create namespace fastapi helm install fastapi fastapi-helm -n fastapi # hosts 수정 {node_ip} fastapi.local # 접근 url [http://fastapi.local](http://fastapi.local/) 🧩 Tip 항목 팁 모델 핫스왑 /model-info API 제공 → 운영 시 버전 추적 필수 모델 미존재 load_model 시 MlflowException 발생 → FastAPI가 죽지 않도록 예외 처리 Ingress 설정 /etc/hosts, className, rewrite-target 필수 확인 리소스 할당 배포 시 CPU/RAM 제한 설정으로 예측 지연 방지 🔧 MLOps 실전 연결 항목 실제 의미 FastAPI REST 서빙 실시간 추론 API 운영에 적합 mlflow Stage 사용 운영과 실험 모델 분리 및 핫스왑 가능 boto3 연동 S3 객체 접근, 로그 추적, 리포트 저장 자동화 Helm 기반 배포 팀 내 재사용 가능한 마이크로서비스 패턴 완성 🧭 다음 포스트 예고 🧠 실시간 모델 핫스왑 구조 실험\n→ Airflow에서 모델 학습 DAG을 실행하면, MLflow에 모델이 자동 등록되고 FastAPI 서버를 리로드시 새로운 모델이 적용되도록 진행 예정입니다.\n","wordCount":"588","inLanguage":"en","datePublished":"2025-07-07T17:11:55+09:00","dateModified":"2025-07-07T17:11:55+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]</h1><div class=post-meta><span title='2025-07-07 17:11:55 +0900 +0900'>July 7, 2025</span>&nbsp;·&nbsp;3 min</div></header><div class=post-content><h2 id=-시나리오-설명>🧠 시나리오 설명<a hidden class=anchor aria-hidden=true href=#-시나리오-설명>#</a></h2><blockquote><p>“ 모델을 수동으로 넣는 것이 아니라,</p><p>MLflow에 등록된 Staging 모델을 서빙 API에서 <strong>자동 로딩</strong>하는 구조를 지향합니다.”</p></blockquote><ul><li>FastAPI는 경량화된 서빙 서버로서 적합</li><li>MLflow <code>pyfunc.load_model()</code>을 통해 자동 로딩 → CI/CD 및 모델 자동화 가능</li><li>S3와 연결되므로, “로컬 복사본 관리 X”, 재현성 유지</li><li>API 호출을 통해 실제 추론 결과 확인 가능</li></ul><hr><h2 id=-tldr>✨ TL;DR<a hidden class=anchor aria-hidden=true href=#-tldr>#</a></h2><ul><li>MLflow에서 등록한 모델을 <strong>FastAPI 기반 REST API</strong>로 서빙합니다.</li><li><code>mlflow.pyfunc.load_model()</code>을 통해 <strong>Stage별 버전 관리</strong>, <strong>핫스왑</strong>, <strong>모델 정보 조회</strong>가 가능합니다.</li><li>쿠버네티스 기반으로 Helm Chart 배포 + AWS 인증 Secret + Ingress 접근까지 연동합니다.</li></ul><hr><h2 id=-아키텍처-구성도>📐 아키텍처 구성도<a hidden class=anchor aria-hidden=true href=#-아키텍처-구성도>#</a></h2><p><img alt=05 loading=lazy src=/mlops-journey/images/05.png></p><hr><h2 id=-fastapi-커스텀-이미지>🐳 FastAPI 커스텀 이미지<a hidden class=anchor aria-hidden=true href=#-fastapi-커스텀-이미지>#</a></h2><h3 id=-dockerfile>📦 Dockerfile<a hidden class=anchor aria-hidden=true href=#-dockerfile>#</a></h3><pre tabindex=0><code>FROM python:3.12
+🐳 FastAPI 커스텀 이미지
+Dockerfile
+FROM python:3.12
 
 WORKDIR /app
 COPY app /app
@@ -47,8 +23,9 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD [&#34;uvicorn&#34;, &#34;main:app&#34;, &#34;--host&#34;, &#34;0.0.0.0&#34;, &#34;--port&#34;, &#34;8000&#34;]
-</code></pre><h3 id=-requirementstxt>📄 requirements.txt<a hidden class=anchor aria-hidden=true href=#-requirementstxt>#</a></h3><pre tabindex=0><code>fastapi==0.110.2
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+requirements.txt
+fastapi==0.110.2
 uvicorn==0.29.0
 mlflow==2.13.0
 pandas==2.1.4
@@ -60,51 +37,182 @@ packaging==24.2
 psutil==7.0.0
 scipy==1.15.3
 setuptools==69.5.1
-</code></pre><h3 id=-빌드--푸시>🚀 빌드 & 푸시<a hidden class=anchor aria-hidden=true href=#-빌드--푸시>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>docker build -t ghcr.io/hoizz/fastapi-ml:mlflow-model-info .
+빌드 & 푸시
+docker build -t ghcr.io/hoizz/fastapi-ml:mlflow-model-info .
+docker push ghcr.io/hoizz/fastapi-ml:mlflow-model-info
+
+📄 app/main.py (핵심 부분)
+app = FastAPI()
+model = None
+model_info = {}
+
+def load_model_from_mlflow():
+    global model, model_info
+    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
+    model_name = os.environ.get("MODEL_NAME")
+    model_stage = os.environ.get("MODEL_STAGE", "Production")
+
+    mlflow.set_tracking_uri(tracking_uri)
+    model_uri = f"models:/{model_name}/{model_stage}"
+    model = mlflow.pyfunc.load_model(model_uri)
+
+    client = MlflowClient()
+    latest = client.get_latest_versions(name=model_name, stages=[model_stage])[0]
+    model_info = {
+        "model_name": model_name,
+        "stage": model_stage,
+        "version": latest.version,
+        "run_id": latest.run_id,
+        "model_uri": model_uri,
+    }
+
+@app.on_event("startup")
+def startup_event():
+    load_model_from_mlflow()
+
+@app.get("/model-info")
+def get_model_info():
+    return model_info
+
+@app.post("/predict")
+async def predict(request: Request):
+    input_data = await request.json()
+    prediction = model.predict(input_data)
+    return {"prediction": prediction.tolist()}
+
+전체 코드: GitHub (main.py)'><meta name=author content><link rel=canonical href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/><link crossorigin=anonymous href=/mlops-journey/assets/css/stylesheet.f49d66caae9ea0fd43f21f29e71a8d3e284517ed770f2aa86fa012953ad3c9ef.css integrity="sha256-9J1myq6eoP1D8h8p5xqNPihFF+13Dyqob6ASlTrTye8=" rel="preload stylesheet" as=style><link rel=icon href=https://keonhoban.github.io/mlops-journey/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://keonhoban.github.io/mlops-journey/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://keonhoban.github.io/mlops-journey/favicon-32x32.png><link rel=apple-touch-icon href=https://keonhoban.github.io/mlops-journey/apple-touch-icon.png><link rel=mask-icon href=https://keonhoban.github.io/mlops-journey/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/"><meta property="og:site_name" content="🏔️  MLOps Journey"><meta property="og:title" content="[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]"><meta property="og:description" content='이 글에서 다루는 것 MLflow에 등록된 모델을 FastAPI로 서빙하고, Stage 기반 핫스왑과 모델 정보 조회 API를 구축합니다.
+선수지식 MLOps 플랫폼 구축 4단계: Airflow GitSync + Secret 연동 — Helm 배포와 Secret 마운트 패턴 이 단계에서 해결하려는 문제 모델을 수동으로 서빙 서버에 복사하면 배포 실수와 버전 불일치가 발생합니다. MLflow Registry에서 Stage별 모델을 자동 로딩하는 구조를 만들어, 코드 변경 없이 모델을 교체할 수 있도록 합니다.
+📐 아키텍처 구성도 🐳 FastAPI 커스텀 이미지 Dockerfile FROM python:3.12 WORKDIR /app COPY app /app COPY requirements.txt . RUN pip install --no-cache-dir -r requirements.txt CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"] requirements.txt fastapi==0.110.2 uvicorn==0.29.0 mlflow==2.13.0 pandas==2.1.4 scikit-learn==1.6.1 pydantic==2.7.1 boto3==1.34.113 numpy==1.26.4 packaging==24.2 psutil==7.0.0 scipy==1.15.3 setuptools==69.5.1 빌드 & 푸시 docker build -t ghcr.io/hoizz/fastapi-ml:mlflow-model-info . docker push ghcr.io/hoizz/fastapi-ml:mlflow-model-info 📄 app/main.py (핵심 부분) app = FastAPI() model = None model_info = {} def load_model_from_mlflow(): global model, model_info tracking_uri = os.environ.get("MLFLOW_TRACKING_URI") model_name = os.environ.get("MODEL_NAME") model_stage = os.environ.get("MODEL_STAGE", "Production") mlflow.set_tracking_uri(tracking_uri) model_uri = f"models:/{model_name}/{model_stage}" model = mlflow.pyfunc.load_model(model_uri) client = MlflowClient() latest = client.get_latest_versions(name=model_name, stages=[model_stage])[0] model_info = { "model_name": model_name, "stage": model_stage, "version": latest.version, "run_id": latest.run_id, "model_uri": model_uri, } @app.on_event("startup") def startup_event(): load_model_from_mlflow() @app.get("/model-info") def get_model_info(): return model_info @app.post("/predict") async def predict(request: Request): input_data = await request.json() prediction = model.predict(input_data) return {"prediction": prediction.tolist()} 전체 코드: GitHub (main.py)'><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-07-07T17:11:55+09:00"><meta property="article:modified_time" content="2025-07-07T17:11:55+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]"><meta name=twitter:description content='이 글에서 다루는 것
+
+MLflow에 등록된 모델을 FastAPI로 서빙하고, Stage 기반 핫스왑과 모델 정보 조회 API를 구축합니다.
+선수지식
+
+MLOps 플랫폼 구축 4단계: Airflow GitSync + Secret 연동 — Helm 배포와 Secret 마운트 패턴
+
+
+이 단계에서 해결하려는 문제
+모델을 수동으로 서빙 서버에 복사하면 배포 실수와 버전 불일치가 발생합니다. MLflow Registry에서 Stage별 모델을 자동 로딩하는 구조를 만들어, 코드 변경 없이 모델을 교체할 수 있도록 합니다.
+
+📐 아키텍처 구성도
+
+
+🐳 FastAPI 커스텀 이미지
+Dockerfile
+FROM python:3.12
+
+WORKDIR /app
+COPY app /app
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+requirements.txt
+fastapi==0.110.2
+uvicorn==0.29.0
+mlflow==2.13.0
+pandas==2.1.4
+scikit-learn==1.6.1
+pydantic==2.7.1
+boto3==1.34.113
+numpy==1.26.4
+packaging==24.2
+psutil==7.0.0
+scipy==1.15.3
+setuptools==69.5.1
+빌드 & 푸시
+docker build -t ghcr.io/hoizz/fastapi-ml:mlflow-model-info .
+docker push ghcr.io/hoizz/fastapi-ml:mlflow-model-info
+
+📄 app/main.py (핵심 부분)
+app = FastAPI()
+model = None
+model_info = {}
+
+def load_model_from_mlflow():
+    global model, model_info
+    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
+    model_name = os.environ.get("MODEL_NAME")
+    model_stage = os.environ.get("MODEL_STAGE", "Production")
+
+    mlflow.set_tracking_uri(tracking_uri)
+    model_uri = f"models:/{model_name}/{model_stage}"
+    model = mlflow.pyfunc.load_model(model_uri)
+
+    client = MlflowClient()
+    latest = client.get_latest_versions(name=model_name, stages=[model_stage])[0]
+    model_info = {
+        "model_name": model_name,
+        "stage": model_stage,
+        "version": latest.version,
+        "run_id": latest.run_id,
+        "model_uri": model_uri,
+    }
+
+@app.on_event("startup")
+def startup_event():
+    load_model_from_mlflow()
+
+@app.get("/model-info")
+def get_model_info():
+    return model_info
+
+@app.post("/predict")
+async def predict(request: Request):
+    input_data = await request.json()
+    prediction = model.predict(input_data)
+    return {"prediction": prediction.tolist()}
+
+전체 코드: GitHub (main.py)'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://keonhoban.github.io/mlops-journey/posts/"},{"@type":"ListItem","position":2,"name":"[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]","item":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]","name":"[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]","description":"이 글에서 다루는 것 MLflow에 등록된 모델을 FastAPI로 서빙하고, Stage 기반 핫스왑과 모델 정보 조회 API를 구축합니다.\n선수지식 MLOps 플랫폼 구축 4단계: Airflow GitSync + Secret 연동 — Helm 배포와 Secret 마운트 패턴 이 단계에서 해결하려는 문제 모델을 수동으로 서빙 서버에 복사하면 배포 실수와 버전 불일치가 발생합니다. MLflow Registry에서 Stage별 모델을 자동 로딩하는 구조를 만들어, 코드 변경 없이 모델을 교체할 수 있도록 합니다.\n📐 아키텍처 구성도 🐳 FastAPI 커스텀 이미지 Dockerfile FROM python:3.12 WORKDIR /app COPY app /app COPY requirements.txt . RUN pip install --no-cache-dir -r requirements.txt CMD [\u0026#34;uvicorn\u0026#34;, \u0026#34;main:app\u0026#34;, \u0026#34;--host\u0026#34;, \u0026#34;0.0.0.0\u0026#34;, \u0026#34;--port\u0026#34;, \u0026#34;8000\u0026#34;] requirements.txt fastapi==0.110.2 uvicorn==0.29.0 mlflow==2.13.0 pandas==2.1.4 scikit-learn==1.6.1 pydantic==2.7.1 boto3==1.34.113 numpy==1.26.4 packaging==24.2 psutil==7.0.0 scipy==1.15.3 setuptools==69.5.1 빌드 \u0026amp; 푸시 docker build -t ghcr.io/hoizz/fastapi-ml:mlflow-model-info . docker push ghcr.io/hoizz/fastapi-ml:mlflow-model-info 📄 app/main.py (핵심 부분) app = FastAPI() model = None model_info = {} def load_model_from_mlflow(): global model, model_info tracking_uri = os.environ.get(\u0026#34;MLFLOW_TRACKING_URI\u0026#34;) model_name = os.environ.get(\u0026#34;MODEL_NAME\u0026#34;) model_stage = os.environ.get(\u0026#34;MODEL_STAGE\u0026#34;, \u0026#34;Production\u0026#34;) mlflow.set_tracking_uri(tracking_uri) model_uri = f\u0026#34;models:/{model_name}/{model_stage}\u0026#34; model = mlflow.pyfunc.load_model(model_uri) client = MlflowClient() latest = client.get_latest_versions(name=model_name, stages=[model_stage])[0] model_info = { \u0026#34;model_name\u0026#34;: model_name, \u0026#34;stage\u0026#34;: model_stage, \u0026#34;version\u0026#34;: latest.version, \u0026#34;run_id\u0026#34;: latest.run_id, \u0026#34;model_uri\u0026#34;: model_uri, } @app.on_event(\u0026#34;startup\u0026#34;) def startup_event(): load_model_from_mlflow() @app.get(\u0026#34;/model-info\u0026#34;) def get_model_info(): return model_info @app.post(\u0026#34;/predict\u0026#34;) async def predict(request: Request): input_data = await request.json() prediction = model.predict(input_data) return {\u0026#34;prediction\u0026#34;: prediction.tolist()} 전체 코드: GitHub (main.py)\n","keywords":[],"articleBody":"이 글에서 다루는 것 MLflow에 등록된 모델을 FastAPI로 서빙하고, Stage 기반 핫스왑과 모델 정보 조회 API를 구축합니다.\n선수지식 MLOps 플랫폼 구축 4단계: Airflow GitSync + Secret 연동 — Helm 배포와 Secret 마운트 패턴 이 단계에서 해결하려는 문제 모델을 수동으로 서빙 서버에 복사하면 배포 실수와 버전 불일치가 발생합니다. MLflow Registry에서 Stage별 모델을 자동 로딩하는 구조를 만들어, 코드 변경 없이 모델을 교체할 수 있도록 합니다.\n📐 아키텍처 구성도 🐳 FastAPI 커스텀 이미지 Dockerfile FROM python:3.12 WORKDIR /app COPY app /app COPY requirements.txt . RUN pip install --no-cache-dir -r requirements.txt CMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"] requirements.txt fastapi==0.110.2 uvicorn==0.29.0 mlflow==2.13.0 pandas==2.1.4 scikit-learn==1.6.1 pydantic==2.7.1 boto3==1.34.113 numpy==1.26.4 packaging==24.2 psutil==7.0.0 scipy==1.15.3 setuptools==69.5.1 빌드 \u0026 푸시 docker build -t ghcr.io/hoizz/fastapi-ml:mlflow-model-info . docker push ghcr.io/hoizz/fastapi-ml:mlflow-model-info 📄 app/main.py (핵심 부분) app = FastAPI() model = None model_info = {} def load_model_from_mlflow(): global model, model_info tracking_uri = os.environ.get(\"MLFLOW_TRACKING_URI\") model_name = os.environ.get(\"MODEL_NAME\") model_stage = os.environ.get(\"MODEL_STAGE\", \"Production\") mlflow.set_tracking_uri(tracking_uri) model_uri = f\"models:/{model_name}/{model_stage}\" model = mlflow.pyfunc.load_model(model_uri) client = MlflowClient() latest = client.get_latest_versions(name=model_name, stages=[model_stage])[0] model_info = { \"model_name\": model_name, \"stage\": model_stage, \"version\": latest.version, \"run_id\": latest.run_id, \"model_uri\": model_uri, } @app.on_event(\"startup\") def startup_event(): load_model_from_mlflow() @app.get(\"/model-info\") def get_model_info(): return model_info @app.post(\"/predict\") async def predict(request: Request): input_data = await request.json() prediction = model.predict(input_data) return {\"prediction\": prediction.tolist()} 전체 코드: GitHub (main.py)\n🛠 Helm 배포 구성 values.yaml replicaCount: 1 image: repository: hoizz/fastapi-ml tag: mlflow-model-info pullPolicy: IfNotPresent service: name: fastapi-service type: ClusterIP port: 80 ingress: enabled: true className: nginx host: fastapi.local annotations: nginx.ingress.kubernetes.io/rewrite-target: / env: MLFLOW_TRACKING_URI: \"http://mlflow-service.mlflow.svc.cluster.local:5000\" MODEL_NAME: \"best_model\" MODEL_STAGE: \"Staging\" envFrom: - secretRef: name: aws-credentials-secret Deployment (핵심: 환경변수 주입) env: - name: MLFLOW_TRACKING_URI value: {{ .Values.env.MLFLOW_TRACKING_URI }} - name: MODEL_NAME value: {{ .Values.env.MODEL_NAME }} - name: MODEL_STAGE value: {{ .Values.env.MODEL_STAGE }} envFrom: - secretRef: name: aws-credentials-secret 전체 코드: GitHub (fastapi-deployment.yaml)\n🚀 배포 kubectl create namespace fastapi helm install fastapi fastapi-helm -n fastapi # hosts 수정 {node_ip} fastapi.local # 접근 http://fastapi.local 설계 판단 (Why This Way?) FastAPI vs Flask vs Triton: FastAPI는 async 지원, 자동 API 문서 생성, 타입 검증이 내장되어 있어 빠른 프로토타이핑에 적합합니다. Triton은 고성능 서빙(GPU, 배치 처리)에 특화되지만 설정이 복잡합니다. 이 단계에서는 FastAPI로 핫스왑 구조를 먼저 검증합니다. Stage 기반 모델 로딩: models:/{name}/{stage} URI를 사용하면 MLflow에서 Stage만 전환하면 FastAPI가 다음 reload 시 새 모델을 로딩합니다. 버전 번호를 하드코딩하지 않아 운영 자동화에 유리합니다. global model 변수의 한계: load_model_from_mlflow()가 전역 변수 model을 교체하는 방식이므로, 교체 중 요청이 들어오면 일시적으로 불안정할 수 있습니다. 프로덕션에서는 락(lock) 메커니즘이나 Blue-Green 패턴이 필요합니다. /model-info API 제공 이유: 운영 중 현재 서빙 중인 모델의 버전, Stage, run_id를 확인할 수 있어야 합니다. 모델 핫스왑 후 실제로 교체가 됐는지 검증하는 용도입니다. 모델 미존재 시 예외 처리: load_model 시 MlflowException이 발생하면 FastAPI가 죽지 않도록 예외 처리가 필요합니다. 배포 시 CPU/RAM 제한 설정으로 예측 지연도 방지해야 합니다. 면접 포인트 Q: 모델 핫스왑 시 요청 처리 중 교체가 일어나면? → 전역 변수 교체 방식에서는 race condition이 발생할 수 있습니다. 프로덕션에서는 모델을 새 변수에 로드한 후 원자적으로 교체하거나, Blue-Green 패턴으로 새 Pod에 로드 후 트래픽을 전환합니다.\nQ: MLflow Model Registry의 Stage 관리 방식은? → None → Staging → Production → Archived 순서로 Stage를 전환합니다. transition_model_version_stage() API로 프로그래밍적으로 전환하며, 동일 Stage에 하나의 버전만 활성화됩니다.\nQ: FastAPI의 on_event(\"startup\")에서 모델을 로딩하는 이유는? → 서버 시작 시 모델을 미리 메모리에 로딩하여 첫 번째 요청부터 즉시 추론할 수 있습니다. 요청 시점에 로딩하면 cold start 지연이 발생합니다.\n다음에 읽을 글 → MLOps 플랫폼 구축 6단계: 실시간 모델 핫스왑 구조 실험 — Airflow DAG → MLflow 등록 → FastAPI 핫스왑 E2E 실험\n","wordCount":"552","inLanguage":"en","datePublished":"2025-07-07T17:11:55+09:00","dateModified":"2025-07-07T17:11:55+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/05/"},"publisher":{"@type":"Organization","name":"🏔️  MLOps Journey","logo":{"@type":"ImageObject","url":"https://keonhoban.github.io/mlops-journey/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://keonhoban.github.io/mlops-journey/ accesskey=h title="🏔️  MLOps Journey (Alt + H)">🏔️ MLOps Journey</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://keonhoban.github.io/mlops-journey/ title="🏠 Home"><span>🏠 Home</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/projects/ title="📂 Projects"><span>📂 Projects</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/posts/ title="📝 Blog"><span>📝 Blog</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/about/ title="🧗 About"><span>🧗 About</span></a></li><li><a href=https://keonhoban.github.io/mlops-journey/categories/ title="📖 Categories"><span>📖 Categories</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://keonhoban.github.io/mlops-journey/>Home</a>&nbsp;»&nbsp;<a href=https://keonhoban.github.io/mlops-journey/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">[MLOps 플랫폼 구축 - 5단계: FastAPI 서빙: MLflow 모델 연동 및 핫스왑 구조 구축]</h1><div class=post-meta><span title='2025-07-07 17:11:55 +0900 +0900'>July 7, 2025</span>&nbsp;·&nbsp;3 min</div></header><div class=post-content><h2 id=이-글에서-다루는-것>이 글에서 다루는 것<a hidden class=anchor aria-hidden=true href=#이-글에서-다루는-것>#</a></h2><blockquote><p>MLflow에 등록된 모델을 FastAPI로 서빙하고, Stage 기반 핫스왑과 모델 정보 조회 API를 구축합니다.</p></blockquote><h2 id=선수지식>선수지식<a hidden class=anchor aria-hidden=true href=#선수지식>#</a></h2><ul><li><a href=/mlops-journey/posts/mlops-pipeline-helm/04/>MLOps 플랫폼 구축 4단계: Airflow GitSync + Secret 연동</a> — Helm 배포와 Secret 마운트 패턴</li></ul><hr><h2 id=이-단계에서-해결하려는-문제>이 단계에서 해결하려는 문제<a hidden class=anchor aria-hidden=true href=#이-단계에서-해결하려는-문제>#</a></h2><p>모델을 수동으로 서빙 서버에 복사하면 배포 실수와 버전 불일치가 발생합니다. MLflow Registry에서 Stage별 모델을 자동 로딩하는 구조를 만들어, 코드 변경 없이 모델을 교체할 수 있도록 합니다.</p><hr><h2 id=-아키텍처-구성도>📐 아키텍처 구성도<a hidden class=anchor aria-hidden=true href=#-아키텍처-구성도>#</a></h2><p><img alt=05 loading=lazy src=/mlops-journey/images/05.png></p><hr><h2 id=-fastapi-커스텀-이미지>🐳 FastAPI 커스텀 이미지<a hidden class=anchor aria-hidden=true href=#-fastapi-커스텀-이미지>#</a></h2><h3 id=dockerfile>Dockerfile<a hidden class=anchor aria-hidden=true href=#dockerfile>#</a></h3><pre tabindex=0><code>FROM python:3.12
+
+WORKDIR /app
+COPY app /app
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD [&#34;uvicorn&#34;, &#34;main:app&#34;, &#34;--host&#34;, &#34;0.0.0.0&#34;, &#34;--port&#34;, &#34;8000&#34;]
+</code></pre><h3 id=requirementstxt>requirements.txt<a hidden class=anchor aria-hidden=true href=#requirementstxt>#</a></h3><pre tabindex=0><code>fastapi==0.110.2
+uvicorn==0.29.0
+mlflow==2.13.0
+pandas==2.1.4
+scikit-learn==1.6.1
+pydantic==2.7.1
+boto3==1.34.113
+numpy==1.26.4
+packaging==24.2
+psutil==7.0.0
+scipy==1.15.3
+setuptools==69.5.1
+</code></pre><h3 id=빌드--푸시>빌드 & 푸시<a hidden class=anchor aria-hidden=true href=#빌드--푸시>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>docker build -t ghcr.io/hoizz/fastapi-ml:mlflow-model-info .
 </span></span><span style=display:flex><span>docker push ghcr.io/hoizz/fastapi-ml:mlflow-model-info
-</span></span></code></pre></div><hr><h2 id=-appmainpy>📄 app/main.py<a hidden class=anchor aria-hidden=true href=#-appmainpy>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> fastapi <span style=color:#f92672>import</span> FastAPI, Request
-</span></span><span style=display:flex><span><span style=color:#f92672>import</span> mlflow.pyfunc
-</span></span><span style=display:flex><span><span style=color:#f92672>import</span> mlflow
-</span></span><span style=display:flex><span><span style=color:#f92672>from</span> mlflow.tracking <span style=color:#f92672>import</span> MlflowClient
-</span></span><span style=display:flex><span><span style=color:#f92672>import</span> os
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>app <span style=color:#f92672>=</span> FastAPI()
+</span></span></code></pre></div><hr><h2 id=-appmainpy-핵심-부분>📄 app/main.py (핵심 부분)<a hidden class=anchor aria-hidden=true href=#-appmainpy-핵심-부분>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>app <span style=color:#f92672>=</span> FastAPI()
 </span></span><span style=display:flex><span>model <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
 </span></span><span style=display:flex><span>model_info <span style=color:#f92672>=</span> {}
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>load_model_from_mlflow</span>():
 </span></span><span style=display:flex><span>    <span style=color:#66d9ef>global</span> model, model_info
-</span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>    tracking_uri <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>environ<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;MLFLOW_TRACKING_URI&#34;</span>)
 </span></span><span style=display:flex><span>    model_name <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>environ<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;MODEL_NAME&#34;</span>)
 </span></span><span style=display:flex><span>    model_stage <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>environ<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;MODEL_STAGE&#34;</span>, <span style=color:#e6db74>&#34;Production&#34;</span>)
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>    mlflow<span style=color:#f92672>.</span>set_tracking_uri(tracking_uri)
 </span></span><span style=display:flex><span>    model_uri <span style=color:#f92672>=</span> <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;models:/</span><span style=color:#e6db74>{</span>model_name<span style=color:#e6db74>}</span><span style=color:#e6db74>/</span><span style=color:#e6db74>{</span>model_stage<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
-</span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>    model <span style=color:#f92672>=</span> mlflow<span style=color:#f92672>.</span>pyfunc<span style=color:#f92672>.</span>load_model(model_uri)
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>    client <span style=color:#f92672>=</span> MlflowClient()
 </span></span><span style=display:flex><span>    latest <span style=color:#f92672>=</span> client<span style=color:#f92672>.</span>get_latest_versions(name<span style=color:#f92672>=</span>model_name, stages<span style=color:#f92672>=</span>[model_stage])[<span style=color:#ae81ff>0</span>]
-</span></span><span style=display:flex><span>    run_id <span style=color:#f92672>=</span> latest<span style=color:#f92672>.</span>run_id
-</span></span><span style=display:flex><span>    version <span style=color:#f92672>=</span> latest<span style=color:#f92672>.</span>version
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;✅ Reloaded model: name=</span><span style=color:#e6db74>{</span>model_name<span style=color:#e6db74>}</span><span style=color:#e6db74>, stage=</span><span style=color:#e6db74>{</span>model_stage<span style=color:#e6db74>}</span><span style=color:#e6db74>, version=</span><span style=color:#e6db74>{</span>version<span style=color:#e6db74>}</span><span style=color:#e6db74>, run_id=</span><span style=color:#e6db74>{</span>run_id<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
 </span></span><span style=display:flex><span>    model_info <span style=color:#f92672>=</span> {
 </span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;model_name&#34;</span>: model_name,
 </span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;stage&#34;</span>: model_stage,
-</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;version&#34;</span>: version,
-</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;run_id&#34;</span>: run_id,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;version&#34;</span>: latest<span style=color:#f92672>.</span>version,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;run_id&#34;</span>: latest<span style=color:#f92672>.</span>run_id,
 </span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;model_uri&#34;</span>: model_uri,
 </span></span><span style=display:flex><span>    }
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#a6e22e>@app.on_event</span>(<span style=color:#e6db74>&#34;startup&#34;</span>)
 </span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>startup_event</span>():
 </span></span><span style=display:flex><span>    load_model_from_mlflow()
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#a6e22e>@app.get</span>(<span style=color:#e6db74>&#34;/&#34;</span>)
-</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>root</span>():
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> {<span style=color:#e6db74>&#34;message&#34;</span>: <span style=color:#e6db74>&#34;FastAPI MLOps is running!&#34;</span>}
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#a6e22e>@app.get</span>(<span style=color:#e6db74>&#34;/model-info&#34;</span>)
 </span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>get_model_info</span>():
@@ -115,7 +223,7 @@ setuptools==69.5.1
 </span></span><span style=display:flex><span>    input_data <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> request<span style=color:#f92672>.</span>json()
 </span></span><span style=display:flex><span>    prediction <span style=color:#f92672>=</span> model<span style=color:#f92672>.</span>predict(input_data)
 </span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> {<span style=color:#e6db74>&#34;prediction&#34;</span>: prediction<span style=color:#f92672>.</span>tolist()}
-</span></span></code></pre></div><hr><h2 id=-helm-배포-구성>🛠️ Helm 배포 구성<a hidden class=anchor aria-hidden=true href=#-helm-배포-구성>#</a></h2><h3 id=-valuesyaml>🧾 values.yaml<a hidden class=anchor aria-hidden=true href=#-valuesyaml>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>replicaCount</span>: <span style=color:#ae81ff>1</span>
+</span></span></code></pre></div><blockquote><p>전체 코드: <a href=https://github.com/keonhoban/mlops-infra-gitops/tree/main/charts/fastapi>GitHub (main.py)</a></p></blockquote><hr><h2 id=-helm-배포-구성>🛠 Helm 배포 구성<a hidden class=anchor aria-hidden=true href=#-helm-배포-구성>#</a></h2><h3 id=valuesyaml>values.yaml<a hidden class=anchor aria-hidden=true href=#valuesyaml>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>replicaCount</span>: <span style=color:#ae81ff>1</span>
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#f92672>image</span>:
 </span></span><span style=display:flex><span>  <span style=color:#f92672>repository</span>: <span style=color:#ae81ff>hoizz/fastapi-ml</span>
@@ -142,27 +250,7 @@ setuptools==69.5.1
 </span></span><span style=display:flex><span><span style=color:#f92672>envFrom</span>:
 </span></span><span style=display:flex><span>  - <span style=color:#f92672>secretRef</span>:
 </span></span><span style=display:flex><span>      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>aws-credentials-secret</span>
-</span></span></code></pre></div><hr><h2 id=-핵심-템플릿>📄 핵심 템플릿<a hidden class=anchor aria-hidden=true href=#-핵심-템플릿>#</a></h2><h3 id=fastapi-deploymentyaml>fastapi-deployment.yaml<a hidden class=anchor aria-hidden=true href=#fastapi-deploymentyaml>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>metadata</span>:
-</span></span><span style=display:flex><span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>fastapi-server</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>fastapi</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>spec</span>:
-</span></span><span style=display:flex><span>  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>selector</span>:
-</span></span><span style=display:flex><span>    <span style=color:#f92672>matchLabels</span>:
-</span></span><span style=display:flex><span>      <span style=color:#f92672>app</span>: <span style=color:#ae81ff>fastapi</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>template</span>:
-</span></span><span style=display:flex><span>    <span style=color:#f92672>metadata</span>:
-</span></span><span style=display:flex><span>      <span style=color:#f92672>labels</span>:
-</span></span><span style=display:flex><span>        <span style=color:#f92672>app</span>: <span style=color:#ae81ff>fastapi</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>spec</span>:
-</span></span><span style=display:flex><span>      <span style=color:#f92672>containers</span>:
-</span></span><span style=display:flex><span>        - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>fastapi</span>
-</span></span><span style=display:flex><span>          <span style=color:#f92672>image</span>: {{ <span style=color:#ae81ff>.Values.image.repository }}:{{ .Values.image.tag }}</span>
-</span></span><span style=display:flex><span>          <span style=color:#f92672>ports</span>:
-</span></span><span style=display:flex><span>            - <span style=color:#f92672>containerPort</span>: <span style=color:#ae81ff>8000</span>
-</span></span><span style=display:flex><span>          <span style=color:#f92672>env</span>:
+</span></span></code></pre></div><h3 id=deployment-핵심-환경변수-주입>Deployment (핵심: 환경변수 주입)<a hidden class=anchor aria-hidden=true href=#deployment-핵심-환경변수-주입>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>          <span style=color:#f92672>env</span>:
 </span></span><span style=display:flex><span>            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>MLFLOW_TRACKING_URI</span>
 </span></span><span style=display:flex><span>              <span style=color:#f92672>value</span>: {{ <span style=color:#ae81ff>.Values.env.MLFLOW_TRACKING_URI }}</span>
 </span></span><span style=display:flex><span>            - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>MODEL_NAME</span>
@@ -172,49 +260,17 @@ setuptools==69.5.1
 </span></span><span style=display:flex><span>          <span style=color:#f92672>envFrom</span>:
 </span></span><span style=display:flex><span>            - <span style=color:#f92672>secretRef</span>:
 </span></span><span style=display:flex><span>                <span style=color:#f92672>name</span>: <span style=color:#ae81ff>aws-credentials-secret</span>
-</span></span></code></pre></div><h3 id=fastapi-serviceyaml>fastapi-service.yaml<a hidden class=anchor aria-hidden=true href=#fastapi-serviceyaml>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Service</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>metadata</span>:
-</span></span><span style=display:flex><span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>fastapi-service</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>fastapi</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>spec</span>:
-</span></span><span style=display:flex><span>  <span style=color:#f92672>type</span>: {{ <span style=color:#ae81ff>.Values.service.type }}</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>selector</span>:
-</span></span><span style=display:flex><span>    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>fastapi</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>ports</span>:
-</span></span><span style=display:flex><span>    - <span style=color:#f92672>port</span>: {{ <span style=color:#ae81ff>.Values.service.port }}</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>targetPort</span>: <span style=color:#ae81ff>8000</span>
-</span></span></code></pre></div><h3 id=fastapi-ingressyaml>fastapi-ingress.yaml<a hidden class=anchor aria-hidden=true href=#fastapi-ingressyaml>#</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>networking.k8s.io/v1</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Ingress</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>metadata</span>:
-</span></span><span style=display:flex><span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>fastapi-ingress</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>fastapi</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>annotations</span>:
-</span></span><span style=display:flex><span>    {{- <span style=color:#ae81ff>range $key, $value := .Values.ingress.annotations }}</span>
-</span></span><span style=display:flex><span>    {{ <span style=color:#f92672>$key }}</span>: {{ <span style=color:#ae81ff>$value | quote }}</span>
-</span></span><span style=display:flex><span>    {{- <span style=color:#ae81ff>end }}</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>spec</span>:
-</span></span><span style=display:flex><span>  <span style=color:#f92672>ingressClassName</span>: {{ <span style=color:#ae81ff>.Values.ingress.className }}</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>rules</span>:
-</span></span><span style=display:flex><span>    - <span style=color:#f92672>host</span>: {{ <span style=color:#ae81ff>.Values.ingress.host }}</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>http</span>:
-</span></span><span style=display:flex><span>        <span style=color:#f92672>paths</span>:
-</span></span><span style=display:flex><span>          - <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/</span>
-</span></span><span style=display:flex><span>            <span style=color:#f92672>pathType</span>: <span style=color:#ae81ff>Prefix</span>
-</span></span><span style=display:flex><span>            <span style=color:#f92672>backend</span>:
-</span></span><span style=display:flex><span>              <span style=color:#f92672>service</span>:
-</span></span><span style=display:flex><span>                <span style=color:#f92672>name</span>: <span style=color:#ae81ff>fastapi-service</span>
-</span></span><span style=display:flex><span>                <span style=color:#f92672>port</span>:
-</span></span><span style=display:flex><span>                  <span style=color:#f92672>number</span>: {{ <span style=color:#ae81ff>.Values.service.port }}</span>
-</span></span></code></pre></div><hr><h2 id=-배포>⏱ 배포<a hidden class=anchor aria-hidden=true href=#-배포>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>kubectl create namespace fastapi
+</span></span></code></pre></div><blockquote><p>전체 코드: <a href=https://github.com/keonhoban/mlops-infra-gitops/tree/main/charts/fastapi>GitHub (fastapi-deployment.yaml)</a></p></blockquote><hr><h2 id=-배포>🚀 배포<a hidden class=anchor aria-hidden=true href=#-배포>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>kubectl create namespace fastapi
 </span></span><span style=display:flex><span>helm install fastapi fastapi-helm -n fastapi
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#75715e># hosts 수정</span>
 </span></span><span style=display:flex><span><span style=color:#f92672>{</span>node_ip<span style=color:#f92672>}</span> fastapi.local
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e># 접근 url</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>[</span>http://fastapi.local<span style=color:#f92672>](</span>http://fastapi.local/<span style=color:#f92672>)</span>
-</span></span></code></pre></div><hr><h2 id=-tip>🧩 Tip<a hidden class=anchor aria-hidden=true href=#-tip>#</a></h2><table><thead><tr><th>항목</th><th>팁</th></tr></thead><tbody><tr><td>모델 핫스왑</td><td><code>/model-info</code> API 제공 → 운영 시 버전 추적 필수</td></tr><tr><td>모델 미존재</td><td>load_model 시 <code>MlflowException</code> 발생 → FastAPI가 죽지 않도록 예외 처리</td></tr><tr><td>Ingress 설정</td><td><code>/etc/hosts</code>, className, rewrite-target 필수 확인</td></tr><tr><td>리소스 할당</td><td>배포 시 CPU/RAM 제한 설정으로 예측 지연 방지</td></tr></tbody></table><hr><h2 id=-mlops-실전-연결>🔧 MLOps 실전 연결<a hidden class=anchor aria-hidden=true href=#-mlops-실전-연결>#</a></h2><table><thead><tr><th>항목</th><th>실제 의미</th></tr></thead><tbody><tr><td>FastAPI REST 서빙</td><td>실시간 추론 API 운영에 적합</td></tr><tr><td>mlflow Stage 사용</td><td>운영과 실험 모델 분리 및 핫스왑 가능</td></tr><tr><td>boto3 연동</td><td>S3 객체 접근, 로그 추적, 리포트 저장 자동화</td></tr><tr><td>Helm 기반 배포</td><td>팀 내 재사용 가능한 마이크로서비스 패턴 완성</td></tr></tbody></table><hr><h2 id=-다음-포스트-예고>🧭 다음 포스트 예고<a hidden class=anchor aria-hidden=true href=#-다음-포스트-예고>#</a></h2><blockquote><p>🧠 실시간 모델 핫스왑 구조 실험</p><p>→ Airflow에서 모델 학습 DAG을 실행하면,
-MLflow에 모델이 자동 등록되고 FastAPI 서버를 리로드시 새로운 모델이 적용되도록 진행 예정입니다.</p></blockquote></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/><span class=title>« Prev</span><br><span>[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 접근</span>
+</span></span><span style=display:flex><span>http://fastapi.local
+</span></span></code></pre></div><hr><h2 id=설계-판단-why-this-way>설계 판단 (Why This Way?)<a hidden class=anchor aria-hidden=true href=#설계-판단-why-this-way>#</a></h2><ul><li><strong>FastAPI vs Flask vs Triton</strong>: FastAPI는 async 지원, 자동 API 문서 생성, 타입 검증이 내장되어 있어 빠른 프로토타이핑에 적합합니다. Triton은 고성능 서빙(GPU, 배치 처리)에 특화되지만 설정이 복잡합니다. 이 단계에서는 FastAPI로 핫스왑 구조를 먼저 검증합니다.</li><li><strong>Stage 기반 모델 로딩</strong>: <code>models:/{name}/{stage}</code> URI를 사용하면 MLflow에서 Stage만 전환하면 FastAPI가 다음 reload 시 새 모델을 로딩합니다. 버전 번호를 하드코딩하지 않아 운영 자동화에 유리합니다.</li><li><strong>global model 변수의 한계</strong>: <code>load_model_from_mlflow()</code>가 전역 변수 <code>model</code>을 교체하는 방식이므로, 교체 중 요청이 들어오면 일시적으로 불안정할 수 있습니다. 프로덕션에서는 락(lock) 메커니즘이나 Blue-Green 패턴이 필요합니다.</li><li><strong><code>/model-info</code> API 제공 이유</strong>: 운영 중 현재 서빙 중인 모델의 버전, Stage, run_id를 확인할 수 있어야 합니다. 모델 핫스왑 후 실제로 교체가 됐는지 검증하는 용도입니다.</li><li><strong>모델 미존재 시 예외 처리</strong>: <code>load_model</code> 시 <code>MlflowException</code>이 발생하면 FastAPI가 죽지 않도록 예외 처리가 필요합니다. 배포 시 CPU/RAM 제한 설정으로 예측 지연도 방지해야 합니다.</li></ul><hr><h2 id=면접-포인트>면접 포인트<a hidden class=anchor aria-hidden=true href=#면접-포인트>#</a></h2><ul><li><p><strong>Q: 모델 핫스왑 시 요청 처리 중 교체가 일어나면?</strong>
+→ 전역 변수 교체 방식에서는 race condition이 발생할 수 있습니다. 프로덕션에서는 모델을 새 변수에 로드한 후 원자적으로 교체하거나, Blue-Green 패턴으로 새 Pod에 로드 후 트래픽을 전환합니다.</p></li><li><p><strong>Q: MLflow Model Registry의 Stage 관리 방식은?</strong>
+→ None → Staging → Production → Archived 순서로 Stage를 전환합니다. <code>transition_model_version_stage()</code> API로 프로그래밍적으로 전환하며, 동일 Stage에 하나의 버전만 활성화됩니다.</p></li><li><p><strong>Q: FastAPI의 <code>on_event("startup")</code>에서 모델을 로딩하는 이유는?</strong>
+→ 서버 시작 시 모델을 미리 메모리에 로딩하여 첫 번째 요청부터 즉시 추론할 수 있습니다. 요청 시점에 로딩하면 cold start 지연이 발생합니다.</p></li></ul><hr><h2 id=다음에-읽을-글>다음에 읽을 글<a hidden class=anchor aria-hidden=true href=#다음에-읽을-글>#</a></h2><p>→ <a href=/mlops-journey/posts/mlops-pipeline-helm/06/>MLOps 플랫폼 구축 6단계: 실시간 모델 핫스왑 구조 실험</a> — Airflow DAG → MLflow 등록 → FastAPI 핫스왑 E2E 실험</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/06/><span class=title>« Prev</span><br><span>[MLOps 플랫폼 구축 - 6단계: 실시간 모델 핫스왑 구조 실험]</span>
 </a><a class=next href=https://keonhoban.github.io/mlops-journey/posts/mlops-pipeline-helm/04/><span class=title>Next »</span><br><span>[MLOps 플랫폼 구축 - 4단계: Airflow : GitSync + 외부 PostgreSQL + Secret 연동]</span></a></nav></footer></article></main><footer class=footer><p style=margin-top:1rem>© 2025 Keonho Ban | <a href=https://github.com/keonhoban target=_blank>GitHub</a> | <a href=mailto:keonho0510@naver.com>Email</a></p></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
 </a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

@@ -141,89 +141,31 @@
 &lt;/tbody>
 &lt;/table>
 &lt;blockquote>
-&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="alertmanager-slack--트러블슈팅">Alertmanager Slack &amp;amp; 트러블슈팅&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;p>🔄 핵심 문장:&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 2단계 : Alertmanager Slack &amp; 트러블슈팅]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</link><pubDate>Sat, 18 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/02/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“모델이 잘 학습되고 잘 배포되는 것보다&lt;/p>
-&lt;p>&lt;strong>문제가 생겼을 때 즉시 감지되는 것&lt;/strong>이 더 중요할 때가 많습니다.”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 dev/prod 각각에서 알람이&lt;/p>
-&lt;p>&lt;strong>정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인&lt;/strong>을 먼저 완성했습니다.”&lt;/p>
-&lt;p>“이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은&lt;/p>
-&lt;p>운영형 MLOps 이벤트를 실시간으로 감지할 수 있기 때문입니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h3 id="-핵심-요약">🎯 핵심 요약&lt;/h3>
+&lt;p>Alertmanager 설정을 SealedSecret으로 관리하고, dev/prod 각각의 Slack 채널로 알람이 정확히 흐르는 관측 파이프라인을 완성하는 과정을 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>
-&lt;p>&lt;strong>목표&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>&lt;code>Prometheus → Alertmanager → Slack&lt;/code> 경로를&lt;/p>
-&lt;p>dev/prod 완전히 분리된 상태로,&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 7단계: Argo CD Notifications 자동화 (Slack 연동)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/</link><pubDate>Fri, 05 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/</guid><description>&lt;h2 id="argo-cd-notifications--gitops-모니터링-자동화-slack-webhook--sealedsecret">Argo CD Notifications – GitOps 모니터링 자동화 (Slack Webhook &amp;amp; SealedSecret)&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
-&lt;blockquote>
-&lt;p>“GitOps는 자동으로 잘 돌아가도,&lt;/p>
-&lt;p>&lt;strong>지금 무슨 일이 일어나는지 모르면 운영자는 항상 불안합니다.&lt;/strong>”&lt;/p>
-&lt;p>“그래서 이번 단계에서는 Argo CD의 Sync/Health 변화를&lt;/p>
-&lt;p>즉시 Slack으로 받아보는 &lt;strong>GitOps 모니터링 루프&lt;/strong>를 만들었습니다.&lt;/p>
-&lt;p>커밋 이후 어떤 일이 일어나는지 ‘실시간으로 보이게’ 만드는 단계입니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
-&lt;ul>
-&lt;li>&lt;strong>Argo CD Notifications Controller&lt;/strong>로 &lt;strong>Sync/Health&lt;/strong> 이벤트를 &lt;strong>Slack&lt;/strong>에 실시간 전송&lt;/li>
-&lt;li>&lt;strong>Webhook URL → SealedSecret → 환경변수 참조&lt;/strong>로 안전 관리(레포 커밋 OK)&lt;/li>
-&lt;li>템플릿/트리거/구독을 &lt;strong>ConfigMap 한 곳&lt;/strong>에서 선언적으로 관리&lt;/li>
-&lt;li>&lt;strong>Git 커밋 → Argo Sync → Slack 알림&lt;/strong>의 자동 루프 완성&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-observability/01/">Observability 1단계: kube-prometheus-stack + GitOps 구축&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="1-전체-흐름-요약">1️⃣ 전체 흐름 요약&lt;/h2>
-&lt;p>&lt;img alt="mermaid-07.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/mermaid-07.png">&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 2단계: Slack Alert 통합 (FastAPI·Airflow 공용)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</link><pubDate>Sat, 26 Jul 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</guid><description>&lt;h2 id="slack-alert-통합-fastapiairflow-공용-구조--템플릿-확장-기반">Slack Alert 통합: FastAPI·Airflow 공용 구조 + 템플릿 확장 기반&lt;/h2>
-&lt;hr>
-&lt;h2 id="-시나리오-설명">🧠 시나리오 설명&lt;/h2>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>모델이 잘 학습되고 잘 배포되는 것보다, 문제가 생겼을 때 즉시 감지되는 것이 더 중요할 때가 많다. dev/prod 각각에서 알람이 정확한 Slack 채널로, 깨짐 없이 흐르는 관측 파이프라인을 먼저 완성해야 한다. 이 기반이 갖춰져야 이후 FastAPI 지연, 핫스왑 실패, DAG 에러 같은 운영형 MLOps 이벤트를 실시간으로 감지할 수 있다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 7단계: Argo CD Notifications 자동화 (Slack 연동)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/</link><pubDate>Fri, 05 Sep 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/08/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
-&lt;p>“운영 환경에서 가장 무서운 건 &lt;strong>문제가 생겼는데 아무도 모르고 있는 상황&lt;/strong>입니다.”&lt;/p>
-&lt;p>“그래서 2단계에서는 FastAPI와 Airflow가 각자 흩어져 보내던 알림을&lt;/p>
-&lt;p>&lt;strong>하나의 Slack 인터페이스로 완전히 통합&lt;/strong>했습니다.”&lt;/p>
-&lt;p>“모델 학습·등록·센서·핫스왑·헬스체크까지&lt;/p>
-&lt;p>어디에서 무슨 일이 일어나도 &lt;strong>즉시 눈에 들어오도록 만드는 것&lt;/strong>,&lt;/p>
-&lt;p>그게 이 단계의 핵심 목적이었습니다.”&lt;/p>&lt;/blockquote>
-&lt;hr>
-&lt;h2 id="-핵심-요약">🎯 핵심 요약&lt;/h2>
+&lt;p>Argo CD Notifications Controller로 Sync/Health 이벤트를 Slack에 실시간 전송하고, Webhook URL을 SealedSecret으로 안전하게 관리하는 GitOps 모니터링 자동화 구조를 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
 &lt;ul>
-&lt;li>FastAPI와 Airflow가 공통 함수 &lt;code>send_slack_alert(text)&lt;/code>를 사용해 알림 체계를 통합&lt;/li>
-&lt;li>Airflow는 &lt;strong>전역 실패 콜백&lt;/strong> &lt;code>alert_slack(context)&lt;/code>로 DAG/Task 실패 자동 통보&lt;/li>
-&lt;li>Webhook URL은 SealedSecret → 환경변수(&lt;code>SLACK_WEBHOOK_URL&lt;/code>)로 주입&lt;/li>
-&lt;li>dev(&lt;code>.local&lt;/code>) / prod(&lt;code>.prod&lt;/code>) 환경 완전 분리: 네임스페이스·시크릿·도메인 각각 대응&lt;/li>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/05/">MLOps 운영 고도화 4단계: FastAPI 로그 안정화&lt;/a> — NFS PVC 기반 로그 영속화&lt;/li>
 &lt;/ul>
 &lt;hr>
-&lt;h2 id="1-구조-개요">1️⃣ 구조 개요&lt;/h2>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>구성 요소&lt;/th>
-&lt;th>역할&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>&lt;strong>공용 함수&lt;/strong>&lt;/td>
-&lt;td>&lt;code>send_slack_alert(text)&lt;/code> — FastAPI·Airflow 모두에서 호출&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;strong>Airflow 전역 콜백&lt;/strong>&lt;/td>
-&lt;td>&lt;code>alert_slack(context)&lt;/code> — DAG 실패 시 자동 호출&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;strong>환경 주입 방식&lt;/strong>&lt;/td>
-&lt;td>&lt;code>slack-webhook-{env}-secret&lt;/code> → &lt;code>SLACK_WEBHOOK_URL&lt;/code>&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>&lt;strong>분리 원칙&lt;/strong>&lt;/td>
-&lt;td>dev/prod 완전 분리 (네임스페이스·시크릿·도메인)&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>GitOps는 자동으로 잘 돌아가더라도, 지금 무슨 일이 일어나는지 모르면 운영자는 항상 불안하다. Argo CD의 Sync/Health 변화를 즉시 Slack으로 받아보는 GitOps 모니터링 루프를 만들어서, 커밋 이후 어떤 일이 일어나는지 실시간으로 보이게 만든다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 2단계: Slack Alert 통합 (FastAPI·Airflow 공용)]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</link><pubDate>Sat, 26 Jul 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/03/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>FastAPI와 Airflow가 흩어져 보내던 알림을 하나의 Slack 인터페이스로 통합하고, SealedSecret 기반으로 Webhook URL을 안전하게 주입하는 구조를 다룹니다.&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-gitops/02/">MLOps 운영 고도화 1단계: 핫스왑 고도화&lt;/a> — /reload 보안 강화와 DAG 자동화&lt;/li>
+&lt;/ul>
 &lt;hr>
-&lt;h2 id="2-시스템-흐름도">2️⃣ 시스템 흐름도&lt;/h2>
-&lt;p>&lt;img alt="mermaid-02.png" loading="lazy" src="https://keonhoban.github.io/mlops-journey/images/mermaid-02.png">&lt;/p></description></item></channel></rss>
+&lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
+&lt;p>운영 환경에서 가장 무서운 건 문제가 생겼는데 아무도 모르고 있는 상황이다. FastAPI와 Airflow가 각자 흩어져 보내던 알림을 하나의 Slack 인터페이스로 완전히 통합해서, 모델 학습·등록·센서·핫스왑·헬스체크까지 어디에서 무슨 일이 일어나도 즉시 눈에 들어오도록 만든다.&lt;/p></description></item></channel></rss>
