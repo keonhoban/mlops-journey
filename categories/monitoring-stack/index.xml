@@ -1,4 +1,12 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monitoring Stack on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/monitoring-stack/</link><description>Recent content in Monitoring Stack on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 06 Mar 2026 17:10:35 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/monitoring-stack/index.xml" rel="self" type="application/rss+xml"/><item><title>[GitOps 기반 E2E ML Platform - 실제 동작 확인]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/08/</link><pubDate>Fri, 06 Mar 2026 17:10:35 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/08/</guid><description>&lt;h1 id="serving-runtime-proof">Serving Runtime Proof&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monitoring Stack on 🏔️ MLOps Journey</title><link>https://keonhoban.github.io/mlops-journey/categories/monitoring-stack/</link><description>Recent content in Monitoring Stack on 🏔️ MLOps Journey</description><generator>Hugo -- 0.145.0</generator><language>ko</language><lastBuildDate>Fri, 06 Mar 2026 17:10:35 +0900</lastBuildDate><atom:link href="https://keonhoban.github.io/mlops-journey/categories/monitoring-stack/index.xml" rel="self" type="application/rss+xml"/><item><title>[GitOps 기반 E2E ML Platform - 실제 동작 확인]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/08/</link><pubDate>Fri, 06 Mar 2026 17:10:35 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/08/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>Triton READY 상태, Model Repository, FastAPI health/models/reload API, Metrics endpoint를 실제 실행 결과(Proof)로 검증&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/">GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h1 id="serving-runtime-proof">Serving Runtime Proof&lt;/h1>
 &lt;ul>
 &lt;li>실제로 READY / Reload / Metrics까지 살아 있는가&lt;/li>
 &lt;/ul>
@@ -12,17 +20,7 @@
 &lt;li>Drift Gate / Promotion 전략&lt;/li>
 &lt;li>MLflow + Triton + FastAPI 서빙 구조&lt;/li>
 &lt;/ul>
-&lt;p>하지만 여기서 중요한 질문이 하나 남습니다.&lt;/p>
-&lt;blockquote>
-&lt;p>이 시스템이 실제로 동작하는가?&lt;/p>&lt;/blockquote>
-&lt;p>많은 아키텍처 글이&lt;/p>
-&lt;p>다이어그램과 코드 설명으로 끝납니다.&lt;/p>
-&lt;p>하지만 실제 운영 환경에서는 다음이 더 중요합니다.&lt;/p>
-&lt;pre tabindex="0">&lt;code>서빙 시스템이 실제로 살아 있는가
-모델이 실제로 로드되었는가
-API가 실제로 동작하는가
-metrics가 실제로 수집되는가
-&lt;/code>&lt;/pre>&lt;p>그래서 이 프로젝트에서는&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Alerting 운영 표준 매뉴얼]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/03/</link><pubDate>Fri, 02 Jan 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/03/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;p>하지만 여기서 중요한 질문이 하나 남습니다.&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 (GitOps · 검증 · Alerting) - Alerting 운영 표준 매뉴얼]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/03/</link><pubDate>Fri, 02 Jan 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/03/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
 &lt;p>Triton 서빙 환경에서 dev/prod 알럿을 완전히 분리하고, PrometheusRule/Alertmanager/Grafana를 하나의 판단 흐름으로 고정하는 GitOps 기반 Alerting 운영 표준 설계&lt;/p>&lt;/blockquote>
 &lt;h2 id="선수지식">선수지식&lt;/h2>

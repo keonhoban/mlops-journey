@@ -13,7 +13,15 @@
 모델 버전 관리의 책임 구조가 바뀌는 것입니다.&lt;/p>
 &lt;p>이 글은 Stage 방식의 한계를 분석하고,
 alias 기반 Champion/Challenger 패턴과
-FastAPI와 연동한 zero-downtime hot swap 구조를 설명합니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 부하 테스트] k6로 검증한 Triton + FastAPI 서빙 성능: 136 RPS, p95 553ms</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</link><pubDate>Wed, 18 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</guid><description>&lt;h1 id="load-test-서빙-성능-검증">Load Test: 서빙 성능 검증&lt;/h1>
+FastAPI와 연동한 zero-downtime hot swap 구조를 설명합니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 부하 테스트] k6로 검증한 Triton + FastAPI 서빙 성능: 136 RPS, p95 553ms</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</link><pubDate>Wed, 18 Mar 2026 10:00:00 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>k6 부하 테스트로 Triton + FastAPI 서빙 성능을 실측 검증: 136 RPS, p95 553ms, 에러율 0% (CPU-only 3노드 클러스터)&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/">GitOps 기반 E2E ML Platform - 운영 문서화&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h1 id="load-test-서빙-성능-검증">Load Test: 서빙 성능 검증&lt;/h1>
 &lt;ul>
 &lt;li>실제로 얼마나 버티는가&lt;/li>
 &lt;/ul>
@@ -26,12 +34,7 @@ Reload API Success
 Metrics Exported
 &lt;/code>&lt;/pre>&lt;p>하지만 여기서 중요한 질문이 하나 더 남습니다.&lt;/p>
 &lt;blockquote>
-&lt;p>실제 트래픽이 들어왔을 때 이 시스템이 버티는가?&lt;/p>&lt;/blockquote>
-&lt;p>단일 요청이 성공하는 것과&lt;/p>
-&lt;p>100명이 동시에 요청을 보내는 것은 전혀 다른 문제입니다.&lt;/p>
-&lt;p>그래서 이 프로젝트에서는&lt;/p>
-&lt;p>&lt;strong>k6를 사용한 부하 테스트를 E2E 파이프라인 검증의 일부로 포함시켰습니다.&lt;/strong>&lt;/p>
-&lt;p>이 글에서는 다음 내용을 확인합니다.&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 - dynamic_batching + instance_group: CPU 서빙 성능 최적화]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/04/</link><pubDate>Sun, 15 Mar 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/04/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;p>실제 트래픽이 들어왔을 때 이 시스템이 버티는가?&lt;/p></description></item><item><title>[Triton 운영형 서빙 플랫폼 - dynamic_batching + instance_group: CPU 서빙 성능 최적화]</title><link>https://keonhoban.github.io/mlops-journey/posts/triton/04/</link><pubDate>Sun, 15 Mar 2026 13:05:22 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/triton/04/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
 &lt;blockquote>
 &lt;p>CPU-only 환경에서 Triton의 dynamic_batching과 instance_group 설정으로 처리량을 높이고 latency를 안정화하는 성능 최적화 과정&lt;/p>&lt;/blockquote>
 &lt;h2 id="선수지식">선수지식&lt;/h2>
@@ -56,7 +59,15 @@ CPU 환경에서 처리량을 높이고 latency를 안정화한 과정을 설명
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="1-기본-설정만으로는-무엇이-부족한가">1️⃣ 기본 설정만으로는 무엇이 부족한가&lt;/h2>
-&lt;p>Triton을 처음 실행하면 기본 동작은 다음과 같습니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</link><pubDate>Fri, 06 Mar 2026 17:10:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</guid><description>&lt;h1 id="mlflow--triton--fastapi">MLflow + Triton + FastAPI&lt;/h1>
+&lt;p>Triton을 처음 실행하면 기본 동작은 다음과 같습니다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 모델 등록/서빙 반영 분리]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</link><pubDate>Fri, 06 Mar 2026 17:10:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/07/</guid><description>&lt;h2 id="이-글에서-다루는-것">이 글에서 다루는 것&lt;/h2>
+&lt;blockquote>
+&lt;p>모델 등록(MLflow)과 서빙 반영(Triton + FastAPI)을 분리한 구조, explicit 모드, FastAPI Reload API, 확장 전략(replica/batching), Feature Store 연동 패턴&lt;/p>&lt;/blockquote>
+&lt;h2 id="선수지식">선수지식&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/06/">GitOps 기반 E2E ML Platform - 모델 반영 제어&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h1 id="mlflow--triton--fastapi">MLflow + Triton + FastAPI&lt;/h1>
 &lt;ul>
 &lt;li>등록과 서빙 반영을 분리한 이유&lt;/li>
 &lt;/ul>
@@ -68,15 +79,7 @@ MLflow Register
 ↓
 Deploy
 &lt;/code>&lt;/pre>&lt;p>즉, &lt;strong>모델 등록과 서빙 반영이 거의 같은 단계&lt;/strong>로 취급됩니다.&lt;/p>
-&lt;p>이 방식은 간단하고 구현하기 쉽습니다.&lt;/p>
-&lt;p>하지만 운영 환경에서는 다음과 같은 문제가 발생할 수 있습니다.&lt;/p>
-&lt;ul>
-&lt;li>등록된 모델이 바로 운영 모델이 되어버림&lt;/li>
-&lt;li>서빙 환경 상태를 고려하지 않고 배포 진행&lt;/li>
-&lt;li>모델 로딩 실패 시 서비스 장애 발생&lt;/li>
-&lt;li>모델 전환 시점 제어가 어려움&lt;/li>
-&lt;/ul>
-&lt;p>이 프로젝트에서는 이러한 문제를 피하기 위해&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
+&lt;p>이 방식은 간단하고 구현하기 쉽습니다.&lt;/p></description></item><item><title>[MLOps 플랫폼 Observability &amp; Data Pipeline - 검증]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</link><pubDate>Sun, 30 Nov 2025 02:50:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_observability/02/</guid><description>&lt;h2 id="-목차">🧭 목차&lt;/h2>
 &lt;table>
 &lt;thead>
 &lt;tr>
