@@ -7,7 +7,33 @@
 &lt;/ul>
 &lt;hr>
 &lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
-&lt;p>DAG 파일에 오타가 하나 들어가면 Airflow Scheduler가 파싱 오류를 감지하고 해당 DAG을 비활성화한다. 문제를 발견하는 것은 배포 후 수십 분이 지난 시점이다. 이 비용을 push 시점으로 앞당겨서 파싱 오류를 운영 전에 잡는 구조를 만든다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
+&lt;p>DAG 파일에 오타가 하나 들어가면 Airflow Scheduler가 파싱 오류를 감지하고 해당 DAG을 비활성화한다. 문제를 발견하는 것은 배포 후 수십 분이 지난 시점이다. 이 비용을 push 시점으로 앞당겨서 파싱 오류를 운영 전에 잡는 구조를 만든다.&lt;/p></description></item><item><title>[GitOps 기반 E2E ML Platform - 운영 문서화]</title><link>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/</link><pubDate>Fri, 06 Mar 2026 17:10:38 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/10/</guid><description>&lt;h1 id="운영-문서화">운영 문서화&lt;/h1>
+&lt;ul>
+&lt;li>Runbook / Security / Proof 디렉토리까지 남긴 이유&lt;/li>
+&lt;/ul>
+&lt;h2 id="들어가며">들어가며&lt;/h2>
+&lt;p>많은 프로젝트는 다음 단계에서 멈춥니다.&lt;/p>
+&lt;pre tabindex="0">&lt;code>코드 작성
+README 작성
+&lt;/code>&lt;/pre>&lt;p>하지만 실제 운영 환경에서는 다음 문제가 발생합니다.&lt;/p>
+&lt;ul>
+&lt;li>서비스 장애 발생&lt;/li>
+&lt;li>운영자가 시스템 구조를 모름&lt;/li>
+&lt;li>복구 절차 문서 없음&lt;/li>
+&lt;li>보안 정책 위치 불명확&lt;/li>
+&lt;/ul>
+&lt;p>이 경우 시스템이 아무리 잘 만들어져 있어도&lt;/p>
+&lt;p>운영 대응이 어려워집니다.&lt;/p>
+&lt;p>그래서 이 프로젝트에서는 코드 외에&lt;/p>
+&lt;p>다음 문서 구조를 함께 구성했습니다.&lt;/p>
+&lt;pre tabindex="0">&lt;code>Runbook
+Security
+Proof
+Audit
+&lt;/code>&lt;/pre>&lt;p>즉&lt;/p>
+&lt;blockquote>
+&lt;p>코드를 설명하는 문서가 아니라&lt;/p>
+&lt;p>&lt;strong>운영을 설명하는 문서 구조&lt;/strong>를 만들었습니다.&lt;/p></description></item><item><title>[MLOps 운영 고도화 - 검증 (Proof of Automation)]</title><link>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</link><pubDate>Wed, 15 Oct 2025 17:10:21 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_gitops/02/</guid><description>&lt;h1 id="-proof-of-automation--작동-검증-루프">🧠 Proof of Automation — 작동 검증 루프&lt;/h1>
 &lt;blockquote>
 &lt;p>하나의 커밋으로 CI → CD → 학습/등록 → READY → 핫스왑 → 실험 → 관제까지 자동화되었음을 시각적으로 증명합니다.&lt;/p>&lt;/blockquote>
 &lt;hr>
