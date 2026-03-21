@@ -17,8 +17,11 @@ draft: false
 📂 [Projects 보기](/mlops-journey/projects)  
 - 실습 기반 프로젝트 & 코드 정리
 
-📝 [Blog 보기](/mlops-journey/posts)  
+📝 [Blog 보기](/mlops-journey/posts)
 - 기술 노트, 팁, 결정적 지식 요약
+
+🗺️ [학습 로드맵](/mlops-journey/roadmap)
+- 5-Level 순서로 정리된 읽기 가이드
 
 🧗 [About Me](/mlops-journey/about) 
 - 성장 여정과 기술 이력
