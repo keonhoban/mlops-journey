@@ -9,7 +9,7 @@
 어떤 모델을 운영 환경에 반영할 것인가?
 많은 프로젝트에서는 다음 기준을 사용합니다.
 accuracy >= threshold 하지만 운영 환경에서는 이 기준만으로는 충분하지 않습니다.
-...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:30 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;5 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 모델 반영 제어] " href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/06/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 운영 환경 반영 제어]</h2></header><div class=entry-content><p>이 글에서 다루는 것 E2E 파이프라인 전체 구조, DAG 레벨 에러 처리(SLA/on_failure_callback), SSOT 패턴(ids.py/policy.py), Promotion/Shadow 분기, Rollback 구조
+...</p></div><footer class=entry-footer><span title='2026-03-06 17:10:30 +0900 +0900'>March 6, 2026</span>&nbsp;·&nbsp;6 min</footer><a class=entry-link aria-label="post link to [GitOps 기반 E2E ML Platform - 모델 반영 제어] " href=https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/06/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>[GitOps 기반 E2E ML Platform - 운영 환경 반영 제어]</h2></header><div class=entry-content><p>이 글에서 다루는 것 E2E 파이프라인 전체 구조, DAG 레벨 에러 처리(SLA/on_failure_callback), SSOT 패턴(ids.py/policy.py), Promotion/Shadow 분기, Rollback 구조
 선수지식 GitOps 기반 E2E ML Platform - 토글 구조 E2E DAG: 학습 성공이 곧 운영 반영을 의미하지 않도록 설계 들어가며 많은 머신러닝 파이프라인은 다음과 같은 형태를 가집니다.
 Train → Register → Deploy 이 구조는 실험 환경에서는 충분히 동작합니다.
 하지만 운영 환경에서는 몇 가지 중요한 문제가 생깁니다.
