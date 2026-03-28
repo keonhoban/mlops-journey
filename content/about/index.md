@@ -30,7 +30,7 @@ DevOps 2년 3개월(가비아) 운영 경험을 기반으로,
 - **Serving**: Triton Inference Server + FastAPI reload 구조
 - **Observability**: Prometheus / Grafana / Alertmanager 기반 운영 관측
 - **Reproducibility**: Feature Store-lite(버전화 + latest 고정), Feast 검증
-- **Deployment Strategy**: Promotion / Canary / Shadow 3-way 분기 + Triton RollingUpdate zero-downtime
+- **Deployment Strategy**: Promotion / Shadow 분기 + Mirror/Split 트래픽 라우팅 + Triton RollingUpdate zero-downtime
 - **Security & Resilience**: NetworkPolicy(4서비스) + ResourceQuota + Fail-open 에스컬레이션 + Contract Testing
 - **Architecture**: Core / Baseline / Optional 분리형 플랫폼 구조
 - **Proof System**: GitOps 경계 / runtime / optional attach-detach / observability 검증 문서화
@@ -130,7 +130,7 @@ https://github.com/keonhoban/mlops-infra-labs
 - MLflow alias 기반 모델 교체 및 runtime reload
 - DAG 기반 자동 학습·배포 파이프라인
 - 장애 대응을 고려한 롤백 및 상태 전이 설계
-- Canary 배포 경로를 포함한 3-way 분기 + NetworkPolicy 기반 네트워크 격리
+- Promotion/Shadow 분기 + NetworkPolicy 기반 네트워크 격리
 - 메트릭·로그·알람 기반 운영 관측 체계
 
 “모델을 올린다”가 아니라,
