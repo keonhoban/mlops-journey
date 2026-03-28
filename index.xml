@@ -491,7 +491,7 @@ Deploy
 &lt;li>&lt;strong>Serving&lt;/strong>: Triton Inference Server + FastAPI reload 구조&lt;/li>
 &lt;li>&lt;strong>Observability&lt;/strong>: Prometheus / Grafana / Alertmanager 기반 운영 관측&lt;/li>
 &lt;li>&lt;strong>Reproducibility&lt;/strong>: Feature Store-lite(버전화 + latest 고정), Feast 검증&lt;/li>
-&lt;li>&lt;strong>Deployment Strategy&lt;/strong>: Promotion / Canary / Shadow 3-way 분기 + Triton RollingUpdate zero-downtime&lt;/li>
+&lt;li>&lt;strong>Deployment Strategy&lt;/strong>: Promotion / Shadow 분기 + Mirror/Split 트래픽 라우팅 + Triton RollingUpdate zero-downtime&lt;/li>
 &lt;li>&lt;strong>Security &amp;amp; Resilience&lt;/strong>: NetworkPolicy(4서비스) + ResourceQuota + Fail-open 에스컬레이션 + Contract Testing&lt;/li>
 &lt;li>&lt;strong>Architecture&lt;/strong>: Core / Baseline / Optional 분리형 플랫폼 구조&lt;/li>
 &lt;li>&lt;strong>Proof System&lt;/strong>: GitOps 경계 / runtime / optional attach-detach / observability 검증 문서화&lt;/li>
