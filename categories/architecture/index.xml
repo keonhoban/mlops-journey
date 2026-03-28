@@ -49,6 +49,10 @@
 &lt;/tr>
 &lt;tr>
 &lt;td>10&lt;/td>
+&lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/posts/mlops-platform-e2e/11/">부하 테스트 (k6 · Triton + FastAPI)&lt;/a>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>11&lt;/td>
 &lt;td>&lt;a href="https://keonhoban.github.io/mlops-journey/projects/mlops_pipeline_e2e/02/">최종 검증 (Proof of Platform)&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
