@@ -18,31 +18,4 @@
 &lt;hr>
 &lt;h2 id="이-단계에서-해결하려는-문제">이 단계에서 해결하려는 문제&lt;/h2>
 &lt;p>모델의 성능은 결국 데이터 품질에서 결정된다. 그런데 데이터를 어떻게 추출하고, 검증하고, 가공하고, 저장하는지까지 자동화하지 않으면 MLOps는 완성되지 않는다.
-이번 단계에서는 Raw S3에서 전처리, Feature 생성, 저장까지 이어지는 엔드투엔드 데이터 파이프라인을 직접 구축해 이후 MLflow 학습 자동화와 바로 연결될 데이터 레이어를 다졌다.&lt;/p></description></item><item><title>[코드업] 기초 100제. 십자 뒤집기, 설탕과자 뽑기, 성실한 개미</title><link>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</link><pubDate>Sat, 10 May 2025 12:25:32 +0900</pubDate><guid>https://keonhoban.github.io/mlops-journey/projects/online_judge/01/</guid><description>&lt;h1 id="-codeup-문제-요약">📘 CodeUp 문제 요약&lt;/h1>
-&lt;hr>
-&lt;h2 id="-6096---십자-뒤집기">🔹 6096 - 십자 뒤집기&lt;/h2>
-&lt;blockquote>
-&lt;p>&lt;a href="https://codeup.kr/problem.php?id=6096">https://codeup.kr/problem.php?id=6096&lt;/a>&lt;/p>&lt;/blockquote>
-&lt;p>📝 바둑판(19x19)에서 특정 좌표를 기준으로 가로줄, 세로줄을 뒤집기&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>board &lt;span style="color:#f92672">=&lt;/span> [list(map(int, input()&lt;span style="color:#f92672">.&lt;/span>split())) &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">19&lt;/span>)]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>n &lt;span style="color:#f92672">=&lt;/span> int(input())
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(n):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> x, y &lt;span style="color:#f92672">=&lt;/span> map(int, input()&lt;span style="color:#f92672">.&lt;/span>split())
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> x &lt;span style="color:#f92672">-=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> y &lt;span style="color:#f92672">-=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> j &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">19&lt;/span>):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> board[x][j] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#f92672">-&lt;/span> board[x][j]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> board[j][y] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#f92672">-&lt;/span> board[j][y]
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">for&lt;/span> row &lt;span style="color:#f92672">in&lt;/span> board:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#39; &amp;#39;&lt;/span>&lt;span style="color:#f92672">.&lt;/span>join(map(str, row)))
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>🔑 &lt;strong>포인트 정리&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>배열 순서: &lt;code>board[row][col]&lt;/code>&lt;/li>
-&lt;li>좌표 보정: &lt;code>x -= 1&lt;/code>, &lt;code>y -= 1&lt;/code> (1-based → 0-based)&lt;/li>
-&lt;li>&lt;code>1 - x&lt;/code>: 값 반전 (0 ↔ 1)&lt;/li>
-&lt;li>중심 좌표는 두 번 뒤집히므로 원래 값 유지됨&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="-6097--설탕-과자-뽑기">🔹 6097 – 설탕 과자 뽑기&lt;/h2>
-&lt;blockquote>
-&lt;p>&lt;a href="https://codeup.kr/problem.php?id=6097">https://codeup.kr/problem.php?id=6097&lt;/a>&lt;/p></description></item></channel></rss>
+이번 단계에서는 Raw S3에서 전처리, Feature 생성, 저장까지 이어지는 엔드투엔드 데이터 파이프라인을 직접 구축해 이후 MLflow 학습 자동화와 바로 연결될 데이터 레이어를 다졌다.&lt;/p></description></item></channel></rss>
